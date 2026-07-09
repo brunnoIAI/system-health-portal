@@ -796,7 +796,17 @@ function scoreColor(score){const n=parseFloat(score);if(!n)return'#9CA3AF';if(n<
 function scoreBg(score){const n=parseFloat(score);if(!n)return'#F3F4F6';if(n<=2)return'#FEE2E2';if(n<4)return'#FEF3C7';return'#DCFCE7';}
 
 // ---- STATUS ----
-function getCurrentStageKey(p){const s=p.stages;if(!s.s1.completed)return's1';if(!s.s2.signedDate)return's2';if(!s.s25.candidateEmail)return's25';if(!s.s3.ref2Received)return's3';if(!s.s4.screenSignedDate)return's4';if(!s.s5.signedDate)return's5';if(!s.s6.credsSentDate)return's6';if(!s.s7.confirmedDate)return's7';if(!s.s8.mdmDate)return's8';if(!s.s9.clearedDate)return's9';if(!s.s10.completedDate)return's10';return'done';}
+function getCurrentStageKey(p){
+  const s=p.stages||{};
+  const s1=s.s1||{},s2=s.s2||{},s25=s.s25||{},s3=s.s3||{},s4=s.s4||{},s5=s.s5||{},s6=s.s6||{},s7=s.s7||{},s8=s.s8||{},s9=s.s9||{},s10=s.s10||{};
+  if(!s1.completed)return's1';
+  if(!s2.signedDate)return's2';
+  if(!s25.candidateEmail)return's25';
+  // Stay in s3 until BOTH refs are received AND both have a final status (Clear or Pass)
+  const ref1Done=['Clear','Pass'].includes(s3.ref1Status||'');
+  const ref2Done=['Clear','Pass'].includes(s3.ref2Status||'');
+  if(!s3.ref2Received||!s3.ref1Received||!ref1Done||!ref2Done)return's3';
+  if(!s4.screenSignedDate)return's4';if(!s5.signedDate)return's5';if(!s6.credsSentDate)return's6';if(!s7.confirmedDate)return's7';if(!s8.mdmDate)return's8';if(!s9.clearedDate)return's9';if(!s10.completedDate)return's10';return'done';
 const STAGE_META={s1:{num:'1',name:'Evaluation',color:'#6C5DD3'},s2:{num:'2',name:'Offer',color:'#0284C7'},s25:{num:'2.5',name:'Handover to HR',color:'#D97706'},s3:{num:'3',name:'Documents',color:'#D97706'},s4:{num:'4',name:'NDA & Screening',color:'#DC2626'},s5:{num:'5',name:'Contract',color:'#7C3AED'},s6:{num:'6',name:'Credentials',color:'#059669'},s7:{num:'7',name:'Confirmation',color:'#059669'},s8:{num:'8',name:'Vanta',color:'#0891B2'},s9:{num:'9',name:'Background Check',color:'#D97706'},s10:{num:'10',name:'Service Accounts',color:'#6B7280'}};
 function getOnboardingStatus(person){const start=person.stages.s25.expectedStart||person.startDate;const today=new Date();today.setHours(0,0,0,0);const startDt=start?new Date(start):null;const daysUntil=startDt?Math.ceil((startDt-today)/86400000):null;const stageKey=getCurrentStageKey(person);if(stageKey==='done')return{label:'Completed',color:'#16A34A',stageKey:null,daysUntil};if(daysUntil!==null&&daysUntil<0)return{label:'Overdue',color:'#DC2626',stageKey,daysUntil};if(daysUntil!==null&&daysUntil<=7)return{label:'Due Soon',color:'#D97706',stageKey,daysUntil};return{label:'In Progress',color:'#0284C7',stageKey,daysUntil};}
 function getOffboardingStatus(person){
@@ -804,14 +814,14 @@ function getOffboardingStatus(person){
     const stages=person.stages||{};
     const s1=stages.s1||{},s2=stages.s2||{},s3=stages.s3||{},s4=stages.s4||{},s5=stages.s5||{};
     const allDone=s1.letterSignedDate&&s2.checklistDate&&s3.brunnoSignedDate&&s4.servicesDate&&s5.completedDate;
-    if(allDone)return{label:'Fully Terminated',color:'#16A34A'};
-    if(!s1.noticeDate)return{label:'Notice Received',color:'#0284C7'};
-    if(!s1.letterSignedDate)return{label:'Awaiting Signature',color:'#D97706'};
-    if(!s2.checklistDate)return{label:'Exit Checklist',color:'#0284C7'};
-    if(!s3.brunnoSignedDate)return{label:'Sign-off Pending',color:'#D97706'};
-    if(!s4.servicesDate)return{label:'Account Termination',color:'#DC2626'};
-    return{label:'In Progress',color:'#0284C7'};
-  }catch(e){return{label:'Notice Received',color:'#0284C7'};}
+    if(allDone)return{label:'Fully Terminated',color:'#16A34A',stageKey:null};
+    if(!s1.noticeDate)return{label:'Notice Received',color:'#0284C7',stageKey:'ex_s1'};
+    if(!s1.letterSignedDate)return{label:'Awaiting Signature',color:'#D97706',stageKey:'ex_s1'};
+    if(!s2.checklistDate)return{label:'Exit Checklist',color:'#0284C7',stageKey:'ex_s2'};
+    if(!s3.brunnoSignedDate)return{label:'Sign-off Pending',color:'#D97706',stageKey:'ex_s3'};
+    if(!s4.servicesDate)return{label:'Account Termination',color:'#DC2626',stageKey:'ex_s4'};
+    return{label:'In Progress',color:'#0284C7',stageKey:'ex_s4'};
+  }catch(e){return{label:'Notice Received',color:'#0284C7',stageKey:'ex_s1'};}
 }
 
 function hrLog(person,action){if(!person.log)person.log=[];person.log.unshift({ts:new Date().toISOString(),action,by:currentUser?.name||'System'});person.log=person.log.slice(0,100);}
@@ -877,7 +887,11 @@ function renderHRList(){
   let html='<div class="hr-list">';
   items.forEach(person=>{
     const status=hrView==='onboarding'?getOnboardingStatus(person):getOffboardingStatus(person);
-    const sm=status.stageKey?{...STAGE_META[status.stageKey],key:status.stageKey}:null;
+    const sm=status.stageKey&&STAGE_META[status.stageKey]?{...STAGE_META[status.stageKey],key:status.stageKey}:null;
+    // For exiting: use status label as pill when stageKey is exit-specific
+    const isExitingView=hrView==='exiting';
+    const exitPill=isExitingView&&status.stageKey?{num:'',name:status.label,color:status.color,key:status.stageKey}:null;
+    const displaySm=isExitingView?exitPill:sm;
     const start=hrView==='onboarding'?(person.stages.s25.expectedStart||person.startDate||''):'';
     const startFmt=start?new Date(start).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';
     const daysUntil=status.daysUntil;
@@ -890,7 +904,7 @@ function renderHRList(){
       <div class="hr-person-info">
         <div class="hr-person-name">${person.name} ${exitBadge}</div>
         <div class="hr-person-role">${person.role}${person.email?` &nbsp;·&nbsp; <span style="color:var(--text-muted);">${person.email}</span>`:''}</div>
-        ${sm?`<span class="hr-stage-pill" style="background:${sm.color}18;color:${sm.color};border:1.5px solid ${sm.color}35;margin-top:2px;"><span style="background:${sm.color};color:#fff;border-radius:100px;padding:1px 7px;font-size:10px;font-weight:800;">${sm.num}</span>${sm.name}</span>${sm.key==='s3'?(() => {const r1=person.stages.s3.ref1Status||'';const r2=person.stages.s3.ref2Status||'';const missing=[];if(!r1||r1==='In Progress')missing.push('Ref 1 '+(!r1?'missing':'in progress'));if(!r2||r2==='In Progress')missing.push('Ref 2 '+(!r2?'missing':'in progress'));return missing.length?`<span style="font-size:11px;color:#D97706;background:#FEF3C7;border-radius:4px;padding:2px 7px;margin-left:4px;">${missing.join(' · ')}</span>`:'';})():''}`:`<span class="hr-stage-pill" style="background:#DCFCE7;color:#16A34A;border:1.5px solid #16A34A35;margin-top:2px;"><i class="fas fa-check" style="font-size:10px;"></i> All stages complete</span>`}
+        ${displaySm?`<span class="hr-stage-pill" style="background:${displaySm.color}18;color:${displaySm.color};border:1.5px solid ${displaySm.color}35;margin-top:2px;">${displaySm.num?`<span style="background:${displaySm.color};color:#fff;border-radius:100px;padding:1px 7px;font-size:10px;font-weight:800;">${displaySm.num}</span>`:''} ${displaySm.name}</span>${displaySm.key==='s3'?(() => {const r1=person.stages.s3.ref1Status||'';const r2=person.stages.s3.ref2Status||'';const missing=[];if(!r1||r1==='In Progress')missing.push('Ref 1 '+(!r1?'missing':'in progress'));if(!r2||r2==='In Progress')missing.push('Ref 2 '+(!r2?'missing':'in progress'));return missing.length?`<span style="font-size:11px;color:#D97706;background:#FEF3C7;border-radius:4px;padding:2px 7px;margin-left:4px;">${missing.join(' · ')}</span>`:'';})():''}`:(status.label==='Fully Terminated'?`<span class="hr-stage-pill" style="background:#DCFCE720;color:#16A34A;border:1.5px solid #16A34A35;margin-top:2px;"><i class="fas fa-check" style="font-size:10px;"></i> Fully Terminated</span>`:`<span class="hr-stage-pill" style="background:#DCFCE720;color:#16A34A;border:1.5px solid #16A34A35;margin-top:2px;"><i class="fas fa-check" style="font-size:10px;"></i> All stages complete</span>`)}
       </div>
       <div class="hr-person-meta">
         ${score?`<div class="hr-score-badge" style="background:${scoreBg(score)};"><span class="hr-score-num" style="color:${scoreColor(score)};">${score}</span><span class="hr-score-lbl" style="color:${scoreColor(score)};">score</span></div>`:''}
