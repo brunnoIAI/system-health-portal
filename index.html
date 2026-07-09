@@ -1631,179 +1631,33 @@ window.addEventListener('load', function() {
 // ============================================================
 // PASSWORD SYNC — store/read from Supabase portal_auth
 // ============================================================
+
 window.addEventListener('load', function() {
-  const sb = getSB();
-  if (!sb) return;
-
-  // Override setFirstPassword to also write to Supabase
-  const _origSetFirstPassword = window.setFirstPassword;
-  window.setFirstPassword = function() {
-    const pw1 = document.getElementById('new-pw1')?.value;
-    const pw2 = document.getElementById('new-pw2')?.value;
-    const errEl = document.getElementById('first-login-error');
-    const btn = document.getElementById('first-login-btn');
-    if (!window.pwValid || !window.pwValid(pw1)) {
-      if(errEl){errEl.textContent='Password does not meet all requirements.';errEl.style.display='block';}return;
-    }
-    if (pw1 !== pw2) {
-      if(errEl){errEl.textContent='Passwords do not match.';errEl.style.display='block';}return;
-    }
-    if(btn){btn.disabled=true;btn.textContent='Setting password...';}
-    window.sha256(window.pendingEmail + ':' + pw1).then(hash => {
-      // Write to Supabase portal_auth
-      const sb2 = getSB();
-      const now = new Date().toISOString();
-      const authRecord = {
-        email: window.pendingEmail,
+  // After successful login: sync password hash to Supabase portal_auth
+  // This runs AFTER the original completeLogin so window.USERS etc are all defined
+  const _patchCompleteLogin = window.completeLogin;
+  window.completeLogin = function(email) {
+    _patchCompleteLogin && _patchCompleteLogin(email);
+    // Write password hash to Supabase if we have it in localStorage
+    const sb = getSB();
+    if (!sb) return;
+    const auth = window.getAuth ? window.getAuth() : {};
+    const hash = auth['pw_' + email];
+    if (hash) {
+      sb.from('portal_auth').upsert({
+        email: email,
         pw_hash: hash,
-        pw_set_at: now,
-        last_login: now,
+        last_login: new Date().toISOString(),
         failed_attempts: 0
-      };
-      if (sb2) {
-        sb2.from('portal_auth').upsert(authRecord).then(({error}) => {
-          if (error) console.warn('portal_auth write error:', error);
-          else console.log('Password saved to Supabase for', window.pendingEmail);
-        });
-      }
-      // Also write to localStorage as fallback
-      const auth = window.getAuth ? window.getAuth() : {};
-      auth['pw_' + window.pendingEmail] = hash;
-      auth['lastLogin_' + window.pendingEmail] = now;
-      auth['pwSet_' + window.pendingEmail] = now;
-      if (window.saveAuth) window.saveAuth(auth);
-      // Complete login
-      if (document.getElementById('first-login-modal'))
-        document.getElementById('first-login-modal').style.display = 'none';
-      if (window.completeLogin) window.completeLogin(window.pendingEmail);
-    });
-  };
-
-  // Override handleLoginStep password check to also check Supabase
-  const _origHandleLoginStep = window.handleLoginStep;
-  window.handleLoginStep = async function() {
-    const emailEl = document.getElementById('login-email');
-    const pwFieldEl = document.getElementById('pw-field');
-    const errEl = document.getElementById('login-error');
-    const lockEl = document.getElementById('login-lockout');
-    if (!errEl) return;
-    errEl.style.display = 'none';
-    if (lockEl) lockEl.style.display = 'none';
-
-    const email = emailEl?.value?.trim()?.toLowerCase();
-    if (!email) return;
-
-    // Step 1: email validation (same as before)
-    if (!window.pendingEmail) {
-      if (!window.USERS || !window.USERS[email]) {
-        errEl.textContent = 'Email not recognised. Only @implementai.io accounts can access this portal.';
-        errEl.style.display = 'block'; return;
-      }
-      // Check lockout in localStorage
-      const auth = window.getAuth ? window.getAuth() : {};
-      const lockData = auth['lock_' + email];
-      if (lockData && lockData.until > Date.now()) {
-        const m = Math.ceil((lockData.until - Date.now()) / 60000);
-        if(lockEl){lockEl.textContent='Account locked. Try again in '+m+' minute'+(m!==1?'s':'.')+'.';lockEl.style.display='block';}return;
-      }
-
-      // Check if password exists in Supabase first
-      const sb3 = getSB();
-      let hasPassword = false;
-      if (sb3) {
-        const {data, error} = await sb3.from('portal_auth').select('pw_hash').eq('email', email).maybeSingle();
-        if (!error && data && data.pw_hash) {
-          hasPassword = true;
-          // Sync to localStorage so offline fallback works
-          const auth2 = window.getAuth ? window.getAuth() : {};
-          auth2['pw_' + email] = data.pw_hash;
-          if (window.saveAuth) window.saveAuth(auth2);
-        }
-      }
-      // Fall back to localStorage check
-      if (!hasPassword) {
-        const auth2 = window.getAuth ? window.getAuth() : {};
-        hasPassword = !!auth2['pw_' + email];
-      }
-
-      if (!hasPassword) {
-        window.pendingEmail = email;
-        const modal = document.getElementById('first-login-modal');
-        if (modal) modal.style.display = 'flex';
-        return;
-      }
-
-      window.pendingEmail = email;
-      if (emailEl) emailEl.disabled = true;
-      if (pwFieldEl) pwFieldEl.style.display = 'block';
-      const pwEl = document.getElementById('login-pw');
-      if (pwEl) pwEl.focus();
-      const btn = document.getElementById('login-btn');
-      if (btn) btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
-      return;
+      }).then(({error}) => {
+        if (error) console.warn('portal_auth sync error:', error);
+        else console.log('Password synced to Supabase for', email);
+      });
     }
-
-    // Step 2: verify password
-    const pw = document.getElementById('login-pw')?.value;
-    if (!pw) { errEl.textContent = 'Please enter your password.'; errEl.style.display = 'block'; return; }
-    const btn = document.getElementById('login-btn');
-    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...'; }
-
-    window.sha256(window.pendingEmail + ':' + pw).then(async hash => {
-      // Check Supabase first
-      let storedHash = null;
-      const sb4 = getSB();
-      if (sb4) {
-        const {data, error} = await sb4.from('portal_auth').select('pw_hash,locked_until,failed_attempts').eq('email', window.pendingEmail).maybeSingle();
-        if (!error && data) {
-          storedHash = data.pw_hash;
-          // Check Supabase lockout
-          if (data.locked_until && new Date(data.locked_until) > new Date()) {
-            const m = Math.ceil((new Date(data.locked_until) - Date.now()) / 60000);
-            if(lockEl){lockEl.textContent='Account locked. Try again in '+m+' minute'+(m!==1?'s':'.')+'.';lockEl.style.display='block';}
-            if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';}return;
-          }
-        }
-      }
-      // Fall back to localStorage hash
-      if (!storedHash) {
-        const auth = window.getAuth ? window.getAuth() : {};
-        storedHash = auth['pw_' + window.pendingEmail];
-      }
-
-      if (hash !== storedHash) {
-        // Increment failed attempts
-        const auth = window.getAuth ? window.getAuth() : {};
-        const attKey = 'att_' + window.pendingEmail;
-        auth[attKey] = (auth[attKey] || 0) + 1;
-        if (auth[attKey] >= 5) {
-          auth['lock_' + window.pendingEmail] = {until: Date.now() + 30*60*1000};
-          auth[attKey] = 0;
-          if (window.saveAuth) window.saveAuth(auth);
-          if(lockEl){lockEl.textContent='Too many failed attempts. Locked for 30 minutes.';lockEl.style.display='block';}
-        } else {
-          if (window.saveAuth) window.saveAuth(auth);
-          const left = 5 - auth[attKey];
-          errEl.textContent = 'Incorrect password. ' + left + ' attempt' + (left!==1?'s':'') + ' remaining.';
-          errEl.style.display = 'block';
-        }
-        if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';}return;
-      }
-
-      // Success — update last_login in Supabase
-      const now = new Date().toISOString();
-      if (sb4) sb4.from('portal_auth').update({last_login: now, failed_attempts: 0}).eq('email', window.pendingEmail);
-      const auth = window.getAuth ? window.getAuth() : {};
-      delete auth['att_' + window.pendingEmail];
-      delete auth['lock_' + window.pendingEmail];
-      auth['lastLogin_' + window.pendingEmail] = now;
-      if (window.saveAuth) window.saveAuth(auth);
-      if (window.completeLogin) window.completeLogin(window.pendingEmail);
-    });
   };
-
-  console.log('Password Supabase sync active');
+  console.log('Password Supabase sync (safe mode) active');
 });
+
 
 </script>
 </body>
