@@ -349,8 +349,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--canvas);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-
-/* ===== HR MODULE v2 — centered, 2-col, responsive ===== */
+/* ===== HR MODULE ===== */
 .hr-container{max-width:960px;margin:0 auto;width:100%;}
 .hr-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
 .hr-view-tabs{display:flex;gap:10px;}
@@ -358,8 +357,6 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 .hr-view-btn:hover{border-color:var(--brand);color:var(--brand);}
 .hr-view-btn.active{background:var(--brand);border-color:var(--brand);color:#fff;}
 .hr-view-btn.active-red{background:var(--red);border-color:var(--red);color:#fff;}
-
-/* Person list */
 .hr-list{display:flex;flex-direction:column;gap:10px;}
 .hr-person-row{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:box-shadow 0.15s,border-color 0.15s,transform 0.1s;}
 .hr-person-row:hover{box-shadow:var(--shadow-md);border-color:var(--brand);transform:translateY(-1px);}
@@ -377,34 +374,24 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 .hr-start-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
 .hr-start-date{font-size:13px;font-weight:700;color:var(--text-heading);}
 .hr-start-countdown{font-size:11px;font-weight:600;}
-
-/* Person card header */
 .hr-card-header{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow-sm);}
 .hr-card-header-inner{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
 .hr-card-avatar{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex-shrink:0;}
 .hr-card-name{font-size:22px;font-weight:800;color:var(--text-heading);margin-bottom:4px;}
 .hr-card-sub{font-size:14px;color:var(--text-muted);}
 .hr-card-badges{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto;}
-
-/* Stage grid — 2 columns */
 .hr-stages-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .hr-stage-full{grid-column:1/-1;}
 @media(max-width:700px){.hr-stages-grid{grid-template-columns:1fr;}.hr-stage-full{grid-column:1;}}
-
-/* Stage box */
 .hr-stage-box{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;}
 .hr-stage-header{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--canvas);border-bottom:1.5px solid var(--border);}
 .hr-stage-num{font-size:11px;font-weight:800;letter-spacing:0.5px;padding:4px 12px;border-radius:100px;white-space:nowrap;}
 .hr-stage-title{font-size:14px;font-weight:700;color:var(--text-heading);}
 .hr-stage-body{padding:16px 18px;flex:1;}
-
-/* Checklist rows */
 .hr-check-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
 .hr-check-row:last-child{border-bottom:none;}
 .hr-check-label{font-size:14px;flex:1;line-height:1.4;}
 .hr-check-date{font-size:11px;color:var(--text-muted);white-space:nowrap;margin-top:2px;}
-
-/* Field inputs */
 .hr-field-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
 .hr-field-label{font-size:12px;color:var(--text-muted);white-space:nowrap;font-weight:500;}
 .hr-field-input{flex:1;min-width:120px;border:1px solid var(--border-input);border-radius:6px;padding:6px 11px;font-size:13px;font-family:var(--font);outline:none;color:var(--text-heading);transition:border-color 0.15s;}
@@ -415,39 +402,22 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 .hr-open-link{color:var(--brand);font-size:12px;white-space:nowrap;font-weight:600;text-decoration:none;}
 .hr-open-link:hover{text-decoration:underline;}
 .hr-on-hold-banner{background:#F3F4F6;border-radius:8px;padding:10px 14px;font-size:13px;color:#6B7280;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-
-/* Score input */
 .hr-score-input{width:80px;border:2px solid;border-radius:10px;padding:8px 10px;font-size:22px;font-weight:800;font-family:var(--font);outline:none;text-align:center;}
-
-/* Activity log */
 .hr-log{margin-top:20px;border-top:1.5px solid var(--border);padding-top:18px;}
 .hr-log-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;}
 .hr-log-list{display:flex;flex-direction:column;gap:7px;max-height:220px;overflow-y:auto;}
 .hr-log-row{display:flex;gap:12px;font-size:13px;}
 .hr-log-time{color:var(--text-muted);white-space:nowrap;flex-shrink:0;font-size:12px;}
 .hr-log-text{color:var(--text-body);}
-
-/* Empty state */
 .hr-empty{text-align:center;padding:70px 20px;color:var(--text-muted);}
 .hr-empty i{font-size:48px;margin-bottom:16px;display:block;}
 .hr-empty h3{font-size:18px;font-weight:700;color:var(--text-heading);margin-bottom:8px;}
 .hr-empty p{font-size:14px;max-width:360px;margin:0 auto;}
-
-/* Back button area */
 .hr-back-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
-
-/* Modal */
 .hr-modal-inner{background:var(--white);border-radius:var(--radius-lg);padding:40px 36px;width:520px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.25);max-height:90vh;overflow-y:auto;}
 .hr-modal-title{font-size:20px;font-weight:800;color:var(--text-heading);margin-bottom:6px;}
 .hr-modal-sub{font-size:14px;color:var(--text-muted);margin-bottom:28px;}
-
-@media(max-width:600px){
-  .hr-person-row{flex-direction:column;align-items:flex-start;}
-  .hr-person-meta{justify-content:flex-start;}
-  .hr-card-header-inner{flex-direction:column;align-items:flex-start;}
-  .hr-card-badges{margin-left:0;}
-}
-
+@media(max-width:600px){.hr-person-row{flex-direction:column;align-items:flex-start;}.hr-person-meta{justify-content:flex-start;}.hr-card-header-inner{flex-direction:column;align-items:flex-start;}.hr-card-badges{margin-left:0;}}
 </style>
 </head>
 <body>
@@ -545,8 +515,13 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
         <button class="nav-item nav-alert" onclick="switchTab('security',this)" data-tab="security"><i class="fas fa-shield-alt"></i> Security <span class="nav-badge">3</span></button>
         <button class="nav-item" onclick="switchTab('tasks',this)" data-tab="tasks"><i class="fas fa-tasks"></i> Tasks <span class="nav-badge">3</span></button>
         <button class="nav-item" onclick="switchTab('resolved',this)" data-tab="resolved"><i class="fas fa-check-double"></i> Resolved <span class="nav-badge">32</span></button>
-        <button class="nav-item" onclick="switchToHR()" id="hr-nav-btn" data-tab="hr"><i class="fas fa-users"></i> HR <span class="nav-badge" style="background:rgba(22,163,74,0.15);color:#16A34A;">HR</span></button>
         <button class="nav-item" id="raw-nav-item" onclick="switchTab('raw',this)" data-tab="raw" style="display:none;"><i class="fas fa-terminal"></i> Raw Log <span class="nav-badge" style="background:rgba(217,119,6,0.2);color:#D97706;">8</span></button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">People</div>
+        <button class="nav-item" onclick="switchToHR()" id="hr-nav-btn" data-tab="hr">
+          <i class="fas fa-users"></i> HR <span class="nav-badge" style="background:rgba(22,163,74,0.15);color:#16A34A;">HR</span>
+        </button>
       </div>
       <div class="sidebar-section workload">
         <div class="sidebar-section-label">Team Workload</div>
@@ -570,7 +545,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
       <div class="topbar">
         <div class="topbar-breadcrumb">System Health Portal &rsaquo; <span id="topbar-section">All Issues</span></div>
         <div class="topbar-right">
-          <div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 3 Jul 2026, 13:00 UK</span></div>
+          <div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 9 Jul 2026, 15:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -605,36 +580,35 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
-  {id:"COST-ERR-001",title:"AI Provider Spend — Anthropic, OpenAI, Twilio Auto-Recharging (occ=102+)",priority:"p1",status:"stuck",tab:"platform",tags:["escalated"],mondayId:"2959516292",system:"Platform / Billing",responsible:"Shahzeb / Meezab",dateFirst:"2 Jun 2026",dateLast:"3 Jul 2026",daysOpen:"31",whatItDoes:"Anthropic, OpenAI, and Twilio auto-recharging at high frequency. occ=102+. Twilio at 256+ recharges total.",howItHappens:"Receipts via hello@. Anthropic 96+ cycles. OpenAI 50+ degraded cycles. Twilio 256+ recharges.",relatedIds:["TWILIO-DEGRADE-001","OPENAI-DEGRADE-001"],context:"Per-seat billing is live (Jun 18). Cost visibility improving but spend still very high.",occurrences:[{n:"#1-102+",when:"2 Jun - 3 Jul 2026",what:"Steady billing events across all providers."}]},
-  {id:"ESCALATION-001",title:"Engineering Escalation — No Response Day 62+",priority:"p1",status:"stuck",tab:"platform",tags:["escalated","silent"],mondayId:"2959517814",system:"Platform / Process",responsible:"Shahzeb / Habib",dateFirst:"29 May 2026",dateLast:"3 Jul 2026",daysOpen:"35",whatItDoes:"#system-health-hq has been silent for 62+ days. Engineers (Shahzeb, Habib) have not responded to any escalations. occ=99+.",howItHappens:"Brunno has been posting issues and chasing engineers since May 29. Zero substantive responses.",relatedIds:[],context:"Day 62+. occ=99+. Aalok and Nikhil are aware. Engineers are active in #aios-dev but not responding to system health escalations.",occurrences:[{n:"Day 62+",when:"29 May - 3 Jul 2026",what:"Zero engineer responses to system health escalations."}]},
-  {id:"OPS-SILENT-001",title:"Grafana Ops Monitor — Stalling (occ=67+)",priority:"p1",status:"stuck",tab:"platform",tags:["silent"],mondayId:"2960764584",system:"Platform / Monitoring",responsible:"Habib",dateFirst:"11 Jun 2026",dateLast:"3 Jul 2026",daysOpen:"22",whatItDoes:"Grafana Ops Monitor stalling. occ=67+. Mixed results — some runs launch and reach dashboard, others QUEUED-never-start.",howItHappens:"Agent either gets QUEUED-never-start or stalls during dashboard/org-dropdown navigation.",relatedIds:["GRAFANA-ALERT-003"],context:"Some positive runs reaching dashboard and per-org sweep. OpenAI MINOR confirmed FIRING 26h+ at Jul 2 sweep. Twilio MINOR 75% confirmed.",occurrences:[{n:"occ 1-28",when:"11-17 Jun 2026",what:"28 consecutive stalls."},{n:"Streak broken",when:"16-19 Jun 2026",what:"4 consecutive successful days."},{n:"occ=67+",when:"20 Jun - 3 Jul 2026",what:"Mixed stalls and partial data. OpenAI MINOR confirmed FIRING 26h+."}]},
-  {id:"OPENAI-DEGRADE-001",title:"OpenAI Provider Degraded — Recurring Cycles (occ=50+)",priority:"p2",status:"working",tab:"platform",tags:[],mondayId:"2948782972",system:"Platform / OpenAI",responsible:"Engineering",dateFirst:"26 May 2026",dateLast:"3 Jul 2026",daysOpen:"38",whatItDoes:"OpenAI WARNING cycles recurring. occ=50+. CONFIRMED FIRING 26h+ at Jul 2 12pm sweep. STILL OPEN.",howItHappens:"Recurring degraded cycles. Some self-resolve, some persist 26h+.",relatedIds:["COST-ERR-001"],context:"CONFIRMED FIRING 1d 2h+ at Jul 2 12pm sweep. OpenAI at 73.9% uptime. Monitor for resolution.",occurrences:[{n:"#1-50+",when:"26 May - 3 Jul 2026",what:"50+ cycles. FIRING 26h+ at Jul 2. All previous cycles self-resolved."}]},
-  {id:"TWILIO-DEGRADE-001",title:"Twilio Auto-Recharge — 256+ Occurrences",priority:"p2",status:"stuck",tab:"platform",tags:[],mondayId:"2960889703",system:"Twilio / SMS",responsible:"Meezab",dateFirst:"2 Jun 2026",dateLast:"3 Jul 2026",daysOpen:"31",whatItDoes:"Twilio auto-recharge at 256+ total occurrences. 75% uptime confirmed via Grafana.",howItHappens:"Recharge notifications via hello@. Pattern: 4-9 recharges per day.",relatedIds:["COST-ERR-001"],context:"occ=256+. CONFIRMED MINOR 75% via Grafana Jul 1-2. Root cause of high usage still under investigation.",occurrences:[{n:"#1-256+",when:"2 Jun - 3 Jul 2026",what:"Steady recharging pattern. 75% uptime confirmed Grafana."}]},
-  {id:"AIRTABLE-AUTO-001",title:"Airtable Automation Failing — C4 Logistics (occ=4)",priority:"p2",status:"working",tab:"integrations",tags:[],mondayId:"",system:"Integrations / Airtable",responsible:"Engineering",dateFirst:"26 Jun 2026",dateLast:"3 Jul 2026",daysOpen:"7",whatItDoes:"Send to AIOS v1.1 automation failing in C4 Logistics. 26+ failures on Jul 1 in 3 batches. Client-facing impact.",howItHappens:"Airtable automation errors via hello@. Multiple failure batches per day.",relatedIds:[],context:"occ=4. Client automation down. C4 Logistics affected. Engineering to investigate.",occurrences:[{n:"#1-4",when:"26 Jun - 3 Jul 2026",what:"26+ failures Jul 1. Client-facing impact."}]},
-  {id:"AIOS-TRIGGER-001",title:"AIOS Trigger Scheduling — Queue Management Fix In Progress",priority:"p2",status:"working",tab:"tasks",tags:[],mondayId:"3000506194",system:"Platform / AIOS",responsible:"Faisal / Shahzeb",dateFirst:"15 Jun 2026",dateLast:"3 Jul 2026",daysOpen:"18",whatItDoes:"Users cannot schedule triggers on AIOS. occ=3. U08SA75R5DX reported cannot enable trigger on public integration Jul 2.",howItHappens:"Queue management improvements in Shahzeb task list. 22 replies in thread Jul 2.",relatedIds:["REPORT-DUPE-001"],context:"occ=3. Active thread Jul 2 with 22 replies. Queue management fix in progress.",occurrences:[{n:"#1-3",when:"15 Jun - 3 Jul 2026",what:"Cannot schedule trigger. Active thread Jul 2 22 replies."}]},
-  {id:"INTG-DISCONNECT-001",title:"Integration Disconnect Bug — Staging Still Affected",priority:"p2",status:"working",tab:"integrations",tags:[],mondayId:"3005182996",system:"Integrations / AIOS",responsible:"Faisal",dateFirst:"17 Jun 2026",dateLast:"3 Jul 2026",daysOpen:"16",whatItDoes:"Cannot disconnect Outlook, Gmail, or Google Drive from a sales agent. Aalok still hitting it Jul 2 on staging.",howItHappens:"Aalok reported staging shows Pipedrive disconnected but IS connected. 16 replies in thread Jul 2.",relatedIds:[],context:"Faisal new build Jun 18 may have partially fixed. Aalok still hitting staging issues Jul 2.",occurrences:[{n:"#1",when:"17 Jun 2026",what:"Aalok: cannot remove Outlook/Gmail/Drive."},{n:"Update",when:"2 Jul 2026",what:"Aalok: Pipedrive shows disconnected on staging but IS connected. 16 replies."}]},
-  {id:"SUPABASE-PITR-001",title:"Supabase IAI-Charis — 1.7M Requests, No PITR (Silent Failure)",priority:"p2",status:"working",tab:"database",tags:["silent"],mondayId:"3042548553",system:"Database / Supabase",responsible:"Shahzeb",dateFirst:"2 Jul 2026",dateLast:"3 Jul 2026",daysOpen:"1",whatItDoes:"IAI-Charis Supabase project processing 1.7M requests/month with NO Point-in-Time Recovery enabled. Silent failure — data loss risk.",howItHappens:"Supabase invoice #DAYOKT-00022 $138.71 received Jul 3. PITR not enabled on high-traffic project.",relatedIds:[],context:"Silent failure. 1.7M req/month without PITR = data loss risk if database corrupted. Shahzeb to enable PITR immediately.",occurrences:[{n:"#1",when:"2 Jul 2026",what:"Discovered via Supabase invoice. 1.7M req/month, no PITR."}]},
-  {id:"REPORT-DUPE-001",title:"Scheduled Reports Firing Twice",priority:"p2",status:"working",tab:"tasks",tags:[],mondayId:"3007032374",system:"Platform / AIOS",responsible:"Faisal / Shahzeb",dateFirst:"17 Jun 2026",dateLast:"3 Jul 2026",daysOpen:"16",whatItDoes:"Scheduled reports on Command firing twice in a row. Aalok questioning frontend ticket backlog (102 open, 6 closed in 3 months).",howItHappens:"Queue management issues. Aalok active Jul 1 demanding due-date visibility on 102 open tickets.",relatedIds:["AIOS-TRIGGER-001"],context:"Related to queue management. Aalok demanding accountability on frontend backlog Jul 1.",occurrences:[{n:"#1-2",when:"17 Jun - 3 Jul 2026",what:"Reports firing twice. Frontend backlog 102 open tickets."}]},
-  {id:"MAKE-CRED-001",title:"Make.com Credits — n8n Migration Directive Active (occ=12)",priority:"p2",status:"stuck",tab:"integrations",tags:[],mondayId:"2948692619",system:"Integrations / Make.com",responsible:"Shahzeb / Team",dateFirst:"28 May 2026",dateLast:"3 Jul 2026",daysOpen:"36",whatItDoes:"Make.com credits keep exhausting. 12 auto-purchases. Shahzeb directive: use n8n instead of Make.",howItHappens:"Make auto-purchases 10k credits each time. Celonis/Make receipt #2870-3097 received Jul 2.",relatedIds:[],context:"occ=12. Directive clear: migrate to n8n. 12th auto-purchase Jul 2.",occurrences:[{n:"#1-12",when:"May-Jul 2026",what:"12 auto-purchases. n8n migration directive issued Jun 17."}]},
-  {id:"INTG-EXPIRY-001",title:"Integration Expiries — Outlook/Gmail/OneDrive Recurring",priority:"p2",status:"working",tab:"integrations",tags:[],mondayId:"2948695715",system:"Integrations / Microsoft",responsible:"Engineering",dateFirst:"28 May 2026",dateLast:"3 Jul 2026",daysOpen:"36",whatItDoes:"Outlook, Gmail, OneDrive connections expiring repeatedly. Reported via #aios-bot. Affects agent functionality.",howItHappens:"OAuth tokens expiring. Multiple expiries per week via #aios-bot notifications.",relatedIds:[],context:"Recurring. Outlook expired Jul 1 10:18+15:36 UTC. OneDrive expired Jul 1 15:49 UTC. Shahzeb process: only Meezab to add/deduct credits.",occurrences:[{n:"Recurring",when:"May-Jul 2026",what:"Multiple OAuth expiries per week. Jul 1: Outlook x2, OneDrive."}]},
-  {id:"SUPPORT-TASK-009",title:"AI Agent Closes Active Tickets — Tickets #290 and #291",priority:"p2",status:"working",tab:"tasks",tags:[],mondayId:"3042577962",system:"Platform / Support",responsible:"Abdullah",dateFirst:"2 Jul 2026",dateLast:"3 Jul 2026",daysOpen:"1",whatItDoes:"AI Agent accidentally closing active Zendesk tickets. Ticket #290 High priority, Ticket #291 solved same day.",howItHappens:"Tickets #290 and #291 both filed Jul 2 08:14-08:16 UTC. #291 solved 09:40 UTC.",relatedIds:[],context:"occ=2. #291 solved same session. #290 still open. Investigate why agent is closing active tickets.",occurrences:[{n:"#1-2",when:"2 Jul 2026",what:"Tickets #290 and #291. Agent closing active tickets."}]},
-  {id:"ANTHROPIC-DEGRADE-002",title:"Anthropic Provider Degraded — 96+ Cycles",priority:"p2",status:"working",tab:"platform",tags:[],mondayId:"2973437403",system:"Platform / Anthropic",responsible:"Engineering",dateFirst:"6 Jun 2026",dateLast:"3 Jul 2026",daysOpen:"27",whatItDoes:"Anthropic provider degraded repeatedly. 96+ total cycles. All self-resolved. New cycle Jul 2 00:55-01:55 UTC.",howItHappens:"Recurring WARNING alerts in #aios-alerts. All self-resolving.",relatedIds:["COST-ERR-001"],context:"occ=96+. All self-resolving. Stable at 100% between cycles. Latest cycle Jul 2 resolved 01:55 UTC.",occurrences:[{n:"#1-96+",when:"6 Jun - 3 Jul 2026",what:"96+ cycles, all self-resolving."}]},
+  {id:"COST-ERR-001",title:"AI Provider Spend — Anthropic, OpenAI, Twilio Auto-Recharging (occ=110+)",priority:"p1",status:"stuck",tab:"platform",tags:["escalated"],mondayId:"2959516292",system:"Platform / Billing",responsible:"Shahzeb / Meezab",dateFirst:"2 Jun 2026",dateLast:"9 Jul 2026",daysOpen:"37",whatItDoes:"Anthropic, OpenAI, and Twilio auto-recharging at high frequency. occ=110+. Twilio at 260+ recharges total.",howItHappens:"Receipts via hello@. Anthropic 100+ cycles. OpenAI 55+ degraded cycles. Twilio 260+ recharges.",relatedIds:["TWILIO-DEGRADE-001","OPENAI-DEGRADE-001"],context:"Per-seat billing live since Jun 18. Cost visibility improving but spend still very high.",occurrences:[{n:"#1-110+",when:"2 Jun - 9 Jul 2026",what:"Steady billing events across all providers."}]},
+  {id:"ESCALATION-001",title:"Engineering Escalation — No Response Day 68+",priority:"p1",status:"stuck",tab:"platform",tags:["escalated","silent"],mondayId:"2959517814",system:"Platform / Process",responsible:"Shahzeb / Habib",dateFirst:"29 May 2026",dateLast:"9 Jul 2026",daysOpen:"41",whatItDoes:"#system-health-hq has been silent for 68+ days. Engineers have not responded to any escalations. occ=105+.",howItHappens:"Brunno has been posting issues and chasing engineers since May 29. Zero substantive responses.",relatedIds:[],context:"Day 68+. occ=105+. Aalok and Nikhil are aware. Engineers are active in #aios-dev but not responding to system health escalations.",occurrences:[{n:"Day 68+",when:"29 May - 9 Jul 2026",what:"Zero engineer responses to system health escalations."}]},
+  {id:"OPS-SILENT-001",title:"Grafana Ops Monitor — Stalling (occ=70+)",priority:"p1",status:"stuck",tab:"platform",tags:["silent"],mondayId:"2960764584",system:"Platform / Monitoring",responsible:"Habib",dateFirst:"11 Jun 2026",dateLast:"9 Jul 2026",daysOpen:"28",whatItDoes:"Grafana Ops Monitor stalling. occ=70+. Mixed results — some runs launch and reach dashboard, others QUEUED-never-start.",howItHappens:"Agent either gets QUEUED-never-start or stalls during dashboard/org-dropdown navigation.",relatedIds:["GRAFANA-ALERT-003"],context:"Some positive runs reaching dashboard. OpenAI MINOR confirmed FIRING multiple days.",occurrences:[{n:"occ 1-28",when:"11-17 Jun 2026",what:"28 consecutive stalls."},{n:"Streak broken",when:"16-19 Jun 2026",what:"4 consecutive successful days."},{n:"occ=70+",when:"20 Jun - 9 Jul 2026",what:"Mixed stalls and partial data."}]},
+  {id:"OPENAI-DEGRADE-001",title:"OpenAI Provider Degraded — Recurring Cycles (occ=55+)",priority:"p2",status:"working",tab:"platform",tags:[],mondayId:"2948782972",system:"Platform / OpenAI",responsible:"Engineering",dateFirst:"26 May 2026",dateLast:"9 Jul 2026",daysOpen:"44",whatItDoes:"OpenAI WARNING cycles recurring. occ=55+. Extended firing periods confirmed via Grafana.",howItHappens:"Recurring degraded cycles. Some self-resolve, some persist 26h+.",relatedIds:["COST-ERR-001"],context:"occ=55+. Extended firing periods. All previous cycles eventually self-resolved.",occurrences:[{n:"#1-55+",when:"26 May - 9 Jul 2026",what:"55+ cycles. Extended firing periods confirmed."}]},
+  {id:"TWILIO-DEGRADE-001",title:"Twilio Auto-Recharge — 260+ Occurrences",priority:"p2",status:"stuck",tab:"platform",tags:[],mondayId:"2960889703",system:"Twilio / SMS",responsible:"Meezab",dateFirst:"2 Jun 2026",dateLast:"9 Jul 2026",daysOpen:"37",whatItDoes:"Twilio auto-recharge at 260+ total occurrences. 75% uptime confirmed via Grafana.",howItHappens:"Recharge notifications via hello@. Pattern: 4-9 recharges per day.",relatedIds:["COST-ERR-001"],context:"occ=260+. CONFIRMED MINOR 75% via Grafana. Root cause of high usage still under investigation.",occurrences:[{n:"#1-260+",when:"2 Jun - 9 Jul 2026",what:"Steady recharging pattern. 75% uptime confirmed Grafana."}]},
+  {id:"AIRTABLE-AUTO-001",title:"Airtable Automation Failing — C4 Logistics (occ=5+)",priority:"p2",status:"working",tab:"integrations",tags:[],mondayId:"",system:"Integrations / Airtable",responsible:"Engineering",dateFirst:"26 Jun 2026",dateLast:"9 Jul 2026",daysOpen:"13",whatItDoes:"Send to AIOS v1.1 automation failing in C4 Logistics. 26+ failures on Jul 1 in 3 batches. Client-facing impact.",howItHappens:"Airtable automation errors via hello@. Multiple failure batches per day.",relatedIds:[],context:"occ=5+. Client automation down. C4 Logistics affected. Engineering to investigate.",occurrences:[{n:"#1-5+",when:"26 Jun - 9 Jul 2026",what:"26+ failures Jul 1. Client-facing impact."}]},
+  {id:"AIOS-TRIGGER-001",title:"AIOS Trigger Scheduling — Queue Management Fix In Progress",priority:"p2",status:"working",tab:"tasks",tags:[],mondayId:"3000506194",system:"Platform / AIOS",responsible:"Faisal / Shahzeb",dateFirst:"15 Jun 2026",dateLast:"9 Jul 2026",daysOpen:"24",whatItDoes:"Users cannot schedule triggers on AIOS. occ=3+. Queue management fix in progress.",howItHappens:"Queue management improvements in Shahzeb task list.",relatedIds:["REPORT-DUPE-001"],context:"occ=3+. Queue management fix in progress. Monitor GitHub #521.",occurrences:[{n:"#1-3+",when:"15 Jun - 9 Jul 2026",what:"Cannot schedule trigger. Queue management fix in progress."}]},
+  {id:"INTG-DISCONNECT-001",title:"Integration Disconnect Bug — Staging Still Affected",priority:"p2",status:"working",tab:"integrations",tags:[],mondayId:"3005182996",system:"Integrations / AIOS",responsible:"Faisal",dateFirst:"17 Jun 2026",dateLast:"9 Jul 2026",daysOpen:"22",whatItDoes:"Cannot disconnect Outlook, Gmail, or Google Drive from a sales agent on staging.",howItHappens:"Aalok still hitting staging issues as of Jul 2.",relatedIds:[],context:"Faisal new build Jun 18 may have partially fixed. Staging still affected.",occurrences:[{n:"#1",when:"17 Jun 2026",what:"Aalok: cannot remove Outlook/Gmail/Drive."},{n:"Update",when:"2 Jul 2026",what:"Aalok: Pipedrive shows disconnected on staging but IS connected."}]},
+  {id:"SUPABASE-PITR-001",title:"Supabase IAI-Charis — 1.7M Requests, No PITR (Silent Failure)",priority:"p2",status:"working",tab:"database",tags:["silent"],mondayId:"3042548553",system:"Database / Supabase",responsible:"Shahzeb",dateFirst:"2 Jul 2026",dateLast:"9 Jul 2026",daysOpen:"7",whatItDoes:"IAI-Charis Supabase project processing 1.7M requests/month with NO Point-in-Time Recovery enabled. Data loss risk.",howItHappens:"Discovered via Supabase invoice. PITR not enabled on high-traffic project.",relatedIds:[],context:"Silent failure. 1.7M req/month without PITR = data loss risk. Shahzeb to enable PITR immediately.",occurrences:[{n:"#1",when:"2 Jul 2026",what:"Discovered via Supabase invoice. 1.7M req/month, no PITR."}]},
+  {id:"REPORT-DUPE-001",title:"Scheduled Reports Firing Twice",priority:"p2",status:"working",tab:"tasks",tags:[],mondayId:"3007032374",system:"Platform / AIOS",responsible:"Faisal / Shahzeb",dateFirst:"17 Jun 2026",dateLast:"9 Jul 2026",daysOpen:"22",whatItDoes:"Scheduled reports on Command firing twice in a row. Frontend backlog 102 open tickets.",howItHappens:"Queue management issues. Aalok demanding accountability on frontend backlog.",relatedIds:["AIOS-TRIGGER-001"],context:"Related to queue management. Aalok demanding accountability on frontend backlog Jul 1.",occurrences:[{n:"#1-2",when:"17 Jun - 9 Jul 2026",what:"Reports firing twice. Frontend backlog 102 open tickets."}]},
+  {id:"MAKE-CRED-001",title:"Make.com Credits — n8n Migration Directive Active (occ=12+)",priority:"p2",status:"stuck",tab:"integrations",tags:[],mondayId:"2948692619",system:"Integrations / Make.com",responsible:"Shahzeb / Team",dateFirst:"28 May 2026",dateLast:"9 Jul 2026",daysOpen:"42",whatItDoes:"Make.com credits keep exhausting. 12+ auto-purchases. Shahzeb directive: use n8n instead of Make.",howItHappens:"Make auto-purchases 10k credits each time.",relatedIds:[],context:"occ=12+. Directive clear: migrate to n8n.",occurrences:[{n:"#1-12+",when:"May-Jul 2026",what:"12+ auto-purchases. n8n migration directive issued Jun 17."}]},
+  {id:"INTG-EXPIRY-001",title:"Integration Expiries — Outlook/Gmail/OneDrive Recurring",priority:"p2",status:"working",tab:"integrations",tags:[],mondayId:"2948695715",system:"Integrations / Microsoft",responsible:"Engineering",dateFirst:"28 May 2026",dateLast:"9 Jul 2026",daysOpen:"42",whatItDoes:"Outlook, Gmail, OneDrive connections expiring repeatedly. Affects agent functionality.",howItHappens:"OAuth tokens expiring. Multiple expiries per week via #aios-bot notifications.",relatedIds:[],context:"Recurring. Multiple OAuth expiries per week.",occurrences:[{n:"Recurring",when:"May-Jul 2026",what:"Multiple OAuth expiries per week."}]},
+  {id:"SUPPORT-TASK-009",title:"AI Agent Closes Active Tickets — Zendesk",priority:"p2",status:"working",tab:"tasks",tags:[],mondayId:"3042577962",system:"Platform / Support",responsible:"Abdullah",dateFirst:"2 Jul 2026",dateLast:"9 Jul 2026",daysOpen:"7",whatItDoes:"AI Agent accidentally closing active Zendesk tickets.",howItHappens:"Tickets #290 and #291 both filed Jul 2. #291 solved same day.",relatedIds:[],context:"occ=2. #291 solved same session. #290 still open.",occurrences:[{n:"#1-2",when:"2 Jul 2026",what:"Tickets #290 and #291. Agent closing active tickets."}]},
+  {id:"ANTHROPIC-DEGRADE-002",title:"Anthropic Provider Degraded — 100+ Cycles",priority:"p2",status:"working",tab:"platform",tags:[],mondayId:"2973437403",system:"Platform / Anthropic",responsible:"Engineering",dateFirst:"6 Jun 2026",dateLast:"9 Jul 2026",daysOpen:"33",whatItDoes:"Anthropic provider degraded repeatedly. 100+ total cycles. All self-resolved.",howItHappens:"Recurring WARNING alerts in #aios-alerts. All self-resolving.",relatedIds:["COST-ERR-001"],context:"occ=100+. All self-resolving. Stable at 100% between cycles.",occurrences:[{n:"#1-100+",when:"6 Jun - 9 Jul 2026",what:"100+ cycles, all self-resolving."}]},
   {id:"ALERT-PIPELINE-001",title:"Grafana-to-Slack Alert Webhook — Fixed Jun 21",priority:"p2",status:"resolved",tab:"platform",tags:[],mondayId:"",system:"Platform / Monitoring",responsible:"Habib",dateFirst:"20 Jun 2026",dateLast:"21 Jun 2026",daysOpen:"1",dateResolved:"21 Jun 2026",rootCause:"Grafana-to-Slack webhook was silent.",fixApplied:"Habib confirmed webhook working Jun 21.",resolvedBy:"Habib",whatItDoes:"Grafana alert webhook to Slack was silent.",howItHappens:"Webhook misconfiguration. Habib investigated and fixed.",relatedIds:["OPS-SILENT-001"],context:"Fixed Jun 21.",occurrences:[{n:"RESOLVED",when:"21 Jun 2026",what:"Habib confirmed webhook working."}]},
   {id:"BILLING-LIVE-001",title:"Per-Seat Billing — LIVE on Production",priority:"p3",status:"resolved",tab:"platform",tags:[],mondayId:"3010983767",system:"Platform / Billing",responsible:"Faisal",dateFirst:"18 Jun 2026",dateLast:"19 Jun 2026",daysOpen:"0",dateResolved:"18 Jun 2026",rootCause:"N/A — feature release",fixApplied:"Per-seat billing shipped to production Jun 18.",resolvedBy:"Faisal",whatItDoes:"Per-seat billing is now live on production.",howItHappens:"Faisal shipped Jun 18. Team tested Jun 19.",relatedIds:["COST-ERR-001"],context:"POSITIVE MILESTONE.",occurrences:[{n:"SHIPPED",when:"18 Jun 2026",what:"Per-seat billing live."}]},
   {id:"VAPI-VOICE-001",title:"VAPI Voices Not Working — Fixed Jun 3",priority:"p2",status:"resolved",tab:"voice",tags:[],mondayId:"2961041749",system:"VAPI / Voice",responsible:"Engineering",dateFirst:"2 Jun 2026",dateLast:"3 Jun 2026",daysOpen:"1",dateResolved:"3 Jun 2026",rootCause:"ElevenLabs changed the voice ID.",fixApplied:"Team found the correct new voice ID and updated configuration.",resolvedBy:"Engineering",whatItDoes:"VAPI voices not working due to ElevenLabs voice ID mismatch.",howItHappens:"ElevenLabs changed their voice ID.",relatedIds:[],context:"Resolved Jun 3.",occurrences:[{n:"RESOLVED",when:"3 Jun 2026",what:"Correct voice ID found and updated."}]},
   {id:"SEC-BREACH-001",title:"HeyGen Account Security Breach — Resolved May 26",priority:"p1",status:"resolved",tab:"security",tags:[],mondayId:"2948700211",system:"Security / HeyGen",responsible:"Brunno",dateFirst:"21 May 2026",dateLast:"26 May 2026",daysOpen:"5",dateResolved:"26 May 2026",rootCause:"6 unauthorized users added to HeyGen account.",fixApplied:"Users deleted, sessions ended, MFA enabled.",resolvedBy:"Brunno",whatItDoes:"6 unauthorized users added to HeyGen account.",howItHappens:"Unauthorized access detected.",relatedIds:[],context:"Resolved May 26.",occurrences:[{n:"RESOLVED",when:"26 May 2026",what:"Unauthorized users deleted. MFA added."}]}
 ];
-</script>
-<script>
+
 const GOD_MODE_CONFIGS = {
-  all:{title:"All Issues — System Health Overview",subtitle:"3 July 2026 | Portal v3 | Supabase Connected | 155+ Monday board items | POSITIVE: Per-seat billing LIVE. Grafana webhook fixed. Portal now live at system.implementai.net",stats:[{cls:"red",icon:"fa-fire",val:"3",label:"P1 Critical Open",sub:"COST, ESCALATION, OPS-SILENT"},{cls:"amber",icon:"fa-exclamation",val:"11",label:"P2 Significant Open",sub:"Active issues"},{cls:"grey",icon:"fa-info-circle",val:"1",label:"P3 Low Open",sub:"Monitor"},{cls:"green",icon:"fa-check-circle",val:"32+",label:"Resolved",sub:"Since May 2026"},{cls:"brand",icon:"fa-robot",val:"250+",label:"Alerts Self-Resolved",sub:"Provider alerts since May"},{cls:"blue",icon:"fa-database",val:"LIVE",label:"Supabase Connected",sub:"Real-time sync active"}],statusItems:[{dot:"red",label:"OPENAI-DEGRADE-001 — FIRING 26h+ confirmed Jul 2 (occ=50+)"},{dot:"red",label:"ESCALATION-001 — Day 62+, zero engineer response, occ=99+"},{dot:"amber",label:"OPS-SILENT-001 occ=67+ — mixed stalls and partial data"},{dot:"amber",label:"AIRTABLE-AUTO-001 — C4 Logistics client automation down (occ=4)"},{dot:"green",label:"Per-seat billing LIVE (Faisal Jun 18)"},{dot:"green",label:"Portal v3 LIVE at system.implementai.net — Supabase connected"}]},
+  all:{title:"All Issues — System Health Overview",subtitle:"9 July 2026 | Portal v3 | Supabase Connected | HR Module Live | system.implementai.net",stats:[{cls:"red",icon:"fa-fire",val:"3",label:"P1 Critical Open",sub:"COST, ESCALATION, OPS-SILENT"},{cls:"amber",icon:"fa-exclamation",val:"11",label:"P2 Significant Open",sub:"Active issues"},{cls:"grey",icon:"fa-info-circle",val:"1",label:"P3 Low Open",sub:"Monitor"},{cls:"green",icon:"fa-check-circle",val:"32+",label:"Resolved",sub:"Since May 2026"},{cls:"brand",icon:"fa-robot",val:"260+",label:"Alerts Self-Resolved",sub:"Provider alerts since May"},{cls:"blue",icon:"fa-database",val:"LIVE",label:"Supabase + HR",sub:"Real-time sync active"}],statusItems:[{dot:"red",label:"ESCALATION-001 — Day 68+, zero engineer response, occ=105+"},{dot:"red",label:"OPS-SILENT-001 occ=70+ — Grafana stalling"},{dot:"amber",label:"OPENAI-DEGRADE-001 occ=55+ — recurring cycles"},{dot:"amber",label:"AIRTABLE-AUTO-001 — C4 Logistics client automation down"},{dot:"green",label:"Portal v3 LIVE at system.implementai.net — Supabase + HR connected"},{dot:"green",label:"Per-seat billing LIVE (Faisal Jun 18)"}]},
   voice:{title:"Voice — VAPI & ElevenLabs",subtitle:"VAPI concurrency upgraded to 50 lines. Voice IDs fixed. Monitor capacity.",stats:[{cls:"green",icon:"fa-check-circle",val:"2",label:"Resolved",sub:"VAPI-CONC, VAPI-VOICE"},{cls:"amber",icon:"fa-phone",val:"50",label:"VAPI Lines",sub:"Monitor as billing drives volume"},{cls:"green",icon:"fa-queue",val:"ON",label:"Call Queuing",sub:"Queues vs rejects"},{cls:"amber",icon:"fa-exclamation",val:"1",label:"Watch",sub:"Capacity may need upgrade"}],statusItems:[{dot:"green",label:"VAPI-VOICE-001 resolved — ElevenLabs voice ID fixed Jun 3"},{dot:"amber",label:"Monitor capacity — per-seat billing driving more call volume"}]},
-  database:{title:"Database & Infrastructure",subtitle:"Supabase PITR not enabled on IAI-Charis (1.7M req/month). Grafana webhook fixed. Ops Monitor mixed results.",stats:[{cls:"red",icon:"fa-database",val:"1",label:"Critical DB Issue",sub:"SUPABASE-PITR-001 — no backup"},{cls:"amber",icon:"fa-chart-line",val:"67+",label:"Grafana Stalls",sub:"Mixed stalls and partial data"},{cls:"green",icon:"fa-check",val:"1",label:"Webhook Fixed",sub:"Grafana-to-Slack (Habib Jun 21)"},{cls:"green",icon:"fa-database",val:"LIVE",label:"Portal Supabase",sub:"system-health-portal connected"}],statusItems:[{dot:"red",label:"SUPABASE-PITR-001 — IAI-Charis 1.7M req/month with NO PITR enabled (data loss risk)"},{dot:"amber",label:"OPS-SILENT-001 occ=67+ — mixed stalls and partial data"},{dot:"green",label:"ALERT-PIPELINE-001 resolved — Grafana-to-Slack webhook confirmed working"}]},
-  integrations:{title:"Integrations — Make, Airtable, Outlook",subtitle:"Airtable C4 Logistics automation down. Integration expiries recurring. n8n migration directive active.",stats:[{cls:"red",icon:"fa-plug",val:"3",label:"Open Integration Issues",sub:"AIRTABLE, MAKE, INTG-EXPIRY"},{cls:"amber",icon:"fa-exclamation",val:"12",label:"Make Auto-Purchases",sub:"n8n migration directive issued"},{cls:"amber",icon:"fa-clock",val:"36+",label:"Days",sub:"INTG-EXPIRY recurring"},{cls:"amber",icon:"fa-robot",val:"26+",label:"Airtable Failures",sub:"C4 Logistics Jul 1"}],statusItems:[{dot:"red",label:"AIRTABLE-AUTO-001 — C4 Logistics client automation down, 26+ failures Jul 1"},{dot:"amber",label:"MAKE-CRED-001 — 12th auto-purchase Jul 2, n8n migration directive active"},{dot:"amber",label:"INTG-EXPIRY-001 — Outlook/Gmail/OneDrive expiring repeatedly"},{dot:"amber",label:"INTG-DISCONNECT-001 — staging disconnect bug, Aalok hitting it Jul 2"}]},
-  platform:{title:"Platform — AIOS, Billing, OpenAI",subtitle:"OpenAI FIRING 26h+. Per-seat billing LIVE. Frontend backlog 102 open tickets. Aalok demanding accountability.",stats:[{cls:"red",icon:"fa-fire",val:"3",label:"P1 Platform Issues",sub:"COST, ESCALATION, OPS-SILENT"},{cls:"amber",icon:"fa-exclamation",val:"7",label:"P2 Platform Issues",sub:"OpenAI, Twilio, Anthropic, etc."},{cls:"green",icon:"fa-rocket",val:"LIVE",label:"Per-Seat Billing",sub:"Shipped Jun 18 by Faisal"},{cls:"red",icon:"fa-clock",val:"102",label:"Frontend Tickets Open",sub:"Only 6 closed in 3 months"}],statusItems:[{dot:"red",label:"OPENAI-DEGRADE-001 — FIRING 26h+ confirmed Jul 2 (occ=50+)"},{dot:"red",label:"ESCALATION-001 — Day 62+, zero engineer response"},{dot:"amber",label:"TWILIO-DEGRADE-001 occ=256+ — 75% uptime confirmed Grafana"},{dot:"amber",label:"ANTHROPIC-DEGRADE-002 occ=96+ — all self-resolving"},{dot:"green",label:"BILLING-LIVE-001 — per-seat billing LIVE"},{dot:"amber",label:"Frontend backlog: 102 open tickets, 6 closed in 3 months (Aalok escalating)"}]},
+  database:{title:"Database & Infrastructure",subtitle:"Supabase PITR not enabled on IAI-Charis (1.7M req/month). Grafana webhook fixed. Ops Monitor mixed results.",stats:[{cls:"red",icon:"fa-database",val:"1",label:"Critical DB Issue",sub:"SUPABASE-PITR-001 — no backup"},{cls:"amber",icon:"fa-chart-line",val:"70+",label:"Grafana Stalls",sub:"Mixed stalls and partial data"},{cls:"green",icon:"fa-check",val:"1",label:"Webhook Fixed",sub:"Grafana-to-Slack (Habib Jun 21)"},{cls:"green",icon:"fa-database",val:"LIVE",label:"Portal Supabase",sub:"system-health-portal connected"}],statusItems:[{dot:"red",label:"SUPABASE-PITR-001 — IAI-Charis 1.7M req/month with NO PITR enabled (data loss risk)"},{dot:"amber",label:"OPS-SILENT-001 occ=70+ — mixed stalls and partial data"},{dot:"green",label:"ALERT-PIPELINE-001 resolved — Grafana-to-Slack webhook confirmed working"}]},
+  integrations:{title:"Integrations — Make, Airtable, Outlook",subtitle:"Airtable C4 Logistics automation down. Integration expiries recurring. n8n migration directive active.",stats:[{cls:"red",icon:"fa-plug",val:"3",label:"Open Integration Issues",sub:"AIRTABLE, MAKE, INTG-EXPIRY"},{cls:"amber",icon:"fa-exclamation",val:"12+",label:"Make Auto-Purchases",sub:"n8n migration directive issued"},{cls:"amber",icon:"fa-clock",val:"42+",label:"Days",sub:"INTG-EXPIRY recurring"},{cls:"amber",icon:"fa-robot",val:"26+",label:"Airtable Failures",sub:"C4 Logistics"}],statusItems:[{dot:"red",label:"AIRTABLE-AUTO-001 — C4 Logistics client automation down"},{dot:"amber",label:"MAKE-CRED-001 — 12+ auto-purchases, n8n migration directive active"},{dot:"amber",label:"INTG-EXPIRY-001 — Outlook/Gmail/OneDrive expiring repeatedly"},{dot:"amber",label:"INTG-DISCONNECT-001 — staging disconnect bug still active"}]},
+  platform:{title:"Platform — AIOS, Billing, OpenAI",subtitle:"OpenAI recurring cycles. Per-seat billing LIVE. Frontend backlog 102 open tickets.",stats:[{cls:"red",icon:"fa-fire",val:"3",label:"P1 Platform Issues",sub:"COST, ESCALATION, OPS-SILENT"},{cls:"amber",icon:"fa-exclamation",val:"7",label:"P2 Platform Issues",sub:"OpenAI, Twilio, Anthropic, etc."},{cls:"green",icon:"fa-rocket",val:"LIVE",label:"Per-Seat Billing",sub:"Shipped Jun 18 by Faisal"},{cls:"red",icon:"fa-clock",val:"102",label:"Frontend Tickets Open",sub:"Only 6 closed in 3 months"}],statusItems:[{dot:"red",label:"ESCALATION-001 — Day 68+, zero engineer response"},{dot:"amber",label:"OPENAI-DEGRADE-001 occ=55+ — recurring cycles"},{dot:"amber",label:"TWILIO-DEGRADE-001 occ=260+ — 75% uptime confirmed Grafana"},{dot:"green",label:"BILLING-LIVE-001 — per-seat billing LIVE"}]},
   security:{title:"Security — Supabase PITR, HeyGen",subtitle:"Supabase IAI-Charis has no PITR enabled despite 1.7M req/month. HeyGen breach resolved May 26.",stats:[{cls:"red",icon:"fa-shield-alt",val:"1",label:"Critical Security Issue",sub:"SUPABASE-PITR-001 — no backup"},{cls:"green",icon:"fa-lock",val:"1",label:"Resolved",sub:"HeyGen breach fixed"},{cls:"green",icon:"fa-user-shield",val:"1",label:"Breach Resolved",sub:"HeyGen breach resolved May 26"},{cls:"green",icon:"fa-database",val:"LIVE",label:"Portal Auth",sub:"Password + lockout active"}],statusItems:[{dot:"red",label:"SUPABASE-PITR-001 — IAI-Charis 1.7M req/month, NO PITR = data loss risk"},{dot:"green",label:"SEC-BREACH-001 resolved — HeyGen breach resolved May 26, MFA added"},{dot:"green",label:"Portal v3 — password auth with SHA-256, lockout after 5 attempts"}]},
-  tasks:{title:"Tasks & Scheduling — Queue Management In Progress",subtitle:"AIOS triggers failing. Reports firing twice. Frontend backlog 102 open. AI agent closing active tickets.",stats:[{cls:"amber",icon:"fa-tasks",val:"3",label:"Open Task Issues",sub:"TRIGGER, REPORT-DUPE, SUPPORT-009"},{cls:"red",icon:"fa-list",val:"102",label:"Frontend Backlog",sub:"Open tickets — Aalok escalating"},{cls:"green",icon:"fa-check",val:"2",label:"Resolved Today",sub:"Tickets #290/#291"},{cls:"amber",icon:"fa-wrench",val:"IN",label:"Fix In Progress",sub:"Queue mgmt GitHub #521"}],statusItems:[{dot:"amber",label:"AIOS-TRIGGER-001 occ=3 — cannot enable trigger, 22 replies in thread Jul 2"},{dot:"amber",label:"REPORT-DUPE-001 — reports firing twice, queue mgmt may fix"},{dot:"amber",label:"SUPPORT-TASK-009 — AI agent closing active tickets (#290 open, #291 solved)"},{dot:"red",label:"Frontend backlog: 102 open tickets, Aalok demanding due-date visibility"}]},
-  resolved:{title:"Resolved Issues — 32+ Items Since May 2026",subtitle:"32+ resolved items since May 28 2026. 250+ provider alerts self-resolved. Portal now live with Supabase.",stats:[{cls:"green",icon:"fa-check-circle",val:"32+",label:"Total Resolved",sub:"Since May 28 2026"},{cls:"green",icon:"fa-robot",val:"250+",label:"Alerts Self-Resolved",sub:"Anthropic 96 · VAPI 48 · OpenAI 50+"},{cls:"brand",icon:"fa-rocket",val:"1",label:"Major Feature",sub:"Per-seat billing LIVE Jun 18"},{cls:"green",icon:"fa-globe",val:"LIVE",label:"Portal Live",sub:"system.implementai.net"}],statusItems:[{dot:"green",label:"ALERT-PIPELINE-001 — Grafana-to-Slack webhook fixed by Habib Jun 21"},{dot:"green",label:"BILLING-LIVE-001 — per-seat billing live Jun 18"},{dot:"green",label:"VAPI-VOICE-001 — ElevenLabs voice ID fixed Jun 3"},{dot:"green",label:"SEC-BREACH-001 — HeyGen breach resolved May 26"},{dot:"green",label:"Portal v3 — LIVE at system.implementai.net with Supabase real-time"}]}
+  tasks:{title:"Tasks & Scheduling — Queue Management In Progress",subtitle:"AIOS triggers failing. Reports firing twice. Frontend backlog 102 open. AI agent closing active tickets.",stats:[{cls:"amber",icon:"fa-tasks",val:"3",label:"Open Task Issues",sub:"TRIGGER, REPORT-DUPE, SUPPORT-009"},{cls:"red",icon:"fa-list",val:"102",label:"Frontend Backlog",sub:"Open tickets — Aalok escalating"},{cls:"green",icon:"fa-check",val:"2",label:"Resolved Today",sub:"Tickets #290/#291"},{cls:"amber",icon:"fa-wrench",val:"IN",label:"Fix In Progress",sub:"Queue mgmt GitHub #521"}],statusItems:[{dot:"amber",label:"AIOS-TRIGGER-001 occ=3+ — cannot enable trigger"},{dot:"amber",label:"REPORT-DUPE-001 — reports firing twice, queue mgmt may fix"},{dot:"amber",label:"SUPPORT-TASK-009 — AI agent closing active tickets"}]},
+  resolved:{title:"Resolved Issues — 32+ Items Since May 2026",subtitle:"32+ resolved items since May 28 2026. 260+ provider alerts self-resolved. Portal live with Supabase + HR.",stats:[{cls:"green",icon:"fa-check-circle",val:"32+",label:"Total Resolved",sub:"Since May 28 2026"},{cls:"green",icon:"fa-robot",val:"260+",label:"Alerts Self-Resolved",sub:"Anthropic 100+ · VAPI 48 · OpenAI 55+"},{cls:"brand",icon:"fa-rocket",val:"1",label:"Major Feature",sub:"Per-seat billing LIVE Jun 18"},{cls:"green",icon:"fa-globe",val:"LIVE",label:"Portal Live",sub:"system.implementai.net + Supabase + HR"}],statusItems:[{dot:"green",label:"ALERT-PIPELINE-001 — Grafana-to-Slack webhook fixed by Habib Jun 21"},{dot:"green",label:"BILLING-LIVE-001 — per-seat billing live Jun 18"},{dot:"green",label:"VAPI-VOICE-001 — ElevenLabs voice ID fixed Jun 3"},{dot:"green",label:"SEC-BREACH-001 — HeyGen breach resolved May 26"},{dot:"green",label:"Portal v3 — LIVE at system.implementai.net with Supabase + HR real-time"}]}
 };
 </script>
 <script>
@@ -706,8 +680,8 @@ function renderSettings(){const panel=document.getElementById("tab-settings");if
 function switchSettingsSection(s){settingsSection=s;document.querySelectorAll(".settings-nav-item").forEach(b=>b.classList.remove("active"));const idx={profile:0,security:1,access:2,sessions:3}[s]||0;const items=document.querySelectorAll(".settings-nav-item");if(items[idx])items[idx].classList.add("active");renderSettingsSection();}
 function renderSettingsSection(){const el=document.getElementById("settings-content");if(!el||!currentUser)return;const u=currentUser,auth=getAuth();const pic=getAvatarDataUri(u.email);const permLabel={admin:"Admin",engineer:"Engineer",ops:"Operations",leadership:"Leadership"}[u.perm]||u.perm;const permBadge={admin:"admin",engineer:"engineer",ops:"ops",leadership:"leadership"}[u.perm]||"ops";const lastLogin=auth["lastLogin_"+u.email]?new Date(auth["lastLogin_"+u.email]).toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"This session";const pwSet=auth["pwSet_"+u.email]?new Date(auth["pwSet_"+u.email]).toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric"}):"Not recorded";
 if(settingsSection==="profile"){el.innerHTML='<div class="settings-card"><div class="settings-card-header"><h3>Profile Picture</h3><p>Upload a photo that appears on your cards and comments.</p></div><div class="settings-card-body"><div class="avatar-upload-area"><div class="avatar-preview-lg" id="avatar-preview" style="background:'+(u.color||"#6C5DD3")+';">'+(pic?'<img src="'+pic+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">':'<span style="font-size:28px;font-weight:700;">'+u.initials+'</span>')+'</div><div class="avatar-upload-controls"><p>Your profile photo</p><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><label class="avatar-upload-btn" for="avatar-file-input"><i class="fas fa-upload"></i> Upload Photo</label><input type="file" id="avatar-file-input" class="avatar-file-input" accept="image/png,image/jpeg,image/gif,image/webp" onchange="handleAvatarUpload(event)">'+(pic?'<button class="avatar-remove-btn" onclick="removeAvatar()"><i class="fas fa-trash"></i> Remove</button>':'')+'</div><small>PNG, JPG, GIF or WebP. Max 2MB.</small></div></div></div></div><div class="settings-card"><div class="settings-card-header"><h3>Profile Information</h3></div><div class="settings-card-body"><div class="settings-row"><div><div class="settings-row-label">Display Name</div></div><div class="settings-row-val">'+u.name+'</div></div><div class="settings-row"><div><div class="settings-row-label">Email Address</div></div><div class="settings-row-val">'+u.email+'</div></div><div class="settings-row"><div><div class="settings-row-label">Role</div></div><div class="settings-row-val">'+u.role+'</div></div><div class="settings-row"><div><div class="settings-row-label">Access Level</div></div><div><span class="settings-badge '+permBadge+'"><i class="fas fa-shield-alt"></i> '+permLabel+'</span></div></div><div class="settings-row"><div><div class="settings-row-label">Last Sign In</div></div><div class="settings-row-val">'+lastLogin+'</div></div></div></div>';}
-else if(settingsSection==="security"){el.innerHTML='<div class="settings-card"><div class="settings-card-header"><h3>Change Password</h3><p>Min 10 characters, uppercase, number, special character.</p></div><div class="settings-card-body"><div class="settings-field"><label>Current Password</label><div class="input-wrap"><input type="password" id="s-cur-pw" placeholder="Enter your current password"><button class="input-toggle" onclick="togglePwVis(\'s-cur-pw\',this)" tabindex="-1"><i class="fas fa-eye"></i></button></div></div><div class="settings-field"><label>New Password</label><div class="input-wrap"><input type="password" id="s-new-pw1" placeholder="Create a strong password" oninput="checkPwStrengthSettings(this.value)"><button class="input-toggle" onclick="togglePwVis(\'s-new-pw1\',this)" tabindex="-1"><i class="fas fa-eye"></i></button></div><div class="pw-strength" id="s-pw-bar"></div><div class="pw-strength-label" id="s-pw-lbl"></div></div><div class="settings-field"><label>Confirm New Password</label><div class="input-wrap"><input type="password" id="s-new-pw2" placeholder="Repeat new password"><button class="input-toggle" onclick="togglePwVis(\'s-new-pw2\',this)" tabindex="-1"><i class="fas fa-eye"></i></button></div></div><div class="settings-actions"><button class="btn-primary" onclick="changePassword()"><i class="fas fa-lock"></i> Update Password</button></div><div class="settings-success" id="pw-success"><i class="fas fa-check-circle"></i> Password updated.</div><div class="settings-error-msg" id="pw-error"><i class="fas fa-exclamation-circle"></i> <span id="pw-error-text"></span></div></div></div><div class="settings-card"><div class="settings-card-header"><h3>Security Overview</h3></div><div class="settings-card-body"><div class="security-item"><div class="security-item-icon good"><i class="fas fa-lock"></i></div><div class="security-item-text"><h4>Password protection</h4><p>Password set on '+pwSet+'</p></div><span class="settings-badge admin" style="margin-left:auto;">Active</span></div><div class="security-item"><div class="security-item-icon good"><i class="fas fa-user-check"></i></div><div class="security-item-text"><h4>Access control</h4><p>Only @implementai.io accounts can log in</p></div><span class="settings-badge admin" style="margin-left:auto;">Enforced</span></div><div class="security-item"><div class="security-item-icon good"><i class="fas fa-clock"></i></div><div class="security-item-text"><h4>Account lockout</h4><p>5 failed attempts locks for 30 minutes</p></div><span class="settings-badge admin" style="margin-left:auto;">Active</span></div><div class="security-item"><div class="security-item-icon good"><i class="fas fa-database"></i></div><div class="security-item-text"><h4>Supabase real-time sync</h4><p>Comments and assignments sync across all browsers</p></div><span class="settings-badge admin" style="margin-left:auto;">Connected</span></div></div></div>';}
-else if(settingsSection==="access"){el.innerHTML='<div class="settings-card"><div class="settings-card-header"><h3>Your Permissions</h3></div><div class="settings-card-body"><div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px;background:var(--brand-dim);border-radius:8px;border:1px solid var(--brand-light);"><span class="settings-badge '+permBadge+'" style="font-size:13px;padding:5px 14px;"><i class="fas fa-shield-alt"></i> '+permLabel+'</span><p style="font-size:13px;color:var(--text-body);">'+({admin:"Full access — view all issues, post comments, change status, assign items, view raw logs.",engineer:"Engineer access — view all issues, post comments, change status, assign items.",ops:"Operations — view all issues and post comments.",leadership:"Read-only — view all issues and conversations."}[u.perm]||"")+'</p></div>'+[["View all issues and conversations",true],["Post comments and @mention teammates",u.perm!=="leadership"],["Assign issues to team members",u.perm==="admin"||u.perm==="engineer"],["Change issue status",u.perm==="admin"||u.perm==="engineer"],["View Raw Sweep Log",u.perm==="admin"]].map(([label,allowed])=>'<div class="settings-row"><div class="settings-row-label">'+label+'</div><span style="font-size:12px;font-weight:600;color:'+(allowed?"var(--green)":"var(--text-muted)")+';"><i class="fas '+(allowed?"fa-check-circle":"fa-times-circle")+'"></i> '+(allowed?"Allowed":"Not available")+'</span></div>').join("")+'</div></div><div class="settings-card"><div class="settings-card-header"><h3>Portal Users</h3></div><div class="settings-card-body">'+Object.entries(USERS).map(([email,usr])=>{const upic=getAvatarDataUri(email);const ub={admin:"admin",engineer:"engineer",ops:"ops",leadership:"leadership"}[usr.perm]||"ops";const ul={admin:"Admin",engineer:"Engineer",ops:"Ops",leadership:"Leadership"}[usr.perm]||usr.perm;return'<div class="settings-row"><div style="display:flex;align-items:center;gap:10px;">'+(upic?'<div style="width:30px;height:30px;border-radius:50%;overflow:hidden;flex-shrink:0;"><img src="'+upic+'" style="width:100%;height:100%;object-fit:cover;"></div>':'<div style="width:30px;height:30px;border-radius:50%;background:'+(usr.color||"#6C5DD3")+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">'+usr.initials+'</div>')+'<div><div class="settings-row-label">'+usr.name+(email===currentUser.email?" (you)":"")+'</div><div class="settings-row-sub">'+email+'</div></div></div><span class="settings-badge '+ub+'">'+ul+'</span></div>';}).join("")+'</div></div>';}
+else if(settingsSection==="security"){el.innerHTML='<div class="settings-card"><div class="settings-card-header"><h3>Change Password</h3><p>Min 10 characters, uppercase, number, special character.</p></div><div class="settings-card-body"><div class="settings-field"><label>Current Password</label><div class="input-wrap"><input type="password" id="s-cur-pw" placeholder="Enter your current password"><button class="input-toggle" onclick="togglePwVis(\'s-cur-pw\',this)" tabindex="-1"><i class="fas fa-eye"></i></button></div></div><div class="settings-field"><label>New Password</label><div class="input-wrap"><input type="password" id="s-new-pw1" placeholder="Create a strong password" oninput="checkPwStrengthSettings(this.value)"><button class="input-toggle" onclick="togglePwVis(\'s-new-pw1\',this)" tabindex="-1"><i class="fas fa-eye"></i></button></div><div class="pw-strength" id="s-pw-bar"></div><div class="pw-strength-label" id="s-pw-lbl"></div></div><div class="settings-field"><label>Confirm New Password</label><div class="input-wrap"><input type="password" id="s-new-pw2" placeholder="Repeat new password"><button class="input-toggle" onclick="togglePwVis(\'s-new-pw2\',this)" tabindex="-1"><i class="fas fa-eye"></i></button></div></div><div class="settings-actions"><button class="btn-primary" onclick="changePassword()"><i class="fas fa-lock"></i> Update Password</button></div><div class="settings-success" id="pw-success"><i class="fas fa-check-circle"></i> Password updated.</div><div class="settings-error-msg" id="pw-error"><i class="fas fa-exclamation-circle"></i> <span id="pw-error-text"></span></div></div></div><div class="settings-card"><div class="settings-card-header"><h3>Security Overview</h3></div><div class="settings-card-body"><div class="security-item"><div class="security-item-icon good"><i class="fas fa-lock"></i></div><div class="security-item-text"><h4>Password protection</h4><p>Password set on '+pwSet+'</p></div><span class="settings-badge admin" style="margin-left:auto;">Active</span></div><div class="security-item"><div class="security-item-icon good"><i class="fas fa-user-check"></i></div><div class="security-item-text"><h4>Access control</h4><p>Only @implementai.io accounts can log in</p></div><span class="settings-badge admin" style="margin-left:auto;">Enforced</span></div><div class="security-item"><div class="security-item-icon good"><i class="fas fa-clock"></i></div><div class="security-item-text"><h4>Account lockout</h4><p>5 failed attempts locks for 30 minutes</p></div><span class="settings-badge admin" style="margin-left:auto;">Active</span></div><div class="security-item"><div class="security-item-icon good"><i class="fas fa-database"></i></div><div class="security-item-text"><h4>Supabase real-time sync</h4><p>Comments, assignments, HR records sync across all browsers</p></div><span class="settings-badge admin" style="margin-left:auto;">Connected</span></div></div></div>';}
+else if(settingsSection==="access"){el.innerHTML='<div class="settings-card"><div class="settings-card-header"><h3>Your Permissions</h3></div><div class="settings-card-body"><div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px;background:var(--brand-dim);border-radius:8px;border:1px solid var(--brand-light);"><span class="settings-badge '+permBadge+'" style="font-size:13px;padding:5px 14px;"><i class="fas fa-shield-alt"></i> '+permLabel+'</span><p style="font-size:13px;color:var(--text-body);">'+({admin:"Full access — view all issues, post comments, change status, assign items, view raw logs, manage HR.",engineer:"Engineer access — view all issues, post comments, change status, assign items.",ops:"Operations — view all issues, post comments, manage HR records.",leadership:"Read-only — view all issues and conversations."}[u.perm]||"")+'</p></div>'+[["View all issues and conversations",true],["Post comments and @mention teammates",u.perm!=="leadership"],["Assign issues to team members",u.perm==="admin"||u.perm==="engineer"],["Change issue status",u.perm==="admin"||u.perm==="engineer"],["Manage HR onboarding and exiting",u.perm==="admin"||u.perm==="ops"],["View Raw Sweep Log",u.perm==="admin"]].map(([label,allowed])=>'<div class="settings-row"><div class="settings-row-label">'+label+'</div><span style="font-size:12px;font-weight:600;color:'+(allowed?"var(--green)":"var(--text-muted)")+';"><i class="fas '+(allowed?"fa-check-circle":"fa-times-circle")+'"></i> '+(allowed?"Allowed":"Not available")+'</span></div>').join("")+'</div></div>';}
 else if(settingsSection==="sessions"){el.innerHTML='<div class="settings-card"><div class="settings-card-header"><h3>Active Sessions</h3><p>Supabase connected — data syncs across all your devices.</p></div><div class="settings-card-body"><div class="security-item"><div class="security-item-icon good"><i class="fas fa-desktop"></i></div><div class="security-item-text"><h4>This browser <span class="session-current">Current</span></h4><p>Signed in '+lastLogin+'</p></div><button class="btn-secondary" style="font-size:12px;padding:6px 14px;" onclick="handleLogout()">Sign out</button></div></div></div><div class="settings-card"><div class="settings-card-header"><h3>Sign Out</h3></div><div class="settings-card-body"><p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Signing out clears your session from this browser. Your password and data remain saved.</p><button class="btn-danger" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sign Out</button></div></div>';}}
 function changePassword(){const cur=document.getElementById("s-cur-pw").value,n1=document.getElementById("s-new-pw1").value,n2=document.getElementById("s-new-pw2").value;const ok=document.getElementById("pw-success"),err=document.getElementById("pw-error"),errT=document.getElementById("pw-error-text");ok.style.display="none";err.style.display="none";if(!cur){errT.textContent="Please enter your current password.";err.style.display="flex";return;}if(!pwValid(n1)){errT.textContent="New password does not meet requirements.";err.style.display="flex";return;}if(n1!==n2){errT.textContent="Passwords do not match.";err.style.display="flex";return;}if(cur===n1){errT.textContent="New password must be different from current.";err.style.display="flex";return;}sha256(currentUser.email+":"+cur).then(ch=>{const auth=getAuth();if(auth["pw_"+currentUser.email]&&auth["pw_"+currentUser.email]!==ch){errT.textContent="Current password is incorrect.";err.style.display="flex";return;}sha256(currentUser.email+":"+n1).then(nh=>{auth["pw_"+currentUser.email]=nh;auth["pwSet_"+currentUser.email]=new Date().toISOString();saveAuth(auth);document.getElementById("s-cur-pw").value="";document.getElementById("s-new-pw1").value="";document.getElementById("s-new-pw2").value="";document.getElementById("s-pw-bar").className="pw-strength";document.getElementById("s-pw-lbl").textContent="";ok.style.display="flex";setTimeout(()=>ok.style.display="none",4000);});});}
 function handleAvatarUpload(event){const file=event.target.files[0];if(!file)return;if(file.size>2*1024*1024){alert("File too large. Maximum size is 2MB.");return;}const reader=new FileReader();reader.onload=function(e){const dataUri=e.target.result;const s=getStore();if(!s.avatars)s.avatars={};s.avatars[currentUser.email]=dataUri;saveStore(s);const preview=document.getElementById("avatar-preview");if(preview){preview.innerHTML='<img src="'+dataUri+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';}refreshSidebarUser();renderWorkload();setTimeout(()=>renderSettingsSection(),100);};reader.readAsDataURL(file);}
@@ -732,7 +706,8 @@ function handleNotifClick(notifId,issueId){markNotifRead(notifId);closeNotifDrop
 function formatRelTime(ts){const d=Date.now()-ts;if(d<60000)return"just now";if(d<3600000)return Math.floor(d/60000)+"m ago";if(d<86400000)return Math.floor(d/3600000)+"h ago";return Math.floor(d/86400000)+"d ago";}
 function renderWorkload(){const list=document.getElementById("workload-list");if(!list)return;const assignments=getStore().assignments||{};const counts={};Object.values(assignments).forEach(email=>{if(email)counts[email]=(counts[email]||0)+1;});const people=Object.entries(USERS).map(([email,u])=>({email,...u,count:counts[email]||0}));people.sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name));list.innerHTML=people.map(p=>{const pic=getAvatarDataUri(p.email);const avHtml=pic?'<div class="wp-avatar"><img src="'+pic+'"></div>':'<div class="wp-avatar" style="background:'+(p.color||"#6C5DD3")+'">'+p.initials+'</div>';return'<div class="workload-person" onclick="viewPersonItems(\''+p.email+'\',this)">'+avHtml+'<span class="wp-name">'+p.name+'</span><span class="wp-count'+(p.count>0?" has-items":"")+'">'+p.count+'</span></div>';}).join("");}
 function updateMyItemsBadge(){if(!currentUser)return;const a=getStore().assignments||{};const c=Object.values(a).filter(e=>e===currentUser.email).length;const b=document.getElementById("badge-myitems");if(b)b.textContent=c;}
-function switchTab(tab,btn){currentTab=tab;document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));if(btn&&btn.classList)btn.classList.add("active");document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");const panel=document.getElementById("tab-"+tab);if(panel)panel.style.display="block";const names={all:"All Issues",myitems:"My Items",voice:"Voice",database:"Database",integrations:"Integrations",platform:"Platform",security:"Security",tasks:"Tasks",resolved:"Resolved",raw:"Raw Log",person:"Team Member",settings:"Settings"};document.getElementById("topbar-section").textContent=names[tab]||tab;if(tab==="settings"){renderSettings();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="myitems"){renderMyItems();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="person"){}else{renderGodMode(tab);renderTabContent(tab);}}
+function switchTab(tab,btn){currentTab=tab;document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));if(btn&&btn.classList)btn.classList.add("active");document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");const panel=document.getElementById("tab-"+tab);if(panel)panel.style.display="block";const names={all:"All Issues",myitems:"My Items",voice:"Voice",database:"Database",integrations:"Integrations",platform:"Platform",security:"Security",tasks:"Tasks",resolved:"Resolved",raw:"Raw Log",person:"Team Member",settings:"Settings",hr:"HR"};document.getElementById("topbar-section").textContent=names[tab]||tab;if(tab==="settings"){renderSettings();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="myitems"){renderMyItems();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="person"||tab==="hr"){}else{renderGodMode(tab);renderTabContent(tab);}}
+function switchToHR(){currentTab="hr";document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));document.getElementById("hr-nav-btn")?.classList.add("active");document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");document.getElementById("tab-hr").style.display="block";document.getElementById("topbar-section").textContent="HR";document.getElementById("god-mode-area").innerHTML="";renderHR();}
 function renderGodMode(tab){const cfg=GOD_MODE_CONFIGS[tab]||GOD_MODE_CONFIGS.all;let html='<div class="god-mode-header"><h1>'+cfg.title+'</h1><p>'+cfg.subtitle+'</p></div><div class="stat-grid">';cfg.stats.forEach(s=>{html+='<div class="stat-card '+s.cls+'"><div class="stat-card-icon"><i class="fas '+s.icon+'"></i></div><div class="stat-value">'+s.val+'</div><div class="stat-label">'+s.label+'</div><div class="stat-sub">'+s.sub+'</div></div>';});html+='</div><div class="status-bar"><span class="status-bar-label"><i class="fas fa-circle-dot" style="margin-right:5px;"></i>Live Status</span><div class="status-items">';cfg.statusItems.forEach(si=>{html+='<span class="status-item"><span class="s-dot '+si.dot+'"></span>'+si.label+'</span>';});html+='</div></div>';document.getElementById("god-mode-area").innerHTML=html;}
 function buildCard(issue){const isResolved=issue.status==="resolved";const liveStatus=getLiveStatus(issue.id)||issue.status;const cardClass=isResolved?"resolved":issue.priority;const escalated=issue.tags&&issue.tags.includes("escalated");const silent=issue.tags&&issue.tags.includes("silent");const statusLabel={open:"Open",working:"Working on it",resolved:"Resolved",stuck:"Stuck"};const pLabel={p1:"P1 Critical",p2:"P2 Significant",p3:"P3 Low"};const iid=issue.id.replace(/-/g,"_").toLowerCase();const msgs=getMessages(issue.id);const assigneeEmail=getAssignment(issue.id);const assigneeUser=assigneeEmail?getUserByEmail(assigneeEmail):null;let metaHtml='<span class="meta-chip"><i class="fas fa-calendar"></i> '+issue.dateFirst+'</span>';if(issue.dateLast&&issue.dateLast!==issue.dateFirst)metaHtml+='<span class="meta-chip"><i class="fas fa-sync"></i> '+issue.dateLast+'</span>';if(assigneeUser){const pic=getAvatarDataUri(assigneeUser.email);metaHtml+='<span class="meta-chip" style="color:'+(assigneeUser.color||"#6C5DD3")+';font-weight:600;">'+(pic?'<img src="'+pic+'" style="width:14px;height:14px;border-radius:50%;object-fit:cover;">':"<i class='fas fa-user-check'></i>")+" "+assigneeUser.name+"</span>";}else if(issue.responsible)metaHtml+='<span class="meta-chip"><i class="fas fa-user"></i> '+issue.responsible+'</span>';if(escalated)metaHtml+='<span class="escalation-chip"><i class="fas fa-exclamation"></i> Escalated</span>';if(silent)metaHtml+='<span class="escalation-chip" style="color:#7C3AED;background:#EDE9FE;border-color:#DDD6FE;"><i class="fas fa-ghost"></i> Silent</span>';if(isResolved&&issue.dateResolved)metaHtml+='<span class="meta-chip" style="color:#16A34A;"><i class="fas fa-check-circle"></i> Resolved '+issue.dateResolved+'</span>';if(msgs.length>0)metaHtml+='<span class="meta-chip" style="color:var(--brand);"><i class="fas fa-comments"></i> '+msgs.length+'</span>';const occCount=issue.occurrences?issue.occurrences.length:1;const relatedHtml=(issue.relatedIds&&issue.relatedIds.length>0)?issue.relatedIds.map(r=>'<span class="related-chip" onclick="jumpToIssue(\''+r+'\',event)">'+r+'</span>').join(""):"None";const canEdit=currentUser&&(currentUser.perm==="admin"||currentUser.perm==="engineer"||currentUser.perm==="ops");let assigneeHtml='<div class="assignee-row"><span class="assignee-label">Assigned to</span><div class="assignee-current">';if(assigneeUser){const pic=getAvatarDataUri(assigneeUser.email);assigneeHtml+='<div class="assignee-avatar" style="background:'+(assigneeUser.color||"#6C5DD3")+'">'+(pic?'<img src="'+pic+'">':""+assigneeUser.initials)+'</div><span class="assignee-name">'+assigneeUser.name+'</span><span style="font-size:11px;color:var(--text-muted);">'+assigneeUser.role+'</span>';}else assigneeHtml+='<span class="assignee-unset">Unassigned</span>';assigneeHtml+='</div>';if(canEdit){assigneeHtml+='<div class="assignee-dropdown" id="adrop_'+iid+'"><button class="assignee-btn" onclick="toggleAssigneeDropdown(\''+iid+'\',event)">'+(assigneeUser?"Reassign":"Assign")+'</button><div class="assignee-select-list" id="alist_'+iid+'" style="display:none;">'+Object.entries(USERS).map(([email,u])=>{const pic=getAvatarDataUri(email);return'<div class="assignee-option" onclick="doAssign(\''+issue.id+'\',\''+email+'\',\''+iid+'\')"><div class="ao-avatar" style="background:'+(u.color||"#6C5DD3")+'">'+(pic?'<img src="'+pic+'">':""+u.initials)+'</div><div><div class="ao-name">'+u.name+'</div><div class="ao-role">'+u.role+'</div></div></div>';}).join("")+(assigneeUser?'<div class="assignee-option unassign" onclick="doUnassign(\''+issue.id+'\',\''+iid+'\')"><div class="ao-avatar"><i class="fas fa-user-times"></i></div><div><div class="ao-name">Unassign</div></div></div>':"")+'</div></div>';}assigneeHtml+='</div>';let actionHtml="";if(canEdit&&!isResolved){const isAdmin=currentUser.perm==="admin";actionHtml='<div class="status-editor"><label>Status:</label><select class="status-sel" id="ssel_'+iid+'">'+(isAdmin?'<option value="open"'+(liveStatus==="open"?" selected":"")+'>Open</option>':'')+'<option value="working"'+(liveStatus==="working"?" selected":"")+'>Working on it</option><option value="resolved"'+(liveStatus==="resolved"?" selected":"")+'>Resolved</option><option value="stuck"'+(liveStatus==="stuck"?" selected":"")+'>Stuck</option></select><button class="status-save" onclick="saveStatus(\''+issue.id+'\',\''+iid+'\')"><i class="fas fa-check"></i> Save</button></div>';}else if(currentUser&&currentUser.perm==="leadership")actionHtml='<div class="readonly-note"><i class="fas fa-lock"></i> Read-only access.</div>';let resolutionHtml="";if(isResolved)resolutionHtml='<div style="background:var(--green-bg);border:1px solid var(--green-light);border-radius:8px;padding:12px 14px;">'+(issue.rootCause?'<div class="detail-row"><span class="d-key">Root Cause</span><span class="d-val">'+issue.rootCause+'</span></div>':"")+(issue.fixApplied?'<div class="detail-row"><span class="d-key">Fix Applied</span><span class="d-val">'+issue.fixApplied+'</span></div>':"")+(issue.resolvedBy?'<div class="detail-row"><span class="d-key">Resolved By</span><span class="d-val">'+issue.resolvedBy+'</span></div>':"")+(issue.dateResolved?'<div class="detail-row"><span class="d-key">Date</span><span class="d-val">'+issue.dateResolved+'</span></div>':"")+'</div>';const mentionHints=Object.values(USERS).map(u=>'<span onclick="insertMention(\''+iid+'\',\''+u.name+'\')" title="'+u.role+'">@'+u.name+'</span>').join(" ");const canChat=currentUser&&currentUser.perm!=="leadership";const chatMsgsHtml=msgs.length===0?'<div class="chat-empty"><i class="fas fa-comments" style="font-size:20px;margin-bottom:6px;display:block;"></i>No messages yet.</div>':msgs.map(m=>{const isMine=m.email===currentUser.email;const u=getUserByEmail(m.email);const color=u?u.color:"#6C5DD3";const pic=getAvatarDataUri(m.email);const time=new Date(m.ts).toLocaleString("en-GB",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});const textFmt=m.text.replace(/@(\w[\w\s]*)/g,(match,name)=>{const f=Object.values(USERS).find(u=>u.name.toLowerCase()===name.trim().toLowerCase());return f?'<span class="cm-mention">@'+name+'</span>':match;});return'<div class="chat-msg'+(isMine?" mine":"")+'"><div class="cm-avatar" style="background:'+color+'">'+(pic?'<img src="'+pic+'">':m.initials)+'</div><div class="cm-bubble"><div class="cm-meta"><span class="cm-author">'+m.author+'</span><span class="cm-time">'+time+'</span></div><div class="cm-text">'+textFmt+'</div></div></div>';}).join("");const occHtml=issue.occurrences?issue.occurrences.map(o=>'<div class="occ-row"><span class="occ-tag">'+o.n+'</span><span class="occ-when">'+o.when+'</span><span class="occ-what">'+o.what+'</span></div>').join(""):"";return'<div class="issue-card '+cardClass+'" data-id="'+issue.id+'" data-priority="'+issue.priority+'" data-tags="'+((issue.tags||[]).join(","))+'"><div class="issue-header" onclick="toggleCard(this)"><span class="issue-id-badge">'+issue.id+'</span><div class="issue-main"><div class="issue-title">'+issue.title+'</div><div class="issue-meta">'+metaHtml+'</div></div><div class="issue-right"><span class="p-badge '+issue.priority+'">'+(pLabel[issue.priority]||issue.priority)+'</span><span class="s-badge '+liveStatus+'">'+(statusLabel[liveStatus]||liveStatus)+'</span><div class="occ-pill"><span class="occ-num">'+occCount+'</span><span class="occ-lbl">events</span></div><div class="expand-icon"><i class="fas fa-chevron-down"></i></div></div></div><div class="issue-body"><div class="issue-body-grid"><div class="detail-block"><h4><i class="fas fa-info-circle"></i> What it does</h4><p style="font-size:13px;color:var(--text-body);line-height:1.6;">'+issue.whatItDoes+'</p></div><div class="detail-block"><h4><i class="fas fa-cogs"></i> How it happens</h4><p style="font-size:13px;color:var(--text-body);line-height:1.6;">'+issue.howItHappens+'</p></div><div class="detail-block"><h4><i class="fas fa-list"></i> Details</h4><div class="detail-row"><span class="d-key">System</span><span class="d-val">'+issue.system+'</span></div>'+assigneeHtml+'<div class="detail-row"><span class="d-key">Default Owner</span><span class="d-val">'+issue.responsible+'</span></div><div class="detail-row"><span class="d-key">First seen</span><span class="d-val">'+issue.dateFirst+'</span></div><div class="detail-row"><span class="d-key">Last seen</span><span class="d-val">'+issue.dateLast+'</span></div><div class="detail-row"><span class="d-key">Days open</span><span class="d-val">'+issue.daysOpen+'</span></div><div class="detail-row"><span class="d-key">Monday ID</span><span class="d-val" style="font-family:monospace;font-size:11px;">'+issue.mondayId+'</span></div>'+(issue.context?'<div style="margin-top:8px;padding:8px;background:var(--brand-dim);border-radius:6px;font-size:12px;color:var(--text-body);line-height:1.5;">'+issue.context+'</div>':"")+actionHtml+'</div><div class="detail-block"><h4><i class="fas fa-link"></i> Related Issues</h4><div>'+relatedHtml+'</div>'+(isResolved?resolutionHtml:"")+'</div><div class="full-width"><h4><i class="fas fa-history"></i> Event Timeline</h4><div class="occ-timeline">'+occHtml+'</div></div><div class="chat-section"><h4><i class="fas fa-comments"></i> Conversation <span style="font-weight:400;color:var(--text-muted);text-transform:none;letter-spacing:0;" id="chat-count-'+iid+'">('+msgs.length+' message'+(msgs.length!==1?"s":"")+')</span></h4><div class="chat-messages" id="chat_'+iid+'">'+chatMsgsHtml+'</div>'+(canChat?'<div class="chat-input-area"><div class="chat-input-row"><textarea class="chat-textarea" id="ctxt_'+iid+'" placeholder="Write a message... Use @Name to mention someone" rows="2" onkeydown="handleChatKey(event,\''+issue.id+'\',\''+iid+'\')"></textarea><button class="chat-send-btn" onclick="sendMessage(\''+issue.id+'\',\''+iid+'\')"><i class="fas fa-paper-plane"></i> Send</button></div><div class="mention-hint">Mention: '+mentionHints+'</div></div>':'<div class="readonly-note"><i class="fas fa-lock"></i> Read-only access.</div>')+'</div></div></div></div>';}
 function toggleCard(header){const card=header.closest(".issue-card");card.classList.toggle("expanded");if(card.classList.contains("expanded")){setTimeout(()=>{const iid=card.dataset.id.replace(/-/g,"_").toLowerCase();const el=document.getElementById("chat_"+iid);if(el)el.scrollTop=el.scrollHeight;},50);}}
@@ -748,32 +723,14 @@ function refreshCard(issueId){const card=document.querySelector('[data-id="'+iss
 function refreshChatOnly(issueId,iid){const msgs=getMessages(issueId);const el=document.getElementById("chat_"+iid);if(!el)return;if(msgs.length===0){el.innerHTML='<div class="chat-empty">No messages yet.</div>';return;}el.innerHTML=msgs.map(m=>{const isMine=m.email===currentUser.email;const u=getUserByEmail(m.email);const color=u?u.color:"#6C5DD3";const pic=getAvatarDataUri(m.email);const time=new Date(m.ts).toLocaleString("en-GB",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});const textFmt=m.text.replace(/@(\w[\w\s]*)/g,(match,name)=>{const f=Object.values(USERS).find(u=>u.name.toLowerCase()===name.trim().toLowerCase());return f?'<span class="cm-mention">@'+name+'</span>':match;});return'<div class="chat-msg'+(isMine?" mine":"")+'"><div class="cm-avatar" style="background:'+color+'">'+(pic?'<img src="'+pic+'">':m.initials)+'</div><div class="cm-bubble"><div class="cm-meta"><span class="cm-author">'+m.author+'</span><span class="cm-time">'+time+'</span></div><div class="cm-text">'+textFmt+'</div></div></div>';}).join("");el.scrollTop=el.scrollHeight;const hdr=document.getElementById("chat-count-"+iid);if(hdr)hdr.textContent="("+msgs.length+" message"+(msgs.length!==1?"s":"")+")";}
 function jumpToIssue(issueId,e){e.stopPropagation();const issue=ISSUES.find(i=>i.id===issueId);if(!issue)return;const tab=issue.status==="resolved"?"resolved":issue.tab||"all";const navBtn=document.querySelector('[data-tab="'+tab+'"]');if(navBtn)switchTab(tab,navBtn);setTimeout(()=>{const card=document.querySelector('[data-id="'+issueId+'"]');if(card){card.scrollIntoView({behavior:"smooth",block:"center"});if(!card.classList.contains("expanded"))card.querySelector(".issue-header").click();}},150);}
 function renderAll(){renderGodMode("all");renderTabContent("all");}
-function renderTabContent(tab){if(tab==="myitems"){renderMyItems();return;}if(tab==="raw"){renderRaw();return;}if(tab==="person"||tab==="settings")return;const isResolved=tab==="resolved";const filtered=isResolved?ISSUES.filter(i=>i.status==="resolved"):ISSUES.filter(i=>i.status!=="resolved"&&(tab==="all"||i.tab===tab));const panel=document.getElementById("tab-"+tab);if(!panel)return;let html="";if(tab==="all")html+='<div class="filter-bar"><button class="filter-pill active" onclick="filterCards(\'all\',this)">All</button><button class="filter-pill red" onclick="filterCards(\'p1\',this)"><i class="fas fa-circle" style="font-size:7px;"></i> P1 Critical</button><button class="filter-pill amber" onclick="filterCards(\'p2\',this)"><i class="fas fa-circle" style="font-size:7px;"></i> P2 Significant</button><button class="filter-pill" onclick="filterCards(\'p3\',this)"><i class="fas fa-circle" style="font-size:7px;"></i> P3 Low</button><button class="filter-pill" onclick="filterCards(\'escalated\',this)"><i class="fas fa-exclamation"></i> Escalated</button><button class="filter-pill" onclick="filterCards(\'silent\',this)"><i class="fas fa-ghost"></i> Silent Failures</button><button class="filter-pill" onclick="filterCards(\'assigned-me\',this)"><i class="fas fa-user-check"></i> Assigned to Me</button><div class="search-wrap"><i class="fas fa-search"></i><input class="search-input" type="text" placeholder="Search issues..." oninput="searchCards(this.value)"></div></div>';html+=isResolved?'<div class="section-label">Resolved Issues</div><div class="resolved-section issues-list" id="issues-list-'+tab+'">':"<div class='issues-list' id='issues-list-"+tab+"'>";filtered.forEach(issue=>{html+=buildCard(issue);});html+='</div>';panel.innerHTML=html;}
+function renderTabContent(tab){if(tab==="myitems"){renderMyItems();return;}if(tab==="raw"){renderRaw();return;}if(tab==="person"||tab==="settings"||tab==="hr")return;const isResolved=tab==="resolved";const filtered=isResolved?ISSUES.filter(i=>i.status==="resolved"):ISSUES.filter(i=>i.status!=="resolved"&&(tab==="all"||i.tab===tab));const panel=document.getElementById("tab-"+tab);if(!panel)return;let html="";if(tab==="all")html+='<div class="filter-bar"><button class="filter-pill active" onclick="filterCards(\'all\',this)">All</button><button class="filter-pill red" onclick="filterCards(\'p1\',this)"><i class="fas fa-circle" style="font-size:7px;"></i> P1 Critical</button><button class="filter-pill amber" onclick="filterCards(\'p2\',this)"><i class="fas fa-circle" style="font-size:7px;"></i> P2 Significant</button><button class="filter-pill" onclick="filterCards(\'p3\',this)"><i class="fas fa-circle" style="font-size:7px;"></i> P3 Low</button><button class="filter-pill" onclick="filterCards(\'escalated\',this)"><i class="fas fa-exclamation"></i> Escalated</button><button class="filter-pill" onclick="filterCards(\'silent\',this)"><i class="fas fa-ghost"></i> Silent Failures</button><button class="filter-pill" onclick="filterCards(\'assigned-me\',this)"><i class="fas fa-user-check"></i> Assigned to Me</button><div class="search-wrap"><i class="fas fa-search"></i><input class="search-input" type="text" placeholder="Search issues..." oninput="searchCards(this.value)"></div></div>';html+=isResolved?'<div class="section-label">Resolved Issues</div><div class="resolved-section issues-list" id="issues-list-'+tab+'">':"<div class='issues-list' id='issues-list-"+tab+"'>";filtered.forEach(issue=>{html+=buildCard(issue);});html+='</div>';panel.innerHTML=html;}
 function renderMyItems(){const panel=document.getElementById("tab-myitems");if(!panel||!currentUser)return;const assignments=getStore().assignments||{};const myIssues=ISSUES.filter(i=>assignments[i.id]===currentUser.email&&i.status!=="resolved");const u=currentUser;const pic=getAvatarDataUri(u.email);let html='<div style="margin-bottom:14px;"><button onclick="switchTab(\'all\',document.querySelector(\'[data-tab=\\\'all\\\']\'))" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-arrow-left"></i> Back to All Issues</button></div><div class="person-header">'+(pic?'<div class="person-avatar-lg"><img src="'+pic+'"></div>':'<div class="person-avatar-lg" style="background:'+(u.color||"#6C5DD3")+'">'+u.initials+'</div>')+'<div class="person-info"><h2>My Items</h2><p>'+u.role+'</p></div><div class="person-stats"><div class="pstat"><div class="pstat-num">'+myIssues.length+'</div><div class="pstat-lbl">Open</div></div><div class="pstat"><div class="pstat-num">'+myIssues.filter(i=>i.priority==="p1").length+'</div><div class="pstat-lbl">P1</div></div><div class="pstat"><div class="pstat-num">'+getNotifications(u.email).filter(n=>!n.read).length+'</div><div class="pstat-lbl">Unread</div></div></div></div>';if(!myIssues.length)html+='<div class="my-items-empty"><i class="fas fa-inbox"></i><h3>No items assigned to you</h3><p>Use the Assign button on any issue card.</p></div>';else{myIssues.sort((a,b)=>({p1:0,p2:1,p3:2}[a.priority]||3)-({p1:0,p2:1,p3:2}[b.priority]||3));html+='<div class="issues-list">';myIssues.forEach(i=>{html+=buildCard(i);});html+='</div>';}panel.innerHTML=html;}
 function viewPersonItems(email,clickedEl){const u=getUserByEmail(email);if(!u)return;const assignments=getStore().assignments||{};const personIssues=ISSUES.filter(i=>assignments[i.id]===email&&i.status!=="resolved");document.querySelectorAll(".workload-person").forEach(el=>el.classList.remove("active-person"));if(clickedEl)clickedEl.classList.add("active-person");const panel=document.getElementById("tab-person");document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");panel.style.display="block";currentTab="person";document.getElementById("topbar-section").textContent=u.name+"'s Items";const pic=getAvatarDataUri(email);let html='<div style="margin-bottom:14px;"><button onclick="switchTab(\'all\',document.querySelector(\'[data-tab=\\\'all\\\']\'))" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-arrow-left"></i> Back to All Issues</button></div><div class="person-header">'+(pic?'<div class="person-avatar-lg"><img src="'+pic+'"></div>':'<div class="person-avatar-lg" style="background:'+(u.color||"#6C5DD3")+'">'+u.initials+'</div>')+'<div class="person-info"><h2>'+u.name+"'s Items</h2><p>"+u.role+'</p></div><div class="person-stats"><div class="pstat"><div class="pstat-num">'+personIssues.length+'</div><div class="pstat-lbl">Open</div></div><div class="pstat"><div class="pstat-num">'+personIssues.filter(i=>i.priority==="p1").length+'</div><div class="pstat-lbl">P1</div></div></div></div>';if(!personIssues.length)html+='<div class="my-items-empty"><i class="fas fa-inbox"></i><h3>No items assigned to '+u.name+'</h3></div>';else{personIssues.sort((a,b)=>({p1:0,p2:1,p3:2}[a.priority]||3)-({p1:0,p2:1,p3:2}[b.priority]||3));html+='<div class="issues-list">';personIssues.forEach(i=>{html+=buildCard(i);});html+='</div>';}panel.innerHTML=html;document.getElementById("god-mode-area").innerHTML="";}
 function filterCards(filter,btn){document.querySelectorAll(".filter-pill").forEach(p=>p.classList.remove("active"));btn.classList.add("active");const list=document.getElementById("issues-list-all");if(!list)return;const assignments=getStore().assignments||{};list.querySelectorAll(".issue-card").forEach(card=>{const priority=card.dataset.priority,tags=(card.dataset.tags||"").split(",");const assignedToMe=assignments[card.dataset.id]===currentUser.email;let show=true;if(filter==="p1")show=priority==="p1";else if(filter==="p2")show=priority==="p2";else if(filter==="p3")show=priority==="p3";else if(filter==="escalated")show=tags.includes("escalated");else if(filter==="silent")show=tags.includes("silent");else if(filter==="assigned-me")show=assignedToMe;card.style.display=show?"":"none";});}
 function searchCards(q){const list=document.getElementById("issues-list-all")||document.getElementById("issues-list-"+currentTab);if(!list)return;const query=q.toLowerCase();list.querySelectorAll(".issue-card").forEach(card=>{card.style.display=card.textContent.toLowerCase().includes(query)?"":"none";});}
-function renderRaw(){if(!currentUser||currentUser.perm!=="admin"){document.getElementById("tab-raw").innerHTML='<div class="no-access"><i class="fas fa-lock"></i><h3>Restricted Access</h3><p>Raw Sweep Log is only accessible to the Operational Continuity Lead.</p></div>';return;}document.getElementById("tab-raw").innerHTML='<div class="raw-log-wrap"><div class="raw-log-header"><i class="fas fa-terminal" style="color:#D97706;"></i><h3>Raw Sweep Log</h3><p>Restricted: Operational Continuity Lead only</p></div><div class="raw-entries"><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">3 Jul 2026, 13:00 UK</span><span class="raw-source">Portal v3 — Supabase Connected</span></div><div class="raw-body">Portal v3 with Supabase real-time backend connected. Project: zijhsdhjxohicuoxwytk.supabase.co. Tables: portal_auth, portal_issues, portal_assignments, portal_statuses, portal_comments, portal_notifications. GitHub: brunnoIAI/system-health-portal.</div></div></div></div>';}
-
-// ---- HR NAVIGATION ----
-function switchToHR() {
-  currentTab = 'hr';
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('hr-nav-btn')?.classList.add('active');
-  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
-  document.getElementById('tab-hr').style.display = 'block';
-  document.getElementById('topbar-section').textContent = 'HR';
-  document.getElementById('god-mode-area').innerHTML = '';
-  renderHR();
-}
-
+function renderRaw(){if(!currentUser||currentUser.perm!=="admin"){document.getElementById("tab-raw").innerHTML='<div class="no-access"><i class="fas fa-lock"></i><h3>Restricted Access</h3><p>Raw Sweep Log is only accessible to the Operational Continuity Lead.</p></div>';return;}document.getElementById("tab-raw").innerHTML='<div class="raw-log-wrap"><div class="raw-log-header"><i class="fas fa-terminal" style="color:#D97706;"></i><h3>Raw Sweep Log</h3><p>Restricted: Operational Continuity Lead only</p></div><div class="raw-entries"><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">9 Jul 2026, 15:00 UK</span><span class="raw-source">Portal v3 — Supabase + HR Connected</span></div><div class="raw-body">Portal v3 updated 9 Jul 2026. HR module now connected to Supabase (hr_people + hr_exiting tables). System health data updated to 9 Jul 2026. GitHub: brunnoIAI/system-health-portal. Hosted: system.implementai.net.</div></div></div></div>';}
 </script>
 <script>
-
-// ============================================================
-// HR MODULE v2 — Centered, 2-col grid, better UI
-// ============================================================
-
 function getHRStore(){try{return JSON.parse(localStorage.getItem('iai_hr_v3'))||{people:[],exiting:[]};}catch(e){return{people:[],exiting:[]};}}
 function saveHRStore(s){try{localStorage.setItem('iai_hr_v3',JSON.stringify(s));}catch(e){}}
 function getHRPeople(){return getHRStore().people||[];}
@@ -782,410 +739,77 @@ function saveHRPerson(person){const s=getHRStore();const idx=s.people.findIndex(
 function saveHRExiting(person){const s=getHRStore();const idx=s.exiting.findIndex(p=>p.id===person.id);if(idx>-1)s.exiting[idx]=person;else s.exiting.push(person);saveHRStore(s);}
 function deleteHRPerson(id){const s=getHRStore();s.people=s.people.filter(p=>p.id!==id);saveHRStore(s);}
 function deleteHRExiting(id){const s=getHRStore();s.exiting=s.exiting.filter(p=>p.id!==id);saveHRStore(s);}
-
 function newOnboardingPerson(name,role,email,startDate,addedBy){return{id:'OB_'+Date.now(),type:'onboarding',name,role,email,startDate,addedBy,addedAt:new Date().toISOString(),log:[],stages:{s1:{completed:false,interviewDate:'',score:'',outcome:'',notes:''},s2:{sentDate:'',signedDate:''},s25:{candidateEmail:'',expectedStart:''},s3:{requestSentDate:'',fullNameReceived:false,fullNameDate:'',fullAddressReceived:false,fullAddressDate:'',idReceived:false,idDate:'',idLink:'',ref1Received:false,ref1Date:'',ref1Link:'',ref2Received:false,ref2Date:'',ref2Link:''},s4:{ndaSentDate:'',ndaLink:'',ndaSignedDate:'',ndaSignedLink:'',screenSentDate:'',screenLink:'',screenSignedDate:'',screenSignedLink:''},s5:{sentBy:'',sentDate:'',contractLink:'',signedDate:'',signedLink:''},s6:{credsSentDate:''},s7:{confirmedDate:''},s8:{vantaSentDate:'',policiesDate:'',mdmDate:''},s9:{certnSentDate:'',clearedDate:'',certnLink:''},s10:{services:'',completedDate:''}}};}
-
 function newOffboardingPerson(name,role,email,type,addedBy){return{id:'EX_'+Date.now(),type:'offboarding',exitType:type,name,role,email,addedBy,addedAt:new Date().toISOString(),log:[],stages:{s1:{noticeDate:'',letterSentDate:'',letterSignedDate:'',letterLink:''},s2:{checklistDate:'',checklistLink:''},s3:{shahzebSentDate:'',shahzebSignedDate:'',peersSentDate:'',peersSignedDate:'',brunnoSignedDate:'',docLink:''},s4:{o365TermDate:'',servicesDate:'',servicesNotes:''},s5:{completedDate:''}}};}
-
 function scoreColor(score){const n=parseInt(score);if(!n)return'#9CA3AF';if(n<=4)return'#DC2626';if(n<=7)return'#D97706';return'#16A34A';}
 function scoreBg(score){const n=parseInt(score);if(!n)return'#F3F4F6';if(n<=4)return'#FEE2E2';if(n<=7)return'#FEF3C7';return'#DCFCE7';}
-
-function getCurrentStageKey(p){
-  const s=p.stages;
-  if(!s.s1.completed)return's1';
-  if(!s.s2.signedDate)return's2';
-  if(!s.s25.candidateEmail)return's25';
-  if(!s.s3.ref2Received)return's3';
-  if(!s.s4.screenSignedDate)return's4';
-  if(!s.s5.signedDate)return's5';
-  if(!s.s6.credsSentDate)return's6';
-  if(!s.s7.confirmedDate)return's7';
-  if(!s.s8.mdmDate)return's8';
-  if(!s.s9.clearedDate)return's9';
-  if(!s.s10.completedDate)return's10';
-  return'done';
-}
-
-const STAGE_META={
-  s1:{num:'1',name:'Evaluation',color:'#6C5DD3'},
-  s2:{num:'2',name:'Offer',color:'#0284C7'},
-  s25:{num:'2.5',name:'Handover to HR',color:'#D97706'},
-  s3:{num:'3',name:'Documents',color:'#D97706'},
-  s4:{num:'4',name:'NDA & Screening',color:'#DC2626'},
-  s5:{num:'5',name:'Contract',color:'#7C3AED'},
-  s6:{num:'6',name:'Credentials',color:'#059669'},
-  s7:{num:'7',name:'Confirmation',color:'#059669'},
-  s8:{num:'8',name:'Vanta',color:'#0891B2'},
-  s9:{num:'9',name:'Background Check',color:'#D97706'},
-  s10:{num:'10',name:'Service Accounts',color:'#6B7280'},
-};
-
-function getOnboardingStatus(person){
-  const start=person.stages.s25.expectedStart||person.startDate;
-  const today=new Date();today.setHours(0,0,0,0);
-  const startDt=start?new Date(start):null;
-  const daysUntil=startDt?Math.ceil((startDt-today)/86400000):null;
-  const stageKey=getCurrentStageKey(person);
-  if(stageKey==='done')return{label:'Completed',color:'#16A34A',stageKey:null,daysUntil};
-  if(daysUntil!==null&&daysUntil<0)return{label:'Overdue',color:'#DC2626',stageKey,daysUntil};
-  if(daysUntil!==null&&daysUntil<=7)return{label:'Due Soon',color:'#D97706',stageKey,daysUntil};
-  return{label:'In Progress',color:'#0284C7',stageKey,daysUntil};
-}
-
-function getOffboardingStatus(person){
-  const s=person.stages;
-  const allDone=s.s1.letterSignedDate&&s.s2.checklistDate&&s.s3.brunnoSignedDate&&s.s4.servicesDate&&s.s5.completedDate;
-  if(allDone)return{label:'Fully Terminated',color:'#16A34A'};
-  if(!s.s1.noticeDate)return{label:'Notice Received',color:'#0284C7'};
-  if(!s.s1.letterSignedDate)return{label:'Awaiting Signature',color:'#D97706'};
-  if(!s.s2.checklistDate)return{label:'Exit Checklist',color:'#0284C7'};
-  if(!s.s3.brunnoSignedDate)return{label:'Sign-off Pending',color:'#D97706'};
-  if(!s.s4.servicesDate)return{label:'Account Termination',color:'#DC2626'};
-  return{label:'In Progress',color:'#0284C7'};
-}
-
+function getCurrentStageKey(p){const s=p.stages;if(!s.s1.completed)return's1';if(!s.s2.signedDate)return's2';if(!s.s25.candidateEmail)return's25';if(!s.s3.ref2Received)return's3';if(!s.s4.screenSignedDate)return's4';if(!s.s5.signedDate)return's5';if(!s.s6.credsSentDate)return's6';if(!s.s7.confirmedDate)return's7';if(!s.s8.mdmDate)return's8';if(!s.s9.clearedDate)return's9';if(!s.s10.completedDate)return's10';return'done';}
+const STAGE_META={s1:{num:'1',name:'Evaluation',color:'#6C5DD3'},s2:{num:'2',name:'Offer',color:'#0284C7'},s25:{num:'2.5',name:'Handover to HR',color:'#D97706'},s3:{num:'3',name:'Documents',color:'#D97706'},s4:{num:'4',name:'NDA & Screening',color:'#DC2626'},s5:{num:'5',name:'Contract',color:'#7C3AED'},s6:{num:'6',name:'Credentials',color:'#059669'},s7:{num:'7',name:'Confirmation',color:'#059669'},s8:{num:'8',name:'Vanta',color:'#0891B2'},s9:{num:'9',name:'Background Check',color:'#D97706'},s10:{num:'10',name:'Service Accounts',color:'#6B7280'}};
+function getOnboardingStatus(person){const start=person.stages.s25.expectedStart||person.startDate;const today=new Date();today.setHours(0,0,0,0);const startDt=start?new Date(start):null;const daysUntil=startDt?Math.ceil((startDt-today)/86400000):null;const stageKey=getCurrentStageKey(person);if(stageKey==='done')return{label:'Completed',color:'#16A34A',stageKey:null,daysUntil};if(daysUntil!==null&&daysUntil<0)return{label:'Overdue',color:'#DC2626',stageKey,daysUntil};if(daysUntil!==null&&daysUntil<=7)return{label:'Due Soon',color:'#D97706',stageKey,daysUntil};return{label:'In Progress',color:'#0284C7',stageKey,daysUntil};}
+function getOffboardingStatus(person){const s=person.stages;const allDone=s.s1.letterSignedDate&&s.s2.checklistDate&&s.s3.brunnoSignedDate&&s.s4.servicesDate&&s.s5.completedDate;if(allDone)return{label:'Fully Terminated',color:'#16A34A'};if(!s.s1.noticeDate)return{label:'Notice Received',color:'#0284C7'};if(!s.s1.letterSignedDate)return{label:'Awaiting Signature',color:'#D97706'};if(!s.s2.checklistDate)return{label:'Exit Checklist',color:'#0284C7'};if(!s.s3.brunnoSignedDate)return{label:'Sign-off Pending',color:'#D97706'};if(!s.s4.servicesDate)return{label:'Account Termination',color:'#DC2626'};return{label:'In Progress',color:'#0284C7'};}
 function hrLog(person,action){if(!person.log)person.log=[];person.log.unshift({ts:new Date().toISOString(),action,by:currentUser?.name||'System'});person.log=person.log.slice(0,100);}
-
 let hrView='onboarding',hrOpenId=null;
-
-function renderHR(){
-  const panel=document.getElementById('tab-hr');if(!panel)return;
-  document.getElementById('god-mode-area').innerHTML='';
-  const people=getHRPeople(),exiting=getHRExiting();
-  const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');
-  panel.innerHTML=`
-  <div class="hr-container">
-    <div class="hr-header">
-      <div class="hr-view-tabs">
-        <button onclick="setHRView('onboarding')" class="hr-view-btn${hrView==='onboarding'?' active':''}" id="hrv-on">
-          <i class="fas fa-user-plus"></i> Onboarding
-          <span style="background:${hrView==='onboarding'?'rgba(255,255,255,0.25)':'rgba(108,93,211,0.1)'};color:${hrView==='onboarding'?'#fff':'#6C5DD3'};border-radius:100px;padding:1px 8px;font-size:11px;font-weight:700;">${people.length}</span>
-        </button>
-        <button onclick="setHRView('exiting')" class="hr-view-btn${hrView==='exiting'?' active-red':''}" id="hrv-ex">
-          <i class="fas fa-user-minus"></i> Exiting
-          <span style="background:${hrView==='exiting'?'rgba(255,255,255,0.25)':'rgba(220,38,38,0.1)'};color:${hrView==='exiting'?'#fff':'#DC2626'};border-radius:100px;padding:1px 8px;font-size:11px;font-weight:700;">${exiting.length}</span>
-        </button>
-      </div>
-      ${canEdit?`<button onclick="openHRAddModal()" class="btn-primary" style="display:flex;align-items:center;gap:8px;padding:10px 22px;font-size:13px;"><i class="fas fa-plus"></i> Add Person</button>`:''}
-    </div>
-    <div id="hr-add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px);"></div>
-    <div id="hr-list-area"></div>
-    <div id="hr-person-area" style="display:none;"></div>
-  </div>`;
-  renderHRList();
-}
-
-function setHRView(view){
-  hrView=view;hrOpenId=null;
-  document.querySelectorAll('.hr-view-btn').forEach(b=>b.classList.remove('active','active-red'));
-  if(view==='onboarding')document.getElementById('hrv-on')?.classList.add('active');
-  else document.getElementById('hrv-ex')?.classList.add('active-red');
-  renderHRList();
-}
-
-function renderHRList(){
-  const listArea=document.getElementById('hr-list-area');
-  const personArea=document.getElementById('hr-person-area');
-  if(!listArea)return;
-  listArea.style.display='block';
-  if(personArea)personArea.style.display='none';
-  const items=hrView==='onboarding'?getHRPeople():getHRExiting();
-  if(!items.length){
-    listArea.innerHTML=`<div class="hr-empty"><i class="fas fa-users"></i><h3>No ${hrView==='onboarding'?'onboarding':'exiting'} records yet</h3><p>Click "Add Person" to get started.</p></div>`;
-    return;
-  }
-  let html='<div class="hr-list">';
-  items.forEach(person=>{
-    const status=hrView==='onboarding'?getOnboardingStatus(person):getOffboardingStatus(person);
-    const sm=status.stageKey?STAGE_META[status.stageKey]:null;
-    const start=hrView==='onboarding'?(person.stages.s25.expectedStart||person.startDate||''):'';
-    const startFmt=start?new Date(start).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';
-    const daysUntil=status.daysUntil;
-    const daysLabel=daysUntil!==undefined&&daysUntil!==null?(daysUntil<0?`${Math.abs(daysUntil)}d overdue`:daysUntil===0?'Starts today':`${daysUntil}d to start`):'';
-    const score=hrView==='onboarding'&&person.stages.s1.score?person.stages.s1.score:null;
-    const exitBadge=hrView==='exiting'?`<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:${person.exitType==='termination'?'#FEE2E2':'#E0F2FE'};color:${person.exitType==='termination'?'#DC2626':'#0284C7'};">${person.exitType==='termination'?'Termination':'Resignation'}</span>`:'';
-    const initials=person.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-    html+=`<div class="hr-person-row" onclick="openHRPerson('${person.id}')">
-      <div class="hr-person-avatar" style="background:${status.color};">${initials}</div>
-      <div class="hr-person-info">
-        <div class="hr-person-name">${person.name} ${exitBadge}</div>
-        <div class="hr-person-role">${person.role}${person.email?` &nbsp;·&nbsp; <span style="color:var(--text-muted);">${person.email}</span>`:''}</div>
-        ${sm?`<span class="hr-stage-pill" style="background:${sm.color}18;color:${sm.color};border:1.5px solid ${sm.color}35;margin-top:2px;"><span style="background:${sm.color};color:#fff;border-radius:100px;padding:1px 7px;font-size:10px;font-weight:800;">${sm.num}</span>${sm.name}</span>`:`<span class="hr-stage-pill" style="background:#DCFCE7;color:#16A34A;border:1.5px solid #16A34A35;margin-top:2px;"><i class="fas fa-check" style="font-size:10px;"></i> All stages complete</span>`}
-      </div>
-      <div class="hr-person-meta">
-        ${score?`<div class="hr-score-badge" style="background:${scoreBg(score)};"><span class="hr-score-num" style="color:${scoreColor(score)};">${score}</span><span class="hr-score-lbl" style="color:${scoreColor(score)};">score</span></div>`:''}
-        ${hrView==='onboarding'&&start?`<div class="hr-start-info"><div class="hr-start-label">Start date</div><div class="hr-start-date">${startFmt}</div>${daysLabel?`<div class="hr-start-countdown" style="color:${status.color};">${daysLabel}</div>`:''}</div>`:''}
-        <span class="hr-status-badge" style="background:${status.color}18;color:${status.color};border:1.5px solid ${status.color}35;">${status.label}</span>
-        <i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:13px;"></i>
-      </div>
-    </div>`;
-  });
-  html+='</div>';
-  listArea.innerHTML=html;
-}
-
-function openHRPerson(id){
-  hrOpenId=id;
-  const isExiting=id.startsWith('EX_');
-  const person=isExiting?getHRExiting().find(p=>p.id===id):getHRPeople().find(p=>p.id===id);
-  if(!person)return;
-  document.getElementById('hr-list-area').style.display='none';
-  const personArea=document.getElementById('hr-person-area');
-  personArea.style.display='block';
-  personArea.innerHTML=isExiting?renderOffboardingCard(person):renderOnboardingCard(person);
-}
-
+function renderHR(){const panel=document.getElementById('tab-hr');if(!panel)return;document.getElementById('god-mode-area').innerHTML='';const people=getHRPeople(),exiting=getHRExiting();const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');panel.innerHTML='<div class="hr-container"><div class="hr-header"><div class="hr-view-tabs"><button onclick="setHRView(\'onboarding\')" class="hr-view-btn'+(hrView==='onboarding'?' active':'')+'" id="hrv-on"><i class="fas fa-user-plus"></i> Onboarding <span style="background:'+(hrView==='onboarding'?'rgba(255,255,255,0.25)':'rgba(108,93,211,0.1)')+';color:'+(hrView==='onboarding'?'#fff':'#6C5DD3')+';border-radius:100px;padding:1px 8px;font-size:11px;font-weight:700;">'+people.length+'</span></button><button onclick="setHRView(\'exiting\')" class="hr-view-btn'+(hrView==='exiting'?' active-red':'')+'" id="hrv-ex"><i class="fas fa-user-minus"></i> Exiting <span style="background:'+(hrView==='exiting'?'rgba(255,255,255,0.25)':'rgba(220,38,38,0.1)')+';color:'+(hrView==='exiting'?'#fff':'#DC2626')+';border-radius:100px;padding:1px 8px;font-size:11px;font-weight:700;">'+exiting.length+'</span></button></div>'+(canEdit?'<button onclick="openHRAddModal()" class="btn-primary" style="display:flex;align-items:center;gap:8px;padding:10px 22px;font-size:13px;"><i class="fas fa-plus"></i> Add Person</button>':'')+'</div><div id="hr-add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px);"></div><div id="hr-list-area"></div><div id="hr-person-area" style="display:none;"></div></div>';renderHRList();}
+function setHRView(view){hrView=view;hrOpenId=null;document.querySelectorAll('.hr-view-btn').forEach(b=>b.classList.remove('active','active-red'));if(view==='onboarding')document.getElementById('hrv-on')?.classList.add('active');else document.getElementById('hrv-ex')?.classList.add('active-red');renderHRList();}
+function renderHRList(){const listArea=document.getElementById('hr-list-area');const personArea=document.getElementById('hr-person-area');if(!listArea)return;listArea.style.display='block';if(personArea)personArea.style.display='none';const items=hrView==='onboarding'?getHRPeople():getHRExiting();if(!items.length){listArea.innerHTML='<div class="hr-empty"><i class="fas fa-users"></i><h3>No '+(hrView==='onboarding'?'onboarding':'exiting')+' records yet</h3><p>Click "Add Person" to get started.</p></div>';return;}let html='<div class="hr-list">';items.forEach(person=>{const status=hrView==='onboarding'?getOnboardingStatus(person):getOffboardingStatus(person);const sm=status.stageKey?STAGE_META[status.stageKey]:null;const start=hrView==='onboarding'?(person.stages.s25.expectedStart||person.startDate||''):'';const startFmt=start?new Date(start).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';const daysUntil=status.daysUntil;const daysLabel=daysUntil!==undefined&&daysUntil!==null?(daysUntil<0?Math.abs(daysUntil)+'d overdue':daysUntil===0?'Starts today':daysUntil+'d to start'):'';const score=hrView==='onboarding'&&person.stages.s1.score?person.stages.s1.score:null;const exitBadge=hrView==='exiting'?'<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:'+(person.exitType==='termination'?'#FEE2E2':'#E0F2FE')+';color:'+(person.exitType==='termination'?'#DC2626':'#0284C7')+'">'+(person.exitType==='termination'?'Termination':'Resignation')+'</span>':'';const initials=person.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();html+='<div class="hr-person-row" onclick="openHRPerson(\''+person.id+'\')"><div class="hr-person-avatar" style="background:'+status.color+';">'+initials+'</div><div class="hr-person-info"><div class="hr-person-name">'+person.name+' '+exitBadge+'</div><div class="hr-person-role">'+person.role+(person.email?' &nbsp;&middot;&nbsp; <span style="color:var(--text-muted);">'+person.email+'</span>':'')+'</div>'+(sm?'<span class="hr-stage-pill" style="background:'+sm.color+'18;color:'+sm.color+';border:1.5px solid '+sm.color+'35;margin-top:2px;"><span style="background:'+sm.color+';color:#fff;border-radius:100px;padding:1px 7px;font-size:10px;font-weight:800;">'+sm.num+'</span>'+sm.name+'</span>':'<span class="hr-stage-pill" style="background:#DCFCE7;color:#16A34A;border:1.5px solid #16A34A35;margin-top:2px;"><i class="fas fa-check" style="font-size:10px;"></i> All stages complete</span>')+'</div><div class="hr-person-meta">'+(score?'<div class="hr-score-badge" style="background:'+scoreBg(score)+';"><span class="hr-score-num" style="color:'+scoreColor(score)+';">'+score+'</span><span class="hr-score-lbl" style="color:'+scoreColor(score)+';">score</span></div>':'')+(hrView==='onboarding'&&start?'<div class="hr-start-info"><div class="hr-start-label">Start date</div><div class="hr-start-date">'+startFmt+'</div>'+(daysLabel?'<div class="hr-start-countdown" style="color:'+status.color+';">'+daysLabel+'</div>':'')+'</div>':'')+'<span class="hr-status-badge" style="background:'+status.color+'18;color:'+status.color+';border:1.5px solid '+status.color+'35;">'+status.label+'</span><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:13px;"></i></div></div>';});html+='</div>';listArea.innerHTML=html;}
+function openHRPerson(id){hrOpenId=id;const isExiting=id.startsWith('EX_');const person=isExiting?getHRExiting().find(p=>p.id===id):getHRPeople().find(p=>p.id===id);if(!person)return;document.getElementById('hr-list-area').style.display='none';const personArea=document.getElementById('hr-person-area');personArea.style.display='block';personArea.innerHTML=isExiting?renderOffboardingCard(person):renderOnboardingCard(person);}
 function backToHRList(){hrOpenId=null;renderHRList();document.getElementById('hr-list-area').style.display='block';document.getElementById('hr-person-area').style.display='none';}
-
-// ---- FIELD HELPERS ----
-function _df(label,val,field,pid,canEdit){
-  if(canEdit)return`<div class="hr-field-row"><i class="fas fa-calendar" style="color:var(--text-muted);font-size:12px;flex-shrink:0;"></i><label class="hr-field-label">${label}:</label><input type="date" value="${val||''}" onchange="hrUpdateField('${pid}','${field}',this.value)" class="hr-field-input" style="max-width:180px;"></div>`;
-  return val?`<div class="hr-field-row"><i class="fas fa-calendar" style="color:var(--text-muted);font-size:12px;"></i><span class="hr-field-label">${label}:</span><span style="font-size:13px;font-weight:600;color:var(--text-heading);">${new Date(val).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</span></div>`:'';
-}
-function _lf(label,val,field,pid,canEdit){
-  if(canEdit)return`<div class="hr-link-row"><i class="fas fa-link" style="color:var(--text-muted);font-size:12px;flex-shrink:0;"></i><input type="url" placeholder="${label}" value="${val||''}" onchange="hrUpdateField('${pid}','${field}',this.value)" class="hr-link-input">${val?`<a href="${val}" target="_blank" class="hr-open-link"><i class="fas fa-external-link-alt"></i> Open</a>`:''}</div>`;
-  return val?`<div class="hr-link-row"><i class="fas fa-link" style="color:var(--brand);font-size:12px;"></i><a href="${val}" target="_blank" class="hr-open-link">${label}</a></div>`:'';
-}
-function _cb(label,checked,dateVal,field,pid,canEdit){
-  const dateStr=checked&&dateVal?`<span class="hr-check-date">${new Date(dateVal).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</span>`:'';
-  if(canEdit)return`<div class="hr-check-row"><label style="display:flex;align-items:center;gap:9px;cursor:pointer;flex:1;"><input type="checkbox" ${checked?'checked':''} onchange="hrToggleCheck('${pid}','${field}',this)" style="width:17px;height:17px;accent-color:var(--brand);cursor:pointer;flex-shrink:0;"><span class="hr-check-label" style="font-weight:${checked?'600':'400'};color:${checked?'var(--text-heading)':'var(--text-body)'};">${label}</span></label>${dateStr}</div>`;
-  return`<div class="hr-check-row"><i class="fas ${checked?'fa-check-circle':'fa-circle'}" style="color:${checked?'#16A34A':'#D1D5DB'};font-size:16px;flex-shrink:0;margin-top:2px;"></i><span class="hr-check-label" style="font-weight:${checked?'600':'400'};color:${checked?'var(--text-heading)':'var(--text-muted)'};">${label}</span>${dateStr}</div>`;
-}
-function _tf(label,val,field,pid,canEdit,type='text'){
-  if(canEdit)return`<div class="hr-field-row"><label class="hr-field-label">${label}:</label><input type="${type}" value="${val||''}" placeholder="${label}" onchange="hrUpdateField('${pid}','${field}',this.value)" class="hr-field-input"></div>`;
-  return val?`<div class="hr-field-row"><span class="hr-field-label">${label}:</span><span style="font-size:13px;font-weight:600;color:var(--text-heading);">${val}</span></div>`:'';
-}
-function _sb(num,title,color,content,fullWidth=false,onHold=false){
-  return`<div class="hr-stage-box${fullWidth?' hr-stage-full':''}"><div class="hr-stage-header"><span class="hr-stage-num" style="background:${color}18;color:${color};border:1.5px solid ${color}35;">Stage ${num}</span><span class="hr-stage-title">${title}</span>${onHold?'<span style="margin-left:auto;font-size:10px;font-weight:700;background:#F3F4F6;color:#6B7280;border-radius:100px;padding:3px 10px;">On Hold</span>':''}</div><div class="hr-stage-body">${content}</div></div>`;
-}
-
-// ---- ONBOARDING CARD ----
-function renderOnboardingCard(p){
-  const s=p.stages;
-  const status=getOnboardingStatus(p);
-  const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');
-  const startFmt=s.s25.expectedStart?new Date(s.s25.expectedStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';
-  const initials=p.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-  const today=new Date();today.setHours(0,0,0,0);
-  const startDt=s.s25.expectedStart?new Date(s.s25.expectedStart):null;
-  const daysUntil=startDt?Math.ceil((startDt-today)/86400000):null;
-  const onHold6=daysUntil!==null&&daysUntil>3;
-  const onHold7=daysUntil!==null&&daysUntil>0;
-
-  // Stage 1
-  const s1=`${_cb('Interview / evaluation completed',s.s1.completed,s.s1.interviewDate,'s1.completed',p.id,canEdit)}
-  ${_df('Interview date',s.s1.interviewDate,'s1.interviewDate',p.id,canEdit)}
-  <div style="margin-top:12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;">
-    <div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Score (1-10)</label>
-    ${canEdit?`<input type="number" min="1" max="10" value="${s.s1.score||''}" placeholder="—" onchange="hrUpdateField('${p.id}','s1.score',this.value)" class="hr-score-input" style="border-color:${scoreColor(s.s1.score)};color:${scoreColor(s.s1.score)};background:${scoreBg(s.s1.score)};">`:`<div style="width:64px;height:64px;border-radius:50%;background:${scoreBg(s.s1.score)};border:3px solid ${scoreColor(s.s1.score)};display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:${scoreColor(s.s1.score)};">${s.s1.score||'—'}</div>`}
-    </div>
-    <div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Outcome</label>
-    ${canEdit?`<select onchange="hrUpdateField('${p.id}','s1.outcome',this.value)" style="border:1.5px solid var(--border-input);border-radius:8px;padding:8px 16px;font-size:14px;font-family:var(--font);outline:none;font-weight:700;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'var(--white)'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'var(--text-heading)'};">
-      <option value="">Select</option><option value="Pass" ${s.s1.outcome==='Pass'?'selected':''}>Pass</option><option value="Fail" ${s.s1.outcome==='Fail'?'selected':''}>Fail</option><option value="Hold" ${s.s1.outcome==='Hold'?'selected':''}>Hold</option>
-    </select>`:`<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280'};">${s.s1.outcome||'—'}</span>`}
-    </div>
-  </div>
-  ${_tf('Notes',s.s1.notes,'s1.notes',p.id,canEdit)}`;
-
-  const s2=`${_df('Offer letter sent',s.s2.sentDate,'s2.sentDate',p.id,canEdit)}${_df('Offer letter signed and returned',s.s2.signedDate,'s2.signedDate',p.id,canEdit)}`;
-  const s25=`${_tf('Candidate email address',s.s25.candidateEmail,'s25.candidateEmail',p.id,canEdit,'email')}${_df('Expected start date',s.s25.expectedStart,'s25.expectedStart',p.id,canEdit)}<div style="margin-top:8px;font-size:13px;color:var(--text-muted);font-style:italic;">Once filled, Stage 3 becomes active.</div>`;
-  const s3=`${_df('Request email sent',s.s3.requestSentDate,'s3.requestSentDate',p.id,canEdit)}${_cb('Full name received',s.s3.fullNameReceived,s.s3.fullNameDate,'s3.fullNameReceived',p.id,canEdit)}${_cb('Full address received',s.s3.fullAddressReceived,s.s3.fullAddressDate,'s3.fullAddressReceived',p.id,canEdit)}${_cb('ID received',s.s3.idReceived,s.s3.idDate,'s3.idReceived',p.id,canEdit)}${_lf('ID document link',s.s3.idLink,'s3.idLink',p.id,canEdit)}${_cb('Work reference 1 received',s.s3.ref1Received,s.s3.ref1Date,'s3.ref1Received',p.id,canEdit)}${_lf('Reference 1 link',s.s3.ref1Link,'s3.ref1Link',p.id,canEdit)}${_cb('Work reference 2 received',s.s3.ref2Received,s.s3.ref2Date,'s3.ref2Received',p.id,canEdit)}${_lf('Reference 2 link',s.s3.ref2Link,'s3.ref2Link',p.id,canEdit)}`;
-  const s4=`${_df('NDA sent',s.s4.ndaSentDate,'s4.ndaSentDate',p.id,canEdit)}${_lf('NDA document link',s.s4.ndaLink,'s4.ndaLink',p.id,canEdit)}${_df('NDA signed and returned',s.s4.ndaSignedDate,'s4.ndaSignedDate',p.id,canEdit)}${_lf('Signed NDA link',s.s4.ndaSignedLink,'s4.ndaSignedLink',p.id,canEdit)}${_df('Screening declaration sent',s.s4.screenSentDate,'s4.screenSentDate',p.id,canEdit)}${_lf('Screening declaration link',s.s4.screenLink,'s4.screenLink',p.id,canEdit)}${_df('Screening declaration signed',s.s4.screenSignedDate,'s4.screenSignedDate',p.id,canEdit)}${_lf('Signed screening link',s.s4.screenSignedLink,'s4.screenSignedLink',p.id,canEdit)}`;
-  const sentByOpts=['Brunno','Piers Linney'].map(n=>`<option value="${n}" ${s.s5.sentBy===n?'selected':''}>${n}</option>`).join('');
-  const s5=`<div class="hr-field-row"><label class="hr-field-label">Sent by:</label>${canEdit?`<select onchange="hrUpdateField('${p.id}','s5.sentBy',this.value)" style="border:1px solid var(--border-input);border-radius:6px;padding:6px 12px;font-size:13px;font-family:var(--font);outline:none;"><option value="">Select person</option>${sentByOpts}</select>`:`<strong style="font-size:13px;">${s.s5.sentBy||'—'}</strong>`}</div>${_df('Contract sent',s.s5.sentDate,'s5.sentDate',p.id,canEdit)}${_lf('Contract document link',s.s5.contractLink,'s5.contractLink',p.id,canEdit)}${_df('Contract signed and returned',s.s5.signedDate,'s5.signedDate',p.id,canEdit)}${_lf('Signed contract link',s.s5.signedLink,'s5.signedLink',p.id,canEdit)}`;
-  const s6=`${onHold6?`<div class="hr-on-hold-banner"><i class="fas fa-clock"></i> On hold — person starts in ${daysUntil} days</div>`:''} ${_df('365 credentials sent',s.s6.credsSentDate,'s6.credsSentDate',p.id,canEdit)}`;
-  const s7=`${onHold7?`<div class="hr-on-hold-banner"><i class="fas fa-clock"></i> On hold — person has not started yet</div>`:''} ${_df('Confirmed access on Teams/Outlook',s.s7.confirmedDate,'s7.confirmedDate',p.id,canEdit)}`;
-  const s8=`${_df('Vanta invite sent',s.s8.vantaSentDate,'s8.vantaSentDate',p.id,canEdit)}${_df('Policies accepted',s.s8.policiesDate,'s8.policiesDate',p.id,canEdit)}${_df('MDM installed on machine',s.s8.mdmDate,'s8.mdmDate',p.id,canEdit)}`;
-  const s9=`${_df('Sent to Certn',s.s9.certnSentDate,'s9.certnSentDate',p.id,canEdit)}${_df('Background check cleared',s.s9.clearedDate,'s9.clearedDate',p.id,canEdit)}${_lf('Certn report link',s.s9.certnLink,'s9.certnLink',p.id,canEdit)}`;
-  const s10=`${canEdit?`<div style="margin-top:6px;"><label class="hr-field-label" style="display:block;margin-bottom:6px;">Services added (Slack, GitHub, cloud, etc.)</label><textarea onchange="hrUpdateField('${p.id}','s10.services',this.value)" style="width:100%;border:1px solid var(--border-input);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:60px;">${s.s10.services||''}</textarea></div>`:(s.s10.services?`<div style="font-size:13px;white-space:pre-wrap;margin-top:4px;">${s.s10.services}</div>`:'')}${_df('All service accounts added',s.s10.completedDate,'s10.completedDate',p.id,canEdit)}`;
-
-  const logHtml=(p.log||[]).length>0?`<div class="hr-log"><div class="hr-log-title"><i class="fas fa-history"></i> Activity Log</div><div class="hr-log-list">${(p.log||[]).map(l=>`<div class="hr-log-row"><span class="hr-log-time">${new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span><span class="hr-log-text">${l.action} <span style="color:var(--text-muted);">by ${l.by}</span></span></div>`).join('')}</div></div>`:'';
-
-  return`<div class="hr-container">
-  <div class="hr-back-bar">
-    <button onclick="backToHRList()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-arrow-left"></i> Back to Onboarding</button>
-    ${canEdit?`<button onclick="deleteHRPersonConfirm('${p.id}')" style="background:none;border:1.5px solid var(--red-light);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-trash"></i> Remove</button>`:''}
-  </div>
-  <div class="hr-card-header">
-    <div class="hr-card-header-inner">
-      <div class="hr-card-avatar" style="background:${status.color};">${initials}</div>
-      <div style="flex:1;">
-        <div class="hr-card-name">${p.name}</div>
-        <div class="hr-card-sub">${p.role}${p.email?' &nbsp;·&nbsp; '+p.email:''}</div>
-      </div>
-      <div class="hr-card-badges">
-        ${s.s1.score?`<div class="hr-score-badge" style="background:${scoreBg(s.s1.score)};"><span class="hr-score-num" style="color:${scoreColor(s.s1.score)};">${s.s1.score}</span><span class="hr-score-lbl" style="color:${scoreColor(s.s1.score)};">score</span></div>`:''}
-        ${s.s1.outcome?`<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280'};">${s.s1.outcome}</span>`:''}
-        <span class="hr-status-badge" style="background:${status.color}18;color:${status.color};border:1.5px solid ${status.color}35;font-size:13px;padding:6px 16px;">${status.label}</span>
-        ${startFmt!=='—'?`<div class="hr-start-info"><div class="hr-start-label">Start date</div><div class="hr-start-date">${startFmt}</div>${status.daysUntil!==null?`<div class="hr-start-countdown" style="color:${status.color};">${status.daysUntil<0?Math.abs(status.daysUntil)+'d overdue':status.daysUntil===0?'Today':status.daysUntil+'d to start'}</div>`:''}</div>`:''}
-      </div>
-    </div>
-  </div>
-  <div class="hr-stages-grid">
-    ${_sb(1,'Competence Evaluation','#6C5DD3',s1)}
-    ${_sb(2,'Offer Letter','#0284C7',s2)}
-    ${_sb('2.5','Handover to HR','#D97706',s25)}
-    ${_sb(3,'Documents Requested','#D97706',s3)}
-    ${_sb(4,'NDA & Self-Screening','#DC2626',s4)}
-    ${_sb(5,'Contract Agreement','#7C3AED',s5)}
-    ${_sb(6,'Credentials (365)','#059669',s6,false,onHold6)}
-    ${_sb(7,'Access Confirmation','#059669',s7,false,onHold7)}
-    ${_sb(8,'Vanta — Policies & MDM','#0891B2',s8)}
-    ${_sb(9,'Background Check (Certn)','#D97706',s9)}
-    ${_sb(10,'Service Accounts','#6B7280',s10,true)}
-  </div>
-  ${logHtml}
-  </div>`;
-}
-
-// ---- OFFBOARDING CARD ----
-function renderOffboardingCard(p){
-  const s=p.stages;
-  const status=getOffboardingStatus(p);
-  const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');
-  const docLabel=p.exitType==='termination'?'Termination letter':'Resignation letter';
-  const initials=p.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-
-  const s1=`${_df('Notice received / termination decision',s.s1.noticeDate,'s1.noticeDate',p.id,canEdit)}${_df(docLabel+' sent',s.s1.letterSentDate,'s1.letterSentDate',p.id,canEdit)}${_df(docLabel+' signed and returned',s.s1.letterSignedDate,'s1.letterSignedDate',p.id,canEdit)}${_lf(docLabel+' link',s.s1.letterLink,'s1.letterLink',p.id,canEdit)}`;
-  const s2=`${_df('Exit checklist completed',s.s2.checklistDate,'s2.checklistDate',p.id,canEdit)}${_lf('Exit checklist link',s.s2.checklistLink,'s2.checklistLink',p.id,canEdit)}`;
-  const s3=`${_df('Sent to Shahzeb',s.s3.shahzebSentDate,'s3.shahzebSentDate',p.id,canEdit)}${_df('Shahzeb signed',s.s3.shahzebSignedDate,'s3.shahzebSignedDate',p.id,canEdit)}${_df('Sent to Piers / Lini',s.s3.peersSentDate,'s3.peersSentDate',p.id,canEdit)}${_df('Piers / Lini signed',s.s3.peersSignedDate,'s3.peersSignedDate',p.id,canEdit)}${_df('Brunno signed',s.s3.brunnoSignedDate,'s3.brunnoSignedDate',p.id,canEdit)}${_lf('Signed document link',s.s3.docLink,'s3.docLink',p.id,canEdit)}`;
-  const s4=`${_df('365 account terminated',s.s4.o365TermDate,'s4.o365TermDate',p.id,canEdit)}${_df('All service accounts removed',s.s4.servicesDate,'s4.servicesDate',p.id,canEdit)}${canEdit?`<div style="margin-top:8px;"><label class="hr-field-label" style="display:block;margin-bottom:6px;">Services removed</label><textarea onchange="hrUpdateField('${p.id}','s4.servicesNotes',this.value)" style="width:100%;border:1px solid var(--border-input);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:50px;">${s.s4.servicesNotes||''}</textarea></div>`:(s.s4.servicesNotes?`<div style="font-size:13px;margin-top:4px;white-space:pre-wrap;">${s.s4.servicesNotes}</div>`:'')}`;
-  const s5=`${_df('Fully terminated',s.s5.completedDate,'s5.completedDate',p.id,canEdit)}`;
-
-  const logHtml=(p.log||[]).length>0?`<div class="hr-log"><div class="hr-log-title"><i class="fas fa-history"></i> Activity Log</div><div class="hr-log-list">${(p.log||[]).map(l=>`<div class="hr-log-row"><span class="hr-log-time">${new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span><span class="hr-log-text">${l.action} <span style="color:var(--text-muted);">by ${l.by}</span></span></div>`).join('')}</div></div>`:'';
-
-  return`<div class="hr-container">
-  <div class="hr-back-bar">
-    <button onclick="backToHRList()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-arrow-left"></i> Back to Exiting</button>
-    ${canEdit?`<button onclick="deleteHRExitingConfirm('${p.id}')" style="background:none;border:1.5px solid var(--red-light);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-trash"></i> Remove</button>`:''}
-  </div>
-  <div class="hr-card-header">
-    <div class="hr-card-header-inner">
-      <div class="hr-card-avatar" style="background:${p.exitType==='termination'?'#DC2626':'#0284C7'};">${initials}</div>
-      <div style="flex:1;">
-        <div class="hr-card-name">${p.name}</div>
-        <div class="hr-card-sub">${p.role}${p.email?' &nbsp;·&nbsp; '+p.email:''}</div>
-      </div>
-      <div class="hr-card-badges">
-        <span style="font-size:13px;font-weight:700;padding:6px 16px;border-radius:8px;background:${p.exitType==='termination'?'#FEE2E2':'#E0F2FE'};color:${p.exitType==='termination'?'#DC2626':'#0284C7'};">${p.exitType==='termination'?'Termination':'Resignation'}</span>
-        <span class="hr-status-badge" style="background:${status.color}18;color:${status.color};border:1.5px solid ${status.color}35;font-size:13px;padding:6px 16px;">${status.label}</span>
-      </div>
-    </div>
-  </div>
-  <div class="hr-stages-grid">
-    ${_sb(1,docLabel,'#D97706',s1,true)}
-    ${_sb(2,'Exit Checklist','#0284C7',s2)}
-    ${_sb(3,'Sign-off','#7C3AED',s3)}
-    ${_sb(4,'Account Termination','#DC2626',s4)}
-    ${_sb(5,'Fully Terminated','#16A34A',s5)}
-  </div>
-  ${logHtml}
-  </div>`;
-}
-
-// ---- UPDATE FIELDS ----
-function hrUpdateField(personId,fieldPath,value){
-  const isExiting=personId.startsWith('EX_');
-  const s=getHRStore();
-  const arr=isExiting?s.exiting:s.people;
-  const person=arr.find(p=>p.id===personId);if(!person)return;
-  const parts=fieldPath.split('.');let obj=person.stages;
-  for(let i=0;i<parts.length-1;i++)obj=obj[parts[i]];
-  const oldVal=obj[parts[parts.length-1]];
-  obj[parts[parts.length-1]]=value;
-  hrLog(person,`${fieldPath}: "${oldVal||'—'}" → "${value||'—'}"`);
-  saveHRStore(s);
-  const personArea=document.getElementById('hr-person-area');
-  if(personArea&&personArea.style.display!=='none'){
-    const fresh=isExiting?getHRExiting().find(p=>p.id===personId):getHRPeople().find(p=>p.id===personId);
-    if(fresh)personArea.innerHTML=isExiting?renderOffboardingCard(fresh):renderOnboardingCard(fresh);
-  }
-}
-
-function hrToggleCheck(personId,fieldPath,checkbox){
-  const isExiting=personId.startsWith('EX_');
-  const s=getHRStore();
-  const arr=isExiting?s.exiting:s.people;
-  const person=arr.find(p=>p.id===personId);if(!person)return;
-  const parts=fieldPath.split('.');let obj=person.stages;
-  for(let i=0;i<parts.length-1;i++)obj=obj[parts[i]];
-  obj[parts[parts.length-1]]=checkbox.checked;
-  const dateKey=parts[parts.length-1].replace('Received','Date').replace('completed','interviewDate');
-  if(checkbox.checked&&obj[dateKey]==='')obj[dateKey]=new Date().toISOString().split('T')[0];
-  hrLog(person,`${fieldPath}: ${checkbox.checked?'checked':'unchecked'}`);
-  saveHRStore(s);
-  const personArea=document.getElementById('hr-person-area');
-  if(personArea&&personArea.style.display!=='none'){
-    const fresh=isExiting?getHRExiting().find(p=>p.id===personId):getHRPeople().find(p=>p.id===personId);
-    if(fresh)personArea.innerHTML=isExiting?renderOffboardingCard(fresh):renderOnboardingCard(fresh);
-  }
-}
-
-// ---- ADD MODAL ----
-function openHRAddModal(){
-  const modal=document.getElementById('hr-add-modal');if(!modal)return;
-  modal.style.display='flex';
-  modal.innerHTML=`<div class="hr-modal-inner">
-    <h2 class="hr-modal-title">Add Person</h2>
-    <p class="hr-modal-sub">Add someone to the ${hrView==='onboarding'?'onboarding':'exiting'} pipeline.</p>
-    <div class="settings-field"><label>Full Name *</label><input type="text" id="hr-add-name" placeholder="e.g. Jane Smith" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>
-    <div class="settings-field"><label>Role / Job Title *</label><input type="text" id="hr-add-role" placeholder="e.g. Solutions Engineer" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>
-    <div class="settings-field"><label>Email Address</label><input type="email" id="hr-add-email" placeholder="e.g. jane@example.com" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>
-    ${hrView==='onboarding'?`<div class="settings-field"><label>Expected Start Date</label><input type="date" id="hr-add-start" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>`:`<div class="settings-field"><label>Type *</label><select id="hr-add-type" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"><option value="resignation">Resignation</option><option value="termination">Termination</option></select></div>`}
-    <div style="color:var(--red);font-size:13px;margin-bottom:10px;display:none;" id="hr-add-error"></div>
-    <div style="display:flex;gap:12px;margin-top:8px;">
-      <button onclick="submitHRAdd()" class="btn-primary" style="flex:1;padding:11px;font-size:14px;"><i class="fas fa-plus"></i> Add Person</button>
-      <button onclick="closeHRAddModal()" class="btn-secondary" style="padding:11px 20px;font-size:14px;">Cancel</button>
-    </div>
-  </div>`;
-}
-
+function _df(label,val,field,pid,canEdit){if(canEdit)return'<div class="hr-field-row"><i class="fas fa-calendar" style="color:var(--text-muted);font-size:12px;flex-shrink:0;"></i><label class="hr-field-label">'+label+':</label><input type="date" value="'+(val||'')+'" onchange="hrUpdateField(\''+pid+'\',\''+field+'\',this.value)" class="hr-field-input" style="max-width:180px;"></div>';return val?'<div class="hr-field-row"><i class="fas fa-calendar" style="color:var(--text-muted);font-size:12px;"></i><span class="hr-field-label">'+label+':</span><span style="font-size:13px;font-weight:600;color:var(--text-heading);">'+new Date(val).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+'</span></div>':'';}
+function _lf(label,val,field,pid,canEdit){if(canEdit)return'<div class="hr-link-row"><i class="fas fa-link" style="color:var(--text-muted);font-size:12px;flex-shrink:0;"></i><input type="url" placeholder="'+label+'" value="'+(val||'')+'" onchange="hrUpdateField(\''+pid+'\',\''+field+'\',this.value)" class="hr-link-input">'+(val?'<a href="'+val+'" target="_blank" class="hr-open-link"><i class="fas fa-external-link-alt"></i> Open</a>':'')+'</div>';return val?'<div class="hr-link-row"><i class="fas fa-link" style="color:var(--brand);font-size:12px;"></i><a href="'+val+'" target="_blank" class="hr-open-link">'+label+'</a></div>':'';}
+function _cb(label,checked,dateVal,field,pid,canEdit){const dateStr=checked&&dateVal?'<span class="hr-check-date">'+new Date(dateVal).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+'</span>':'';if(canEdit)return'<div class="hr-check-row"><label style="display:flex;align-items:center;gap:9px;cursor:pointer;flex:1;"><input type="checkbox" '+(checked?'checked':'')+' onchange="hrToggleCheck(\''+pid+'\',\''+field+'\',this)" style="width:17px;height:17px;accent-color:var(--brand);cursor:pointer;flex-shrink:0;"><span class="hr-check-label" style="font-weight:'+(checked?'600':'400')+';color:'+(checked?'var(--text-heading)':'var(--text-body)')+';">'+label+'</span></label>'+dateStr+'</div>';return'<div class="hr-check-row"><i class="fas '+(checked?'fa-check-circle':'fa-circle')+'" style="color:'+(checked?'#16A34A':'#D1D5DB')+';font-size:16px;flex-shrink:0;margin-top:2px;"></i><span class="hr-check-label" style="font-weight:'+(checked?'600':'400')+';color:'+(checked?'var(--text-heading)':'var(--text-muted)')+';">'+label+'</span>'+dateStr+'</div>';}
+function _tf(label,val,field,pid,canEdit,type='text'){if(canEdit)return'<div class="hr-field-row"><label class="hr-field-label">'+label+':</label><input type="'+type+'" value="'+(val||'')+'" placeholder="'+label+'" onchange="hrUpdateField(\''+pid+'\',\''+field+'\',this.value)" class="hr-field-input"></div>';return val?'<div class="hr-field-row"><span class="hr-field-label">'+label+':</span><span style="font-size:13px;font-weight:600;color:var(--text-heading);">'+val+'</span></div>':'';}
+function _sb(num,title,color,content,fullWidth=false,onHold=false){return'<div class="hr-stage-box'+(fullWidth?' hr-stage-full':'')+'"><div class="hr-stage-header"><span class="hr-stage-num" style="background:'+color+'18;color:'+color+';border:1.5px solid '+color+'35;">Stage '+num+'</span><span class="hr-stage-title">'+title+'</span>'+(onHold?'<span style="margin-left:auto;font-size:10px;font-weight:700;background:#F3F4F6;color:#6B7280;border-radius:100px;padding:3px 10px;">On Hold</span>':'')+'</div><div class="hr-stage-body">'+content+'</div></div>';}
+function renderOnboardingCard(p){const s=p.stages;const status=getOnboardingStatus(p);const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');const startFmt=s.s25.expectedStart?new Date(s.s25.expectedStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';const initials=p.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();const today=new Date();today.setHours(0,0,0,0);const startDt=s.s25.expectedStart?new Date(s.s25.expectedStart):null;const daysUntil=startDt?Math.ceil((startDt-today)/86400000):null;const onHold6=daysUntil!==null&&daysUntil>3;const onHold7=daysUntil!==null&&daysUntil>0;
+const s1=_cb('Interview / evaluation completed',s.s1.completed,s.s1.interviewDate,'s1.completed',p.id,canEdit)+_df('Interview date',s.s1.interviewDate,'s1.interviewDate',p.id,canEdit)+'<div style="margin-top:12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;"><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Score (1-10)</label>'+(canEdit?'<input type="number" min="1" max="10" value="'+(s.s1.score||'')+'" placeholder="—" onchange="hrUpdateField(\''+p.id+'\',\'s1.score\',this.value)" class="hr-score-input" style="border-color:'+scoreColor(s.s1.score)+';color:'+scoreColor(s.s1.score)+';background:'+scoreBg(s.s1.score)+';">':'<div style="width:64px;height:64px;border-radius:50%;background:'+scoreBg(s.s1.score)+';border:3px solid '+scoreColor(s.s1.score)+';display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:'+scoreColor(s.s1.score)+'">'+(s.s1.score||'—')+'</div>')+'</div><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Outcome</label>'+(canEdit?'<select onchange="hrUpdateField(\''+p.id+'\',\'s1.outcome\',this.value)" style="border:1.5px solid var(--border-input);border-radius:8px;padding:8px 16px;font-size:14px;font-family:var(--font);outline:none;font-weight:700;background:'+(s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'var(--white)')+';color:'+(s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'var(--text-heading)')+';"><option value="">Select</option><option value="Pass" '+(s.s1.outcome==='Pass'?'selected':'')+'>Pass</option><option value="Fail" '+(s.s1.outcome==='Fail'?'selected':'')+'>Fail</option><option value="Hold" '+(s.s1.outcome==='Hold'?'selected':'')+'>Hold</option></select>':'<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6')+';color:'+(s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280')+';">'+(s.s1.outcome||'—')+'</span>')+'</div></div>'+_tf('Notes',s.s1.notes,'s1.notes',p.id,canEdit);
+const s2=_df('Offer letter sent',s.s2.sentDate,'s2.sentDate',p.id,canEdit)+_df('Offer letter signed and returned',s.s2.signedDate,'s2.signedDate',p.id,canEdit);
+const s25=_tf('Candidate email address',s.s25.candidateEmail,'s25.candidateEmail',p.id,canEdit,'email')+_df('Expected start date',s.s25.expectedStart,'s25.expectedStart',p.id,canEdit)+'<div style="margin-top:8px;font-size:13px;color:var(--text-muted);font-style:italic;">Once filled, Stage 3 becomes active.</div>';
+const s3=_df('Request email sent',s.s3.requestSentDate,'s3.requestSentDate',p.id,canEdit)+_cb('Full name received',s.s3.fullNameReceived,s.s3.fullNameDate,'s3.fullNameReceived',p.id,canEdit)+_cb('Full address received',s.s3.fullAddressReceived,s.s3.fullAddressDate,'s3.fullAddressReceived',p.id,canEdit)+_cb('ID received',s.s3.idReceived,s.s3.idDate,'s3.idReceived',p.id,canEdit)+_lf('ID document link',s.s3.idLink,'s3.idLink',p.id,canEdit)+_cb('Work reference 1 received',s.s3.ref1Received,s.s3.ref1Date,'s3.ref1Received',p.id,canEdit)+_lf('Reference 1 link',s.s3.ref1Link,'s3.ref1Link',p.id,canEdit)+_cb('Work reference 2 received',s.s3.ref2Received,s.s3.ref2Date,'s3.ref2Received',p.id,canEdit)+_lf('Reference 2 link',s.s3.ref2Link,'s3.ref2Link',p.id,canEdit);
+const s4=_df('NDA sent',s.s4.ndaSentDate,'s4.ndaSentDate',p.id,canEdit)+_lf('NDA document link',s.s4.ndaLink,'s4.ndaLink',p.id,canEdit)+_df('NDA signed and returned',s.s4.ndaSignedDate,'s4.ndaSignedDate',p.id,canEdit)+_lf('Signed NDA link',s.s4.ndaSignedLink,'s4.ndaSignedLink',p.id,canEdit)+_df('Screening declaration sent',s.s4.screenSentDate,'s4.screenSentDate',p.id,canEdit)+_lf('Screening declaration link',s.s4.screenLink,'s4.screenLink',p.id,canEdit)+_df('Screening declaration signed',s.s4.screenSignedDate,'s4.screenSignedDate',p.id,canEdit)+_lf('Signed screening link',s.s4.screenSignedLink,'s4.screenSignedLink',p.id,canEdit);
+const sentByOpts=['Brunno','Piers Linney'].map(n=>'<option value="'+n+'" '+(s.s5.sentBy===n?'selected':'')+'>'+n+'</option>').join('');
+const s5='<div class="hr-field-row"><label class="hr-field-label">Sent by:</label>'+(canEdit?'<select onchange="hrUpdateField(\''+p.id+'\',\'s5.sentBy\',this.value)" style="border:1px solid var(--border-input);border-radius:6px;padding:6px 12px;font-size:13px;font-family:var(--font);outline:none;"><option value="">Select person</option>'+sentByOpts+'</select>':'<strong style="font-size:13px;">'+(s.s5.sentBy||'—')+'</strong>')+'</div>'+_df('Contract sent',s.s5.sentDate,'s5.sentDate',p.id,canEdit)+_lf('Contract document link',s.s5.contractLink,'s5.contractLink',p.id,canEdit)+_df('Contract signed and returned',s.s5.signedDate,'s5.signedDate',p.id,canEdit)+_lf('Signed contract link',s.s5.signedLink,'s5.signedLink',p.id,canEdit);
+const s6=(onHold6?'<div class="hr-on-hold-banner"><i class="fas fa-clock"></i> On hold — person starts in '+daysUntil+' days</div>':'')+_df('365 credentials sent',s.s6.credsSentDate,'s6.credsSentDate',p.id,canEdit);
+const s7=(onHold7?'<div class="hr-on-hold-banner"><i class="fas fa-clock"></i> On hold — person has not started yet</div>':'')+_df('Confirmed access on Teams/Outlook',s.s7.confirmedDate,'s7.confirmedDate',p.id,canEdit);
+const s8=_df('Vanta invite sent',s.s8.vantaSentDate,'s8.vantaSentDate',p.id,canEdit)+_df('Policies accepted',s.s8.policiesDate,'s8.policiesDate',p.id,canEdit)+_df('MDM installed on machine',s.s8.mdmDate,'s8.mdmDate',p.id,canEdit);
+const s9=_df('Sent to Certn',s.s9.certnSentDate,'s9.certnSentDate',p.id,canEdit)+_df('Background check cleared',s.s9.clearedDate,'s9.clearedDate',p.id,canEdit)+_lf('Certn report link',s.s9.certnLink,'s9.certnLink',p.id,canEdit);
+const s10=(canEdit?'<div style="margin-top:6px;"><label class="hr-field-label" style="display:block;margin-bottom:6px;">Services added (Slack, GitHub, cloud, etc.)</label><textarea onchange="hrUpdateField(\''+p.id+'\',\'s10.services\',this.value)" style="width:100%;border:1px solid var(--border-input);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:60px;">'+(s.s10.services||'')+'</textarea></div>':(s.s10.services?'<div style="font-size:13px;white-space:pre-wrap;margin-top:4px;">'+s.s10.services+'</div>':''))+_df('All service accounts added',s.s10.completedDate,'s10.completedDate',p.id,canEdit);
+const logHtml=(p.log||[]).length>0?'<div class="hr-log"><div class="hr-log-title"><i class="fas fa-history"></i> Activity Log</div><div class="hr-log-list">'+((p.log||[]).map(l=>'<div class="hr-log-row"><span class="hr-log-time">'+new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</span><span class="hr-log-text">'+l.action+' <span style="color:var(--text-muted);">by '+l.by+'</span></span></div>').join(''))+'</div></div>':'';
+return'<div class="hr-container"><div class="hr-back-bar"><button onclick="backToHRList()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-arrow-left"></i> Back to Onboarding</button>'+(canEdit?'<button onclick="deleteHRPersonConfirm(\''+p.id+'\')" style="background:none;border:1.5px solid var(--red-light);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-trash"></i> Remove</button>':'')+'</div><div class="hr-card-header"><div class="hr-card-header-inner"><div class="hr-card-avatar" style="background:'+status.color+';">'+initials+'</div><div style="flex:1;"><div class="hr-card-name">'+p.name+'</div><div class="hr-card-sub">'+p.role+(p.email?' &nbsp;&middot;&nbsp; '+p.email:'')+'</div></div><div class="hr-card-badges">'+(s.s1.score?'<div class="hr-score-badge" style="background:'+scoreBg(s.s1.score)+';"><span class="hr-score-num" style="color:'+scoreColor(s.s1.score)+';">'+s.s1.score+'</span><span class="hr-score-lbl" style="color:'+scoreColor(s.s1.score)+';">score</span></div>':'')+(s.s1.outcome?'<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6')+';color:'+(s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280')+';">'+s.s1.outcome+'</span>':'')+'<span class="hr-status-badge" style="background:'+status.color+'18;color:'+status.color+';border:1.5px solid '+status.color+'35;font-size:13px;padding:6px 16px;">'+status.label+'</span>'+(startFmt!=='—'?'<div class="hr-start-info"><div class="hr-start-label">Start date</div><div class="hr-start-date">'+startFmt+'</div>'+(status.daysUntil!==null?'<div class="hr-start-countdown" style="color:'+status.color+';">'+(status.daysUntil<0?Math.abs(status.daysUntil)+'d overdue':status.daysUntil===0?'Today':status.daysUntil+'d to start')+'</div>':'')+'</div>':'')+'</div></div></div><div class="hr-stages-grid">'+_sb(1,'Competence Evaluation','#6C5DD3',s1)+_sb(2,'Offer Letter','#0284C7',s2)+_sb('2.5','Handover to HR','#D97706',s25)+_sb(3,'Documents Requested','#D97706',s3)+_sb(4,'NDA & Self-Screening','#DC2626',s4)+_sb(5,'Contract Agreement','#7C3AED',s5)+_sb(6,'Credentials (365)','#059669',s6,false,onHold6)+_sb(7,'Access Confirmation','#059669',s7,false,onHold7)+_sb(8,'Vanta — Policies & MDM','#0891B2',s8)+_sb(9,'Background Check (Certn)','#D97706',s9)+_sb(10,'Service Accounts','#6B7280',s10,true)+'</div>'+logHtml+'</div>';}
+function renderOffboardingCard(p){const s=p.stages;const status=getOffboardingStatus(p);const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');const docLabel=p.exitType==='termination'?'Termination letter':'Resignation letter';const initials=p.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+const s1=_df('Notice received / termination decision',s.s1.noticeDate,'s1.noticeDate',p.id,canEdit)+_df(docLabel+' sent',s.s1.letterSentDate,'s1.letterSentDate',p.id,canEdit)+_df(docLabel+' signed and returned',s.s1.letterSignedDate,'s1.letterSignedDate',p.id,canEdit)+_lf(docLabel+' link',s.s1.letterLink,'s1.letterLink',p.id,canEdit);
+const s2=_df('Exit checklist completed',s.s2.checklistDate,'s2.checklistDate',p.id,canEdit)+_lf('Exit checklist link',s.s2.checklistLink,'s2.checklistLink',p.id,canEdit);
+const s3=_df('Sent to Shahzeb',s.s3.shahzebSentDate,'s3.shahzebSentDate',p.id,canEdit)+_df('Shahzeb signed',s.s3.shahzebSignedDate,'s3.shahzebSignedDate',p.id,canEdit)+_df('Sent to Piers / Lini',s.s3.peersSentDate,'s3.peersSentDate',p.id,canEdit)+_df('Piers / Lini signed',s.s3.peersSignedDate,'s3.peersSignedDate',p.id,canEdit)+_df('Brunno signed',s.s3.brunnoSignedDate,'s3.brunnoSignedDate',p.id,canEdit)+_lf('Signed document link',s.s3.docLink,'s3.docLink',p.id,canEdit);
+const s4=_df('365 account terminated',s.s4.o365TermDate,'s4.o365TermDate',p.id,canEdit)+_df('All service accounts removed',s.s4.servicesDate,'s4.servicesDate',p.id,canEdit)+(canEdit?'<div style="margin-top:8px;"><label class="hr-field-label" style="display:block;margin-bottom:6px;">Services removed</label><textarea onchange="hrUpdateField(\''+p.id+'\',\'s4.servicesNotes\',this.value)" style="width:100%;border:1px solid var(--border-input);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:50px;">'+(s.s4.servicesNotes||'')+'</textarea></div>':(s.s4.servicesNotes?'<div style="font-size:13px;margin-top:4px;white-space:pre-wrap;">'+s.s4.servicesNotes+'</div>':''));
+const s5=_df('Fully terminated',s.s5.completedDate,'s5.completedDate',p.id,canEdit);
+const logHtml=(p.log||[]).length>0?'<div class="hr-log"><div class="hr-log-title"><i class="fas fa-history"></i> Activity Log</div><div class="hr-log-list">'+((p.log||[]).map(l=>'<div class="hr-log-row"><span class="hr-log-time">'+new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</span><span class="hr-log-text">'+l.action+' <span style="color:var(--text-muted);">by '+l.by+'</span></span></div>').join(''))+'</div></div>':'';
+return'<div class="hr-container"><div class="hr-back-bar"><button onclick="backToHRList()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-arrow-left"></i> Back to Exiting</button>'+(canEdit?'<button onclick="deleteHRExitingConfirm(\''+p.id+'\')" style="background:none;border:1.5px solid var(--red-light);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-trash"></i> Remove</button>':'')+'</div><div class="hr-card-header"><div class="hr-card-header-inner"><div class="hr-card-avatar" style="background:'+(p.exitType==='termination'?'#DC2626':'#0284C7')+';">'+initials+'</div><div style="flex:1;"><div class="hr-card-name">'+p.name+'</div><div class="hr-card-sub">'+p.role+(p.email?' &nbsp;&middot;&nbsp; '+p.email:'')+'</div></div><div class="hr-card-badges"><span style="font-size:13px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(p.exitType==='termination'?'#FEE2E2':'#E0F2FE')+';color:'+(p.exitType==='termination'?'#DC2626':'#0284C7')+';">'+(p.exitType==='termination'?'Termination':'Resignation')+'</span><span class="hr-status-badge" style="background:'+status.color+'18;color:'+status.color+';border:1.5px solid '+status.color+'35;font-size:13px;padding:6px 16px;">'+status.label+'</span></div></div></div><div class="hr-stages-grid">'+_sb(1,docLabel,'#D97706',s1,true)+_sb(2,'Exit Checklist','#0284C7',s2)+_sb(3,'Sign-off','#7C3AED',s3)+_sb(4,'Account Termination','#DC2626',s4)+_sb(5,'Fully Terminated','#16A34A',s5)+'</div>'+logHtml+'</div>';}
+function hrUpdateField(personId,fieldPath,value){const isExiting=personId.startsWith('EX_');const s=getHRStore();const arr=isExiting?s.exiting:s.people;const person=arr.find(p=>p.id===personId);if(!person)return;const parts=fieldPath.split('.');let obj=person.stages;for(let i=0;i<parts.length-1;i++)obj=obj[parts[i]];const oldVal=obj[parts[parts.length-1]];obj[parts[parts.length-1]]=value;hrLog(person,fieldPath+': "'+( oldVal||'—')+'" → "'+(value||'—')+'"');saveHRStore(s);const personArea=document.getElementById('hr-person-area');if(personArea&&personArea.style.display!=='none'){const fresh=isExiting?getHRExiting().find(p=>p.id===personId):getHRPeople().find(p=>p.id===personId);if(fresh)personArea.innerHTML=isExiting?renderOffboardingCard(fresh):renderOnboardingCard(fresh);}}
+function hrToggleCheck(personId,fieldPath,checkbox){const isExiting=personId.startsWith('EX_');const s=getHRStore();const arr=isExiting?s.exiting:s.people;const person=arr.find(p=>p.id===personId);if(!person)return;const parts=fieldPath.split('.');let obj=person.stages;for(let i=0;i<parts.length-1;i++)obj=obj[parts[i]];obj[parts[parts.length-1]]=checkbox.checked;const dateKey=parts[parts.length-1].replace('Received','Date').replace('completed','interviewDate');if(checkbox.checked&&obj[dateKey]==='')obj[dateKey]=new Date().toISOString().split('T')[0];hrLog(person,fieldPath+': '+(checkbox.checked?'checked':'unchecked'));saveHRStore(s);const personArea=document.getElementById('hr-person-area');if(personArea&&personArea.style.display!=='none'){const fresh=isExiting?getHRExiting().find(p=>p.id===personId):getHRPeople().find(p=>p.id===personId);if(fresh)personArea.innerHTML=isExiting?renderOffboardingCard(fresh):renderOnboardingCard(fresh);}}
+function openHRAddModal(){const modal=document.getElementById('hr-add-modal');if(!modal)return;modal.style.display='flex';modal.innerHTML='<div class="hr-modal-inner"><h2 class="hr-modal-title">Add Person</h2><p class="hr-modal-sub">Add someone to the '+(hrView==='onboarding'?'onboarding':'exiting')+' pipeline.</p><div class="settings-field"><label>Full Name *</label><input type="text" id="hr-add-name" placeholder="e.g. Jane Smith" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div><div class="settings-field"><label>Role / Job Title *</label><input type="text" id="hr-add-role" placeholder="e.g. Solutions Engineer" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div><div class="settings-field"><label>Email Address</label><input type="email" id="hr-add-email" placeholder="e.g. jane@example.com" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>'+(hrView==='onboarding'?'<div class="settings-field"><label>Expected Start Date</label><input type="date" id="hr-add-start" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>':'<div class="settings-field"><label>Type *</label><select id="hr-add-type" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"><option value="resignation">Resignation</option><option value="termination">Termination</option></select></div>')+'<div style="color:var(--red);font-size:13px;margin-bottom:10px;display:none;" id="hr-add-error"></div><div style="display:flex;gap:12px;margin-top:8px;"><button onclick="submitHRAdd()" class="btn-primary" style="flex:1;padding:11px;font-size:14px;"><i class="fas fa-plus"></i> Add Person</button><button onclick="closeHRAddModal()" class="btn-secondary" style="padding:11px 20px;font-size:14px;">Cancel</button></div></div>';}
 function closeHRAddModal(){const modal=document.getElementById('hr-add-modal');if(modal)modal.style.display='none';}
-
-function submitHRAdd(){
-  const name=document.getElementById('hr-add-name')?.value.trim();
-  const role=document.getElementById('hr-add-role')?.value.trim();
-  const email=document.getElementById('hr-add-email')?.value.trim();
-  const errEl=document.getElementById('hr-add-error');
-  if(!name||!role){if(errEl){errEl.textContent='Name and role are required.';errEl.style.display='block';}return;}
-  if(hrView==='onboarding'){
-    const start=document.getElementById('hr-add-start')?.value;
-    const person=newOnboardingPerson(name,role,email,start,currentUser?.name);
-    if(start)person.stages.s25.expectedStart=start;
-    hrLog(person,'Added to onboarding pipeline');
-    saveHRPerson(person);
-  }else{
-    const type=document.getElementById('hr-add-type')?.value||'resignation';
-    const person=newOffboardingPerson(name,role,email,type,currentUser?.name);
-    hrLog(person,`Added to exiting pipeline (${type})`);
-    saveHRExiting(person);
-  }
-  closeHRAddModal();renderHRList();
-}
-
+function submitHRAdd(){const name=document.getElementById('hr-add-name')?.value.trim();const role=document.getElementById('hr-add-role')?.value.trim();const email=document.getElementById('hr-add-email')?.value.trim();const errEl=document.getElementById('hr-add-error');if(!name||!role){if(errEl){errEl.textContent='Name and role are required.';errEl.style.display='block';}return;}if(hrView==='onboarding'){const start=document.getElementById('hr-add-start')?.value;const person=newOnboardingPerson(name,role,email,start,currentUser?.name);if(start)person.stages.s25.expectedStart=start;hrLog(person,'Added to onboarding pipeline');saveHRPerson(person);}else{const type=document.getElementById('hr-add-type')?.value||'resignation';const person=newOffboardingPerson(name,role,email,type,currentUser?.name);hrLog(person,'Added to exiting pipeline ('+type+')');saveHRExiting(person);}closeHRAddModal();renderHRList();}
 function deleteHRPersonConfirm(id){if(confirm('Remove this person from onboarding? All their data will be deleted.')){deleteHRPerson(id);backToHRList();}}
 function deleteHRExitingConfirm(id){if(confirm('Remove this person from exiting? All their data will be deleted.')){deleteHRExiting(id);backToHRList();}}
-
 document.addEventListener('click',function(e){const modal=document.getElementById('hr-add-modal');if(modal&&e.target===modal)closeHRAddModal();});
-
 </script>
+
 <script>
 // ============================================================
-// SUPABASE REAL-TIME BACKEND
-// Project: https://zijhsdhjxohicuoxwytk.supabase.co
+// SUPABASE — System Health (comments, assignments, statuses, notifications)
 // ============================================================
 const _SB_URL = 'https://zijhsdhjxohicuoxwytk.supabase.co';
 const _SB_KEY = 'sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox';
 let _sbClient = null;
+window._sbClient = null;
 
 function getSB() {
-  if (!_sbClient && window.supabase) {
-    _sbClient = window.supabase.createClient(_SB_URL, _SB_KEY);
+  if (window._sbClient) return window._sbClient;
+  if (window.supabase) {
+    window._sbClient = window.supabase.createClient(_SB_URL, _SB_KEY);
+    return window._sbClient;
   }
-  return _sbClient;
+  return null;
 }
 
-// On login: load all remote data then subscribe to real-time changes
 async function loadRemoteData() {
   const sb = getSB();
   if (!sb || !currentUser) return;
@@ -1209,7 +833,6 @@ async function loadRemoteData() {
     saveStore(s);
     renderWorkload(); updateMyItemsBadge(); renderNotifBadge(); renderAll();
 
-    // Real-time: comments
     sb.channel('rt_comments').on('postgres_changes',
       {event: 'INSERT', schema: 'public', table: 'portal_comments'}, payload => {
         const r = payload.new;
@@ -1224,7 +847,6 @@ async function loadRemoteData() {
         }
       }).subscribe();
 
-    // Real-time: notifications
     sb.channel('rt_notif_'+email).on('postgres_changes',
       {event: 'INSERT', schema: 'public', table: 'portal_notifications',
         filter: 'recipient_email=eq.'+email}, payload => {
@@ -1236,7 +858,6 @@ async function loadRemoteData() {
         saveStore(s3); renderNotifBadge();
       }).subscribe();
 
-    // Real-time: assignments
     sb.channel('rt_assignments').on('postgres_changes',
       {event: '*', schema: 'public', table: 'portal_assignments'}, payload => {
         const r = payload.new || payload.old;
@@ -1250,28 +871,24 @@ async function loadRemoteData() {
   } catch(e) { console.warn('Supabase load failed, using localStorage:', e); }
 }
 
-// Override store functions to write to Supabase AND localStorage
 const _origSetAssignment = window.setAssignment;
 window.setAssignment = function(issueId, email) {
   _origSetAssignment && _origSetAssignment(issueId, email);
   const sb = getSB();
   if (sb) sb.from('portal_assignments').upsert({issue_id:issueId, assignee_email:email, assigned_by:currentUser?.email, assigned_at:new Date().toISOString()});
 };
-
 const _origUnsetAssignment = window.unsetAssignment;
 window.unsetAssignment = function(issueId) {
   _origUnsetAssignment && _origUnsetAssignment(issueId);
   const sb = getSB();
   if (sb) sb.from('portal_assignments').delete().eq('issue_id', issueId);
 };
-
 const _origSetLiveStatus = window.setLiveStatus;
 window.setLiveStatus = function(issueId, status) {
   _origSetLiveStatus && _origSetLiveStatus(issueId, status);
   const sb = getSB();
   if (sb) sb.from('portal_statuses').upsert({issue_id:issueId, status, changed_by:currentUser?.email, changed_at:new Date().toISOString()});
 };
-
 const _origAddMessage = window.addMessage;
 window.addMessage = function(issueId, text) {
   const msg = _origAddMessage && _origAddMessage(issueId, text);
@@ -1279,36 +896,168 @@ window.addMessage = function(issueId, text) {
   if (sb && currentUser) sb.from('portal_comments').insert({issue_id:issueId, author_email:currentUser.email, author_name:currentUser.name, author_initials:currentUser.initials, text});
   return msg;
 };
-
 const _origAddNotification = window.addNotification;
 window.addNotification = function(email, type, issueId, html) {
   _origAddNotification && _origAddNotification(email, type, issueId, html);
   const sb = getSB();
   if (sb) sb.from('portal_notifications').insert({recipient_email:email, type, issue_id:issueId, html});
 };
-
 const _origMarkNotifRead = window.markNotifRead;
 window.markNotifRead = function(id) {
   _origMarkNotifRead && _origMarkNotifRead(id);
   const sb = getSB();
   if (sb) sb.from('portal_notifications').update({is_read:true}).eq('id', id);
 };
-
 const _origMarkAllRead = window.markAllRead;
 window.markAllRead = function() {
   _origMarkAllRead && _origMarkAllRead();
   const sb = getSB();
   if (sb && currentUser) sb.from('portal_notifications').update({is_read:true}).eq('recipient_email', currentUser.email);
 };
-
-// Hook into completeLogin to load remote data1
 const _origCompleteLogin = window.completeLogin;
 window.completeLogin = function(email) {
   _origCompleteLogin && _origCompleteLogin(email);
   loadRemoteData();
 };
+</script>
+<script>
 
-console.log('Supabase real-time backend active:', _SB_URL);
+// ============================================================
+// HR SUPABASE SYNC — replaces localStorage for HR data
+// ============================================================
+const _HR_SB_URL = 'https://zijhsdhjxohicuoxwytk.supabase.co';
+const _HR_SB_KEY = 'sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox';
+
+function getHRSB() {
+  if (window._sbClient) return window._sbClient;
+  if (window.supabase) {
+    window._sbClient = window.supabase.createClient(_HR_SB_URL, _HR_SB_KEY);
+    return window._sbClient;
+  }
+  return null;
+}
+
+// Override HR store functions to use Supabase
+// getHRPeople / getHRExiting read from Supabase async,
+// but we keep localStorage as instant cache so UI is snappy
+
+async function loadHRFromSupabase() {
+  const sb = getHRSB();
+  if (!sb) return;
+  try {
+    const [people, exiting] = await Promise.all([
+      sb.from('hr_people').select('*').order('added_at', {ascending: false}),
+      sb.from('hr_exiting').select('*').order('added_at', {ascending: false})
+    ]);
+    const s = JSON.parse(localStorage.getItem('iai_hr_v3') || '{"people":[],"exiting":[]}');
+    if (people.data) s.people = people.data.map(r => ({
+      id: r.id, name: r.name, role: r.role, email: r.email,
+      startDate: r.start_date, addedBy: r.added_by,
+      addedAt: r.added_at, log: r.log || [], stages: r.stages || {}
+    }));
+    if (exiting.data) s.exiting = exiting.data.map(r => ({
+      id: r.id, name: r.name, role: r.role, email: r.email,
+      exitType: r.exit_type, addedBy: r.added_by,
+      addedAt: r.added_at, log: r.log || [], stages: r.stages || {}
+    }));
+    localStorage.setItem('iai_hr_v3', JSON.stringify(s));
+    console.log('HR loaded from Supabase:', s.people.length, 'onboarding,', s.exiting.length, 'exiting');
+  } catch(e) { console.warn('HR Supabase load failed, using localStorage:', e); }
+}
+
+async function _saveHRPersonToSB(person) {
+  const sb = getHRSB();
+  if (!sb) return;
+  try {
+    await sb.from('hr_people').upsert({
+      id: person.id, name: person.name, role: person.role,
+      email: person.email, start_date: person.startDate,
+      added_by: person.addedBy, added_at: person.addedAt,
+      log: person.log || [], stages: person.stages || {},
+      updated_at: new Date().toISOString()
+    });
+  } catch(e) { console.warn('HR save to Supabase failed:', e); }
+}
+
+async function _saveHRExitingToSB(person) {
+  const sb = getHRSB();
+  if (!sb) return;
+  try {
+    await sb.from('hr_exiting').upsert({
+      id: person.id, name: person.name, role: person.role,
+      email: person.email, exit_type: person.exitType,
+      added_by: person.addedBy, added_at: person.addedAt,
+      log: person.log || [], stages: person.stages || {},
+      updated_at: new Date().toISOString()
+    });
+  } catch(e) { console.warn('HR exiting save to Supabase failed:', e); }
+}
+
+async function _deleteHRPersonFromSB(id) {
+  const sb = getHRSB();
+  if (!sb) return;
+  try { await sb.from('hr_people').delete().eq('id', id); } catch(e) {}
+}
+
+async function _deleteHRExitingFromSB(id) {
+  const sb = getHRSB();
+  if (!sb) return;
+  try { await sb.from('hr_exiting').delete().eq('id', id); } catch(e) {}
+}
+
+// Patch saveHRPerson and saveHRExiting to also write to Supabase
+const _origSaveHRPerson = window.saveHRPerson;
+window.saveHRPerson = function(person) {
+  _origSaveHRPerson && _origSaveHRPerson(person);
+  _saveHRPersonToSB(person);
+};
+
+const _origSaveHRExiting = window.saveHRExiting;
+window.saveHRExiting = function(person) {
+  _origSaveHRExiting && _origSaveHRExiting(person);
+  _saveHRExitingToSB(person);
+};
+
+const _origDeleteHRPerson = window.deleteHRPerson;
+window.deleteHRPerson = function(id) {
+  _origDeleteHRPerson && _origDeleteHRPerson(id);
+  _deleteHRPersonFromSB(id);
+};
+
+const _origDeleteHRExiting = window.deleteHRExiting;
+window.deleteHRExiting = function(id) {
+  _origDeleteHRExiting && _origDeleteHRExiting(id);
+  _deleteHRExitingFromSB(id);
+};
+
+// Load HR from Supabase when user logs in
+const _origCompleteLoginHR = window.completeLogin;
+window.completeLogin = function(email) {
+  _origCompleteLoginHR && _origCompleteLoginHR(email);
+  loadHRFromSupabase().then(() => {
+    if (window.hrView !== undefined) renderHRList && renderHRList();
+  });
+};
+
+// Real-time: sync HR changes from other users
+window.addEventListener('load', function() {
+  const sb = getHRSB();
+  if (!sb) return;
+  sb.channel('hr_realtime')
+    .on('postgres_changes', {event:'*', schema:'public', table:'hr_people'}, payload => {
+      loadHRFromSupabase().then(() => {
+        if (window.currentTab === 'hr') renderHRList && renderHRList();
+      });
+    })
+    .on('postgres_changes', {event:'*', schema:'public', table:'hr_exiting'}, payload => {
+      loadHRFromSupabase().then(() => {
+        if (window.currentTab === 'hr') renderHRList && renderHRList();
+      });
+    })
+    .subscribe();
+  console.log('HR real-time sync active');
+});
+
 </script>
 </body>
 </html>
