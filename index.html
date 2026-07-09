@@ -736,62 +736,507 @@ function searchCards(q){const list=document.getElementById("issues-list-all")||d
 function renderRaw(){if(!currentUser||currentUser.perm!=="admin"){document.getElementById("tab-raw").innerHTML='<div class="no-access"><i class="fas fa-lock"></i><h3>Restricted Access</h3><p>Raw Sweep Log is only accessible to the Operational Continuity Lead.</p></div>';return;}document.getElementById("tab-raw").innerHTML='<div class="raw-log-wrap"><div class="raw-log-header"><i class="fas fa-terminal" style="color:#D97706;"></i><h3>Raw Sweep Log</h3><p>Restricted: Operational Continuity Lead only</p></div><div class="raw-entries"><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">9 Jul 2026, 15:00 UK</span><span class="raw-source">Portal v3 — Supabase + HR Connected</span></div><div class="raw-body">Portal v3 updated 9 Jul 2026. HR module now connected to Supabase (hr_people + hr_exiting tables). System health data updated to 9 Jul 2026. GitHub: brunnoIAI/system-health-portal. Hosted: system.implementai.net.</div></div></div></div>';}
 </script>
 <script>
-function getHRStore(){try{return JSON.parse(localStorage.getItem('iai_hr_v3'))||{people:[],exiting:[]};}catch(e){return{people:[],exiting:[]};}}
+// ============================================================
+// HR MODULE v3 — Save fix + Performance Reviews + IAI email
+// ============================================================
+
+// ---- STORE ----
+function getHRStore(){try{return JSON.parse(localStorage.getItem('iai_hr_v3'))||{people:[],exiting:[],reviews:[]};}catch(e){return{people:[],exiting:[],reviews:[]};}}
 function saveHRStore(s){try{localStorage.setItem('iai_hr_v3',JSON.stringify(s));}catch(e){}}
 function getHRPeople(){return getHRStore().people||[];}
 function getHRExiting(){return getHRStore().exiting||[];}
-function saveHRPerson(person){const s=getHRStore();const idx=s.people.findIndex(p=>p.id===person.id);if(idx>-1)s.people[idx]=person;else s.people.push(person);saveHRStore(s);}
-function saveHRExiting(person){const s=getHRStore();const idx=s.exiting.findIndex(p=>p.id===person.id);if(idx>-1)s.exiting[idx]=person;else s.exiting.push(person);saveHRStore(s);}
-function deleteHRPerson(id){const s=getHRStore();s.people=s.people.filter(p=>p.id!==id);saveHRStore(s);}
-function deleteHRExiting(id){const s=getHRStore();s.exiting=s.exiting.filter(p=>p.id!==id);saveHRStore(s);}
-function newOnboardingPerson(name,role,email,startDate,addedBy){return{id:'OB_'+Date.now(),type:'onboarding',name,role,email,startDate,addedBy,addedAt:new Date().toISOString(),log:[],stages:{s1:{completed:false,interviewDate:'',score:'',outcome:'',notes:''},s2:{sentDate:'',signedDate:''},s25:{candidateEmail:'',expectedStart:''},s3:{requestSentDate:'',fullNameReceived:false,fullNameDate:'',fullAddressReceived:false,fullAddressDate:'',idReceived:false,idDate:'',idLink:'',ref1Received:false,ref1Date:'',ref1Link:'',ref2Received:false,ref2Date:'',ref2Link:''},s4:{ndaSentDate:'',ndaLink:'',ndaSignedDate:'',ndaSignedLink:'',screenSentDate:'',screenLink:'',screenSignedDate:'',screenSignedLink:''},s5:{sentBy:'',sentDate:'',contractLink:'',signedDate:'',signedLink:''},s6:{credsSentDate:''},s7:{confirmedDate:''},s8:{vantaSentDate:'',policiesDate:'',mdmDate:''},s9:{certnSentDate:'',clearedDate:'',certnLink:''},s10:{services:'',completedDate:''}}};}
+function getHRReviews(){return getHRStore().reviews||[];}
+
+function saveHRPerson(person){
+  const s=getHRStore();
+  const idx=s.people.findIndex(p=>p.id===person.id);
+  if(idx>-1)s.people[idx]=person;else s.people.push(person);
+  saveHRStore(s);
+  // Write to Supabase
+  const sb=window._sbClient||getSB&&getSB();
+  if(sb)sb.from('hr_people').upsert({id:person.id,name:person.name,role:person.role,email:person.email,start_date:person.startDate,added_by:person.addedBy,added_at:person.addedAt,log:person.log||[],stages:person.stages||{},updated_at:new Date().toISOString()}).then(r=>{if(r.error)console.warn('HR Supabase save error:',r.error);});
+}
+function saveHRExiting(person){
+  const s=getHRStore();
+  const idx=s.exiting.findIndex(p=>p.id===person.id);
+  if(idx>-1)s.exiting[idx]=person;else s.exiting.push(person);
+  saveHRStore(s);
+  const sb=window._sbClient||getSB&&getSB();
+  if(sb)sb.from('hr_exiting').upsert({id:person.id,name:person.name,role:person.role,email:person.email,exit_type:person.exitType,added_by:person.addedBy,added_at:person.addedAt,log:person.log||[],stages:person.stages||{},updated_at:new Date().toISOString()}).then(r=>{if(r.error)console.warn('HR exiting Supabase save error:',r.error);});
+}
+function saveHRReview(review){
+  const s=getHRStore();
+  if(!s.reviews)s.reviews=[];
+  const idx=s.reviews.findIndex(r=>r.id===review.id);
+  if(idx>-1)s.reviews[idx]=review;else s.reviews.push(review);
+  saveHRStore(s);
+  const sb=window._sbClient||getSB&&getSB();
+  if(sb)sb.from('hr_reviews').upsert({...review,updated_at:new Date().toISOString()}).then(r=>{if(r.error)console.warn('HR review Supabase save error:',r.error);});
+}
+function deleteHRPerson(id){
+  const s=getHRStore();s.people=s.people.filter(p=>p.id!==id);saveHRStore(s);
+  const sb=window._sbClient||getSB&&getSB();if(sb)sb.from('hr_people').delete().eq('id',id);
+}
+function deleteHRExiting(id){
+  const s=getHRStore();s.exiting=s.exiting.filter(p=>p.id!==id);saveHRStore(s);
+  const sb=window._sbClient||getSB&&getSB();if(sb)sb.from('hr_exiting').delete().eq('id',id);
+}
+function deleteHRReview(id){
+  const s=getHRStore();s.reviews=(s.reviews||[]).filter(r=>r.id!==id);saveHRStore(s);
+  const sb=window._sbClient||getSB&&getSB();if(sb)sb.from('hr_reviews').delete().eq('id',id);
+}
+
+// ---- TEMPLATES ----
+function newOnboardingPerson(name,role,email,startDate,addedBy){return{id:'OB_'+Date.now(),type:'onboarding',name,role,email,startDate,addedBy,addedAt:new Date().toISOString(),log:[],stages:{s1:{completed:false,interviewDate:'',score:'',outcome:'',notes:''},s2:{sentDate:'',signedDate:''},s25:{candidateEmail:'',expectedStart:''},s3:{requestSentDate:'',fullNameReceived:false,fullNameDate:'',fullAddressReceived:false,fullAddressDate:'',idReceived:false,idDate:'',idLink:'',ref1Received:false,ref1Date:'',ref1Link:'',ref2Received:false,ref2Date:'',ref2Link:''},s4:{ndaSentDate:'',ndaLink:'',ndaSignedDate:'',ndaSignedLink:'',screenSentDate:'',screenLink:'',screenSignedDate:'',screenSignedLink:''},s5:{sentBy:'',sentDate:'',contractLink:'',signedDate:'',signedLink:''},s6:{credsSentDate:'',iaiEmail:''},s7:{confirmedDate:''},s8:{vantaSentDate:'',policiesDate:'',mdmDate:''},s9:{certnSentDate:'',clearedDate:'',certnLink:''},s10:{services:'',completedDate:''}}};}
 function newOffboardingPerson(name,role,email,type,addedBy){return{id:'EX_'+Date.now(),type:'offboarding',exitType:type,name,role,email,addedBy,addedAt:new Date().toISOString(),log:[],stages:{s1:{noticeDate:'',letterSentDate:'',letterSignedDate:'',letterLink:''},s2:{checklistDate:'',checklistLink:''},s3:{shahzebSentDate:'',shahzebSignedDate:'',peersSentDate:'',peersSignedDate:'',brunnoSignedDate:'',docLink:''},s4:{o365TermDate:'',servicesDate:'',servicesNotes:''},s5:{completedDate:''}}};}
+function newReview(personId,personName,personRole){return{id:'REV_'+Date.now(),personId,personName,personRole,reviewDate:'',score:'',outcome:'',evaluatedBy:'',docLink:'',notes:'',addedBy:currentUser?.name||'',createdAt:new Date().toISOString()};}
+
+// ---- SCORE HELPERS ----
 function scoreColor(score){const n=parseInt(score);if(!n)return'#9CA3AF';if(n<=4)return'#DC2626';if(n<=7)return'#D97706';return'#16A34A';}
 function scoreBg(score){const n=parseInt(score);if(!n)return'#F3F4F6';if(n<=4)return'#FEE2E2';if(n<=7)return'#FEF3C7';return'#DCFCE7';}
+
+// ---- STATUS ----
 function getCurrentStageKey(p){const s=p.stages;if(!s.s1.completed)return's1';if(!s.s2.signedDate)return's2';if(!s.s25.candidateEmail)return's25';if(!s.s3.ref2Received)return's3';if(!s.s4.screenSignedDate)return's4';if(!s.s5.signedDate)return's5';if(!s.s6.credsSentDate)return's6';if(!s.s7.confirmedDate)return's7';if(!s.s8.mdmDate)return's8';if(!s.s9.clearedDate)return's9';if(!s.s10.completedDate)return's10';return'done';}
 const STAGE_META={s1:{num:'1',name:'Evaluation',color:'#6C5DD3'},s2:{num:'2',name:'Offer',color:'#0284C7'},s25:{num:'2.5',name:'Handover to HR',color:'#D97706'},s3:{num:'3',name:'Documents',color:'#D97706'},s4:{num:'4',name:'NDA & Screening',color:'#DC2626'},s5:{num:'5',name:'Contract',color:'#7C3AED'},s6:{num:'6',name:'Credentials',color:'#059669'},s7:{num:'7',name:'Confirmation',color:'#059669'},s8:{num:'8',name:'Vanta',color:'#0891B2'},s9:{num:'9',name:'Background Check',color:'#D97706'},s10:{num:'10',name:'Service Accounts',color:'#6B7280'}};
 function getOnboardingStatus(person){const start=person.stages.s25.expectedStart||person.startDate;const today=new Date();today.setHours(0,0,0,0);const startDt=start?new Date(start):null;const daysUntil=startDt?Math.ceil((startDt-today)/86400000):null;const stageKey=getCurrentStageKey(person);if(stageKey==='done')return{label:'Completed',color:'#16A34A',stageKey:null,daysUntil};if(daysUntil!==null&&daysUntil<0)return{label:'Overdue',color:'#DC2626',stageKey,daysUntil};if(daysUntil!==null&&daysUntil<=7)return{label:'Due Soon',color:'#D97706',stageKey,daysUntil};return{label:'In Progress',color:'#0284C7',stageKey,daysUntil};}
 function getOffboardingStatus(person){const s=person.stages;const allDone=s.s1.letterSignedDate&&s.s2.checklistDate&&s.s3.brunnoSignedDate&&s.s4.servicesDate&&s.s5.completedDate;if(allDone)return{label:'Fully Terminated',color:'#16A34A'};if(!s.s1.noticeDate)return{label:'Notice Received',color:'#0284C7'};if(!s.s1.letterSignedDate)return{label:'Awaiting Signature',color:'#D97706'};if(!s.s2.checklistDate)return{label:'Exit Checklist',color:'#0284C7'};if(!s.s3.brunnoSignedDate)return{label:'Sign-off Pending',color:'#D97706'};if(!s.s4.servicesDate)return{label:'Account Termination',color:'#DC2626'};return{label:'In Progress',color:'#0284C7'};}
+
 function hrLog(person,action){if(!person.log)person.log=[];person.log.unshift({ts:new Date().toISOString(),action,by:currentUser?.name||'System'});person.log=person.log.slice(0,100);}
+
+// ---- NAV ----
 let hrView='onboarding',hrOpenId=null;
-function renderHR(){const panel=document.getElementById('tab-hr');if(!panel)return;document.getElementById('god-mode-area').innerHTML='';const people=getHRPeople(),exiting=getHRExiting();const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');panel.innerHTML='<div class="hr-container"><div class="hr-header"><div class="hr-view-tabs"><button onclick="setHRView(\'onboarding\')" class="hr-view-btn'+(hrView==='onboarding'?' active':'')+'" id="hrv-on"><i class="fas fa-user-plus"></i> Onboarding <span style="background:'+(hrView==='onboarding'?'rgba(255,255,255,0.25)':'rgba(108,93,211,0.1)')+';color:'+(hrView==='onboarding'?'#fff':'#6C5DD3')+';border-radius:100px;padding:1px 8px;font-size:11px;font-weight:700;">'+people.length+'</span></button><button onclick="setHRView(\'exiting\')" class="hr-view-btn'+(hrView==='exiting'?' active-red':'')+'" id="hrv-ex"><i class="fas fa-user-minus"></i> Exiting <span style="background:'+(hrView==='exiting'?'rgba(255,255,255,0.25)':'rgba(220,38,38,0.1)')+';color:'+(hrView==='exiting'?'#fff':'#DC2626')+';border-radius:100px;padding:1px 8px;font-size:11px;font-weight:700;">'+exiting.length+'</span></button></div>'+(canEdit?'<button onclick="openHRAddModal()" class="btn-primary" style="display:flex;align-items:center;gap:8px;padding:10px 22px;font-size:13px;"><i class="fas fa-plus"></i> Add Person</button>':'')+'</div><div id="hr-add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px);"></div><div id="hr-list-area"></div><div id="hr-person-area" style="display:none;"></div></div>';renderHRList();}
-function setHRView(view){hrView=view;hrOpenId=null;document.querySelectorAll('.hr-view-btn').forEach(b=>b.classList.remove('active','active-red'));if(view==='onboarding')document.getElementById('hrv-on')?.classList.add('active');else document.getElementById('hrv-ex')?.classList.add('active-red');renderHRList();}
-function renderHRList(){const listArea=document.getElementById('hr-list-area');const personArea=document.getElementById('hr-person-area');if(!listArea)return;listArea.style.display='block';if(personArea)personArea.style.display='none';const items=hrView==='onboarding'?getHRPeople():getHRExiting();if(!items.length){listArea.innerHTML='<div class="hr-empty"><i class="fas fa-users"></i><h3>No '+(hrView==='onboarding'?'onboarding':'exiting')+' records yet</h3><p>Click "Add Person" to get started.</p></div>';return;}let html='<div class="hr-list">';items.forEach(person=>{const status=hrView==='onboarding'?getOnboardingStatus(person):getOffboardingStatus(person);const sm=status.stageKey?STAGE_META[status.stageKey]:null;const start=hrView==='onboarding'?(person.stages.s25.expectedStart||person.startDate||''):'';const startFmt=start?new Date(start).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';const daysUntil=status.daysUntil;const daysLabel=daysUntil!==undefined&&daysUntil!==null?(daysUntil<0?Math.abs(daysUntil)+'d overdue':daysUntil===0?'Starts today':daysUntil+'d to start'):'';const score=hrView==='onboarding'&&person.stages.s1.score?person.stages.s1.score:null;const exitBadge=hrView==='exiting'?'<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:'+(person.exitType==='termination'?'#FEE2E2':'#E0F2FE')+';color:'+(person.exitType==='termination'?'#DC2626':'#0284C7')+'">'+(person.exitType==='termination'?'Termination':'Resignation')+'</span>':'';const initials=person.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();html+='<div class="hr-person-row" onclick="openHRPerson(\''+person.id+'\')"><div class="hr-person-avatar" style="background:'+status.color+';">'+initials+'</div><div class="hr-person-info"><div class="hr-person-name">'+person.name+' '+exitBadge+'</div><div class="hr-person-role">'+person.role+(person.email?' &nbsp;&middot;&nbsp; <span style="color:var(--text-muted);">'+person.email+'</span>':'')+'</div>'+(sm?'<span class="hr-stage-pill" style="background:'+sm.color+'18;color:'+sm.color+';border:1.5px solid '+sm.color+'35;margin-top:2px;"><span style="background:'+sm.color+';color:#fff;border-radius:100px;padding:1px 7px;font-size:10px;font-weight:800;">'+sm.num+'</span>'+sm.name+'</span>':'<span class="hr-stage-pill" style="background:#DCFCE7;color:#16A34A;border:1.5px solid #16A34A35;margin-top:2px;"><i class="fas fa-check" style="font-size:10px;"></i> All stages complete</span>')+'</div><div class="hr-person-meta">'+(score?'<div class="hr-score-badge" style="background:'+scoreBg(score)+';"><span class="hr-score-num" style="color:'+scoreColor(score)+';">'+score+'</span><span class="hr-score-lbl" style="color:'+scoreColor(score)+';">score</span></div>':'')+(hrView==='onboarding'&&start?'<div class="hr-start-info"><div class="hr-start-label">Start date</div><div class="hr-start-date">'+startFmt+'</div>'+(daysLabel?'<div class="hr-start-countdown" style="color:'+status.color+';">'+daysLabel+'</div>':'')+'</div>':'')+'<span class="hr-status-badge" style="background:'+status.color+'18;color:'+status.color+';border:1.5px solid '+status.color+'35;">'+status.label+'</span><i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:13px;"></i></div></div>';});html+='</div>';listArea.innerHTML=html;}
-function openHRPerson(id){hrOpenId=id;const isExiting=id.startsWith('EX_');const person=isExiting?getHRExiting().find(p=>p.id===id):getHRPeople().find(p=>p.id===id);if(!person)return;document.getElementById('hr-list-area').style.display='none';const personArea=document.getElementById('hr-person-area');personArea.style.display='block';personArea.innerHTML=isExiting?renderOffboardingCard(person):renderOnboardingCard(person);}
+
+function renderHR(){
+  const panel=document.getElementById('tab-hr');if(!panel)return;
+  document.getElementById('god-mode-area').innerHTML='';
+  const people=getHRPeople(),exiting=getHRExiting(),reviews=getHRReviews();
+  const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');
+  // Count unique people in reviews
+  const reviewPeople=new Set(reviews.map(r=>r.personId)).size;
+  panel.innerHTML=`
+  <div class="hr-container">
+    <div class="hr-header">
+      <div class="hr-view-tabs">
+        <button onclick="setHRView('onboarding')" class="hr-view-btn${hrView==='onboarding'?' active':''}" id="hrv-on">
+          <i class="fas fa-user-plus"></i> Onboarding
+          <span style="background:${hrView==='onboarding'?'rgba(255,255,255,0.25)':'rgba(108,93,211,0.1)'};color:${hrView==='onboarding'?'#fff':'#6C5DD3'};border-radius:100px;padding:1px 8px;font-size:11px;font-weight:700;">${people.length}</span>
+        </button>
+        <button onclick="setHRView('exiting')" class="hr-view-btn${hrView==='exiting'?' active-red':''}" id="hrv-ex">
+          <i class="fas fa-user-minus"></i> Exiting
+          <span style="background:${hrView==='exiting'?'rgba(255,255,255,0.25)':'rgba(220,38,38,0.1)'};color:${hrView==='exiting'?'#fff':'#DC2626'};border-radius:100px;padding:1px 8px;font-size:11px;font-weight:700;">${exiting.length}</span>
+        </button>
+        <button onclick="setHRView('reviews')" class="hr-view-btn${hrView==='reviews'?' active':''}" id="hrv-rv" style="${hrView==='reviews'?'background:#0284C7;border-color:#0284C7;color:#fff;':''}">
+          <i class="fas fa-star"></i> Performance Reviews
+          <span style="background:${hrView==='reviews'?'rgba(255,255,255,0.25)':'rgba(2,132,199,0.1)'};color:${hrView==='reviews'?'#fff':'#0284C7'};border-radius:100px;padding:1px 8px;font-size:11px;font-weight:700;">${reviewPeople}</span>
+        </button>
+      </div>
+      ${canEdit?`<button onclick="openHRAddModal()" class="btn-primary" style="display:flex;align-items:center;gap:8px;padding:10px 22px;font-size:13px;"><i class="fas fa-plus"></i> ${hrView==='reviews'?'Add Review':'Add Person'}</button>`:''}
+    </div>
+    <div id="hr-add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px);"></div>
+    <div id="hr-list-area"></div>
+    <div id="hr-person-area" style="display:none;"></div>
+  </div>`;
+  renderHRList();
+}
+
+function setHRView(view){
+  hrView=view;hrOpenId=null;
+  document.querySelectorAll('.hr-view-btn').forEach(b=>b.classList.remove('active','active-red'));
+  if(view==='onboarding'){document.getElementById('hrv-on')?.classList.add('active');}
+  else if(view==='exiting'){document.getElementById('hrv-ex')?.classList.add('active-red');}
+  else{const btn=document.getElementById('hrv-rv');if(btn){btn.style.background='#0284C7';btn.style.borderColor='#0284C7';btn.style.color='#fff';}}
+  // Reset non-active review button
+  if(view!=='reviews'){const btn=document.getElementById('hrv-rv');if(btn){btn.style.background='';btn.style.borderColor='';btn.style.color='';}}
+  renderHRList();
+}
+
+function renderHRList(){
+  const listArea=document.getElementById('hr-list-area');
+  const personArea=document.getElementById('hr-person-area');
+  if(!listArea)return;
+  listArea.style.display='block';
+  if(personArea)personArea.style.display='none';
+
+  if(hrView==='reviews'){renderReviewsList();return;}
+
+  const items=hrView==='onboarding'?getHRPeople():getHRExiting();
+  if(!items.length){listArea.innerHTML=`<div class="hr-empty"><i class="fas fa-users"></i><h3>No ${hrView==='onboarding'?'onboarding':'exiting'} records yet</h3><p>Click "Add Person" to get started.</p></div>`;return;}
+  let html='<div class="hr-list">';
+  items.forEach(person=>{
+    const status=hrView==='onboarding'?getOnboardingStatus(person):getOffboardingStatus(person);
+    const sm=status.stageKey?STAGE_META[status.stageKey]:null;
+    const start=hrView==='onboarding'?(person.stages.s25.expectedStart||person.startDate||''):'';
+    const startFmt=start?new Date(start).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';
+    const daysUntil=status.daysUntil;
+    const daysLabel=daysUntil!==undefined&&daysUntil!==null?(daysUntil<0?Math.abs(daysUntil)+'d overdue':daysUntil===0?'Starts today':daysUntil+'d to start'):'';
+    const score=hrView==='onboarding'&&person.stages.s1.score?person.stages.s1.score:null;
+    const exitBadge=hrView==='exiting'?`<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:${person.exitType==='termination'?'#FEE2E2':'#E0F2FE'};color:${person.exitType==='termination'?'#DC2626':'#0284C7'};">${person.exitType==='termination'?'Termination':'Resignation'}</span>`:'';
+    const initials=person.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    html+=`<div class="hr-person-row" onclick="openHRPerson('${person.id}')">
+      <div class="hr-person-avatar" style="background:${status.color};">${initials}</div>
+      <div class="hr-person-info">
+        <div class="hr-person-name">${person.name} ${exitBadge}</div>
+        <div class="hr-person-role">${person.role}${person.email?` &nbsp;·&nbsp; <span style="color:var(--text-muted);">${person.email}</span>`:''}</div>
+        ${sm?`<span class="hr-stage-pill" style="background:${sm.color}18;color:${sm.color};border:1.5px solid ${sm.color}35;margin-top:2px;"><span style="background:${sm.color};color:#fff;border-radius:100px;padding:1px 7px;font-size:10px;font-weight:800;">${sm.num}</span>${sm.name}</span>`:`<span class="hr-stage-pill" style="background:#DCFCE7;color:#16A34A;border:1.5px solid #16A34A35;margin-top:2px;"><i class="fas fa-check" style="font-size:10px;"></i> All stages complete</span>`}
+      </div>
+      <div class="hr-person-meta">
+        ${score?`<div class="hr-score-badge" style="background:${scoreBg(score)};"><span class="hr-score-num" style="color:${scoreColor(score)};">${score}</span><span class="hr-score-lbl" style="color:${scoreColor(score)};">score</span></div>`:''}
+        ${hrView==='onboarding'&&start?`<div class="hr-start-info"><div class="hr-start-label">Start date</div><div class="hr-start-date">${startFmt}</div>${daysLabel?`<div class="hr-start-countdown" style="color:${status.color};">${daysLabel}</div>`:''}</div>`:''}
+        <span class="hr-status-badge" style="background:${status.color}18;color:${status.color};border:1.5px solid ${status.color}35;">${status.label}</span>
+        <i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:13px;"></i>
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  listArea.innerHTML=html;
+}
+
+// ---- PERFORMANCE REVIEWS LIST ----
+function renderReviewsList(){
+  const listArea=document.getElementById('hr-list-area');
+  const reviews=getHRReviews();
+  const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');
+
+  if(!reviews.length){
+    listArea.innerHTML=`<div class="hr-empty"><i class="fas fa-star"></i><h3>No performance reviews yet</h3><p>Click "Add Review" to record the first evaluation.</p></div>`;
+    return;
+  }
+
+  // Group by person
+  const byPerson={};
+  reviews.forEach(r=>{
+    if(!byPerson[r.personId])byPerson[r.personId]={name:r.personName,role:r.personRole,reviews:[]};
+    byPerson[r.personId].reviews.push(r);
+  });
+  // Sort each person's reviews newest first
+  Object.values(byPerson).forEach(p=>p.reviews.sort((a,b)=>b.reviewDate.localeCompare(a.reviewDate)));
+
+  let html='<div class="hr-list">';
+  Object.entries(byPerson).forEach(([personId,personData])=>{
+    const latest=personData.reviews[0];
+    const initials=personData.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    const lastDate=latest.reviewDate?new Date(latest.reviewDate).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set';
+    const reviewCount=personData.reviews.length;
+    html+=`<div class="hr-person-row" onclick="openReviewPerson('${personId}')">
+      <div class="hr-person-avatar" style="background:#0284C7;">${initials}</div>
+      <div class="hr-person-info">
+        <div class="hr-person-name">${personData.name}</div>
+        <div class="hr-person-role">${personData.role}</div>
+        <span class="hr-stage-pill" style="background:#E0F2FE;color:#0284C7;border:1.5px solid #0284C735;margin-top:2px;"><i class="fas fa-star" style="font-size:10px;"></i> ${reviewCount} review${reviewCount!==1?'s':''}</span>
+      </div>
+      <div class="hr-person-meta">
+        ${latest.score?`<div class="hr-score-badge" style="background:${scoreBg(latest.score)};"><span class="hr-score-num" style="color:${scoreColor(latest.score)};">${latest.score}</span><span class="hr-score-lbl" style="color:${scoreColor(latest.score)};">/10</span></div>`:''}
+        <div class="hr-start-info">
+          <div class="hr-start-label">Last review</div>
+          <div class="hr-start-date">${lastDate}</div>
+          ${latest.evaluatedBy?`<div style="font-size:10px;color:var(--text-muted);">by ${latest.evaluatedBy}</div>`:''}
+        </div>
+        ${latest.outcome?`<span class="hr-status-badge" style="background:${latest.outcome==='Pass'?'#DCFCE7':latest.outcome==='Needs Improvement'?'#FEF3C7':'#F3F4F6'};color:${latest.outcome==='Pass'?'#16A34A':latest.outcome==='Needs Improvement'?'#D97706':'#6B7280'};border:1.5px solid ${latest.outcome==='Pass'?'#16A34A35':latest.outcome==='Needs Improvement'?'#D9770635':'#6B728035'};">${latest.outcome}</span>`:''}
+        <i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:13px;"></i>
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  listArea.innerHTML=html;
+}
+
+function openReviewPerson(personId){
+  hrOpenId=personId;
+  const reviews=getHRReviews().filter(r=>r.personId===personId);
+  if(!reviews.length)return;
+  reviews.sort((a,b)=>b.reviewDate.localeCompare(a.reviewDate));
+  const personName=reviews[0].personName;
+  const personRole=reviews[0].personRole;
+  const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');
+  const initials=personName.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+
+  document.getElementById('hr-list-area').style.display='none';
+  const personArea=document.getElementById('hr-person-area');
+  personArea.style.display='block';
+
+  let html=`<div class="hr-container">
+  <div class="hr-back-bar">
+    <button onclick="backToHRList()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-arrow-left"></i> Back to Reviews</button>
+    ${canEdit?`<button onclick="addNewReview('${personId}','${personName}','${personRole}')" style="background:#0284C7;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-plus"></i> Add Review</button>`:''}
+  </div>
+  <div class="hr-card-header">
+    <div class="hr-card-header-inner">
+      <div class="hr-card-avatar" style="background:#0284C7;">${initials}</div>
+      <div style="flex:1;">
+        <div class="hr-card-name">${personName}</div>
+        <div class="hr-card-sub">${personRole}</div>
+      </div>
+      <div class="hr-card-badges">
+        <span style="font-size:13px;font-weight:600;color:#0284C7;background:#E0F2FE;padding:6px 16px;border-radius:8px;">${reviews.length} review${reviews.length!==1?'s':''}</span>
+        ${reviews[0].score?`<div class="hr-score-badge" style="background:${scoreBg(reviews[0].score)};"><span class="hr-score-num" style="color:${scoreColor(reviews[0].score)};">${reviews[0].score}</span><span class="hr-score-lbl" style="color:${scoreColor(reviews[0].score)};">/10 latest</span></div>`:''}
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;" id="reviews-list-${personId}">`;
+
+  reviews.forEach((rev,i)=>{
+    html+=renderReviewCard(rev, canEdit, i===0);
+  });
+
+  html+=`</div></div>`;
+  personArea.innerHTML=html;
+}
+
+function renderReviewCard(rev, canEdit, isLatest){
+  const dateFmt=rev.reviewDate?new Date(rev.reviewDate).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set';
+  return `<div class="hr-stage-box" style="border-left:4px solid ${isLatest?'#0284C7':'#E5E7EB'};">
+    <div class="hr-stage-header" style="background:${isLatest?'#E0F2FE':''};justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="hr-stage-num" style="background:${isLatest?'#0284C7':'#F3F4F6'};color:${isLatest?'#fff':'#6B7280'};border:none;">${isLatest?'Latest':'Previous'}</span>
+        <span class="hr-stage-title">${dateFmt}</span>
+        ${rev.evaluatedBy?`<span style="font-size:12px;color:var(--text-muted);">by ${rev.evaluatedBy}</span>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        ${rev.score?`<div style="background:${scoreBg(rev.score)};border-radius:8px;padding:4px 12px;display:flex;align-items:center;gap:4px;"><span style="font-size:18px;font-weight:800;color:${scoreColor(rev.score)};">${rev.score}</span><span style="font-size:10px;color:${scoreColor(rev.score)};font-weight:700;">/10</span></div>`:''}
+        ${rev.outcome?`<span style="font-size:12px;font-weight:700;padding:4px 12px;border-radius:6px;background:${rev.outcome==='Pass'?'#DCFCE7':rev.outcome==='Needs Improvement'?'#FEF3C7':'#F3F4F6'};color:${rev.outcome==='Pass'?'#16A34A':rev.outcome==='Needs Improvement'?'#D97706':'#6B7280'};">${rev.outcome}</span>`:''}
+        ${canEdit?`<button onclick="deleteReviewConfirm('${rev.id}')" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:13px;padding:4px 6px;" title="Delete this review"><i class="fas fa-trash"></i></button>`:''}
+      </div>
+    </div>
+    <div class="hr-stage-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div>
+          <label style="font-size:11px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Review Date</label>
+          ${canEdit?`<input type="date" value="${rev.reviewDate||''}" onchange="hrUpdateReview('${rev.id}','reviewDate',this.value)" class="hr-field-input" style="width:100%;">`:`<div style="font-size:14px;font-weight:600;">${dateFmt}</div>`}
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Evaluated By</label>
+          ${canEdit?`<input type="text" value="${rev.evaluatedBy||''}" placeholder="Name of evaluator" onchange="hrUpdateReview('${rev.id}','evaluatedBy',this.value)" class="hr-field-input" style="width:100%;">`:`<div style="font-size:14px;font-weight:600;">${rev.evaluatedBy||'—'}</div>`}
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Score (1-10)</label>
+          ${canEdit?`<input type="number" min="1" max="10" value="${rev.score||''}" placeholder="—" onchange="hrUpdateReview('${rev.id}','score',this.value)" class="hr-score-input" style="border-color:${scoreColor(rev.score)};color:${scoreColor(rev.score)};background:${scoreBg(rev.score)};width:80px;">`:`<div style="width:60px;height:60px;border-radius:50%;background:${scoreBg(rev.score)};border:3px solid ${scoreColor(rev.score)};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:${scoreColor(rev.score)};">${rev.score||'—'}</div>`}
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Outcome</label>
+          ${canEdit?`<select onchange="hrUpdateReview('${rev.id}','outcome',this.value)" style="border:1.5px solid var(--border-input);border-radius:8px;padding:8px 14px;font-size:13px;font-family:var(--font);outline:none;font-weight:600;background:${rev.outcome==='Pass'?'#DCFCE7':rev.outcome==='Needs Improvement'?'#FEF3C7':'var(--white)'};color:${rev.outcome==='Pass'?'#16A34A':rev.outcome==='Needs Improvement'?'#D97706':'var(--text-heading)'};width:100%;"><option value="">Select</option><option value="Pass" ${rev.outcome==='Pass'?'selected':''}>Pass</option><option value="Needs Improvement" ${rev.outcome==='Needs Improvement'?'selected':''}>Needs Improvement</option><option value="Fail" ${rev.outcome==='Fail'?'selected':''}>Fail</option></select>`:`<span style="font-size:14px;font-weight:700;">${rev.outcome||'—'}</span>`}
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:11px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;"><i class="fas fa-link"></i> Evaluation Document Link</label>
+        ${canEdit?`<div style="display:flex;align-items:center;gap:8px;"><input type="url" value="${rev.docLink||''}" placeholder="Paste SharePoint or Drive link" onchange="hrUpdateReview('${rev.id}','docLink',this.value)" class="hr-link-input" style="flex:1;">${rev.docLink?`<a href="${rev.docLink}" target="_blank" class="hr-open-link"><i class="fas fa-external-link-alt"></i> Open</a>`:''}</div>`:(rev.docLink?`<a href="${rev.docLink}" target="_blank" class="hr-open-link"><i class="fas fa-external-link-alt"></i> Open evaluation document</a>`:'<span style="color:var(--text-muted);font-size:13px;">No document linked</span>')}
+      </div>
+      <div>
+        <label style="font-size:11px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Notes / Summary</label>
+        ${canEdit?`<textarea onchange="hrUpdateReview('${rev.id}','notes',this.value)" style="width:100%;border:1px solid var(--border-input);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:70px;">${rev.notes||''}</textarea>`:(rev.notes?`<div style="font-size:13px;white-space:pre-wrap;color:var(--text-body);">${rev.notes}</div>`:'<span style="color:var(--text-muted);font-size:13px;">No notes</span>')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function addNewReview(personId,personName,personRole){
+  const rev=newReview(personId,personName,personRole);
+  saveHRReview(rev);
+  openReviewPerson(personId);
+}
+
+function hrUpdateReview(reviewId,field,value){
+  const s=getHRStore();
+  if(!s.reviews)s.reviews=[];
+  const rev=s.reviews.find(r=>r.id===reviewId);
+  if(!rev)return;
+  rev[field]=value;
+  rev.updatedAt=new Date().toISOString();
+  saveHRStore(s);
+  // Write to Supabase
+  const sb=window._sbClient||getSB&&getSB();
+  if(sb)sb.from('hr_reviews').upsert({...rev,updated_at:new Date().toISOString()}).then(r=>{if(r.error)console.warn('Review save error:',r.error);});
+  // Re-render just the review cards, not the whole person view
+  const personId=rev.personId;
+  openReviewPerson(personId);
+}
+
+function deleteReviewConfirm(id){
+  if(confirm('Delete this review? This cannot be undone.')){
+    const s=getHRStore();
+    const rev=s.reviews&&s.reviews.find(r=>r.id===id);
+    const personId=rev?rev.personId:null;
+    deleteHRReview(id);
+    if(personId&&getHRReviews().filter(r=>r.personId===personId).length>0){
+      openReviewPerson(personId);
+    }else{
+      backToHRList();
+    }
+  }
+}
+
+// ---- OPEN PERSON CARD ----
+function openHRPerson(id){
+  hrOpenId=id;
+  const isExiting=id.startsWith('EX_');
+  const person=isExiting?getHRExiting().find(p=>p.id===id):getHRPeople().find(p=>p.id===id);
+  if(!person)return;
+  document.getElementById('hr-list-area').style.display='none';
+  const personArea=document.getElementById('hr-person-area');
+  personArea.style.display='block';
+  personArea.innerHTML=isExiting?renderOffboardingCard(person):renderOnboardingCard(person);
+}
+
 function backToHRList(){hrOpenId=null;renderHRList();document.getElementById('hr-list-area').style.display='block';document.getElementById('hr-person-area').style.display='none';}
-function _df(label,val,field,pid,canEdit){if(canEdit)return'<div class="hr-field-row"><i class="fas fa-calendar" style="color:var(--text-muted);font-size:12px;flex-shrink:0;"></i><label class="hr-field-label">'+label+':</label><input type="date" value="'+(val||'')+'" onchange="hrUpdateField(\''+pid+'\',\''+field+'\',this.value)" class="hr-field-input" style="max-width:180px;"></div>';return val?'<div class="hr-field-row"><i class="fas fa-calendar" style="color:var(--text-muted);font-size:12px;"></i><span class="hr-field-label">'+label+':</span><span style="font-size:13px;font-weight:600;color:var(--text-heading);">'+new Date(val).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+'</span></div>':'';}
-function _lf(label,val,field,pid,canEdit){if(canEdit)return'<div class="hr-link-row"><i class="fas fa-link" style="color:var(--text-muted);font-size:12px;flex-shrink:0;"></i><input type="url" placeholder="'+label+'" value="'+(val||'')+'" onchange="hrUpdateField(\''+pid+'\',\''+field+'\',this.value)" class="hr-link-input">'+(val?'<a href="'+val+'" target="_blank" class="hr-open-link"><i class="fas fa-external-link-alt"></i> Open</a>':'')+'</div>';return val?'<div class="hr-link-row"><i class="fas fa-link" style="color:var(--brand);font-size:12px;"></i><a href="'+val+'" target="_blank" class="hr-open-link">'+label+'</a></div>':'';}
-function _cb(label,checked,dateVal,field,pid,canEdit){const dateStr=checked&&dateVal?'<span class="hr-check-date">'+new Date(dateVal).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+'</span>':'';if(canEdit)return'<div class="hr-check-row"><label style="display:flex;align-items:center;gap:9px;cursor:pointer;flex:1;"><input type="checkbox" '+(checked?'checked':'')+' onchange="hrToggleCheck(\''+pid+'\',\''+field+'\',this)" style="width:17px;height:17px;accent-color:var(--brand);cursor:pointer;flex-shrink:0;"><span class="hr-check-label" style="font-weight:'+(checked?'600':'400')+';color:'+(checked?'var(--text-heading)':'var(--text-body)')+';">'+label+'</span></label>'+dateStr+'</div>';return'<div class="hr-check-row"><i class="fas '+(checked?'fa-check-circle':'fa-circle')+'" style="color:'+(checked?'#16A34A':'#D1D5DB')+';font-size:16px;flex-shrink:0;margin-top:2px;"></i><span class="hr-check-label" style="font-weight:'+(checked?'600':'400')+';color:'+(checked?'var(--text-heading)':'var(--text-muted)')+';">'+label+'</span>'+dateStr+'</div>';}
-function _tf(label,val,field,pid,canEdit,type='text'){if(canEdit)return'<div class="hr-field-row"><label class="hr-field-label">'+label+':</label><input type="'+type+'" value="'+(val||'')+'" placeholder="'+label+'" onchange="hrUpdateField(\''+pid+'\',\''+field+'\',this.value)" class="hr-field-input"></div>';return val?'<div class="hr-field-row"><span class="hr-field-label">'+label+':</span><span style="font-size:13px;font-weight:600;color:var(--text-heading);">'+val+'</span></div>':'';}
-function _sb(num,title,color,content,fullWidth=false,onHold=false){return'<div class="hr-stage-box'+(fullWidth?' hr-stage-full':'')+'"><div class="hr-stage-header"><span class="hr-stage-num" style="background:'+color+'18;color:'+color+';border:1.5px solid '+color+'35;">Stage '+num+'</span><span class="hr-stage-title">'+title+'</span>'+(onHold?'<span style="margin-left:auto;font-size:10px;font-weight:700;background:#F3F4F6;color:#6B7280;border-radius:100px;padding:3px 10px;">On Hold</span>':'')+'</div><div class="hr-stage-body">'+content+'</div></div>';}
-function renderOnboardingCard(p){const s=p.stages;const status=getOnboardingStatus(p);const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');const startFmt=s.s25.expectedStart?new Date(s.s25.expectedStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';const initials=p.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();const today=new Date();today.setHours(0,0,0,0);const startDt=s.s25.expectedStart?new Date(s.s25.expectedStart):null;const daysUntil=startDt?Math.ceil((startDt-today)/86400000):null;const onHold6=daysUntil!==null&&daysUntil>3;const onHold7=daysUntil!==null&&daysUntil>0;
-const s1=_cb('Interview / evaluation completed',s.s1.completed,s.s1.interviewDate,'s1.completed',p.id,canEdit)+_df('Interview date',s.s1.interviewDate,'s1.interviewDate',p.id,canEdit)+'<div style="margin-top:12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;"><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Score (1-10)</label>'+(canEdit?'<input type="number" min="1" max="10" value="'+(s.s1.score||'')+'" placeholder="—" onchange="hrUpdateField(\''+p.id+'\',\'s1.score\',this.value)" class="hr-score-input" style="border-color:'+scoreColor(s.s1.score)+';color:'+scoreColor(s.s1.score)+';background:'+scoreBg(s.s1.score)+';">':'<div style="width:64px;height:64px;border-radius:50%;background:'+scoreBg(s.s1.score)+';border:3px solid '+scoreColor(s.s1.score)+';display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:'+scoreColor(s.s1.score)+'">'+(s.s1.score||'—')+'</div>')+'</div><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Outcome</label>'+(canEdit?'<select onchange="hrUpdateField(\''+p.id+'\',\'s1.outcome\',this.value)" style="border:1.5px solid var(--border-input);border-radius:8px;padding:8px 16px;font-size:14px;font-family:var(--font);outline:none;font-weight:700;background:'+(s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'var(--white)')+';color:'+(s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'var(--text-heading)')+';"><option value="">Select</option><option value="Pass" '+(s.s1.outcome==='Pass'?'selected':'')+'>Pass</option><option value="Fail" '+(s.s1.outcome==='Fail'?'selected':'')+'>Fail</option><option value="Hold" '+(s.s1.outcome==='Hold'?'selected':'')+'>Hold</option></select>':'<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6')+';color:'+(s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280')+';">'+(s.s1.outcome||'—')+'</span>')+'</div></div>'+_tf('Notes',s.s1.notes,'s1.notes',p.id,canEdit);
-const s2=_df('Offer letter sent',s.s2.sentDate,'s2.sentDate',p.id,canEdit)+_df('Offer letter signed and returned',s.s2.signedDate,'s2.signedDate',p.id,canEdit);
-const s25=_tf('Candidate email address',s.s25.candidateEmail,'s25.candidateEmail',p.id,canEdit,'email')+_df('Expected start date',s.s25.expectedStart,'s25.expectedStart',p.id,canEdit)+'<div style="margin-top:8px;font-size:13px;color:var(--text-muted);font-style:italic;">Once filled, Stage 3 becomes active.</div>';
-const s3=_df('Request email sent',s.s3.requestSentDate,'s3.requestSentDate',p.id,canEdit)+_cb('Full name received',s.s3.fullNameReceived,s.s3.fullNameDate,'s3.fullNameReceived',p.id,canEdit)+_cb('Full address received',s.s3.fullAddressReceived,s.s3.fullAddressDate,'s3.fullAddressReceived',p.id,canEdit)+_cb('ID received',s.s3.idReceived,s.s3.idDate,'s3.idReceived',p.id,canEdit)+_lf('ID document link',s.s3.idLink,'s3.idLink',p.id,canEdit)+_cb('Work reference 1 received',s.s3.ref1Received,s.s3.ref1Date,'s3.ref1Received',p.id,canEdit)+_lf('Reference 1 link',s.s3.ref1Link,'s3.ref1Link',p.id,canEdit)+_cb('Work reference 2 received',s.s3.ref2Received,s.s3.ref2Date,'s3.ref2Received',p.id,canEdit)+_lf('Reference 2 link',s.s3.ref2Link,'s3.ref2Link',p.id,canEdit);
-const s4=_df('NDA sent',s.s4.ndaSentDate,'s4.ndaSentDate',p.id,canEdit)+_lf('NDA document link',s.s4.ndaLink,'s4.ndaLink',p.id,canEdit)+_df('NDA signed and returned',s.s4.ndaSignedDate,'s4.ndaSignedDate',p.id,canEdit)+_lf('Signed NDA link',s.s4.ndaSignedLink,'s4.ndaSignedLink',p.id,canEdit)+_df('Screening declaration sent',s.s4.screenSentDate,'s4.screenSentDate',p.id,canEdit)+_lf('Screening declaration link',s.s4.screenLink,'s4.screenLink',p.id,canEdit)+_df('Screening declaration signed',s.s4.screenSignedDate,'s4.screenSignedDate',p.id,canEdit)+_lf('Signed screening link',s.s4.screenSignedLink,'s4.screenSignedLink',p.id,canEdit);
-const sentByOpts=['Brunno','Piers Linney'].map(n=>'<option value="'+n+'" '+(s.s5.sentBy===n?'selected':'')+'>'+n+'</option>').join('');
-const s5='<div class="hr-field-row"><label class="hr-field-label">Sent by:</label>'+(canEdit?'<select onchange="hrUpdateField(\''+p.id+'\',\'s5.sentBy\',this.value)" style="border:1px solid var(--border-input);border-radius:6px;padding:6px 12px;font-size:13px;font-family:var(--font);outline:none;"><option value="">Select person</option>'+sentByOpts+'</select>':'<strong style="font-size:13px;">'+(s.s5.sentBy||'—')+'</strong>')+'</div>'+_df('Contract sent',s.s5.sentDate,'s5.sentDate',p.id,canEdit)+_lf('Contract document link',s.s5.contractLink,'s5.contractLink',p.id,canEdit)+_df('Contract signed and returned',s.s5.signedDate,'s5.signedDate',p.id,canEdit)+_lf('Signed contract link',s.s5.signedLink,'s5.signedLink',p.id,canEdit);
-const s6=(onHold6?'<div class="hr-on-hold-banner"><i class="fas fa-clock"></i> On hold — person starts in '+daysUntil+' days</div>':'')+_df('365 credentials sent',s.s6.credsSentDate,'s6.credsSentDate',p.id,canEdit);
-const s7=(onHold7?'<div class="hr-on-hold-banner"><i class="fas fa-clock"></i> On hold — person has not started yet</div>':'')+_df('Confirmed access on Teams/Outlook',s.s7.confirmedDate,'s7.confirmedDate',p.id,canEdit);
-const s8=_df('Vanta invite sent',s.s8.vantaSentDate,'s8.vantaSentDate',p.id,canEdit)+_df('Policies accepted',s.s8.policiesDate,'s8.policiesDate',p.id,canEdit)+_df('MDM installed on machine',s.s8.mdmDate,'s8.mdmDate',p.id,canEdit);
-const s9=_df('Sent to Certn',s.s9.certnSentDate,'s9.certnSentDate',p.id,canEdit)+_df('Background check cleared',s.s9.clearedDate,'s9.clearedDate',p.id,canEdit)+_lf('Certn report link',s.s9.certnLink,'s9.certnLink',p.id,canEdit);
-const s10=(canEdit?'<div style="margin-top:6px;"><label class="hr-field-label" style="display:block;margin-bottom:6px;">Services added (Slack, GitHub, cloud, etc.)</label><textarea onchange="hrUpdateField(\''+p.id+'\',\'s10.services\',this.value)" style="width:100%;border:1px solid var(--border-input);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:60px;">'+(s.s10.services||'')+'</textarea></div>':(s.s10.services?'<div style="font-size:13px;white-space:pre-wrap;margin-top:4px;">'+s.s10.services+'</div>':''))+_df('All service accounts added',s.s10.completedDate,'s10.completedDate',p.id,canEdit);
-const logHtml=(p.log||[]).length>0?'<div class="hr-log"><div class="hr-log-title"><i class="fas fa-history"></i> Activity Log</div><div class="hr-log-list">'+((p.log||[]).map(l=>'<div class="hr-log-row"><span class="hr-log-time">'+new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</span><span class="hr-log-text">'+l.action+' <span style="color:var(--text-muted);">by '+l.by+'</span></span></div>').join(''))+'</div></div>':'';
-return'<div class="hr-container"><div class="hr-back-bar"><button onclick="backToHRList()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-arrow-left"></i> Back to Onboarding</button>'+(canEdit?'<button onclick="deleteHRPersonConfirm(\''+p.id+'\')" style="background:none;border:1.5px solid var(--red-light);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-trash"></i> Remove</button>':'')+'</div><div class="hr-card-header"><div class="hr-card-header-inner"><div class="hr-card-avatar" style="background:'+status.color+';">'+initials+'</div><div style="flex:1;"><div class="hr-card-name">'+p.name+'</div><div class="hr-card-sub">'+p.role+(p.email?' &nbsp;&middot;&nbsp; '+p.email:'')+'</div></div><div class="hr-card-badges">'+(s.s1.score?'<div class="hr-score-badge" style="background:'+scoreBg(s.s1.score)+';"><span class="hr-score-num" style="color:'+scoreColor(s.s1.score)+';">'+s.s1.score+'</span><span class="hr-score-lbl" style="color:'+scoreColor(s.s1.score)+';">score</span></div>':'')+(s.s1.outcome?'<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6')+';color:'+(s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280')+';">'+s.s1.outcome+'</span>':'')+'<span class="hr-status-badge" style="background:'+status.color+'18;color:'+status.color+';border:1.5px solid '+status.color+'35;font-size:13px;padding:6px 16px;">'+status.label+'</span>'+(startFmt!=='—'?'<div class="hr-start-info"><div class="hr-start-label">Start date</div><div class="hr-start-date">'+startFmt+'</div>'+(status.daysUntil!==null?'<div class="hr-start-countdown" style="color:'+status.color+';">'+(status.daysUntil<0?Math.abs(status.daysUntil)+'d overdue':status.daysUntil===0?'Today':status.daysUntil+'d to start')+'</div>':'')+'</div>':'')+'</div></div></div><div class="hr-stages-grid">'+_sb(1,'Competence Evaluation','#6C5DD3',s1)+_sb(2,'Offer Letter','#0284C7',s2)+_sb('2.5','Handover to HR','#D97706',s25)+_sb(3,'Documents Requested','#D97706',s3)+_sb(4,'NDA & Self-Screening','#DC2626',s4)+_sb(5,'Contract Agreement','#7C3AED',s5)+_sb(6,'Credentials (365)','#059669',s6,false,onHold6)+_sb(7,'Access Confirmation','#059669',s7,false,onHold7)+_sb(8,'Vanta — Policies & MDM','#0891B2',s8)+_sb(9,'Background Check (Certn)','#D97706',s9)+_sb(10,'Service Accounts','#6B7280',s10,true)+'</div>'+logHtml+'</div>';}
-function renderOffboardingCard(p){const s=p.stages;const status=getOffboardingStatus(p);const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');const docLabel=p.exitType==='termination'?'Termination letter':'Resignation letter';const initials=p.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-const s1=_df('Notice received / termination decision',s.s1.noticeDate,'s1.noticeDate',p.id,canEdit)+_df(docLabel+' sent',s.s1.letterSentDate,'s1.letterSentDate',p.id,canEdit)+_df(docLabel+' signed and returned',s.s1.letterSignedDate,'s1.letterSignedDate',p.id,canEdit)+_lf(docLabel+' link',s.s1.letterLink,'s1.letterLink',p.id,canEdit);
-const s2=_df('Exit checklist completed',s.s2.checklistDate,'s2.checklistDate',p.id,canEdit)+_lf('Exit checklist link',s.s2.checklistLink,'s2.checklistLink',p.id,canEdit);
-const s3=_df('Sent to Shahzeb',s.s3.shahzebSentDate,'s3.shahzebSentDate',p.id,canEdit)+_df('Shahzeb signed',s.s3.shahzebSignedDate,'s3.shahzebSignedDate',p.id,canEdit)+_df('Sent to Piers / Lini',s.s3.peersSentDate,'s3.peersSentDate',p.id,canEdit)+_df('Piers / Lini signed',s.s3.peersSignedDate,'s3.peersSignedDate',p.id,canEdit)+_df('Brunno signed',s.s3.brunnoSignedDate,'s3.brunnoSignedDate',p.id,canEdit)+_lf('Signed document link',s.s3.docLink,'s3.docLink',p.id,canEdit);
-const s4=_df('365 account terminated',s.s4.o365TermDate,'s4.o365TermDate',p.id,canEdit)+_df('All service accounts removed',s.s4.servicesDate,'s4.servicesDate',p.id,canEdit)+(canEdit?'<div style="margin-top:8px;"><label class="hr-field-label" style="display:block;margin-bottom:6px;">Services removed</label><textarea onchange="hrUpdateField(\''+p.id+'\',\'s4.servicesNotes\',this.value)" style="width:100%;border:1px solid var(--border-input);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:50px;">'+(s.s4.servicesNotes||'')+'</textarea></div>':(s.s4.servicesNotes?'<div style="font-size:13px;margin-top:4px;white-space:pre-wrap;">'+s.s4.servicesNotes+'</div>':''));
-const s5=_df('Fully terminated',s.s5.completedDate,'s5.completedDate',p.id,canEdit);
-const logHtml=(p.log||[]).length>0?'<div class="hr-log"><div class="hr-log-title"><i class="fas fa-history"></i> Activity Log</div><div class="hr-log-list">'+((p.log||[]).map(l=>'<div class="hr-log-row"><span class="hr-log-time">'+new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</span><span class="hr-log-text">'+l.action+' <span style="color:var(--text-muted);">by '+l.by+'</span></span></div>').join(''))+'</div></div>':'';
-return'<div class="hr-container"><div class="hr-back-bar"><button onclick="backToHRList()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-arrow-left"></i> Back to Exiting</button>'+(canEdit?'<button onclick="deleteHRExitingConfirm(\''+p.id+'\')" style="background:none;border:1.5px solid var(--red-light);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-trash"></i> Remove</button>':'')+'</div><div class="hr-card-header"><div class="hr-card-header-inner"><div class="hr-card-avatar" style="background:'+(p.exitType==='termination'?'#DC2626':'#0284C7')+';">'+initials+'</div><div style="flex:1;"><div class="hr-card-name">'+p.name+'</div><div class="hr-card-sub">'+p.role+(p.email?' &nbsp;&middot;&nbsp; '+p.email:'')+'</div></div><div class="hr-card-badges"><span style="font-size:13px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(p.exitType==='termination'?'#FEE2E2':'#E0F2FE')+';color:'+(p.exitType==='termination'?'#DC2626':'#0284C7')+';">'+(p.exitType==='termination'?'Termination':'Resignation')+'</span><span class="hr-status-badge" style="background:'+status.color+'18;color:'+status.color+';border:1.5px solid '+status.color+'35;font-size:13px;padding:6px 16px;">'+status.label+'</span></div></div></div><div class="hr-stages-grid">'+_sb(1,docLabel,'#D97706',s1,true)+_sb(2,'Exit Checklist','#0284C7',s2)+_sb(3,'Sign-off','#7C3AED',s3)+_sb(4,'Account Termination','#DC2626',s4)+_sb(5,'Fully Terminated','#16A34A',s5)+'</div>'+logHtml+'</div>';}
-function hrUpdateField(personId,fieldPath,value){const isExiting=personId.startsWith('EX_');const s=getHRStore();const arr=isExiting?s.exiting:s.people;const person=arr.find(p=>p.id===personId);if(!person)return;const parts=fieldPath.split('.');let obj=person.stages;for(let i=0;i<parts.length-1;i++)obj=obj[parts[i]];const oldVal=obj[parts[parts.length-1]];obj[parts[parts.length-1]]=value;hrLog(person,fieldPath+': "'+( oldVal||'—')+'" → "'+(value||'—')+'"');saveHRStore(s);const personArea=document.getElementById('hr-person-area');if(personArea&&personArea.style.display!=='none'){const fresh=isExiting?getHRExiting().find(p=>p.id===personId):getHRPeople().find(p=>p.id===personId);if(fresh)personArea.innerHTML=isExiting?renderOffboardingCard(fresh):renderOnboardingCard(fresh);}}
-function hrToggleCheck(personId,fieldPath,checkbox){const isExiting=personId.startsWith('EX_');const s=getHRStore();const arr=isExiting?s.exiting:s.people;const person=arr.find(p=>p.id===personId);if(!person)return;const parts=fieldPath.split('.');let obj=person.stages;for(let i=0;i<parts.length-1;i++)obj=obj[parts[i]];obj[parts[parts.length-1]]=checkbox.checked;const dateKey=parts[parts.length-1].replace('Received','Date').replace('completed','interviewDate');if(checkbox.checked&&obj[dateKey]==='')obj[dateKey]=new Date().toISOString().split('T')[0];hrLog(person,fieldPath+': '+(checkbox.checked?'checked':'unchecked'));saveHRStore(s);const personArea=document.getElementById('hr-person-area');if(personArea&&personArea.style.display!=='none'){const fresh=isExiting?getHRExiting().find(p=>p.id===personId):getHRPeople().find(p=>p.id===personId);if(fresh)personArea.innerHTML=isExiting?renderOffboardingCard(fresh):renderOnboardingCard(fresh);}}
-function openHRAddModal(){const modal=document.getElementById('hr-add-modal');if(!modal)return;modal.style.display='flex';modal.innerHTML='<div class="hr-modal-inner"><h2 class="hr-modal-title">Add Person</h2><p class="hr-modal-sub">Add someone to the '+(hrView==='onboarding'?'onboarding':'exiting')+' pipeline.</p><div class="settings-field"><label>Full Name *</label><input type="text" id="hr-add-name" placeholder="e.g. Jane Smith" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div><div class="settings-field"><label>Role / Job Title *</label><input type="text" id="hr-add-role" placeholder="e.g. Solutions Engineer" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div><div class="settings-field"><label>Email Address</label><input type="email" id="hr-add-email" placeholder="e.g. jane@example.com" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>'+(hrView==='onboarding'?'<div class="settings-field"><label>Expected Start Date</label><input type="date" id="hr-add-start" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>':'<div class="settings-field"><label>Type *</label><select id="hr-add-type" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"><option value="resignation">Resignation</option><option value="termination">Termination</option></select></div>')+'<div style="color:var(--red);font-size:13px;margin-bottom:10px;display:none;" id="hr-add-error"></div><div style="display:flex;gap:12px;margin-top:8px;"><button onclick="submitHRAdd()" class="btn-primary" style="flex:1;padding:11px;font-size:14px;"><i class="fas fa-plus"></i> Add Person</button><button onclick="closeHRAddModal()" class="btn-secondary" style="padding:11px 20px;font-size:14px;">Cancel</button></div></div>';}
+
+// ---- FIELD HELPERS ----
+function _df(label,val,field,pid,canEdit){if(canEdit)return`<div class="hr-field-row"><i class="fas fa-calendar" style="color:var(--text-muted);font-size:12px;flex-shrink:0;"></i><label class="hr-field-label">${label}:</label><input type="date" value="${val||''}" onchange="hrUpdateField('${pid}','${field}',this.value)" class="hr-field-input" style="max-width:180px;"></div>`;return val?`<div class="hr-field-row"><i class="fas fa-calendar" style="color:var(--text-muted);font-size:12px;"></i><span class="hr-field-label">${label}:</span><span style="font-size:13px;font-weight:600;color:var(--text-heading);">${new Date(val).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</span></div>`:'';}
+function _lf(label,val,field,pid,canEdit){if(canEdit)return`<div class="hr-link-row"><i class="fas fa-link" style="color:var(--text-muted);font-size:12px;flex-shrink:0;"></i><input type="url" placeholder="${label}" value="${val||''}" onchange="hrUpdateField('${pid}','${field}',this.value)" class="hr-link-input">${val?`<a href="${val}" target="_blank" class="hr-open-link"><i class="fas fa-external-link-alt"></i> Open</a>`:''}</div>`;return val?`<div class="hr-link-row"><i class="fas fa-link" style="color:var(--brand);font-size:12px;"></i><a href="${val}" target="_blank" class="hr-open-link">${label}</a></div>`:'';}
+function _cb(label,checked,dateVal,field,pid,canEdit){const dateStr=checked&&dateVal?`<span class="hr-check-date">${new Date(dateVal).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</span>`:'';if(canEdit)return`<div class="hr-check-row"><label style="display:flex;align-items:center;gap:9px;cursor:pointer;flex:1;"><input type="checkbox" ${checked?'checked':''} onchange="hrToggleCheck('${pid}','${field}',this)" style="width:17px;height:17px;accent-color:var(--brand);cursor:pointer;flex-shrink:0;"><span class="hr-check-label" style="font-weight:${checked?'600':'400'};color:${checked?'var(--text-heading)':'var(--text-body)'};">${label}</span></label>${dateStr}</div>`;return`<div class="hr-check-row"><i class="fas ${checked?'fa-check-circle':'fa-circle'}" style="color:${checked?'#16A34A':'#D1D5DB'};font-size:16px;flex-shrink:0;margin-top:2px;"></i><span class="hr-check-label" style="font-weight:${checked?'600':'400'};color:${checked?'var(--text-heading)':'var(--text-muted)'};">${label}</span>${dateStr}</div>`;}
+function _tf(label,val,field,pid,canEdit,type='text'){if(canEdit)return`<div class="hr-field-row"><label class="hr-field-label">${label}:</label><input type="${type}" value="${val||''}" placeholder="${label}" onchange="hrUpdateField('${pid}','${field}',this.value)" class="hr-field-input"></div>`;return val?`<div class="hr-field-row"><span class="hr-field-label">${label}:</span><span style="font-size:13px;font-weight:600;color:var(--text-heading);">${val}</span></div>`:'';}
+function _sb(num,title,color,content,fullWidth=false,onHold=false){return`<div class="hr-stage-box${fullWidth?' hr-stage-full':''}"><div class="hr-stage-header"><span class="hr-stage-num" style="background:${color}18;color:${color};border:1.5px solid ${color}35;">Stage ${num}</span><span class="hr-stage-title">${title}</span>${onHold?'<span style="margin-left:auto;font-size:10px;font-weight:700;background:#F3F4F6;color:#6B7280;border-radius:100px;padding:3px 10px;">On Hold</span>':''}</div><div class="hr-stage-body">${content}</div></div>`;}
+
+// ---- ONBOARDING CARD ----
+function renderOnboardingCard(p){
+  const s=p.stages;
+  const status=getOnboardingStatus(p);
+  const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');
+  const startFmt=s.s25.expectedStart?new Date(s.s25.expectedStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';
+  const initials=p.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  const today=new Date();today.setHours(0,0,0,0);
+  const startDt=s.s25.expectedStart?new Date(s.s25.expectedStart):null;
+  const daysUntil=startDt?Math.ceil((startDt-today)/86400000):null;
+  const onHold6=daysUntil!==null&&daysUntil>3;
+  const onHold7=daysUntil!==null&&daysUntil>0;
+
+  const s1=_cb('Interview / evaluation completed',s.s1.completed,s.s1.interviewDate,'s1.completed',p.id,canEdit)+_df('Interview date',s.s1.interviewDate,'s1.interviewDate',p.id,canEdit)+`<div style="margin-top:12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;"><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Score (1-10)</label>${canEdit?`<input type="number" min="1" max="10" value="${s.s1.score||''}" placeholder="—" onchange="hrUpdateField('${p.id}','s1.score',this.value)" class="hr-score-input" style="border-color:${scoreColor(s.s1.score)};color:${scoreColor(s.s1.score)};background:${scoreBg(s.s1.score)};">`:`<div style="width:64px;height:64px;border-radius:50%;background:${scoreBg(s.s1.score)};border:3px solid ${scoreColor(s.s1.score)};display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:${scoreColor(s.s1.score)};">${s.s1.score||'—'}</div>`}</div><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Outcome</label>${canEdit?`<select onchange="hrUpdateField('${p.id}','s1.outcome',this.value)" style="border:1.5px solid var(--border-input);border-radius:8px;padding:8px 16px;font-size:14px;font-family:var(--font);outline:none;font-weight:700;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'var(--white)'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'var(--text-heading)'};"><option value="">Select</option><option value="Pass" ${s.s1.outcome==='Pass'?'selected':''}>Pass</option><option value="Fail" ${s.s1.outcome==='Fail'?'selected':''}>Fail</option><option value="Hold" ${s.s1.outcome==='Hold'?'selected':''}>Hold</option></select>`:`<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280'};">${s.s1.outcome||'—'}</span>`}</div></div>`+_tf('Notes',s.s1.notes,'s1.notes',p.id,canEdit);
+  const s2=_df('Offer letter sent',s.s2.sentDate,'s2.sentDate',p.id,canEdit)+_df('Offer letter signed and returned',s.s2.signedDate,'s2.signedDate',p.id,canEdit);
+  const s25=_tf('Candidate email address',s.s25.candidateEmail,'s25.candidateEmail',p.id,canEdit,'email')+_df('Expected start date',s.s25.expectedStart,'s25.expectedStart',p.id,canEdit)+`<div style="margin-top:8px;font-size:13px;color:var(--text-muted);font-style:italic;">Once filled, Stage 3 becomes active.</div>`;
+  const s3=_df('Request email sent',s.s3.requestSentDate,'s3.requestSentDate',p.id,canEdit)+_cb('Full name received',s.s3.fullNameReceived,s.s3.fullNameDate,'s3.fullNameReceived',p.id,canEdit)+_cb('Full address received',s.s3.fullAddressReceived,s.s3.fullAddressDate,'s3.fullAddressReceived',p.id,canEdit)+_cb('ID received',s.s3.idReceived,s.s3.idDate,'s3.idReceived',p.id,canEdit)+_lf('ID document link',s.s3.idLink,'s3.idLink',p.id,canEdit)+_cb('Work reference 1 received',s.s3.ref1Received,s.s3.ref1Date,'s3.ref1Received',p.id,canEdit)+_lf('Reference 1 link',s.s3.ref1Link,'s3.ref1Link',p.id,canEdit)+_cb('Work reference 2 received',s.s3.ref2Received,s.s3.ref2Date,'s3.ref2Received',p.id,canEdit)+_lf('Reference 2 link',s.s3.ref2Link,'s3.ref2Link',p.id,canEdit);
+  const s4=_df('NDA sent',s.s4.ndaSentDate,'s4.ndaSentDate',p.id,canEdit)+_lf('NDA document link',s.s4.ndaLink,'s4.ndaLink',p.id,canEdit)+_df('NDA signed and returned',s.s4.ndaSignedDate,'s4.ndaSignedDate',p.id,canEdit)+_lf('Signed NDA link',s.s4.ndaSignedLink,'s4.ndaSignedLink',p.id,canEdit)+_df('Screening declaration sent',s.s4.screenSentDate,'s4.screenSentDate',p.id,canEdit)+_lf('Screening declaration link',s.s4.screenLink,'s4.screenLink',p.id,canEdit)+_df('Screening declaration signed',s.s4.screenSignedDate,'s4.screenSignedDate',p.id,canEdit)+_lf('Signed screening link',s.s4.screenSignedLink,'s4.screenSignedLink',p.id,canEdit);
+  const sentByOpts=['Brunno','Piers Linney'].map(n=>`<option value="${n}" ${s.s5.sentBy===n?'selected':''}>${n}</option>`).join('');
+  const s5=`<div class="hr-field-row"><label class="hr-field-label">Sent by:</label>${canEdit?`<select onchange="hrUpdateField('${p.id}','s5.sentBy',this.value)" style="border:1px solid var(--border-input);border-radius:6px;padding:6px 12px;font-size:13px;font-family:var(--font);outline:none;"><option value="">Select person</option>${sentByOpts}</select>`:`<strong style="font-size:13px;">${s.s5.sentBy||'—'}</strong>`}</div>`+_df('Contract sent',s.s5.sentDate,'s5.sentDate',p.id,canEdit)+_lf('Contract document link',s.s5.contractLink,'s5.contractLink',p.id,canEdit)+_df('Contract signed and returned',s.s5.signedDate,'s5.signedDate',p.id,canEdit)+_lf('Signed contract link',s.s5.signedLink,'s5.signedLink',p.id,canEdit);
+  // Stage 6 — now includes IAI email field
+  const s6=(onHold6?`<div class="hr-on-hold-banner"><i class="fas fa-clock"></i> On hold — person starts in ${daysUntil} days</div>`:'')+_df('365 credentials sent',s.s6.credsSentDate,'s6.credsSentDate',p.id,canEdit)+_tf('ImplementAI email address',s.s6.iaiEmail||'','s6.iaiEmail',p.id,canEdit,'email');
+  const s7=(onHold7?`<div class="hr-on-hold-banner"><i class="fas fa-clock"></i> On hold — person has not started yet</div>`:'')+_df('Confirmed access on Teams/Outlook',s.s7.confirmedDate,'s7.confirmedDate',p.id,canEdit);
+  const s8=_df('Vanta invite sent',s.s8.vantaSentDate,'s8.vantaSentDate',p.id,canEdit)+_df('Policies accepted',s.s8.policiesDate,'s8.policiesDate',p.id,canEdit)+_df('MDM installed on machine',s.s8.mdmDate,'s8.mdmDate',p.id,canEdit);
+  const s9=_df('Sent to Certn',s.s9.certnSentDate,'s9.certnSentDate',p.id,canEdit)+_df('Background check cleared',s.s9.clearedDate,'s9.clearedDate',p.id,canEdit)+_lf('Certn report link',s.s9.certnLink,'s9.certnLink',p.id,canEdit);
+  const s10=(canEdit?`<div style="margin-top:6px;"><label class="hr-field-label" style="display:block;margin-bottom:6px;">Services added (Slack, GitHub, cloud, etc.)</label><textarea onchange="hrUpdateField('${p.id}','s10.services',this.value)" style="width:100%;border:1px solid var(--border-input);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:60px;">${s.s10.services||''}</textarea></div>`:(s.s10.services?`<div style="font-size:13px;white-space:pre-wrap;margin-top:4px;">${s.s10.services}</div>`:''))+_df('All service accounts added',s.s10.completedDate,'s10.completedDate',p.id,canEdit);
+  const logHtml=(p.log||[]).length>0?`<div class="hr-log"><div class="hr-log-title"><i class="fas fa-history"></i> Activity Log</div><div class="hr-log-list">${(p.log||[]).map(l=>`<div class="hr-log-row"><span class="hr-log-time">${new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span><span class="hr-log-text">${l.action} <span style="color:var(--text-muted);">by ${l.by}</span></span></div>`).join('')}</div></div>`:'';
+  return`<div class="hr-container"><div class="hr-back-bar"><button onclick="backToHRList()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-arrow-left"></i> Back to Onboarding</button>${canEdit?`<button onclick="deleteHRPersonConfirm('${p.id}')" style="background:none;border:1.5px solid var(--red-light);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-trash"></i> Remove</button>`:''}</div><div class="hr-card-header"><div class="hr-card-header-inner"><div class="hr-card-avatar" style="background:${status.color};">${initials}</div><div style="flex:1;"><div class="hr-card-name">${p.name}</div><div class="hr-card-sub">${p.role}${p.email?' &nbsp;·&nbsp; '+p.email:''}</div></div><div class="hr-card-badges">${s.s1.score?`<div class="hr-score-badge" style="background:${scoreBg(s.s1.score)};"><span class="hr-score-num" style="color:${scoreColor(s.s1.score)};">${s.s1.score}</span><span class="hr-score-lbl" style="color:${scoreColor(s.s1.score)};">score</span></div>`:''} ${s.s1.outcome?`<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280'};">${s.s1.outcome}</span>`:''} <span class="hr-status-badge" style="background:${status.color}18;color:${status.color};border:1.5px solid ${status.color}35;font-size:13px;padding:6px 16px;">${status.label}</span>${startFmt!=='—'?`<div class="hr-start-info"><div class="hr-start-label">Start date</div><div class="hr-start-date">${startFmt}</div>${status.daysUntil!==null?`<div class="hr-start-countdown" style="color:${status.color};">${status.daysUntil<0?Math.abs(status.daysUntil)+'d overdue':status.daysUntil===0?'Today':status.daysUntil+'d to start'}</div>`:''}</div>`:''}</div></div></div><div class="hr-stages-grid">${_sb(1,'Competence Evaluation','#6C5DD3',s1)}${_sb(2,'Offer Letter','#0284C7',s2)}${_sb('2.5','Handover to HR','#D97706',s25)}${_sb(3,'Documents Requested','#D97706',s3)}${_sb(4,'NDA & Self-Screening','#DC2626',s4)}${_sb(5,'Contract Agreement','#7C3AED',s5)}${_sb(6,'Credentials (365) + IAI Email','#059669',s6,false,onHold6)}${_sb(7,'Access Confirmation','#059669',s7,false,onHold7)}${_sb(8,'Vanta — Policies & MDM','#0891B2',s8)}${_sb(9,'Background Check (Certn)','#D97706',s9)}${_sb(10,'Service Accounts','#6B7280',s10,true)}</div>${logHtml}</div>`;}
+
+// ---- OFFBOARDING CARD ----
+function renderOffboardingCard(p){
+  const s=p.stages;const status=getOffboardingStatus(p);const canEdit=currentUser&&(currentUser.perm==='admin'||currentUser.perm==='ops');const docLabel=p.exitType==='termination'?'Termination letter':'Resignation letter';const initials=p.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  const s1=_df('Notice received / termination decision',s.s1.noticeDate,'s1.noticeDate',p.id,canEdit)+_df(docLabel+' sent',s.s1.letterSentDate,'s1.letterSentDate',p.id,canEdit)+_df(docLabel+' signed and returned',s.s1.letterSignedDate,'s1.letterSignedDate',p.id,canEdit)+_lf(docLabel+' link',s.s1.letterLink,'s1.letterLink',p.id,canEdit);
+  const s2=_df('Exit checklist completed',s.s2.checklistDate,'s2.checklistDate',p.id,canEdit)+_lf('Exit checklist link',s.s2.checklistLink,'s2.checklistLink',p.id,canEdit);
+  const s3=_df('Sent to Shahzeb',s.s3.shahzebSentDate,'s3.shahzebSentDate',p.id,canEdit)+_df('Shahzeb signed',s.s3.shahzebSignedDate,'s3.shahzebSignedDate',p.id,canEdit)+_df('Sent to Piers / Lini',s.s3.peersSentDate,'s3.peersSentDate',p.id,canEdit)+_df('Piers / Lini signed',s.s3.peersSignedDate,'s3.peersSignedDate',p.id,canEdit)+_df('Brunno signed',s.s3.brunnoSignedDate,'s3.brunnoSignedDate',p.id,canEdit)+_lf('Signed document link',s.s3.docLink,'s3.docLink',p.id,canEdit);
+  const s4=_df('365 account terminated',s.s4.o365TermDate,'s4.o365TermDate',p.id,canEdit)+_df('All service accounts removed',s.s4.servicesDate,'s4.servicesDate',p.id,canEdit)+(canEdit?`<div style="margin-top:8px;"><label class="hr-field-label" style="display:block;margin-bottom:6px;">Services removed</label><textarea onchange="hrUpdateField('${p.id}','s4.servicesNotes',this.value)" style="width:100%;border:1px solid var(--border-input);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:50px;">${s.s4.servicesNotes||''}</textarea></div>`:(s.s4.servicesNotes?`<div style="font-size:13px;margin-top:4px;white-space:pre-wrap;">${s.s4.servicesNotes}</div>`:''));
+  const s5=_df('Fully terminated',s.s5.completedDate,'s5.completedDate',p.id,canEdit);
+  const logHtml=(p.log||[]).length>0?`<div class="hr-log"><div class="hr-log-title"><i class="fas fa-history"></i> Activity Log</div><div class="hr-log-list">${(p.log||[]).map(l=>`<div class="hr-log-row"><span class="hr-log-time">${new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span><span class="hr-log-text">${l.action} <span style="color:var(--text-muted);">by ${l.by}</span></span></div>`).join('')}</div></div>`:'';
+  return`<div class="hr-container"><div class="hr-back-bar"><button onclick="backToHRList()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-arrow-left"></i> Back to Exiting</button>${canEdit?`<button onclick="deleteHRExitingConfirm('${p.id}')" style="background:none;border:1.5px solid var(--red-light);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;"><i class="fas fa-trash"></i> Remove</button>`:''}</div><div class="hr-card-header"><div class="hr-card-header-inner"><div class="hr-card-avatar" style="background:${p.exitType==='termination'?'#DC2626':'#0284C7'};">${initials}</div><div style="flex:1;"><div class="hr-card-name">${p.name}</div><div class="hr-card-sub">${p.role}${p.email?' &nbsp;·&nbsp; '+p.email:''}</div></div><div class="hr-card-badges"><span style="font-size:13px;font-weight:700;padding:6px 16px;border-radius:8px;background:${p.exitType==='termination'?'#FEE2E2':'#E0F2FE'};color:${p.exitType==='termination'?'#DC2626':'#0284C7'};">${p.exitType==='termination'?'Termination':'Resignation'}</span><span class="hr-status-badge" style="background:${status.color}18;color:${status.color};border:1.5px solid ${status.color}35;font-size:13px;padding:6px 16px;">${status.label}</span></div></div></div><div class="hr-stages-grid">${_sb(1,docLabel,'#D97706',s1,true)}${_sb(2,'Exit Checklist','#0284C7',s2)}${_sb(3,'Sign-off','#7C3AED',s3)}${_sb(4,'Account Termination','#DC2626',s4)}${_sb(5,'Fully Terminated','#16A34A',s5)}</div>${logHtml}</div>`;}
+
+// ---- UPDATE FIELDS — NOW WRITES TO SUPABASE ----
+function hrUpdateField(personId,fieldPath,value){
+  const isExiting=personId.startsWith('EX_');
+  const s=getHRStore();
+  const arr=isExiting?s.exiting:s.people;
+  const person=arr.find(p=>p.id===personId);if(!person)return;
+  const parts=fieldPath.split('.');let obj=person.stages;
+  for(let i=0;i<parts.length-1;i++)obj=obj[parts[i]];
+  const oldVal=obj[parts[parts.length-1]];
+  obj[parts[parts.length-1]]=value;
+  hrLog(person,`${fieldPath}: "${oldVal||'—'}" → "${value||'—'}"`);
+  // Save to localStorage AND Supabase
+  if(isExiting)saveHRExiting(person);
+  else saveHRPerson(person);
+  // Re-render card
+  const personArea=document.getElementById('hr-person-area');
+  if(personArea&&personArea.style.display!=='none'){
+    const fresh=isExiting?getHRExiting().find(p=>p.id===personId):getHRPeople().find(p=>p.id===personId);
+    if(fresh)personArea.innerHTML=isExiting?renderOffboardingCard(fresh):renderOnboardingCard(fresh);
+  }
+}
+
+function hrToggleCheck(personId,fieldPath,checkbox){
+  const isExiting=personId.startsWith('EX_');
+  const s=getHRStore();
+  const arr=isExiting?s.exiting:s.people;
+  const person=arr.find(p=>p.id===personId);if(!person)return;
+  const parts=fieldPath.split('.');let obj=person.stages;
+  for(let i=0;i<parts.length-1;i++)obj=obj[parts[i]];
+  obj[parts[parts.length-1]]=checkbox.checked;
+  const dateKey=parts[parts.length-1].replace('Received','Date').replace('completed','interviewDate');
+  if(checkbox.checked&&obj[dateKey]==='')obj[dateKey]=new Date().toISOString().split('T')[0];
+  hrLog(person,`${fieldPath}: ${checkbox.checked?'checked':'unchecked'}`);
+  // Save to localStorage AND Supabase
+  if(isExiting)saveHRExiting(person);
+  else saveHRPerson(person);
+  // Re-render
+  const personArea=document.getElementById('hr-person-area');
+  if(personArea&&personArea.style.display!=='none'){
+    const fresh=isExiting?getHRExiting().find(p=>p.id===personId):getHRPeople().find(p=>p.id===personId);
+    if(fresh)personArea.innerHTML=isExiting?renderOffboardingCard(fresh):renderOnboardingCard(fresh);
+  }
+}
+
+// ---- ADD MODAL ----
+function openHRAddModal(){
+  const modal=document.getElementById('hr-add-modal');if(!modal)return;
+  modal.style.display='flex';
+  if(hrView==='reviews'){
+    // Add review modal — pick person
+    const people=getHRPeople();
+    modal.innerHTML=`<div class="hr-modal-inner"><h2 class="hr-modal-title">Add Performance Review</h2><p class="hr-modal-sub">Select the person to review, or type a name if they are not in onboarding.</p>
+    <div class="settings-field"><label>Person *</label>
+    <select id="hr-rev-person" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"><option value="">Select or type below</option>${people.map(p=>`<option value="${p.id}|${p.name}|${p.role}">${p.name} — ${p.role}</option>`).join('')}<option value="custom">Other person (type below)</option></select></div>
+    <div class="settings-field" id="hr-rev-custom" style="display:none;"><label>Name *</label><input type="text" id="hr-rev-name" placeholder="Full name" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;margin-bottom:8px;"><input type="text" id="hr-rev-role" placeholder="Role / job title" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>
+    <div style="color:var(--red);font-size:13px;margin-bottom:10px;display:none;" id="hr-add-error"></div>
+    <div style="display:flex;gap:12px;margin-top:8px;"><button onclick="submitHRReviewAdd()" class="btn-primary" style="flex:1;padding:11px;font-size:14px;"><i class="fas fa-plus"></i> Create Review</button><button onclick="closeHRAddModal()" class="btn-secondary" style="padding:11px 20px;font-size:14px;">Cancel</button></div></div>`;
+    document.getElementById('hr-rev-person').addEventListener('change',function(){
+      document.getElementById('hr-rev-custom').style.display=this.value==='custom'?'block':'none';
+    });
+    return;
+  }
+  modal.innerHTML=`<div class="hr-modal-inner"><h2 class="hr-modal-title">Add Person</h2><p class="hr-modal-sub">Add someone to the ${hrView==='onboarding'?'onboarding':'exiting'} pipeline.</p>
+  <div class="settings-field"><label>Full Name *</label><input type="text" id="hr-add-name" placeholder="e.g. Jane Smith" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>
+  <div class="settings-field"><label>Role / Job Title *</label><input type="text" id="hr-add-role" placeholder="e.g. Solutions Engineer" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>
+  <div class="settings-field"><label>Email Address</label><input type="email" id="hr-add-email" placeholder="e.g. jane@example.com" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>
+  ${hrView==='onboarding'?`<div class="settings-field"><label>Expected Start Date</label><input type="date" id="hr-add-start" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"></div>`:`<div class="settings-field"><label>Type *</label><select id="hr-add-type" style="width:100%;border:1px solid var(--border-input);border-radius:var(--radius);padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;"><option value="resignation">Resignation</option><option value="termination">Termination</option></select></div>`}
+  <div style="color:var(--red);font-size:13px;margin-bottom:10px;display:none;" id="hr-add-error"></div>
+  <div style="display:flex;gap:12px;margin-top:8px;"><button onclick="submitHRAdd()" class="btn-primary" style="flex:1;padding:11px;font-size:14px;"><i class="fas fa-plus"></i> Add Person</button><button onclick="closeHRAddModal()" class="btn-secondary" style="padding:11px 20px;font-size:14px;">Cancel</button></div></div>`;
+}
+
 function closeHRAddModal(){const modal=document.getElementById('hr-add-modal');if(modal)modal.style.display='none';}
-function submitHRAdd(){const name=document.getElementById('hr-add-name')?.value.trim();const role=document.getElementById('hr-add-role')?.value.trim();const email=document.getElementById('hr-add-email')?.value.trim();const errEl=document.getElementById('hr-add-error');if(!name||!role){if(errEl){errEl.textContent='Name and role are required.';errEl.style.display='block';}return;}if(hrView==='onboarding'){const start=document.getElementById('hr-add-start')?.value;const person=newOnboardingPerson(name,role,email,start,currentUser?.name);if(start)person.stages.s25.expectedStart=start;hrLog(person,'Added to onboarding pipeline');saveHRPerson(person);}else{const type=document.getElementById('hr-add-type')?.value||'resignation';const person=newOffboardingPerson(name,role,email,type,currentUser?.name);hrLog(person,'Added to exiting pipeline ('+type+')');saveHRExiting(person);}closeHRAddModal();renderHRList();}
+
+function submitHRAdd(){
+  const name=document.getElementById('hr-add-name')?.value.trim();
+  const role=document.getElementById('hr-add-role')?.value.trim();
+  const email=document.getElementById('hr-add-email')?.value.trim();
+  const errEl=document.getElementById('hr-add-error');
+  if(!name||!role){if(errEl){errEl.textContent='Name and role are required.';errEl.style.display='block';}return;}
+  if(hrView==='onboarding'){
+    const start=document.getElementById('hr-add-start')?.value;
+    const person=newOnboardingPerson(name,role,email,start,currentUser?.name);
+    if(start)person.stages.s25.expectedStart=start;
+    hrLog(person,'Added to onboarding pipeline');
+    saveHRPerson(person);
+  }else{
+    const type=document.getElementById('hr-add-type')?.value||'resignation';
+    const person=newOffboardingPerson(name,role,email,type,currentUser?.name);
+    hrLog(person,`Added to exiting pipeline (${type})`);
+    saveHRExiting(person);
+  }
+  closeHRAddModal();renderHRList();
+}
+
+function submitHRReviewAdd(){
+  const sel=document.getElementById('hr-rev-person')?.value;
+  const errEl=document.getElementById('hr-add-error');
+  let personId,personName,personRole;
+  if(sel==='custom'){
+    personName=document.getElementById('hr-rev-name')?.value.trim();
+    personRole=document.getElementById('hr-rev-role')?.value.trim()||'';
+    personId='CUSTOM_'+personName?.replace(/\s+/g,'_').toLowerCase();
+    if(!personName){if(errEl){errEl.textContent='Name is required.';errEl.style.display='block';}return;}
+  }else if(sel){
+    const parts=sel.split('|');personId=parts[0];personName=parts[1];personRole=parts[2];
+  }else{if(errEl){errEl.textContent='Please select a person.';errEl.style.display='block';}return;}
+  const rev=newReview(personId,personName,personRole);
+  saveHRReview(rev);
+  closeHRAddModal();
+  openReviewPerson(personId);
+}
+
 function deleteHRPersonConfirm(id){if(confirm('Remove this person from onboarding? All their data will be deleted.')){deleteHRPerson(id);backToHRList();}}
 function deleteHRExitingConfirm(id){if(confirm('Remove this person from exiting? All their data will be deleted.')){deleteHRExiting(id);backToHRList();}}
 document.addEventListener('click',function(e){const modal=document.getElementById('hr-add-modal');if(modal&&e.target===modal)closeHRAddModal();});
@@ -1061,6 +1506,27 @@ window.addEventListener('load', function() {
     })
     .subscribe();
   console.log('HR real-time sync active');
+    // Also load reviews
+    sb.from('hr_reviews').select('*').order('review_date', {ascending: false}).then(({data}) => {
+      if(data && data.length > 0) {
+        const s = JSON.parse(localStorage.getItem('iai_hr_v3') || '{"people":[],"exiting":[],"reviews":[]}');
+        s.reviews = data;
+        localStorage.setItem('iai_hr_v3', JSON.stringify(s));
+      }
+    });
+    // Real-time: reviews
+    sb.channel('hr_realtime_reviews')
+      .on('postgres_changes', {event: '*', schema: 'public', table: 'hr_reviews'}, payload => {
+        const s = JSON.parse(localStorage.getItem('iai_hr_v3') || '{"people":[],"exiting":[],"reviews":[]}');
+        if (!s.reviews) s.reviews = [];
+        if (payload.eventType === 'DELETE') {
+          s.reviews = s.reviews.filter(r => r.id !== payload.old.id);
+        } else {
+          const idx = s.reviews.findIndex(r => r.id === payload.new.id);
+          if (idx > -1) s.reviews[idx] = payload.new; else s.reviews.push(payload.new);
+        }
+        localStorage.setItem('iai_hr_v3', JSON.stringify(s));
+      }).subscribe();
 });
 
 </script>
