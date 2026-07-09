@@ -1301,7 +1301,7 @@ window.markAllRead = function() {
   if (sb && currentUser) sb.from('portal_notifications').update({is_read:true}).eq('recipient_email', currentUser.email);
 };
 
-// Hook into completeLogin to load remote data
+// Hook into completeLogin to load remote data 
 const _origCompleteLogin = window.completeLogin;
 window.completeLogin = function(email) {
   _origCompleteLogin && _origCompleteLogin(email);
@@ -1312,3 +1312,4 @@ console.log('Supabase real-time backend active:', _SB_URL);
 </script>
 </body>
 </html>
+// this comment is just for commit
