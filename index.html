@@ -792,8 +792,8 @@ function newOffboardingPerson(name,role,email,type,addedBy){return{id:'EX_'+Date
 function newReview(personId,personName,personRole){return{id:'REV_'+Date.now(),personId,personName,personRole,reviewDate:'',score:'',outcome:'',evaluatedBy:'',docLink:'',notes:'',addedBy:currentUser?.name||'',createdAt:new Date().toISOString()};}
 
 // ---- SCORE HELPERS ----
-function scoreColor(score){const n=parseInt(score);if(!n)return'#9CA3AF';if(n<=4)return'#DC2626';if(n<=7)return'#D97706';return'#16A34A';}
-function scoreBg(score){const n=parseInt(score);if(!n)return'#F3F4F6';if(n<=4)return'#FEE2E2';if(n<=7)return'#FEF3C7';return'#DCFCE7';}
+function scoreColor(score){const n=parseFloat(score);if(!n)return'#9CA3AF';if(n<=2)return'#DC2626';if(n<4)return'#D97706';return'#16A34A';}
+function scoreBg(score){const n=parseFloat(score);if(!n)return'#F3F4F6';if(n<=2)return'#FEE2E2';if(n<4)return'#FEF3C7';return'#DCFCE7';}
 
 // ---- STATUS ----
 function getCurrentStageKey(p){const s=p.stages;if(!s.s1.completed)return's1';if(!s.s2.signedDate)return's2';if(!s.s25.candidateEmail)return's25';if(!s.s3.ref2Received)return's3';if(!s.s4.screenSignedDate)return's4';if(!s.s5.signedDate)return's5';if(!s.s6.credsSentDate)return's6';if(!s.s7.confirmedDate)return's7';if(!s.s8.mdmDate)return's8';if(!s.s9.clearedDate)return's9';if(!s.s10.completedDate)return's10';return'done';}
@@ -925,7 +925,7 @@ function renderReviewsList(){
         <span class="hr-stage-pill" style="background:#E0F2FE;color:#0284C7;border:1.5px solid #0284C735;margin-top:2px;"><i class="fas fa-star" style="font-size:10px;"></i> ${reviewCount} review${reviewCount!==1?'s':''}</span>
       </div>
       <div class="hr-person-meta">
-        ${latest.score?`<div class="hr-score-badge" style="background:${scoreBg(latest.score)};"><span class="hr-score-num" style="color:${scoreColor(latest.score)};">${latest.score}</span><span class="hr-score-lbl" style="color:${scoreColor(latest.score)};">/10</span></div>`:''}
+        ${latest.score?`<div class="hr-score-badge" style="background:${scoreBg(latest.score)};"><span class="hr-score-num" style="color:${scoreColor(latest.score)};">${latest.score}</span><span class="hr-score-lbl" style="color:${scoreColor(latest.score)};">/5</span></div>`:''}
         <div class="hr-start-info">
           <div class="hr-start-label">Last review</div>
           <div class="hr-start-date">${lastDate}</div>
@@ -968,7 +968,7 @@ function openReviewPerson(personId){
       </div>
       <div class="hr-card-badges">
         <span style="font-size:13px;font-weight:600;color:#0284C7;background:#E0F2FE;padding:6px 16px;border-radius:8px;">${reviews.length} review${reviews.length!==1?'s':''}</span>
-        ${reviews[0].score?`<div class="hr-score-badge" style="background:${scoreBg(reviews[0].score)};"><span class="hr-score-num" style="color:${scoreColor(reviews[0].score)};">${reviews[0].score}</span><span class="hr-score-lbl" style="color:${scoreColor(reviews[0].score)};">/10 latest</span></div>`:''}
+        ${reviews[0].score?`<div class="hr-score-badge" style="background:${scoreBg(reviews[0].score)};"><span class="hr-score-num" style="color:${scoreColor(reviews[0].score)};">${reviews[0].score}</span><span class="hr-score-lbl" style="color:${scoreColor(reviews[0].score)};">/5 latest</span></div>`:''}
       </div>
     </div>
   </div>
@@ -992,7 +992,7 @@ function renderReviewCard(rev, canEdit, isLatest){
         ${rev.evaluatedBy?`<span style="font-size:12px;color:var(--text-muted);">by ${rev.evaluatedBy}</span>`:''}
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
-        ${rev.score?`<div style="background:${scoreBg(rev.score)};border-radius:8px;padding:4px 12px;display:flex;align-items:center;gap:4px;"><span style="font-size:18px;font-weight:800;color:${scoreColor(rev.score)};">${rev.score}</span><span style="font-size:10px;color:${scoreColor(rev.score)};font-weight:700;">/10</span></div>`:''}
+        ${rev.score?`<div style="background:${scoreBg(rev.score)};border-radius:8px;padding:4px 12px;display:flex;align-items:center;gap:4px;"><span style="font-size:18px;font-weight:800;color:${scoreColor(rev.score)};">${rev.score}</span><span style="font-size:10px;color:${scoreColor(rev.score)};font-weight:700;">/5</span></div>`:''}
         ${rev.outcome?`<span style="font-size:12px;font-weight:700;padding:4px 12px;border-radius:6px;background:${rev.outcome==='Pass'?'#DCFCE7':rev.outcome==='Needs Improvement'?'#FEF3C7':'#F3F4F6'};color:${rev.outcome==='Pass'?'#16A34A':rev.outcome==='Needs Improvement'?'#D97706':'#6B7280'};">${rev.outcome}</span>`:''}
         ${canEdit?`<button onclick="deleteReviewConfirm('${rev.id}')" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:13px;padding:4px 6px;" title="Delete this review"><i class="fas fa-trash"></i></button>`:''}
       </div>
@@ -1009,7 +1009,7 @@ function renderReviewCard(rev, canEdit, isLatest){
         </div>
         <div>
           <label style="font-size:11px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Score (1-10)</label>
-          ${canEdit?`<input type="number" min="1" max="10" value="${rev.score||''}" placeholder="—" onchange="hrUpdateReview('${rev.id}','score',this.value)" class="hr-score-input" style="border-color:${scoreColor(rev.score)};color:${scoreColor(rev.score)};background:${scoreBg(rev.score)};width:80px;">`:`<div style="width:60px;height:60px;border-radius:50%;background:${scoreBg(rev.score)};border:3px solid ${scoreColor(rev.score)};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:${scoreColor(rev.score)};">${rev.score||'—'}</div>`}
+          ${canEdit?`<input type="number" min="1" max="5" step="0.5" value="${rev.score||''}" placeholder="—" onchange="hrUpdateReview('${rev.id}','score',this.value)" class="hr-score-input" style="border-color:${scoreColor(rev.score)};color:${scoreColor(rev.score)};background:${scoreBg(rev.score)};width:80px;">`:`<div style="width:60px;height:60px;border-radius:50%;background:${scoreBg(rev.score)};border:3px solid ${scoreColor(rev.score)};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:${scoreColor(rev.score)};">${rev.score||'—'}</div>`}
         </div>
         <div>
           <label style="font-size:11px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Outcome</label>
@@ -1098,7 +1098,7 @@ function renderOnboardingCard(p){
   const onHold6=daysUntil!==null&&daysUntil>3;
   const onHold7=daysUntil!==null&&daysUntil>0;
 
-  const s1=_cb('Interview / evaluation completed',s.s1.completed,s.s1.interviewDate,'s1.completed',p.id,canEdit)+_df('Interview date',s.s1.interviewDate,'s1.interviewDate',p.id,canEdit)+`<div style="margin-top:12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;"><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Score (1-10)</label>${canEdit?`<input type="number" min="1" max="10" value="${s.s1.score||''}" placeholder="—" onchange="hrUpdateField('${p.id}','s1.score',this.value)" class="hr-score-input" style="border-color:${scoreColor(s.s1.score)};color:${scoreColor(s.s1.score)};background:${scoreBg(s.s1.score)};">`:`<div style="width:64px;height:64px;border-radius:50%;background:${scoreBg(s.s1.score)};border:3px solid ${scoreColor(s.s1.score)};display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:${scoreColor(s.s1.score)};">${s.s1.score||'—'}</div>`}</div><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Outcome</label>${canEdit?`<select onchange="hrUpdateField('${p.id}','s1.outcome',this.value)" style="border:1.5px solid var(--border-input);border-radius:8px;padding:8px 16px;font-size:14px;font-family:var(--font);outline:none;font-weight:700;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'var(--white)'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'var(--text-heading)'};"><option value="">Select</option><option value="Pass" ${s.s1.outcome==='Pass'?'selected':''}>Pass</option><option value="Fail" ${s.s1.outcome==='Fail'?'selected':''}>Fail</option><option value="Hold" ${s.s1.outcome==='Hold'?'selected':''}>Hold</option></select>`:`<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280'};">${s.s1.outcome||'—'}</span>`}</div></div>`+_tf('Notes',s.s1.notes,'s1.notes',p.id,canEdit);
+  const s1=_cb('Interview / evaluation completed',s.s1.completed,s.s1.interviewDate,'s1.completed',p.id,canEdit)+_df('Interview date',s.s1.interviewDate,'s1.interviewDate',p.id,canEdit)+`<div style="margin-top:12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;"><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Score (1-10)</label>${canEdit?`<input type="number" min="1" max="5" step="0.5" value="${s.s1.score||''}" placeholder="—" onchange="hrUpdateField('${p.id}','s1.score',this.value)" class="hr-score-input" style="border-color:${scoreColor(s.s1.score)};color:${scoreColor(s.s1.score)};background:${scoreBg(s.s1.score)};">`:`<div style="width:64px;height:64px;border-radius:50%;background:${scoreBg(s.s1.score)};border:3px solid ${scoreColor(s.s1.score)};display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:${scoreColor(s.s1.score)};">${s.s1.score||'—'}</div>`}</div><div><label style="font-size:12px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:6px;">Outcome</label>${canEdit?`<select onchange="hrUpdateField('${p.id}','s1.outcome',this.value)" style="border:1.5px solid var(--border-input);border-radius:8px;padding:8px 16px;font-size:14px;font-family:var(--font);outline:none;font-weight:700;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'var(--white)'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'var(--text-heading)'};"><option value="">Select</option><option value="Pass" ${s.s1.outcome==='Pass'?'selected':''}>Pass</option><option value="Fail" ${s.s1.outcome==='Fail'?'selected':''}>Fail</option><option value="Hold" ${s.s1.outcome==='Hold'?'selected':''}>Hold</option></select>`:`<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:${s.s1.outcome==='Pass'?'#DCFCE7':s.s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6'};color:${s.s1.outcome==='Pass'?'#16A34A':s.s1.outcome==='Fail'?'#DC2626':'#6B7280'};">${s.s1.outcome||'—'}</span>`}</div></div>`+_tf('Notes',s.s1.notes,'s1.notes',p.id,canEdit);
   const s2=_df('Offer letter sent',s.s2.sentDate,'s2.sentDate',p.id,canEdit)+_df('Offer letter signed and returned',s.s2.signedDate,'s2.signedDate',p.id,canEdit);
   const s25=_tf('Candidate email address',s.s25.candidateEmail,'s25.candidateEmail',p.id,canEdit,'email')+_df('Expected start date',s.s25.expectedStart,'s25.expectedStart',p.id,canEdit)+`<div style="margin-top:8px;font-size:13px;color:var(--text-muted);font-style:italic;">Once filled, Stage 3 becomes active.</div>`;
   const s3=_df('Request email sent',s.s3.requestSentDate,'s3.requestSentDate',p.id,canEdit)+_cb('Full name received',s.s3.fullNameReceived,s.s3.fullNameDate,'s3.fullNameReceived',p.id,canEdit)+_cb('Full address received',s.s3.fullAddressReceived,s.s3.fullAddressDate,'s3.fullAddressReceived',p.id,canEdit)+_cb('ID received',s.s3.idReceived,s.s3.idDate,'s3.idReceived',p.id,canEdit)+_lf('ID document link',s.s3.idLink,'s3.idLink',p.id,canEdit)+_cb('Work reference 1 received',s.s3.ref1Received,s.s3.ref1Date,'s3.ref1Received',p.id,canEdit)+_lf('Reference 1 link',s.s3.ref1Link,'s3.ref1Link',p.id,canEdit)+_cb('Work reference 2 received',s.s3.ref2Received,s.s3.ref2Date,'s3.ref2Received',p.id,canEdit)+_lf('Reference 2 link',s.s3.ref2Link,'s3.ref2Link',p.id,canEdit);
@@ -1506,7 +1506,6 @@ window.addEventListener('load', function() {
     })
     .subscribe();
   console.log('HR real-time sync active');
-    // Also load reviews
     sb.from('hr_reviews').select('*').order('review_date', {ascending: false}).then(({data}) => {
       if(data && data.length > 0) {
         const s = JSON.parse(localStorage.getItem('iai_hr_v3') || '{"people":[],"exiting":[],"reviews":[]}');
@@ -1514,7 +1513,6 @@ window.addEventListener('load', function() {
         localStorage.setItem('iai_hr_v3', JSON.stringify(s));
       }
     });
-    // Real-time: reviews
     sb.channel('hr_realtime_reviews')
       .on('postgres_changes', {event: '*', schema: 'public', table: 'hr_reviews'}, payload => {
         const s = JSON.parse(localStorage.getItem('iai_hr_v3') || '{"people":[],"exiting":[],"reviews":[]}');
