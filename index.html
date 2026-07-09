@@ -738,22 +738,41 @@ function renderRaw(){if(!currentUser||currentUser.perm!=="admin"){document.getEl
 <script>
 
 async function loadAndRenderHR() {
-  try {
-    const sb = window._sbClient || (window.getSB && window.getSB()) || (window.getHRSB && window.getHRSB());
-    if (sb) {
-      const [pRes, eRes, rRes] = await Promise.all([
-        sb.from('hr_people').select('*').order('added_at',{ascending:false}),
-        sb.from('hr_exiting').select('*').order('added_at',{ascending:false}),
-        sb.from('hr_reviews').select('*').order('review_date',{ascending:false})
-      ]);
-      const s = {people:[], exiting:[], reviews:[]};
-      if(pRes.data) s.people = pRes.data.map(r=>({id:r.id,name:r.name,role:r.role,email:r.email,startDate:r.start_date,addedBy:r.added_by,addedAt:r.added_at,log:r.log||[],stages:r.stages||{}}));
-      if(eRes.data) s.exiting = eRes.data.map(r=>({id:r.id,name:r.name,role:r.role,email:r.email,exitType:r.exit_type,addedBy:r.added_by,addedAt:r.added_at,log:r.log||[],stages:r.stages||{}}));
-      if(rRes.data) s.reviews = rRes.data;
-      localStorage.setItem('iai_hr_v3', JSON.stringify(s));
-      console.log('HR loaded from Supabase:',s.people.length,'onboarding,',s.exiting.length,'exiting,',s.reviews.length,'reviews');
-    }
-  } catch(e) { console.warn('HR Supabase load error:',e); }
+  const sb = window._sbClient || (window.getSB && window.getSB()) || (window.getHRSB && window.getHRSB());
+  const s = getHRStore(); // start with whatever is in localStorage
+  if (sb) {
+    // Load each table independently — one failure does NOT block the others
+    try {
+      const pRes = await sb.from('hr_people').select('*').order('added_at',{ascending:false});
+      if (pRes.error) console.warn('hr_people load error:', pRes.error);
+      else if (pRes.data) s.people = pRes.data.map(r=>({
+        id:r.id, name:r.name, role:r.role, email:r.email,
+        startDate:r.start_date, addedBy:r.added_by, addedAt:r.added_at,
+        log:r.log||[], stages:r.stages||{}
+      }));
+    } catch(e){ console.warn('hr_people exception:',e); }
+
+    try {
+      const eRes = await sb.from('hr_exiting').select('*').order('added_at',{ascending:false});
+      if (eRes.error) console.warn('hr_exiting load error:', eRes.error);
+      else if (eRes.data) s.exiting = eRes.data.map(r=>({
+        id:r.id, name:r.name, role:r.role, email:r.email,
+        exitType:r.exit_type, addedBy:r.added_by, addedAt:r.added_at,
+        log:r.log||[], stages:r.stages||{}
+      }));
+    } catch(e){ console.warn('hr_exiting exception:',e); }
+
+    try {
+      const rRes = await sb.from('hr_reviews').select('*').order('created_at',{ascending:false});
+      if (rRes.error) console.warn('hr_reviews load error:', rRes.error);
+      else if (rRes.data) s.reviews = rRes.data;
+    } catch(e){ console.warn('hr_reviews exception:',e); }
+
+    localStorage.setItem('iai_hr_v3', JSON.stringify(s));
+    console.log('HR loaded:', s.people.length, 'onboarding,', s.exiting.length, 'exiting,', (s.reviews||[]).length, 'reviews');
+  } else {
+    console.warn('No Supabase client available — using localStorage only');
+  }
   renderHR();
 }
 
@@ -1605,7 +1624,7 @@ window.addEventListener('load', function() {
       });
     })
     .subscribe();
-  console.log('HR real-time sync active');sb.from('hr_reviews').select('*').order('review_date',{ascending:false}).then(({data})=>{if(data&&data.length>0){const s=JSON.parse(localStorage.getItem('iai_hr_v3')||'{"people":[],"exiting":[],"reviews":[]}');if(!s.reviews)s.reviews=[];s.reviews=data;localStorage.setItem('iai_hr_v3',JSON.stringify(s));}});
+  console.log('HR real-time sync active');sb.from('hr_reviews').select('*').order('created_at',{ascending:false}).then(({data,error})=>{if(!error&&data&&data.length>0){const s=JSON.parse(localStorage.getItem('iai_hr_v3')||'{"people":[],"exiting":[],"reviews":[]}');if(!s.reviews)s.reviews=[];s.reviews=data;localStorage.setItem('iai_hr_v3',JSON.stringify(s));}});
 });
 
 </script>
