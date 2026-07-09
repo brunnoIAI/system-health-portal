@@ -649,12 +649,28 @@ function handleLoginStep(){
   const pw=document.getElementById("login-pw").value;
   if(!pw){errEl.textContent="Please enter your password.";errEl.style.display="block";return;}
   const btn=document.getElementById("login-btn");btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Signing in...';
-  sha256(pendingEmail+":"+pw).then(hash=>{
-    const auth=getAuth(),stored=auth["pw_"+pendingEmail];
+  // Fetch password hash from Supabase first (cross-browser support)
+  const _runLogin=async()=>{
+    let storedFromSB=null;
+    try{
+      let sbL=window._sbClient;
+      if(!sbL&&window.supabase)sbL=window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co','sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox');
+      if(sbL){
+        const {data:authRow}=await sbL.from('portal_auth').select('pw_hash').eq('email',pendingEmail).maybeSingle();
+        if(authRow&&authRow.pw_hash){
+          storedFromSB=authRow.pw_hash;
+          const a=getAuth();a["pw_"+pendingEmail]=authRow.pw_hash;saveAuth(a);
+        }
+      }
+    }catch(e){console.warn('Supabase auth fetch failed:',e);}
+    sha256(pendingEmail+":"+pw).then(hash=>{
+    const auth=getAuth(),stored=auth["pw_"+pendingEmail]||storedFromSB;
     if(hash!==stored){const attKey="att_"+pendingEmail;auth[attKey]=(auth[attKey]||0)+1;if(auth[attKey]>=5){auth["lock_"+pendingEmail]={until:Date.now()+30*60*1000};auth[attKey]=0;saveAuth(auth);lockEl.textContent="Too many failed attempts. Locked for 30 minutes.";lockEl.style.display="block";}else{saveAuth(auth);const left=5-auth[attKey];errEl.textContent="Incorrect password. "+left+" attempt"+(left!==1?"s":"")+" remaining.";errEl.style.display="block";}btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';return;}
     const auth2=getAuth();delete auth2["att_"+pendingEmail];delete auth2["lock_"+pendingEmail];auth2["lastLogin_"+pendingEmail]=new Date().toISOString();saveAuth(auth2);
     completeLogin(pendingEmail);
   });
+  };
+  _runLogin();
 }
 function setFirstPassword(){
   const pw1=document.getElementById("new-pw1").value,pw2=document.getElementById("new-pw2").value;
@@ -738,7 +754,12 @@ function renderRaw(){if(!currentUser||currentUser.perm!=="admin"){document.getEl
 <script>
 
 async function loadAndRenderHR() {
-  const sb = window._sbClient || (window.getSB && window.getSB()) || (window.getHRSB && window.getHRSB());
+  // Create Supabase client directly — getSB may not be defined yet (different script block)
+  let sb = window._sbClient;
+  if (!sb && window.supabase) {
+    sb = window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co', 'sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox');
+    window._sbClient = sb;
+  }
   const s = getHRStore(); // start with whatever is in localStorage
   if (sb) {
     // Load each table independently — one failure does NOT block the others
