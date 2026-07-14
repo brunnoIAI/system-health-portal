@@ -504,18 +504,17 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
       <div class="sidebar-section">
         <div class="sidebar-section-label">Overview</div>
         <button class="nav-item active" onclick="switchTab('all',this)" data-tab="all">
-          <i class="fas fa-th-large"></i> All Issues <span class="nav-badge nav-alert" id="badge-all">28</span>
+          <i class="fas fa-th-large"></i> All Issues <span class="nav-badge nav-alert" id="badge-all">36</span>
         </button>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-section-label">By System</div>
-        <button class="nav-item nav-alert" onclick="switchTab('voice',this)" data-tab="voice"><i class="fas fa-microphone"></i> Voice <span class="nav-badge">1</span></button>
-        <button class="nav-item nav-alert" onclick="switchTab('database',this)" data-tab="database"><i class="fas fa-database"></i> Database <span class="nav-badge">2</span></button>
-        <button class="nav-item nav-alert" onclick="switchTab('integrations',this)" data-tab="integrations"><i class="fas fa-plug"></i> Integrations <span class="nav-badge">5</span></button>
-        <button class="nav-item nav-alert" onclick="switchTab('platform',this)" data-tab="platform"><i class="fas fa-layer-group"></i> Platform <span class="nav-badge">13</span></button>
-        <button class="nav-item nav-alert" onclick="switchTab('security',this)" data-tab="security"><i class="fas fa-shield-alt"></i> Security <span class="nav-badge">3</span></button>
-        <button class="nav-item" onclick="switchTab('tasks',this)" data-tab="tasks"><i class="fas fa-tasks"></i> Tasks <span class="nav-badge">3</span></button>
-        <button class="nav-item" onclick="switchTab('resolved',this)" data-tab="resolved"><i class="fas fa-check-double"></i> Resolved <span class="nav-badge">32</span></button>
+        <button class="nav-item nav-alert" onclick="switchTab('voice',this)" data-tab="voice"><i class="fas fa-microphone"></i> Voice <span class="nav-badge">2</span></button>
+        <button class="nav-item nav-alert" onclick="switchTab('integrations',this)" data-tab="integrations"><i class="fas fa-plug"></i> Integrations <span class="nav-badge">7</span></button>
+        <button class="nav-item nav-alert" onclick="switchTab('platform',this)" data-tab="platform"><i class="fas fa-layer-group"></i> Platform <span class="nav-badge">15</span></button>
+        <button class="nav-item nav-alert" onclick="switchTab('security',this)" data-tab="security"><i class="fas fa-shield-alt"></i> Security <span class="nav-badge">6</span></button>
+        <button class="nav-item" onclick="switchTab('tasks',this)" data-tab="tasks"><i class="fas fa-tasks"></i> Tasks <span class="nav-badge">6</span></button>
+        <button class="nav-item" onclick="switchTab('resolved',this)" data-tab="resolved"><i class="fas fa-check-double"></i> Resolved <span class="nav-badge">29</span></button>
         <button class="nav-item" id="raw-nav-item" onclick="switchTab('raw',this)" data-tab="raw" style="display:none;"><i class="fas fa-terminal"></i> Raw Log <span class="nav-badge" style="background:rgba(217,119,6,0.2);color:#D97706;">8</span></button>
       </div>
       <div class="sidebar-section">
@@ -752,13 +751,31 @@ function setFirstPassword(){
     (window.completeLogin||completeLogin)(pendingEmail);
   });
 }
+
+// Update sidebar badges from ISSUES array
+function updateSidebarBadges() {
+  const open = ISSUES.filter(i => i.status !== 'resolved');
+  const resolved = ISSUES.filter(i => i.status === 'resolved');
+  const byTab = {};
+  open.forEach(i => { byTab[i.tab] = (byTab[i.tab] || 0) + 1; });
+
+  const b = document.getElementById('badge-all');
+  if (b) b.textContent = open.length;
+
+  const tabs = ['platform','integrations','security','voice','tasks','resolved'];
+  tabs.forEach(tab => {
+    const el = document.querySelector('[data-tab="' + tab + '"] .nav-badge');
+    if (el) el.textContent = tab === 'resolved' ? resolved.length : (byTab[tab] || 0);
+  });
+}
+
 function completeLogin(email){
   const u=USERS[email];currentUser={...u,email};pendingEmail=null;
   document.getElementById("login-screen").style.display="none";
   document.getElementById("app").style.display="block";
   refreshSidebarUser();
   if(u.perm==="admin")document.getElementById("raw-nav-item").style.display="flex";
-  renderWorkload();updateMyItemsBadge();renderNotifBadge();renderAll();window.scrollTo(0,0);
+  renderWorkload();updateMyItemsBadge();renderNotifBadge();renderAll();updateSidebarBadges();window.scrollTo(0,0);
   document.addEventListener("click",e=>{if(!e.target.closest(".notif-wrapper"))closeNotifDropdown();if(!e.target.closest(".assignee-dropdown"))closeAllAssigneeDropdowns();});
 }
 function handleLogout(){currentUser=null;pendingEmail=null;document.getElementById("login-screen").style.display="flex";document.getElementById("app").style.display="none";document.getElementById("login-email").value="";document.getElementById("login-email").disabled=false;document.getElementById("login-pw").value="";document.getElementById("pw-field").style.display="none";document.getElementById("login-btn").innerHTML='<i class="fas fa-arrow-right"></i> Continue';document.getElementById("login-error").style.display="none";document.getElementById("login-lockout").style.display="none";}
