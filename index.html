@@ -68,6 +68,20 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 .nav-badge{margin-left:auto;background:rgba(255,255,255,0.12);border-radius:100px;padding:1px 7px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.7);}
 .nav-item.active .nav-badge{background:var(--brand);color:#fff;}
 .nav-item.nav-alert .nav-badge{background:#DC2626;color:#fff;}
+.user-profile-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.user-profile-box{background:#fff;border-radius:12px;padding:32px;width:480px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.upm-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;}
+.upm-av{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;}
+.upm-name{font-size:18px;font-weight:800;color:#111827;}
+.upm-role{font-size:13px;color:#9CA3AF;margin-top:2px;}
+.upm-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F3F4F6;font-size:13px;}
+.upm-row:last-child{border-bottom:none;}
+.upm-label{color:#9CA3AF;font-weight:500;}
+.upm-val{color:#111827;font-weight:600;}
+.upm-close{margin-top:20px;width:100%;background:#F3F4F6;border:none;border-radius:8px;padding:10px;font-family:var(--font);font-size:13px;font-weight:600;color:#374151;cursor:pointer;}
+.admin-logins-table{width:100%;margin-top:16px;border-collapse:collapse;}
+.admin-logins-table th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9CA3AF;padding:6px 8px;text-align:left;border-bottom:1px solid #E5E7EB;}
+.admin-logins-table td{font-size:12px;padding:8px;border-bottom:1px solid #F3F4F6;color:#374151;}
 .sidebar-section.workload{border-top:1px solid rgba(255,255,255,0.08);margin-top:8px;padding-top:12px;}
 .workload-person{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:6px;cursor:pointer;transition:background 0.15s;margin-bottom:1px;}
 .workload-person:hover{background:var(--sidebar-hover);}
@@ -545,7 +559,12 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
       <div class="topbar">
         <div class="topbar-breadcrumb">System Health Portal &rsaquo; <span id="topbar-section">All Issues</span></div>
         <div class="topbar-right">
-          <div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 14 Jul 2026, 17:00 UK</span></div>
+          <div id="topbar-user-pill" style="display:none;align-items:center;gap:8px;background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:100px;padding:4px 12px 4px 6px;cursor:pointer;" onclick="showUserProfile()" title="Logged in as">
+            <div id="topbar-user-av" style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;background:#6C5DD3;flex-shrink:0;"></div>
+            <span id="topbar-user-name" style="font-size:12px;font-weight:600;color:#374151;"></span>
+            <span style="font-size:10px;color:#9CA3AF;font-weight:500;" id="topbar-user-role"></span>
+          </div>
+          <div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 15 Jul 2026, 07:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -580,6 +599,9 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+  {id:"OPENAI-OUTAGE-001",title:"OpenAI WARNING+CRITICAL — Self-Resolved 15 Jul 00:46 UTC",priority:"p2",status:"resolved",tab:"resolved",occ:1,dateFirst:"15 Jul 2026",dateLast:"15 Jul 2026",whatItDoes:"OpenAI WARNING fired 00:08 UTC, escalated to CRITICAL 00:13 UTC. Self-resolved 00:45-00:46 UTC. Duration ~32 min. No engineer action required.",responsible:"Engineering",escalated:false},
+  {id:"DOMAIN-INFRAFORGE-001",title:"Infraforge Domain Auto-Renewal Not Enabled — $4/Domain Charge Pending",priority:"p2",status:"working",tab:"integrations",occ:1,dateFirst:"15 Jul 2026",dateLast:"15 Jul 2026",whatItDoes:"Salesforge/Infraforge: auto-renewal not enabled on domains. $4 per domain per year charge pending. Email from Stas at Salesforge 14 Jul 21:01 UTC. Domains may lapse if not actioned.",responsible:"Brunno / Meezab",escalated:false},
+  {id:"ANTHROPIC-USAGE-001",title:"Team Member Requesting More Anthropic Usage + Connector",priority:"p3",status:"working",tab:"platform",occ:1,dateFirst:"15 Jul 2026",dateLast:"15 Jul 2026",whatItDoes:"Anthropic sent notification: 1 team member requested more usage, 1 requested a connector. Received 15 Jul 01:59 UTC. Needs admin approval in Anthropic console.",responsible:"Shahzeb / Brunno",escalated:false},
   {id:"TWILIO-CRED-001",title:"Twilio Credentials — Rotation DEADLINE 15 Jul 2026",priority:"p1",status:"stuck",tab:"platform",occ:1,dateFirst:"14 Jul 2026",dateLast:"14 Jul 2026",whatItDoes:"Twilio credentials must be rotated by 15 Jul 2026. Shahzeb must action before midnight. Deadline confirmed in both 12pm and 4pm sweep reports. Status moved to Stuck.",responsible:"Shahzeb",escalated:true},
   {id:"VAPI-CHANGE-001",title:"VAPI Recording URL Change — DEADLINE 15 Jul 2026",priority:"p1",status:"stuck",tab:"voice",occ:1,dateFirst:"14 Jul 2026",dateLast:"14 Jul 2026",whatItDoes:"VAPI changing recording URL format. Deadline 15 Jul 2026. Any code relying on current VAPI recording URLs will break. Action required today.",responsible:"Shahzeb / Faisal",escalated:true},
   {id:"VAPI-OUTAGE-009",title:"VAPI/Cekura/BrowserUse CRITICAL Cycle — Self-Resolved 14 Jul 02:33 UTC",priority:"p2",status:"resolved",tab:"resolved",occ:1,dateFirst:"14 Jul 2026",dateLast:"14 Jul 2026",whatItDoes:"VAPI, Cekura, and BrowserUse all fired CRITICAL+WARNING simultaneously 02:02-02:33 UTC 14 Jul. Self-resolved within 31 minutes. No engineer action required.",responsible:"Engineering",escalated:false},
@@ -595,13 +617,13 @@ const ISSUES = [
   {id:"AUTOTOPUP-001",title:"Credits AutoTopup Urgent — Aalok Flagged 14 Jul",priority:"p1",status:"working",tab:"platform",occ:1,dateFirst:"14 Jul 2026",dateLast:"14 Jul 2026",whatItDoes:"Aalok posted urgent message with screenshot: 'Get it solved urgent with autotopup'. Credits autotopup not working. Shahzeb and Brunno tagged. 5 replies in thread.",responsible:"Shahzeb / Brunno",escalated:true},
   {id:"CUA-BLOCK-001",title:"CUA Worker Blocking Other Agents — Fixed 14 Jul",priority:"p2",status:"resolved",tab:"resolved",occ:1,dateFirst:"14 Jul 2026",dateLast:"14 Jul 2026",whatItDoes:"Long-running CUA tasks were blocking worker, preventing other agents from running. Faisal deployed fix to production 14 Jul. CUAs now run without blocking other agents.",responsible:"Faisal",escalated:false},
   {id:"INTERACTIONS-FILTER-001",title:"Campaign/Agent Filter on Interactions Endpoint — Fix on Branch",priority:"p2",status:"working",tab:"tasks",occ:1,dateFirst:"9 Jul 2026",dateLast:"9 Jul 2026",whatItDoes:"No campaign/agent filter on Interactions endpoint. No full interaction history export per lead. Abayomi confirms fix on feat/interactions-filters branch, waiting to merge.",responsible:"Abayomi",escalated:false},
-  {id:"COST-ERR-001",title:"AI Provider Spend — Anthropic, OpenAI, Twilio (occ=125+)",priority:"p1",status:"stuck",tab:"platform",occ:125,dateFirst:"2 Jun 2026",dateLast:"14 Jul 2026",whatItDoes:"Anthropic, OpenAI, and Twilio auto-recharging at high frequency. 125+ total occurrences. Possible link to Arsh laptop compromise (Claude Code high usage). Shahzeb awaiting Anthropic refund response.",responsible:"Shahzeb / Meezab",escalated:true},
+  {id:"COST-ERR-001",title:"AI Provider Spend — Anthropic, OpenAI, Twilio (occ=125+)",priority:"p1",status:"stuck",tab:"platform",occ:126,dateFirst:"2 Jun 2026",dateLast:"15 Jul 2026",whatItDoes:"Anthropic, OpenAI, and Twilio auto-recharging at high frequency. 125+ total occurrences. Possible link to Arsh laptop compromise (Claude Code high usage). Shahzeb awaiting Anthropic refund response.",responsible:"Shahzeb / Meezab",escalated:true},
   {id:"ESCALATION-001",title:"Engineering Escalation — #system-health-hq Silent Day 68+",priority:"p1",status:"stuck",tab:"platform",occ:144,dateFirst:"29 May 2026",dateLast:"14 Jul 2026",whatItDoes:"#system-health-hq silent since Jun 4 (Day 40+). Engineers not responding to system health escalations. Brunno has followed up 68+ times.",responsible:"Shahzeb / Habib",escalated:true},
   {id:"OPS-SILENT-001",title:"Grafana Ops Monitor — Stalling (occ=70+)",priority:"p1",status:"stuck",tab:"platform",occ:103,dateFirst:"11 Jun 2026",dateLast:"14 Jul 2026",whatItDoes:"Grafana Ops Monitor stalling on every run. QUEUED-never-start failure mode. No Grafana data since 8 Jun 2026 (Day 36+ blackout). Habib built Grafana improvements but agent still stalls.",responsible:"Habib",escalated:true},
   {id:"HIGH-VOLUME-001",title:"All Agents Unavailable During 5,000-Call Campaign",priority:"p1",status:"working",tab:"platform",occ:1,dateFirst:"7 Jul 2026",dateLast:"9 Jul 2026",whatItDoes:"All agents became unavailable during a high-volume campaign of 5,000 calls. Ticket #293 open. Possible link to VAPI concurrency limits.",responsible:"Shahzeb / Abayomi",escalated:false},
   {id:"ARSH-COMPROMISE-001",title:"Arsh Laptop Compromised — Claude Account Hacked, High LLM Usage",priority:"p1",status:"working",tab:"security",occ:1,dateFirst:"8 Jul 2026",dateLast:"11 Jul 2026",whatItDoes:"Arsh laptop compromised. Claude account hacked. High usage drawn via Claude Code. Brunno removed Arsh from Claude, sent fresh invite. Aalok asking if this explains high LLM costs. Anthropic support contacted for refund. Shahzeb awaiting response.",responsible:"Brunno / Shahzeb",escalated:true},
-  {id:"ANTHROPIC-DEGRADE-002",title:"Anthropic Provider Degraded — 110+ Cycles (self-resolving)",priority:"p2",status:"working",tab:"platform",occ:75,dateFirst:"6 Jun 2026",dateLast:"13 Jul 2026",whatItDoes:"Anthropic provider degraded repeatedly. 75 total cycles. All self-resolved. Last resolved 15:32 UTC 13 Jul. Status: Done for now. 110+ total cycles. All self-resolved within 1-2 hours. Pattern ongoing since June.",responsible:"Engineering",escalated:false},
-  {id:"OPENAI-DEGRADE-001",title:"OpenAI Provider Degraded — Recurring Cycles (occ=55+)",priority:"p2",status:"working",tab:"platform",occ:77,dateFirst:"26 May 2026",dateLast:"14 Jul 2026",whatItDoes:"OpenAI WARNING cycles recurring. Extended firing periods. All self-resolved. Pattern ongoing.",responsible:"Engineering",escalated:false},
+  {id:"ANTHROPIC-DEGRADE-002",title:"Anthropic Provider Degraded — 110+ Cycles (self-resolving)",priority:"p2",status:"working",tab:"platform",occ:76,dateFirst:"6 Jun 2026",dateLast:"15 Jul 2026",whatItDoes:"Anthropic provider degraded repeatedly. 75 total cycles. All self-resolved. Last resolved 15:32 UTC 13 Jul. Status: Done for now. 110+ total cycles. All self-resolved within 1-2 hours. Pattern ongoing since June.",responsible:"Engineering",escalated:false},
+  {id:"OPENAI-DEGRADE-001",title:"OpenAI Provider Degraded — Recurring Cycles (occ=55+)",priority:"p2",status:"working",tab:"platform",occ:78,dateFirst:"26 May 2026",dateLast:"15 Jul 2026",whatItDoes:"OpenAI WARNING cycles recurring. Extended firing periods. All self-resolved. Pattern ongoing.",responsible:"Engineering",escalated:false},
   {id:"TWILIO-DEGRADE-001",title:"Twilio Auto-Recharge — 270+ Occurrences",priority:"p2",status:"stuck",tab:"platform",occ:270,dateFirst:"2 Jun 2026",dateLast:"14 Jul 2026",whatItDoes:"Twilio auto-recharge at 270+ total occurrences. 75% uptime ongoing. Balance hits threshold every 45-60 min.",responsible:"Meezab",escalated:false},
   {id:"MAKE-CRED-001",title:"Make.com Credits — n8n Migration Directive (occ=12+)",priority:"p2",status:"stuck",tab:"integrations",occ:12,dateFirst:"28 May 2026",dateLast:"14 Jul 2026",whatItDoes:"Make.com credits keep exhausting. 12+ auto-purchases. n8n migration directive active but not yet complete.",responsible:"Shahzeb / Team",escalated:false},
   {id:"INTG-DISCONNECT-001",title:"Integration Disconnect Bug — Cannot Remove Outlook/Gmail/Drive",priority:"p2",status:"working",tab:"integrations",occ:3,dateFirst:"17 Jun 2026",dateLast:"14 Jul 2026",whatItDoes:"Cannot disconnect Outlook, Gmail, or Google Drive from a sales agent on customer preview account. Error: failed to disconnect. Reported by Aalok.",responsible:"Faisal",escalated:false},
@@ -753,6 +775,111 @@ function setFirstPassword(){
 }
 
 // Update sidebar badges from ISSUES array
+
+// ============================================================
+// LOGGED-IN USER TOPBAR + ADMIN LAST-LOGIN VIEW
+// ============================================================
+function showTopbarUser(user) {
+  const pill = document.getElementById('topbar-user-pill');
+  const av = document.getElementById('topbar-user-av');
+  const name = document.getElementById('topbar-user-name');
+  const role = document.getElementById('topbar-user-role');
+  if (!pill || !user) return;
+  av.textContent = user.initials || user.name[0];
+  av.style.background = user.color || '#6C5DD3';
+  name.textContent = user.name;
+  role.textContent = user.role.split(' ')[0]; // first word only to keep it short
+  pill.style.display = 'flex';
+}
+
+function showUserProfile() {
+  if (!currentUser) return;
+  const modal = document.getElementById('user-profile-modal');
+  const av = document.getElementById('upm-av');
+  const nameEl = document.getElementById('upm-name');
+  const roleEl = document.getElementById('upm-role');
+  const rows = document.getElementById('upm-rows');
+  const adminSection = document.getElementById('upm-admin-section');
+
+  av.textContent = currentUser.initials || currentUser.name[0];
+  av.style.background = currentUser.color || '#6C5DD3';
+  nameEl.textContent = currentUser.name;
+  roleEl.textContent = currentUser.role;
+
+  // Build info rows
+  const auth = getAuth();
+  const lastLogin = auth['lastLogin_' + currentUser.email];
+  const lastLoginFmt = lastLogin ? new Date(lastLogin).toLocaleString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'This session';
+
+  rows.innerHTML = [
+    ['Email', currentUser.email],
+    ['Role', currentUser.role],
+    ['Permission', currentUser.perm],
+    ['Last login', lastLoginFmt],
+  ].map(([label, val]) => 
+    '<div class="upm-row"><span class="upm-label">' + label + '</span><span class="upm-val">' + val + '</span></div>'
+  ).join('');
+
+  // Admin section: show all users' last logins
+  if (currentUser.perm === 'admin' || currentUser.perm === 'leadership') {
+    adminSection.style.display = 'block';
+    loadAllUserLogins();
+  } else {
+    adminSection.style.display = 'none';
+  }
+
+  modal.style.display = 'flex';
+}
+
+async function loadAllUserLogins() {
+  const container = document.getElementById('upm-admin-logins');
+  if (!container) return;
+
+  // Fetch from Supabase portal_auth
+  try {
+    const sbC = window._sbClient || (window.supabase ? window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co', 'sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox') : null);
+    if (!sbC) { container.innerHTML = '<div style="color:#9CA3AF;font-size:12px;padding:8px">Supabase not available</div>'; return; }
+
+    const {data, error} = await sbC.from('portal_auth').select('email,last_login,pw_set_at,failed_attempts').order('last_login', {ascending: false});
+    if (error || !data) { container.innerHTML = '<div style="color:#DC2626;font-size:12px;padding:8px">Could not load login data</div>'; return; }
+
+    // Merge with USERS to get names
+    const rows = data.map(row => {
+      const u = USERS[row.email] || {};
+      const lastLogin = row.last_login ? new Date(row.last_login).toLocaleString('en-GB', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : 'Never';
+      const pwSet = row.pw_set_at ? new Date(row.pw_set_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+      const initials = u.initials || (u.name ? u.name[0] : row.email[0].toUpperCase());
+      const color = u.color || '#6B7280';
+      return '<tr>'
+        + '<td><div style="display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0">' + initials + '</div>'
+        + '<div><div style="font-weight:600">' + (u.name || row.email.split('@')[0]) + '</div><div style="font-size:11px;color:#9CA3AF">' + row.email + '</div></div></div></td>'
+        + '<td style="color:' + (row.last_login ? '#111827' : '#9CA3AF') + '">' + lastLogin + '</td>'
+        + '<td>' + pwSet + '</td>'
+        + '<td style="color:' + (row.failed_attempts > 0 ? '#DC2626' : '#16A34A') + '">' + (row.failed_attempts || 0) + '</td>'
+        + '</tr>';
+    }).join('');
+
+    container.innerHTML = '<table class="admin-logins-table">'
+      + '<thead><tr><th>User</th><th>Last Login</th><th>Password Set</th><th>Failed Attempts</th></tr></thead>'
+      + '<tbody>' + rows + '</tbody></table>';
+
+    // Also show users who have portal access but haven't logged in yet
+    const loggedInEmails = new Set(data.map(r => r.email));
+    const neverLoggedIn = Object.entries(USERS).filter(([email]) => !loggedInEmails.has(email));
+    if (neverLoggedIn.length > 0) {
+      container.innerHTML += '<div style="font-size:11px;color:#9CA3AF;margin-top:12px;font-weight:600">NEVER LOGGED IN:</div>'
+        + neverLoggedIn.map(([email, u]) => '<div style="font-size:12px;color:#9CA3AF;padding:4px 0">' + u.name + ' (' + email + ')</div>').join('');
+    }
+  } catch(e) {
+    container.innerHTML = '<div style="color:#DC2626;font-size:12px;padding:8px">Error: ' + e.message + '</div>';
+  }
+}
+
+function closeUserProfile() {
+  const modal = document.getElementById('user-profile-modal');
+  if (modal) modal.style.display = 'none';
+}
+
 function updateSidebarBadges() {
   const open = ISSUES.filter(i => i.status !== 'resolved');
   const resolved = ISSUES.filter(i => i.status === 'resolved');
@@ -775,7 +902,7 @@ function completeLogin(email){
   document.getElementById("app").style.display="block";
   refreshSidebarUser();
   if(u.perm==="admin")document.getElementById("raw-nav-item").style.display="flex";
-  renderWorkload();updateMyItemsBadge();renderNotifBadge();renderAll();updateSidebarBadges();window.scrollTo(0,0);
+  renderWorkload();updateMyItemsBadge();renderNotifBadge();renderAll();updateSidebarBadges();showTopbarUser(currentUser);window.scrollTo(0,0);
   document.addEventListener("click",e=>{if(!e.target.closest(".notif-wrapper"))closeNotifDropdown();if(!e.target.closest(".assignee-dropdown"))closeAllAssigneeDropdowns();});
 }
 function handleLogout(){currentUser=null;pendingEmail=null;document.getElementById("login-screen").style.display="flex";document.getElementById("app").style.display="none";document.getElementById("login-email").value="";document.getElementById("login-email").disabled=false;document.getElementById("login-pw").value="";document.getElementById("pw-field").style.display="none";document.getElementById("login-btn").innerHTML='<i class="fas fa-arrow-right"></i> Continue';document.getElementById("login-error").style.display="none";document.getElementById("login-lockout").style.display="none";}
@@ -1704,5 +1831,24 @@ window.addEventListener('load', function() {
 });
 
 </script>
+
+<div class="user-profile-modal" id="user-profile-modal" onclick="if(event.target===this)closeUserProfile()">
+  <div class="user-profile-box">
+    <div class="upm-header">
+      <div class="upm-av" id="upm-av"></div>
+      <div>
+        <div class="upm-name" id="upm-name"></div>
+        <div class="upm-role" id="upm-role"></div>
+      </div>
+    </div>
+    <div id="upm-rows"></div>
+    <div id="upm-admin-section" style="display:none;">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9CA3AF;margin-top:20px;margin-bottom:8px;">All Users — Last Login</div>
+      <div id="upm-admin-logins"><div style="text-align:center;padding:20px;color:#9CA3AF;"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+    </div>
+    <button class="upm-close" onclick="closeUserProfile()">Close</button>
+  </div>
+</div>
+
 </body>
 </html>
