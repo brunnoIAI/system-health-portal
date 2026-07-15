@@ -559,12 +559,34 @@ async function delRev(id) {
 function openAddModal() {
   const m=document.getElementById('modal-bg');
   m.style.display='flex';
-  const ROLES=['Solutions Engineer','Junior Solutions Engineer','AIOS Engineer','Solutions Associate'];
+  const ROLES=[
+    'Solutions Engineer',
+    'Junior Solutions Engineer', 
+    'Senior Solutions Engineer',
+    'AIOS Engineer',
+    'Senior AIOS Engineer',
+    'Solutions Associate',
+    'Solutions Lead',
+    'Head of Solutions',
+    'Operations Lead',
+    'Operations Manager',
+    'Business Development Manager',
+    'Account Manager',
+    'Product Manager',
+    'Data Analyst',
+    'Marketing Manager',
+    'Finance Manager',
+    'HR Manager',
+    'Executive Assistant',
+    'Chief of Staff',
+    'Director of Engineering',
+    'Head of Engineering',
+  ];
   const roleOpts=ROLES.map(r=>'<option value="'+r+'">').join('');
   if(view==='reviews') {
     m.innerHTML='<div class="modal-box"><div class="modal-title">Add Performance Review</div><div class="modal-sub">Select the person to review.</div>'
     +'<div class="mfield"><label>Person Name *</label><input type="text" id="mn" placeholder="Full name" list="nl"><datalist id="nl"></datalist></div>'
-    +'<div class="mfield"><label>Role</label><input type="text" id="mr" placeholder="Role" list="rl"><datalist id="rl">'+roleOpts+'</datalist></div>'
+    +'<div class="mfield"><label>Role</label><input type="text" id="mr" placeholder="Type or select a role" list="rl" autocomplete="off"><datalist id="rl">'+roleOpts+'</datalist></div>'
     +'<div id="merr" style="color:#DC2626;font-size:13px;margin-bottom:10px;display:none"></div>'
     +'<div style="display:flex;gap:12px"><button class="btn-p" onclick="submitRV()"><i class="fas fa-plus"></i> Create</button><button class="btn-s" onclick="closeModal()">Cancel</button></div></div>';
     SB.from('hr_people').select('name,role').then(function(res){const dl=document.getElementById('nl');if(dl&&res.data)res.data.forEach(function(p){const o=document.createElement('option');o.value=p.name;dl.appendChild(o);});});
@@ -572,7 +594,7 @@ function openAddModal() {
   }
   m.innerHTML='<div class="modal-box"><div class="modal-title">Add Person</div><div class="modal-sub">Add to the '+(view==='onboarding'?'onboarding':'exiting')+' pipeline.</div>'
   +'<div class="mfield"><label>Full Name *</label><input type="text" id="mn" placeholder="e.g. Jane Smith"></div>'
-  +'<div class="mfield"><label>Role *</label><input type="text" id="mr" placeholder="Role" list="rl"><datalist id="rl">'+roleOpts+'</datalist></div>'
+  +'<div class="mfield"><label>Role *</label><input type="text" id="mr" placeholder="Type or select a role" list="rl" autocomplete="off"><datalist id="rl">'+roleOpts+'</datalist></div>'
   +'<div class="mfield"><label>Email</label><input type="email" id="me" placeholder="email@example.com"></div>'
   +(view==='onboarding'?'<div class="mfield"><label>Expected Start Date</label><input type="date" id="ms"></div>':'<div class="mfield"><label>Type *</label><select id="mt"><option value="resignation">Resignation</option><option value="termination">Termination</option></select></div>')
   +'<div id="merr" style="color:#DC2626;font-size:13px;margin-bottom:10px;display:none"></div>'
