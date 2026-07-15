@@ -641,11 +641,11 @@ function openAddModal() {
   const roleOpts=ROLES.map(r=>'<option value="'+r+'">').join('');
   if(view==='reviews') {
     m.innerHTML='<div class="modal-box"><div class="modal-title">Add Performance Review</div><div class="modal-sub">Select the person to review.</div>'
-    +'<div class="mfield"><label>Person Name *</label><input type="text" id="mn" placeholder="Full name" list="nl"><datalist id="nl"></datalist></div>'
+    +'<div class="mfield"><label>Person Name *</label><input type="text" id="mn" placeholder="Type any name" autocomplete="off"></div>'
     +'<div class="mfield"><label>Role</label><input type="text" id="mr" placeholder="Type or select a role" list="rl" autocomplete="off"><datalist id="rl">'+roleOpts+'</datalist></div>'
     +'<div id="merr" style="color:#DC2626;font-size:13px;margin-bottom:10px;display:none"></div>'
     +'<div style="display:flex;gap:12px"><button class="btn-p" onclick="submitRV()"><i class="fas fa-plus"></i> Create</button><button class="btn-s" onclick="closeModal()">Cancel</button></div></div>';
-    SB.from('hr_people').select('name,role').then(function(res){const dl=document.getElementById('nl');if(dl&&res.data)res.data.forEach(function(p){const o=document.createElement('option');o.value=p.name;dl.appendChild(o);});});
+    // Name field is free-type — no restriction to existing HR people
     return;
   }
   m.innerHTML='<div class="modal-box"><div class="modal-title">Add Person</div><div class="modal-sub">Add to the '+(view==='onboarding'?'onboarding':'exiting')+' pipeline.</div>'
@@ -688,7 +688,7 @@ async function submitRV() {
   // Use a simple timestamp-based ID — no regex that could fail
   const pid='RV_'+Date.now();
   const {data:inserted, error}=await SB.from('hr_reviews').insert({
-    person_id:pid, person_name:name, person_role:role,
+    id:pid, person_id:pid, person_name:name, person_role:role,
     review_date:'', score:null, outcome:'', evaluated_by:'',
     doc_link:'', notes:'', added_by:'Brunno'
   }).select();
