@@ -358,6 +358,42 @@ async function renderOBList() {
   }).join('');
 }
 
+
+// ============================================================
+// EXITING — MISSING ITEMS + COMPLETION
+// ============================================================
+function getMissingItemsEX(s, exitType) {
+  const missing = [];
+  const docLabel = exitType === 'termination' ? 'Termination letter' : 'Resignation letter';
+
+  if (!s.s1?.noticeDate) { missing.push({label:'Notice date not recorded', color:'#D97706'}); return missing; }
+  if (!s.s1?.letterSignedDate) missing.push({label:docLabel+' not signed', color:'#D97706'});
+  if (!s.s2?.checklistDate) missing.push({label:'Exit checklist not completed', color:'#0284C7'});
+  if (!s.s3?.shahzebSignedDate) missing.push({label:'Shahzeb sign-off pending', color:'#7C3AED'});
+  if (!s.s3?.brunnoSignedDate) missing.push({label:'Brunno sign-off pending', color:'#7C3AED'});
+  if (!s.s4?.o365TermDate) missing.push({label:'365 account not terminated', color:'#DC2626'});
+  if (!s.s4?.servicesDate) missing.push({label:'Service accounts not removed', color:'#DC2626'});
+  if (!s.s5?.completedDate) missing.push({label:'Not fully terminated', color:'#6B7280'});
+  return missing;
+}
+
+function getCompletionEX(s) {
+  const checks = [
+    s.s1?.noticeDate,
+    s.s1?.letterSignedDate,
+    s.s2?.checklistDate,
+    s.s3?.shahzebSignedDate,
+    s.s3?.peersSignedDate,
+    s.s3?.brunnoSignedDate,
+    s.s3?.docLink,
+    s.s4?.o365TermDate,
+    s.s4?.servicesDate,
+    s.s5?.completedDate,
+  ];
+  const done = checks.filter(Boolean).length;
+  return Math.round((done / checks.length) * 100);
+}
+
 async function renderEXList() {
   const {data,error} = await SB.from('hr_exiting').select('*').order('added_at',{ascending:false});
   if (error) { document.getElementById('lv').innerHTML = '<div class="empty"><i class="fas fa-exclamation-triangle"></i><h3>Error</h3><p>'+error.message+'</p></div>'; return; }
@@ -366,12 +402,32 @@ async function renderEXList() {
     const isT = p.exit_type==='termination';
     const col = isT ? '#DC2626' : '#0284C7';
     const s = p.stages||{};
-    const done = s.s1&&s.s1.letterSignedDate&&s.s2&&s.s2.checklistDate&&s.s3&&s.s3.brunnoSignedDate&&s.s4&&s.s4.servicesDate&&s.s5&&s.s5.completedDate;
-    const lbl = done?'Fully Terminated':(!s.s1||!s.s1.noticeDate)?'Notice Received':(!s.s1.letterSignedDate)?'Awaiting Signature':(!s.s2||!s.s2.checklistDate)?'Exit Checklist':(!s.s3||!s.s3.brunnoSignedDate)?'Sign-off Pending':'In Progress';
-    return '<div class="person-row" onclick="openEX(\''+p.id+'\')">'+'<div class="pav" style="background:'+col+'">'+ini(p.name)+'</div>'+'<div class="pinfo"><div class="pname">'+p.name+' <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;background:'+(isT?'#FEE2E2':'#E0F2FE')+';color:'+col+';margin-left:6px">'+(isT?'Termination':'Resignation')+'</span></div><div class="prole">'+p.role+'</div></div>'+'<div class="pmeta"><span class="sbadge" style="background:'+col+'18;color:'+col+';border:1.5px solid '+col+'35">'+lbl+'</span><i class="fas fa-chevron-right" style="color:var(--muted);font-size:13px"></i></div></div>';
+    const pct = getCompletionEX(s);
+    const pctCol = pctColor(pct);
+    const missing = getMissingItemsEX(s, p.exit_type);
+    const pillsHtml = missing.length === 0
+      ? '<span class="pill" style="background:#DCFCE7;color:#16A34A;border:1.5px solid #16A34A35"><i class="fas fa-check" style="font-size:10px"></i> Fully terminated</span>'
+      : missing.slice(0,3).map(m=>'<span class="pill" style="background:'+m.color+'15;color:'+m.color+';border:1.5px solid '+m.color+'30;font-size:11px;padding:3px 9px;">'+m.label+'</span>').join('')
+        +(missing.length>3?'<span class="pill" style="background:#F3F4F6;color:#6B7280;border:1.5px solid #E5E7EB;font-size:11px;padding:3px 9px;">+'+(missing.length-3)+' more</span>':'');
+    return '<div class="person-row" onclick="openEX(\''+p.id+'\')">'
+      +'<div class="pav" style="background:'+col+'">'+ini(p.name)+'</div>'
+      +'<div class="pinfo" style="flex:1;min-width:0">'
+        +'<div class="pname">'+p.name
+          +' <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;background:'+(isT?'#FEE2E2':'#E0F2FE')+';color:'+col+';margin-left:6px">'+(isT?'Termination':'Resignation')+'</span>'
+        +'</div>'
+        +'<div class="prole">'+p.role+'</div>'
+        +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">'+pillsHtml+'</div>'
+      +'</div>'
+      +'<div class="pmeta" style="flex-shrink:0;align-items:flex-end">'
+        +'<div style="text-align:center;min-width:52px">'
+          +'<div style="font-size:22px;font-weight:800;color:'+pctCol+';line-height:1">'+pct+'%</div>'
+          +'<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:'+pctCol+';letter-spacing:.5px">done</div>'
+        +'</div>'
+        +'<i class="fas fa-chevron-right" style="color:var(--muted);font-size:13px"></i>'
+      +'</div>'
+    +'</div>';
   }).join('');
 }
-
 async function openOB(id) {
   openId=id; document.getElementById('lv').style.display='none';
   const dv=document.getElementById('dv'); dv.style.display='block';
@@ -627,9 +683,23 @@ async function submitRV() {
   const role=(document.getElementById('mr')?.value||'').trim();
   const errEl=document.getElementById('merr');
   if(!name){if(errEl){errEl.textContent='Name is required.';errEl.style.display='block';}return;}
-  const pid='RV_'+name.replace(/[^a-z0-9]/gi,'_').toLowerCase()+'_'+Date.now();
-  await SB.from('hr_reviews').insert({person_id:pid,person_name:name,person_role:role,review_date:'',score:null,outcome:'',evaluated_by:'',doc_link:'',notes:'',added_by:'Brunno'});
-  closeModal(); openRV(pid);
+  const btn=document.querySelector('#modal-bg .btn-p');
+  if(btn){btn.textContent='Adding...';btn.disabled=true;}
+  // Use a simple timestamp-based ID — no regex that could fail
+  const pid='RV_'+Date.now();
+  const {data:inserted, error}=await SB.from('hr_reviews').insert({
+    person_id:pid, person_name:name, person_role:role,
+    review_date:'', score:null, outcome:'', evaluated_by:'',
+    doc_link:'', notes:'', added_by:'Brunno'
+  }).select();
+  if(error){
+    if(errEl){errEl.textContent='Could not add review: '+error.message;errEl.style.display='block';}
+    if(btn){btn.textContent='Create';btn.disabled=false;}
+    return;
+  }
+  closeModal();
+  // Small delay to ensure Supabase replication completes
+  setTimeout(()=>openRV(pid), 500);
 }
 </script>
 </body>
