@@ -188,7 +188,7 @@ function updPending(path, val) {
 function updRefRec(id, val) {
   // Mark it in pendingStages as a special top-level field
   if (!pendingStages) return;
-  pendingStages.__referenceRecommendation = val;
+  pendingStages.__reference_recommendation = val;
   markDirty();
 }
 
@@ -435,14 +435,14 @@ async function renderEXList() {
           +'<div style="font-size:22px;font-weight:800;color:'+pctCol+';line-height:1">'+pct+'%</div>'
           +'<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:'+pctCol+';letter-spacing:.5px">done</div>'
         +'</div>'
-        +(p.referenceRecommendation&&p.referenceRecommendation!=='Not Assessed'
+        +(p.reference_recommendation&&p.reference_recommendation!=='Not Assessed'
           ?'<div style="text-align:center">'
             +'<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:#9CA3AF;letter-spacing:.5px;margin-bottom:3px">Reference</div>'
             +'<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap;background:'
-              +({'Very Likely':'#DCFCE7','Likely':'#E0F2FE','Unlikely':'#FEF3C7','Would Not Give':'#FEE2E2'}[p.referenceRecommendation]||'#F3F4F6')
+              +({'Very Likely':'#DCFCE7','Likely':'#E0F2FE','Unlikely':'#FEF3C7','Would Not Give':'#FEE2E2'}[p.reference_recommendation]||'#F3F4F6')
               +';color:'
-              +({'Very Likely':'#16A34A','Likely':'#0284C7','Unlikely':'#D97706','Would Not Give':'#DC2626'}[p.referenceRecommendation]||'#6B7280')
-            +'">'+p.referenceRecommendation+'</span>'
+              +({'Very Likely':'#16A34A','Likely':'#0284C7','Unlikely':'#D97706','Would Not Give':'#DC2626'}[p.reference_recommendation]||'#6B7280')
+            +'">'+p.reference_recommendation+'</span>'
           +'</div>'
           :'')
         +'<i class="fas fa-chevron-right" style="color:var(--muted);font-size:13px"></i>'
@@ -588,15 +588,15 @@ function buildEXCard(p) {
       +'<div style="display:flex;align-items:center;gap:8px">'
         +'<span style="font-size:11px;font-weight:600;color:#9CA3AF">Work Reference:</span>'
         +(true?'<select onchange="updRefRec(\''+p.id+'\',this.value)" style="border:1.5px solid #E5E7EB;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;font-family:var(--font);outline:none;cursor:pointer;background:'
-          +('{"Very Likely":"#DCFCE7","Likely":"#E0F2FE","Unlikely":"#FEF3C7","Would Not Give":"#FEE2E2","Not Assessed":"#F3F4F6"}[p.referenceRecommendation]||"#F3F4F6"')
+          +('{"Very Likely":"#DCFCE7","Likely":"#E0F2FE","Unlikely":"#FEF3C7","Would Not Give":"#FEE2E2","Not Assessed":"#F3F4F6"}[p.reference_recommendation]||"#F3F4F6"')
           +';color:'
-          +('{"Very Likely":"#16A34A","Likely":"#0284C7","Unlikely":"#D97706","Would Not Give":"#DC2626","Not Assessed":"#6B7280"}[p.referenceRecommendation]||"#6B7280"')
+          +('{"Very Likely":"#16A34A","Likely":"#0284C7","Unlikely":"#D97706","Would Not Give":"#DC2626","Not Assessed":"#6B7280"}[p.reference_recommendation]||"#6B7280"')
           +'">'
-          +'<option value="Not Assessed" '+(p.referenceRecommendation==='Not Assessed'||!p.referenceRecommendation?'selected':'')+'>Not Assessed</option>'
-          +'<option value="Very Likely" '+(p.referenceRecommendation==='Very Likely'?'selected':'')+'>Very Likely</option>'
-          +'<option value="Likely" '+(p.referenceRecommendation==='Likely'?'selected':'')+'>Likely</option>'
-          +'<option value="Unlikely" '+(p.referenceRecommendation==='Unlikely'?'selected':'')+'>Unlikely</option>'
-          +'<option value="Would Not Give" '+(p.referenceRecommendation==='Would Not Give'?'selected':'')+'>Would Not Give</option>'
+          +'<option value="Not Assessed" '+(p.reference_recommendation==='Not Assessed'||!p.reference_recommendation?'selected':'')+'>Not Assessed</option>'
+          +'<option value="Very Likely" '+(p.reference_recommendation==='Very Likely'?'selected':'')+'>Very Likely</option>'
+          +'<option value="Likely" '+(p.reference_recommendation==='Likely'?'selected':'')+'>Likely</option>'
+          +'<option value="Unlikely" '+(p.reference_recommendation==='Unlikely'?'selected':'')+'>Unlikely</option>'
+          +'<option value="Would Not Give" '+(p.reference_recommendation==='Would Not Give'?'selected':'')+'>Would Not Give</option>'
           +'</select>':'')
       +'</div>'
     +'</div>'
