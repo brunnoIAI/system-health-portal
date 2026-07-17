@@ -140,13 +140,14 @@ function getStage(s) {
   if (!s.s3||!s.s3.ref2Received||!s.s3.ref1Received||!r1ok||!r2ok) return {num:'3',name:'Documents',color:'#D97706'};
   if (!s.s4||!s.s4.screenSignedDate) return {num:'4',name:'NDA & Screening',color:'#DC2626'};
   if (!s.s5||!s.s5.signedDate) return {num:'5',name:'Contract',color:'#7C3AED'};
-  if (!s.s6||!s.s6.credsSentDate) return {num:'6',name:'Credentials',color:'#059669'};
-  if (!s.s7||!s.s7.confirmedDate) return {num:'7',name:'Confirmation',color:'#059669'};
-  if (!s.s8||!s.s8.mdmDate) return {num:'8',name:'Vanta',color:'#0891B2'};
-  if (!s.s9||!s.s9.clearedDate) return {num:'9',name:'Background Check',color:'#D97706'};
+  if (!s.s9||!s.s9.clearedDate) return {num:'6',name:'Background Check',color:'#D97706'};
+  if (!s.s6||!s.s6.credsSentDate) return {num:'7',name:'Credentials',color:'#059669'};
+  if (!s.s7||!s.s7.confirmedDate) return {num:'8',name:'Confirmation',color:'#059669'};
+  if (!s.s8||!s.s8.mdmDate) return {num:'9',name:'Vanta',color:'#0891B2'};
   if (!s.s10||!s.s10.completedDate) return {num:'10',name:'Service Accounts',color:'#6B7280'};
   return null;
 }
+
 
 
 // ============================================================
@@ -265,18 +266,20 @@ function getMissingItems(s) {
   // Stage 5
   if (!s.s5?.signedDate) missing.push({label:'Contract not signed', color:'#7C3AED'});
 
-  // Stages 6-10 — only flag if start is imminent (≤3 days) or already started
+  // Stage 6 (new): Background Check — no on-hold, can be done any time after contract
+  if (!s.s9?.clearedDate) missing.push({label:'Background check pending', color:'#D97706'});
+
+  // Stages 7-10 — only flag if start is imminent (≤3 days) or already started
   if (!onHold) {
     if (!s.s6?.credsSentDate) missing.push({label:'365 credentials not sent', color:'#059669'});
     if (!s.s6?.iaiEmail) missing.push({label:'IAI email not assigned', color:'#059669'});
     if (!s.s7?.confirmedDate) missing.push({label:'Access not confirmed', color:'#059669'});
     if (!s.s8?.mdmDate) missing.push({label:'MDM not installed', color:'#0891B2'});
-    if (!s.s9?.clearedDate) missing.push({label:'Background check pending', color:'#D97706'});
     if (!s.s10?.completedDate) missing.push({label:'Service accounts incomplete', color:'#6B7280'});
   } else if (onHold && daysToStart !== null) {
     // Show on-hold items as a single pill
     if (!s.s6?.credsSentDate || !s.s7?.confirmedDate || !s.s8?.mdmDate || !s.s10?.completedDate) {
-      missing.push({label:'Stages 6-10 on hold (starts in '+daysToStart+'d)', color:'#9CA3AF'});
+      missing.push({label:'Stages 7-10 on hold (starts in '+daysToStart+'d)', color:'#9CA3AF'});
     }
   }
 
@@ -552,7 +555,7 @@ function buildOBCard(p) {
   +'<button id="save-btn" onclick="saveAll()" style="background:#6B7280;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;transition:background .15s"><i class="fas fa-save"></i> Save Changes</button>'
   +'<button class="del-btn" onclick="delPerson(\''+p.id+'\',\'hr_people\')"><i class="fas fa-trash"></i> Remove</button></div>'
   +'<div class="card-hdr"><div class="card-hdr-inner"><div class="card-av" style="background:'+col+'">'+ini(p.name)+'</div><div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+(p.email?' &nbsp;&middot;&nbsp; '+p.email:'')+'</div></div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto">'+(s1.score?'<div style="background:'+sbg(s1.score)+';border-radius:10px;padding:6px 14px;display:flex;align-items:center;gap:4px"><span style="font-size:20px;font-weight:800;color:'+sc(s1.score)+'">'+s1.score+'</span><span style="font-size:10px;color:'+sc(s1.score)+';font-weight:700">/5</span></div>':'')+(s1.outcome?'<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(s1.outcome==='Pass'?'#DCFCE7':s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6')+';color:'+(s1.outcome==='Pass'?'#16A34A':s1.outcome==='Fail'?'#DC2626':'#6B7280')+'">'  +s1.outcome+'</span>':'')+(sf?'<div style="text-align:center"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600">Start</div><div style="font-size:13px;font-weight:700">'+sf+'</div></div>':'')+'</div></div></div>'
-  +'<div class="sgrid">'+sb_box(1,'Competence Evaluation','#6C5DD3',stage1)+sb_box(2,'Offer Letter','#0284C7',stage2)+sb_box('2.5','Handover to HR','#D97706',stage25)+sb_box(3,'Documents','#D97706',stage3)+sb_box(4,'NDA & Screening','#DC2626',stage4)+sb_box(5,'Contract','#7C3AED',stage5)+sb_box(6,'Credentials + IAI Email','#059669',stage6,false,onHold6)+sb_box(7,'Access Confirmation','#059669',stage7,false,onHold7)+sb_box(8,'Vanta','#0891B2',stage8)+sb_box(9,'Background Check','#D97706',stage9)+sb_box(10,'Service Accounts','#6B7280',stage10,true)+'</div>'
+  +'<div class="sgrid">'+sb_box(1,'Competence Evaluation','#6C5DD3',stage1)+sb_box(2,'Offer Letter','#0284C7',stage2)+sb_box('2.5','Handover to HR','#D97706',stage25)+sb_box(3,'Documents','#D97706',stage3)+sb_box(4,'NDA & Screening','#DC2626',stage4)+sb_box(5,'Contract','#7C3AED',stage5)+sb_box(6,'Background Check (Certn)','#D97706',stage9)+sb_box(7,'Credentials + IAI Email','#059669',stage6,false,onHold6)+sb_box(8,'Access Confirmation','#059669',stage7,false,onHold7)+sb_box(9,'Vanta','#0891B2',stage8)+sb_box(10,'Service Accounts','#6B7280',stage10,true)+'</div>'
   +logH;
 }
 
