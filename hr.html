@@ -184,17 +184,29 @@ function updPending(path, val) {
   markDirty();
 }
 
+
+function updRefRec(id, val) {
+  // Mark it in pendingStages as a special top-level field
+  if (!pendingStages) return;
+  pendingStages.__referenceRecommendation = val;
+  markDirty();
+}
+
 async function saveAll() {
   if (!pendingId || !pendingStages) return;
   const btn = document.getElementById('save-btn');
   if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
   const isEX = pendingId.startsWith('EX_');
   const tbl = isEX ? 'hr_exiting' : 'hr_people';
-  const {error} = await SB.from(tbl).update({
-    stages: pendingStages,
-    log: pendingLog.slice(0,100),
-    updated_at: new Date().toISOString()
-  }).eq('id', pendingId);
+  // Extract top-level fields stored in pendingStages with __ prefix
+  const topLevel = {};
+  const stagesClean = {};
+  Object.entries(pendingStages).forEach(([k,v]) => {
+    if (k.startsWith('__')) topLevel[k.slice(2)] = v;
+    else stagesClean[k] = v;
+  });
+  const updatePayload = {stages: stagesClean, log: pendingLog.slice(0,100), updated_at: new Date().toISOString(), ...topLevel};
+  const {error} = await SB.from(tbl).update(updatePayload).eq('id', pendingId);
   if (error) {
     alert('Save failed: ' + error.message);
     if (btn) { btn.textContent = 'Save Changes'; btn.disabled = false; }
@@ -418,11 +430,21 @@ async function renderEXList() {
         +'<div class="prole">'+p.role+'</div>'
         +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">'+pillsHtml+'</div>'
       +'</div>'
-      +'<div class="pmeta" style="flex-shrink:0;align-items:flex-end">'
+      +'<div class="pmeta" style="flex-shrink:0;align-items:flex-end;gap:10px">'
         +'<div style="text-align:center;min-width:52px">'
           +'<div style="font-size:22px;font-weight:800;color:'+pctCol+';line-height:1">'+pct+'%</div>'
           +'<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:'+pctCol+';letter-spacing:.5px">done</div>'
         +'</div>'
+        +(p.referenceRecommendation&&p.referenceRecommendation!=='Not Assessed'
+          ?'<div style="text-align:center">'
+            +'<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:#9CA3AF;letter-spacing:.5px;margin-bottom:3px">Reference</div>'
+            +'<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap;background:'
+              +({'Very Likely':'#DCFCE7','Likely':'#E0F2FE','Unlikely':'#FEF3C7','Would Not Give':'#FEE2E2'}[p.referenceRecommendation]||'#F3F4F6')
+              +';color:'
+              +({'Very Likely':'#16A34A','Likely':'#0284C7','Unlikely':'#D97706','Would Not Give':'#DC2626'}[p.referenceRecommendation]||'#6B7280')
+            +'">'+p.referenceRecommendation+'</span>'
+          +'</div>'
+          :'')
         +'<i class="fas fa-chevron-right" style="color:var(--muted);font-size:13px"></i>'
       +'</div>'
     +'</div>';
@@ -540,7 +562,14 @@ function buildEXCard(p) {
   const dL=isT?'Termination letter':'Resignation letter';
   const SVCS=['Slack','Keeper','Teams','Outlook','Cloud','Apollo','n8n','Grafana','Vanta','GitHub','Supabase'];
   const svcs4=SVCS.map(svc=>'<label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;padding:4px 0"><input type="checkbox" '+(((s4.servicesNotes||'').includes(svc))?'checked':'')+' onchange="togSvc(\''+p.id+'\',\''+svc+'\',this.checked,\'s4.servicesNotes\')" style="width:15px;height:15px;accent-color:#DC2626">'+svc+'</label>').join('');
-  const stage1=df('Notice received',s1.noticeDate,'s1.noticeDate',p.id)+df(dL+' sent',s1.letterSentDate,'s1.letterSentDate',p.id)+df(dL+' signed',s1.letterSignedDate,'s1.letterSignedDate',p.id)+lf(dL+' link',s1.letterLink,'s1.letterLink',p.id);
+  const stage1=df('Notice received',s1.noticeDate,'s1.noticeDate',p.id)
+  +df(dL+' sent',s1.letterSentDate,'s1.letterSentDate',p.id)
+  +df(dL+' signed',s1.letterSignedDate,'s1.letterSignedDate',p.id)
+  +lf(dL+' link',s1.letterLink,'s1.letterLink',p.id)
+  +'<div style="margin-top:12px;padding-top:10px;border-top:1px dashed #E5E7EB">'
+  +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9CA3AF;margin-bottom:6px">Contractor Exit &amp; Data Destruction Certification</div>'
+  +lf('Contractor Exit &amp; Data Destruction Cert link',s1.contractorExitLink,'s1.contractorExitLink',p.id)
+  +'</div>';
   const stage2=df('Exit checklist completed',s2.checklistDate,'s2.checklistDate',p.id);
   const stage3=df('Sent to Shahzeb',s3.shahzebSentDate,'s3.shahzebSentDate',p.id)+df('Shahzeb signed',s3.shahzebSignedDate,'s3.shahzebSignedDate',p.id)+df('Sent to Piers/Lini',s3.peersSentDate,'s3.peersSentDate',p.id)+df('Piers/Lini signed',s3.peersSignedDate,'s3.peersSignedDate',p.id)+df('Brunno signed',s3.brunnoSignedDate,'s3.brunnoSignedDate',p.id)+lf('Signed document',s3.docLink,'s3.docLink',p.id);
   const stage4=df('365 terminated',s4.o365TermDate,'s4.o365TermDate',p.id)+df('All services removed',s4.servicesDate,'s4.servicesDate',p.id)+'<div style="margin-top:6px"><label class="flbl" style="display:block;margin-bottom:8px">Services removed</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px">'+svcs4+'</div></div>';
@@ -548,7 +577,31 @@ function buildEXCard(p) {
   return '<div class="back-bar"><button class="back-btn" onclick="if(checkDirty())backToList()"><i class="fas fa-arrow-left"></i> Back</button>'
   +'<button id="save-btn" onclick="saveAll()" style="background:#6B7280;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;transition:background .15s"><i class="fas fa-save"></i> Save Changes</button>'
   +'<button class="del-btn" onclick="delPerson(\''+p.id+'\',\'hr_exiting\')"><i class="fas fa-trash"></i> Remove</button></div>'
-  +'<div class="card-hdr"><div class="card-hdr-inner"><div class="card-av" style="background:'+col+'">'+ini(p.name)+'</div><div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+'</div></div><div style="margin-left:auto"><span style="font-size:13px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(isT?'#FEE2E2':'#E0F2FE')+';color:'+col+'">'+(isT?'Termination':'Resignation')+'</span></div></div></div>'
+  +'<div class="card-hdr">'
+  +'<div class="card-hdr-inner">'
+    +'<div class="card-av" style="background:'+col+'">'+ini(p.name)+'</div>'
+    +'<div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+'</div></div>'
+    +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;margin-left:auto">'
+      // Exit type badge
+      +'<span style="font-size:13px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(isT?'#FEE2E2':'#E0F2FE')+';color:'+col+'">'+(isT?'Termination':'Resignation')+'</span>'
+      // Reference recommendation
+      +'<div style="display:flex;align-items:center;gap:8px">'
+        +'<span style="font-size:11px;font-weight:600;color:#9CA3AF">Work Reference:</span>'
+        +(true?'<select onchange="updRefRec(\''+p.id+'\',this.value)" style="border:1.5px solid #E5E7EB;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;font-family:var(--font);outline:none;cursor:pointer;background:'
+          +('{"Very Likely":"#DCFCE7","Likely":"#E0F2FE","Unlikely":"#FEF3C7","Would Not Give":"#FEE2E2","Not Assessed":"#F3F4F6"}[p.referenceRecommendation]||"#F3F4F6"')
+          +';color:'
+          +('{"Very Likely":"#16A34A","Likely":"#0284C7","Unlikely":"#D97706","Would Not Give":"#DC2626","Not Assessed":"#6B7280"}[p.referenceRecommendation]||"#6B7280"')
+          +'">'
+          +'<option value="Not Assessed" '+(p.referenceRecommendation==='Not Assessed'||!p.referenceRecommendation?'selected':'')+'>Not Assessed</option>'
+          +'<option value="Very Likely" '+(p.referenceRecommendation==='Very Likely'?'selected':'')+'>Very Likely</option>'
+          +'<option value="Likely" '+(p.referenceRecommendation==='Likely'?'selected':'')+'>Likely</option>'
+          +'<option value="Unlikely" '+(p.referenceRecommendation==='Unlikely'?'selected':'')+'>Unlikely</option>'
+          +'<option value="Would Not Give" '+(p.referenceRecommendation==='Would Not Give'?'selected':'')+'>Would Not Give</option>'
+          +'</select>':'')
+      +'</div>'
+    +'</div>'
+  +'</div>'
++'</div>'
   +'<div class="sgrid">'+sb_box(1,dL,'#D97706',stage1,true)+sb_box(2,'Exit Checklist','#0284C7',stage2)+sb_box(3,'Sign-off','#7C3AED',stage3)+sb_box(4,'Account Termination','#DC2626',stage4)+sb_box(5,'Fully Terminated','#16A34A',stage5)+'</div>';
 }
 
