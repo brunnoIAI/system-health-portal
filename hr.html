@@ -188,6 +188,65 @@ function updPending(path, val) {
 
 
 
+
+// ============================================================
+// EXTRA DOCUMENTS SECTION
+// ============================================================
+function buildExtraDocs(id, stageKey, docs) {
+  // docs = array of {label, url} from pendingStages[stageKey].extraDocs
+  const docsArr = docs || [];
+  const slots = docsArr.length === 0 ? [] : docsArr;
+
+  const slotsHtml = slots.map((doc, i) =>
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+    +'<span style="font-size:12px;font-weight:600;color:#6B7280;white-space:nowrap;min-width:80px">Doc '+(i+1)+'</span>'
+    +'<input type="url" value="'+(doc.url||'')+'" placeholder="Paste link here" '
+    +'onchange="updExtraDoc(\''+id+'\',\''+stageKey+'\','+i+',\'url\',this.value)" '
+    +'style="flex:1;border:1px solid #D1D5DB;border-radius:6px;padding:6px 10px;font-size:12px;font-family:var(--font);outline:none;color:#6C5DD3">'
+    +(doc.url?'<a href="'+doc.url+'" target="_blank" style="color:#6C5DD3;font-size:12px;white-space:nowrap;font-weight:600;text-decoration:none"><i class="fas fa-external-link-alt"></i></a>':'')
+    +'<button onclick="removeExtraDoc(\''+id+'\',\''+stageKey+'\','+i+')" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:13px;padding:2px 6px" title="Remove"><i class="fas fa-times"></i></button>'
+    +'</div>'
+  ).join('');
+
+  const addBtn = slots.length < 8
+    ? '<button onclick="addExtraDoc(\''+id+'\',\''+stageKey+'\')" style="background:none;border:1.5px dashed #D1D5DB;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;color:#9CA3AF;cursor:pointer;font-family:var(--font);width:100%;margin-top:4px;transition:all .15s" onmouseover="this.style.borderColor=\'#6C5DD3\';this.style.color=\'#6C5DD3\'" onmouseout="this.style.borderColor=\'#D1D5DB\';this.style.color=\'#9CA3AF\'"><i class="fas fa-plus" style="margin-right:6px"></i>Add Document</button>'
+    : '<div style="font-size:11px;color:#9CA3AF;padding:4px">Maximum 8 documents reached</div>';
+
+  return '<div style="margin-top:6px">'
+    + (slots.length === 0 ? '<div style="font-size:12px;color:#9CA3AF;margin-bottom:8px">No extra documents yet. Click below to add one.</div>' : slotsHtml)
+    + addBtn
+    + '</div>';
+}
+
+function addExtraDoc(id, stageKey) {
+  if (!pendingStages) return;
+  if (!pendingStages[stageKey]) pendingStages[stageKey] = {};
+  if (!pendingStages[stageKey].extraDocs) pendingStages[stageKey].extraDocs = [];
+  if (pendingStages[stageKey].extraDocs.length >= 8) return;
+  pendingStages[stageKey].extraDocs.push({label:'', url:''});
+  markDirty();
+  // Re-render just the extra docs section
+  const container = document.getElementById('extra-docs-'+id);
+  if (container) container.innerHTML = buildExtraDocs(id, stageKey, pendingStages[stageKey].extraDocs);
+}
+
+function removeExtraDoc(id, stageKey, idx) {
+  if (!pendingStages || !pendingStages[stageKey] || !pendingStages[stageKey].extraDocs) return;
+  pendingStages[stageKey].extraDocs.splice(idx, 1);
+  markDirty();
+  const container = document.getElementById('extra-docs-'+id);
+  if (container) container.innerHTML = buildExtraDocs(id, stageKey, pendingStages[stageKey].extraDocs);
+}
+
+function updExtraDoc(id, stageKey, idx, field, val) {
+  if (!pendingStages) return;
+  if (!pendingStages[stageKey]) pendingStages[stageKey] = {};
+  if (!pendingStages[stageKey].extraDocs) pendingStages[stageKey].extraDocs = [];
+  if (!pendingStages[stageKey].extraDocs[idx]) pendingStages[stageKey].extraDocs[idx] = {label:'', url:''};
+  pendingStages[stageKey].extraDocs[idx][field] = val;
+  markDirty();
+}
+
 function addCustomSvc(id) {
   const input = document.getElementById('custom-svc-'+id);
   if (!input) return;
@@ -602,6 +661,12 @@ function buildOBCard(p) {
   +'<div class="card-hdr"><div class="card-hdr-inner"><div class="card-av" style="background:'+col+'">'+ini(p.name)+'</div><div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+(p.email?' &nbsp;&middot;&nbsp; '+p.email:'')+'</div></div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto">'+(s1.score?'<div style="background:'+sbg(s1.score)+';border-radius:10px;padding:6px 14px;display:flex;align-items:center;gap:4px"><span style="font-size:20px;font-weight:800;color:'+sc(s1.score)+'">'+s1.score+'</span><span style="font-size:10px;color:'+sc(s1.score)+';font-weight:700">/5</span></div>':'')+(s1.outcome?'<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(s1.outcome==='Pass'?'#DCFCE7':s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6')+';color:'+(s1.outcome==='Pass'?'#16A34A':s1.outcome==='Fail'?'#DC2626':'#6B7280')+'">'  +s1.outcome+'</span>':'')+(sf?'<div style="text-align:center"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600">Start</div><div style="font-size:13px;font-weight:700">'+sf+'</div></div>':'')+'</div></div></div>'
   +'<div class="sgrid">'+sb_box(1,'Competence Evaluation','#6C5DD3',stage1)+sb_box(2,'Offer Letter','#0284C7',stage2)+sb_box('2.5','Handover to HR','#D97706',stage25)+sb_box(3,'Documents','#D97706',stage3)+sb_box(4,'NDA & Screening','#DC2626',stage4)+sb_box(5,'Contract','#7C3AED',stage5)+sb_box(6,'Background Check (Certn)','#D97706',stage9)+sb_box(7,'Credentials + IAI Email','#059669',stage6,false,onHold6)+sb_box(8,'Access Confirmation','#059669',stage7,false,onHold7)+sb_box(9,'Vanta','#0891B2',stage8)+sb_box(10,'Service Accounts','#6B7280',stage10,true)+sb_box(11,'ImplementAI Training','#6C5DD3',stage11,true)+'</div>'
   +'<div class="sbox" style="margin-top:14px;border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden"><div class="shdr" style="background:#F9FAFB"><span class="snum" style="background:#F3F4F6;color:#6B7280;border:none">Info</span><span class="stitle">Manager / Line Manager</span></div><div class="sbody">'+managerField+'</div></div>'
+  +'<div class="sbox" style="margin-top:14px;border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden">'
+    +'<div class="shdr" style="background:#F9FAFB"><span class="snum" style="background:#F3F4F6;color:#6B7280;border:none"><i class="fas fa-paperclip"></i></span><span class="stitle">Extra Documents</span></div>'
+    +'<div class="sbody" id="extra-docs-'+p.id+'">'
+    +buildExtraDocs(p.id, 's10', (pendingStages&&pendingStages.s10)?pendingStages.s10.extraDocs:((s.s10&&s.s10.extraDocs)||[]))
+    +'</div>'
+  +'</div>'
   +logH;
 }
 
@@ -651,7 +716,13 @@ function buildEXCard(p) {
     +'</div>'
   +'</div>'
 +'</div>'
-  +'<div class="sgrid">'+sb_box(1,dL,'#D97706',stage1,true)+sb_box(2,'Exit Checklist','#0284C7',stage2)+sb_box(3,'Sign-off','#7C3AED',stage3)+sb_box(4,'Account Termination','#DC2626',stage4)+sb_box(5,'Fully Terminated','#16A34A',stage5)+'</div>';
+  +'<div class="sgrid">'+sb_box(1,dL,'#D97706',stage1,true)+sb_box(2,'Exit Checklist','#0284C7',stage2)+sb_box(3,'Sign-off','#7C3AED',stage3)+sb_box(4,'Account Termination','#DC2626',stage4)+sb_box(5,'Fully Terminated','#16A34A',stage5)+'</div>'
+  +'<div class="sbox" style="margin-top:14px;border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden">'
+    +'<div class="shdr" style="background:#F9FAFB"><span class="snum" style="background:#F3F4F6;color:#6B7280;border:none"><i class="fas fa-paperclip"></i></span><span class="stitle">Extra Documents</span></div>'
+    +'<div class="sbody" id="extra-docs-'+p.id+'">'
+    +buildExtraDocs(p.id, 's5', (pendingStages&&pendingStages.s5)?pendingStages.s5.extraDocs:((s.s5&&s.s5.extraDocs)||[]))
+    +'</div>'
+  +'</div>';
 }
 
 // ---- REVIEWS ----
