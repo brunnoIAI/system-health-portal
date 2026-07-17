@@ -337,11 +337,11 @@ function getMissingItems(s) {
   const r1ok = ['Pass'].includes(s.s3?.ref1Status||'');
   const r2ok = ['Pass'].includes(s.s3?.ref2Status||'');
   if (!s.s3?.ref1Received) missing.push({label:'Reference 1 not received', color:'#D97706'});
-  else if (s.s3?.ref1Status==='Concerns Raised') missing.push({label:'Reference 1: Concerns Raised', color:'#DC2626'});
-  else if (!r1ok) missing.push({label:'Reference 1 reply pending ('+(s.s3?.ref1Status||'Not started')+')', color:'#D97706'});
+  else if (s.s3?.ref1Status==='In Progress') missing.push({label:'Reference 1 reply pending', color:'#D97706'});
+  else if (!s.s3?.ref1Status || s.s3?.ref1Status==='') missing.push({label:'Reference 1 status not set', color:'#D97706'});
   if (!s.s3?.ref2Received) missing.push({label:'Reference 2 not received', color:'#D97706'});
-  else if (s.s3?.ref2Status==='Concerns Raised') missing.push({label:'Reference 2: Concerns Raised', color:'#DC2626'});
-  else if (!r2ok) missing.push({label:'Reference 2 reply pending ('+(s.s3?.ref2Status||'Not started')+')', color:'#D97706'});
+  else if (s.s3?.ref2Status==='In Progress') missing.push({label:'Reference 2 reply pending', color:'#D97706'});
+  else if (!s.s3?.ref2Status || s.s3?.ref2Status==='') missing.push({label:'Reference 2 status not set', color:'#D97706'});
 
   // Stage 4
   if (!s.s4?.screenSignedDate) missing.push({label:'Screening not signed', color:'#DC2626'});
