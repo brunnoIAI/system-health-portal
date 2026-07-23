@@ -247,6 +247,29 @@ function updExtraDoc(id, stageKey, idx, field, val) {
   markDirty();
 }
 
+
+function companySelect(id, cardType, currentType) {
+  var bg = currentType === 'Techanzy' ? '#EFF6FF' : '#F0FDF4';
+  var col = currentType === 'Techanzy' ? '#0284C7' : '#16A34A';
+  var iAI = (!currentType || currentType === 'ImplementAI') ? ' selected' : '';
+  var tch = currentType === 'Techanzy' ? ' selected' : '';
+  return '<div style="display:flex;align-items:center;gap:8px;margin-top:6px">'
+    + '<span style="font-size:11px;font-weight:600;color:#9CA3AF">Company:</span>'
+    + '<select onchange="updCompanyType(\''+id+'\',\''+cardType+'\',this.value)" '
+    + 'style="border:1.5px solid #E5E7EB;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;font-family:var(--font);outline:none;background:'+bg+';color:'+col+'">'
+    + '<option value="ImplementAI"'+iAI+'>ImplementAI</option>'
+    + '<option value="Techanzy"'+tch+'>Techanzy</option>'
+    + '</select></div>';
+}
+
+function updCompanyType(id, cardType, val) {
+  if (!pendingStages) return;
+  pendingStages.__company_type = val;
+  markDirty();
+  var btn = document.getElementById('save-btn');
+  if (btn) { btn.style.background = '#16A34A'; btn.textContent = 'Save Changes'; btn.disabled = false; }
+}
+
 function addCustomSvc(id) {
   const input = document.getElementById('custom-svc-'+id);
   if (!input) return;
@@ -658,7 +681,7 @@ function buildOBCard(p) {
   return '<div class="back-bar"><button class="back-btn" onclick="if(checkDirty())backToList()"><i class="fas fa-arrow-left"></i> Back</button>'
   +'<button id="save-btn" onclick="saveAll()" style="background:#6B7280;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;transition:background .15s"><i class="fas fa-save"></i> Save Changes</button>'
   +'<button class="del-btn" onclick="delPerson(\''+p.id+'\',\'hr_people\')"><i class="fas fa-trash"></i> Remove</button></div>'
-  +'<div class="card-hdr"><div class="card-hdr-inner"><div class="card-av" style="background:'+col+'">'+ini(p.name)+'</div><div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+(p.email?' &nbsp;&middot;&nbsp; '+p.email:'')+'</div></div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto">'+(s1.score?'<div style="background:'+sbg(s1.score)+';border-radius:10px;padding:6px 14px;display:flex;align-items:center;gap:4px"><span style="font-size:20px;font-weight:800;color:'+sc(s1.score)+'">'+s1.score+'</span><span style="font-size:10px;color:'+sc(s1.score)+';font-weight:700">/5</span></div>':'')+(s1.outcome?'<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(s1.outcome==='Pass'?'#DCFCE7':s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6')+';color:'+(s1.outcome==='Pass'?'#16A34A':s1.outcome==='Fail'?'#DC2626':'#6B7280')+'">'  +s1.outcome+'</span>':'')+(sf?'<div style="text-align:center"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600">Start</div><div style="font-size:13px;font-weight:700">'+sf+'</div></div>':'')+'</div></div></div>'
+  +'<div class="card-hdr"><div class="card-hdr-inner"><div class="card-av" style="background:'+col+'">'+ini(p.name)+'</div><div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+(p.email?' &nbsp;&middot;&nbsp; '+p.email:'')+companySelect(p.id,'ob',p.company_type)+'</div></div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto">'+(s1.score?'<div style="background:'+sbg(s1.score)+';border-radius:10px;padding:6px 14px;display:flex;align-items:center;gap:4px"><span style="font-size:20px;font-weight:800;color:'+sc(s1.score)+'">'+s1.score+'</span><span style="font-size:10px;color:'+sc(s1.score)+';font-weight:700">/5</span></div>':'')+(s1.outcome?'<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(s1.outcome==='Pass'?'#DCFCE7':s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6')+';color:'+(s1.outcome==='Pass'?'#16A34A':s1.outcome==='Fail'?'#DC2626':'#6B7280')+'">'  +s1.outcome+'</span>':'')+(sf?'<div style="text-align:center"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600">Start</div><div style="font-size:13px;font-weight:700">'+sf+'</div></div>':'')+'</div></div></div>'
   +'<div class="sgrid">'+sb_box(1,'Competence Evaluation','#6C5DD3',stage1)+sb_box(2,'Offer Letter','#0284C7',stage2)+sb_box('2.5','Handover to HR','#D97706',stage25)+sb_box(3,'Documents','#D97706',stage3)+sb_box(4,'NDA & Screening','#DC2626',stage4)+sb_box(5,'Contract','#7C3AED',stage5)+sb_box(6,'Background Check (Certn)','#D97706',stage9)+sb_box(7,'Credentials + IAI Email','#059669',stage6,false,onHold6)+sb_box(8,'Access Confirmation','#059669',stage7,false,onHold7)+sb_box(9,'Vanta','#0891B2',stage8)+sb_box(10,'Service Accounts','#6B7280',stage10,true)+sb_box(11,'ImplementAI Training','#6C5DD3',stage11,true)+'</div>'
   +'<div class="sbox" style="margin-top:14px;border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden"><div class="shdr" style="background:#F9FAFB"><span class="snum" style="background:#F3F4F6;color:#6B7280;border:none">Info</span><span class="stitle">Manager / Line Manager</span></div><div class="sbody">'+managerField+'</div></div>'
   +'<div class="sbox" style="margin-top:14px;border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden">'
@@ -694,7 +717,7 @@ function buildEXCard(p) {
   +'<div class="card-hdr">'
   +'<div class="card-hdr-inner">'
     +'<div class="card-av" style="background:'+col+'">'+ini(p.name)+'</div>'
-    +'<div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+'</div></div>'
+    +'<div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+companySelect(p.id,'ex',p.company_type)+'</div></div>'
     +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;margin-left:auto">'
       // Exit type badge
       +'<span style="font-size:13px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(isT?'#FEE2E2':'#E0F2FE')+';color:'+col+'">'+(isT?'Termination':'Resignation')+'</span>'
