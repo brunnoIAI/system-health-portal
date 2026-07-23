@@ -1,4 +1,6 @@
 {
+  "version": 2,
+  "buildId": "1784803727",
   "headers": [
     {
       "source": "/(.*)",
