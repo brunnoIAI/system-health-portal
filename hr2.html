@@ -1,0 +1,955 @@
+<!-- hr-build:1784803522 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HR | ImplementAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--brand:#6C5DD3;--red:#DC2626;--amber:#D97706;--green:#16A34A;--blue:#0284C7;--border:#E5E7EB;--text:#111827;--muted:#9CA3AF;--canvas:#F7F9FC;--font:'Inter',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--canvas);color:#374151;}
+.topbar{background:#212B3C;padding:12px 28px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;}
+.topbar img{height:28px;}
+.topbar-title{color:#fff;font-size:15px;font-weight:700;}
+.back-portal{margin-left:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:7px 16px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.back-portal:hover{background:rgba(255,255,255,.22);}
+.container{max-width:1000px;margin:0 auto;padding:28px 24px;}
+.hr-tabs{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;align-items:center;}
+.hr-tab{padding:10px 22px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:var(--font);transition:all .15s;display:flex;align-items:center;gap:8px;}
+.hr-tab:hover{border-color:var(--brand);color:var(--brand);}
+.hr-tab.ob{background:var(--brand);border-color:var(--brand);color:#fff;}
+.hr-tab.ex{background:var(--red);border-color:var(--red);color:#fff;}
+.hr-tab.rv{background:var(--blue);border-color:var(--blue);color:#fff;}
+.add-btn{margin-left:auto;background:var(--brand);border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:8px;}
+.loading{text-align:center;padding:80px;color:var(--muted);}
+.loading i{font-size:36px;display:block;margin-bottom:16px;animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:80px 20px;color:var(--muted);}
+.empty i{font-size:48px;display:block;margin-bottom:16px;}
+.empty h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.person-row{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px 22px;display:flex;align-items:center;gap:16px;cursor:pointer;margin-bottom:10px;transition:all .15s;}
+.person-row:hover{border-color:var(--brand);box-shadow:0 4px 12px rgba(0,0,0,.08);transform:translateY(-1px);}
+.pav{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0;}
+.pinfo{flex:1;min-width:0;}
+.pname{font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.prole{font-size:13px;color:var(--muted);margin-bottom:6px;}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px;}
+.pmeta{display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.sbadge{font-size:11px;font-weight:700;padding:5px 14px;border-radius:100px;white-space:nowrap;}
+.back-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.back-btn{background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;}
+.del-btn{background:none;border:1.5px solid #FEE2E2;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;}
+.card-hdr{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:20px;}
+.card-hdr-inner{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.card-av{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex-shrink:0;}
+.card-name{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.card-sub{font-size:14px;color:var(--muted);}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sfull{grid-column:1/-1;}
+@media(max-width:700px){.sgrid{grid-template-columns:1fr;}.sfull{grid-column:1;}}
+.sbox{background:#fff;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;}
+.shdr{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--canvas);border-bottom:1.5px solid var(--border);}
+.snum{font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px;white-space:nowrap;}
+.stitle{font-size:14px;font-weight:700;color:var(--text);}
+.sbody{padding:16px 18px;}
+.frow{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.flbl{font-size:12px;color:var(--muted);white-space:nowrap;font-weight:500;}
+.finput{flex:1;min-width:120px;border:1px solid #D1D5DB;border-radius:6px;padding:6px 11px;font-size:13px;font-family:var(--font);outline:none;color:var(--text);}
+.finput:focus{border-color:var(--brand);}
+.linput{flex:1;border:1px solid #D1D5DB;border-radius:6px;padding:6px 11px;font-size:12px;font-family:var(--font);outline:none;color:var(--brand);}
+.olink{color:var(--brand);font-size:12px;white-space:nowrap;font-weight:600;text-decoration:none;margin-left:8px;}
+.crow{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.crow:last-child{border-bottom:none;}
+.clbl{font-size:14px;flex:1;line-height:1.4;}
+.cdate{font-size:11px;color:var(--muted);white-space:nowrap;margin-top:2px;}
+.sinput{width:80px;border:2px solid;border-radius:10px;padding:8px 10px;font-size:22px;font-weight:800;font-family:var(--font);outline:none;text-align:center;}
+.onhold{background:#F3F4F6;border-radius:8px;padding:10px 14px;font-size:13px;color:#6B7280;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-box{background:#fff;border-radius:12px;padding:40px 36px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.modal-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+.mfield{margin-bottom:16px;}
+.mfield label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;}
+.mfield input,.mfield select{width:100%;border:1px solid #D1D5DB;border-radius:8px;padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;}
+.mfield input:focus,.mfield select:focus{border-color:var(--brand);}
+.btn-p{background:var(--brand);border:none;border-radius:8px;padding:11px 20px;color:#fff;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;}
+.btn-s{background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px 20px;color:#374151;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="LOGO_PLACEHOLDER" alt="ImplementAI">
+  <span class="topbar-title">HR Module</span>
+  <a href="/" class="back-portal"><i class="fas fa-arrow-left"></i> Back to System Health</a>
+</div>
+<div class="container">
+  <div class="hr-tabs">
+    <button class="hr-tab ob" id="t-ob" onclick="setView('onboarding')"><i class="fas fa-user-plus"></i> Onboarding</button>
+    <button class="hr-tab" id="t-ex" onclick="setView('exiting')"><i class="fas fa-user-minus"></i> Exiting</button>
+    <button class="hr-tab" id="t-rv" onclick="setView('reviews')"><i class="fas fa-star"></i> Performance Reviews</button>
+    <button class="add-btn" onclick="openAddModal()"><i class="fas fa-plus"></i> <span id="add-lbl">Add Person</span></button>
+  </div>
+  <div id="modal-bg" class="modal-bg" onclick="if(event.target===this)closeModal()"></div>
+  <div id="lv"></div>
+  <div id="dv" style="display:none"></div>
+</div>
+<script>
+const SB = window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co', 'sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox');
+let view = 'onboarding', openId = null;
+
+window.addEventListener('DOMContentLoaded', () => { loadAndRender(); });
+
+async function loadAndRender() {
+  showLoading();
+  if (view === 'onboarding') await renderOBList();
+  else if (view === 'exiting') await renderEXList();
+  else await renderRVList();
+}
+
+function setView(v) {
+  view = v; openId = null;
+  document.getElementById('dv').style.display = 'none';
+  document.getElementById('lv').style.display = 'block';
+  document.getElementById('t-ob').className = 'hr-tab' + (v==='onboarding' ? ' ob' : '');
+  document.getElementById('t-ex').className = 'hr-tab' + (v==='exiting' ? ' ex' : '');
+  document.getElementById('t-rv').className = 'hr-tab' + (v==='reviews' ? ' rv' : '');
+  document.getElementById('add-lbl').textContent = v==='reviews' ? 'Add Review' : 'Add Person';
+  loadAndRender(); window.scrollTo(0,0);
+}
+
+function showLoading() {
+  document.getElementById('lv').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><div style="font-size:14px;font-weight:600;margin-top:8px">Loading...</div></div>';
+}
+
+function sc(s) { const n=parseFloat(s); if(!n) return '#9CA3AF'; if(n<=2) return '#DC2626'; if(n<4) return '#D97706'; return '#16A34A'; }
+function sbg(s) { const n=parseFloat(s); if(!n) return '#F3F4F6'; if(n<=2) return '#FEE2E2'; if(n<4) return '#FEF3C7'; return '#DCFCE7'; }
+function ini(name) { return name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase(); }
+
+function getStage(s, companyType) {
+  const isTechanzy = companyType === 'Techanzy';
+  if (isTechanzy) {
+    // Techanzy: only needs NDA(4), access(7), Vanta(8), service accounts(10), training(11)
+    if (!s.s4?.ndaSignedDate) return {num:'4',name:'NDA',color:'#DC2626'};
+    if (!s.s7?.confirmedDate) return {num:'7',name:'Access Confirmation',color:'#059669'};
+    if (!s.s8?.mdmDate) return {num:'8',name:'Vanta',color:'#0891B2'};
+    if (!s.s10?.completedDate) return {num:'10',name:'Service Accounts',color:'#6B7280'};
+    if (!s.s11?.completed) return {num:'11',name:'ImplementAI Training',color:'#6C5DD3'};
+    return null;
+  }
+  // ImplementAI: full process
+  if (!s.s1 || !s.s1.completed) return {num:'1',name:'Evaluation',color:'#6C5DD3'};
+  if (!s.s2 || !s.s2.signedDate) return {num:'2',name:'Offer Letter',color:'#0284C7'};
+  if (!s.s25 || !s.s25.candidateEmail) return {num:'2.5',name:'Handover to HR',color:'#D97706'};
+  const r1ok = ['Pass'].includes((s.s3||{}).ref1Status||'');
+  const r2ok = ['Pass'].includes((s.s3||{}).ref2Status||'');
+  if (!s.s3||!s.s3.ref2Received||!s.s3.ref1Received||!r1ok||!r2ok) return {num:'3',name:'Documents',color:'#D97706'};
+  if (!s.s4||!s.s4.screenSignedDate) return {num:'4',name:'NDA & Screening',color:'#DC2626'};
+  if (!s.s5||!s.s5.signedDate) return {num:'5',name:'Contract',color:'#7C3AED'};
+  if (!s.s9||!s.s9.clearedDate) return {num:'6',name:'Background Check',color:'#D97706'};
+  if (!s.s6||!s.s6.credsSentDate) return {num:'7',name:'Credentials',color:'#059669'};
+  if (!s.s7||!s.s7.confirmedDate) return {num:'8',name:'Confirmation',color:'#059669'};
+  if (!s.s8||!s.s8.mdmDate) return {num:'9',name:'Vanta',color:'#0891B2'};
+  if (!s.s10||!s.s10.completedDate) return {num:'10',name:'Service Accounts',color:'#6B7280'};
+  if (!s.s11||!s.s11.completed) return {num:'11',name:'ImplementAI Training',color:'#6C5DD3'};
+  return null;
+}
+
+
+
+
+// ============================================================
+// PENDING CHANGES — accumulate edits, save all at once
+// ============================================================
+let pendingId = null;
+let pendingStages = null;
+let pendingLog = [];
+let isDirty = false;
+
+function markDirty() {
+  isDirty = true;
+  const btn = document.getElementById('save-btn');
+  if (btn) {
+    btn.style.background = '#16A34A';
+    btn.textContent = 'Save Changes';
+    btn.disabled = false;
+  }
+}
+
+function setPending(id, stages, log) {
+  pendingId = id;
+  pendingStages = JSON.parse(JSON.stringify(stages)); // deep copy
+  pendingLog = log ? [...log] : [];
+  isDirty = false;
+}
+
+function updPending(path, val) {
+  if (!pendingStages) return;
+  const parts = path.split('.');
+  let obj = pendingStages;
+  for (let i=0; i<parts.length-1; i++) { if(!obj[parts[i]])obj[parts[i]]={};  obj=obj[parts[i]]; }
+  obj[parts[parts.length-1]] = val;
+  pendingLog.unshift({ts:new Date().toISOString(), action:path+' updated', by:'Brunno'});
+  markDirty();
+}
+
+
+
+
+// ============================================================
+// EXTRA DOCUMENTS SECTION
+// ============================================================
+function buildExtraDocs(id, stageKey, docs) {
+  // docs = array of {label, url} from pendingStages[stageKey].extraDocs
+  const docsArr = docs || [];
+  const slots = docsArr.length === 0 ? [] : docsArr;
+
+  const slotsHtml = slots.map((doc, i) =>
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+    +'<span style="font-size:12px;font-weight:600;color:#6B7280;white-space:nowrap;min-width:80px">Doc '+(i+1)+'</span>'
+    +'<input type="url" value="'+(doc.url||'')+'" placeholder="Paste link here" '
+    +'onchange="updExtraDoc(\''+id+'\',\''+stageKey+'\','+i+',\'url\',this.value)" '
+    +'style="flex:1;border:1px solid #D1D5DB;border-radius:6px;padding:6px 10px;font-size:12px;font-family:var(--font);outline:none;color:#6C5DD3">'
+    +(doc.url?'<a href="'+doc.url+'" target="_blank" style="color:#6C5DD3;font-size:12px;white-space:nowrap;font-weight:600;text-decoration:none"><i class="fas fa-external-link-alt"></i></a>':'')
+    +'<button onclick="removeExtraDoc(\''+id+'\',\''+stageKey+'\','+i+')" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:13px;padding:2px 6px" title="Remove"><i class="fas fa-times"></i></button>'
+    +'</div>'
+  ).join('');
+
+  const addBtn = slots.length < 8
+    ? '<button onclick="addExtraDoc(\''+id+'\',\''+stageKey+'\')" style="background:none;border:1.5px dashed #D1D5DB;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;color:#9CA3AF;cursor:pointer;font-family:var(--font);width:100%;margin-top:4px;transition:all .15s" onmouseover="this.style.borderColor=\'#6C5DD3\';this.style.color=\'#6C5DD3\'" onmouseout="this.style.borderColor=\'#D1D5DB\';this.style.color=\'#9CA3AF\'"><i class="fas fa-plus" style="margin-right:6px"></i>Add Document</button>'
+    : '<div style="font-size:11px;color:#9CA3AF;padding:4px">Maximum 8 documents reached</div>';
+
+  return '<div style="margin-top:6px">'
+    + (slots.length === 0 ? '<div style="font-size:12px;color:#9CA3AF;margin-bottom:8px">No extra documents yet. Click below to add one.</div>' : slotsHtml)
+    + addBtn
+    + '</div>';
+}
+
+function addExtraDoc(id, stageKey) {
+  if (!pendingStages) return;
+  if (!pendingStages[stageKey]) pendingStages[stageKey] = {};
+  if (!pendingStages[stageKey].extraDocs) pendingStages[stageKey].extraDocs = [];
+  if (pendingStages[stageKey].extraDocs.length >= 8) return;
+  pendingStages[stageKey].extraDocs.push({label:'', url:''});
+  markDirty();
+  // Re-render just the extra docs section
+  const container = document.getElementById('extra-docs-'+id);
+  if (container) container.innerHTML = buildExtraDocs(id, stageKey, pendingStages[stageKey].extraDocs);
+}
+
+function removeExtraDoc(id, stageKey, idx) {
+  if (!pendingStages || !pendingStages[stageKey] || !pendingStages[stageKey].extraDocs) return;
+  pendingStages[stageKey].extraDocs.splice(idx, 1);
+  markDirty();
+  const container = document.getElementById('extra-docs-'+id);
+  if (container) container.innerHTML = buildExtraDocs(id, stageKey, pendingStages[stageKey].extraDocs);
+}
+
+function updExtraDoc(id, stageKey, idx, field, val) {
+  if (!pendingStages) return;
+  if (!pendingStages[stageKey]) pendingStages[stageKey] = {};
+  if (!pendingStages[stageKey].extraDocs) pendingStages[stageKey].extraDocs = [];
+  if (!pendingStages[stageKey].extraDocs[idx]) pendingStages[stageKey].extraDocs[idx] = {label:'', url:''};
+  pendingStages[stageKey].extraDocs[idx][field] = val;
+  markDirty();
+}
+
+
+function updCompanyType(id, cardType, val) {
+  // company_type is a top-level field — use the __ prefix mechanism
+  if (!pendingStages) return;
+  pendingStages.__company_type = val;
+  markDirty();
+  // Re-render the card to show/hide stages based on company type
+  // We do a lightweight re-render by reloading
+  // Actually just update the select styling and re-render missing pills
+  // For now mark dirty and let save handle it
+  const selects = document.querySelectorAll('select[onchange*="updCompanyType"]');
+  selects.forEach(s => {
+    s.style.background = val === 'Techanzy' ? '#EFF6FF' : '#F0FDF4';
+    s.style.color = val === 'Techanzy' ? '#0284C7' : '#16A34A';
+  });
+}
+
+function addCustomSvc(id) {
+  const input = document.getElementById('custom-svc-'+id);
+  if (!input) return;
+  const svcName = input.value.trim();
+  if (!svcName) return;
+  if (!pendingStages) return;
+  if (!pendingStages.s10) pendingStages.s10 = {};
+  const current = (pendingStages.s10.services||'').split(',').map(x=>x.trim()).filter(Boolean);
+  if (!current.includes(svcName)) {
+    current.push(svcName);
+    updPending('s10.services', current.join(', '));
+    input.value = '';
+    const btn = input.nextElementSibling;
+    if (btn) { btn.textContent = 'Added!'; setTimeout(()=>{btn.textContent='Add';},1500); }
+  } else {
+    input.style.borderColor = '#D97706';
+    setTimeout(()=>{input.style.borderColor='#D1D5DB';},1500);
+  }
+}
+
+function updRefRec(id, val) {
+  // Mark it in pendingStages as a special top-level field
+  if (!pendingStages) return;
+  pendingStages.__reference_recommendation = val;
+  markDirty();
+}
+
+async function saveAll() {
+  if (!pendingId || !pendingStages) return;
+  const btn = document.getElementById('save-btn');
+  if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
+  const isEX = pendingId.startsWith('EX_');
+  const tbl = isEX ? 'hr_exiting' : 'hr_people';
+  // Extract top-level fields stored in pendingStages with __ prefix
+  const topLevel = {};
+  const stagesClean = {};
+  Object.entries(pendingStages).forEach(([k,v]) => {
+    if (k.startsWith('__')) topLevel[k.slice(2)] = v;
+    else stagesClean[k] = v;
+  });
+  const updatePayload = {stages: stagesClean, log: pendingLog.slice(0,100), updated_at: new Date().toISOString(), ...topLevel};
+  const {error} = await SB.from(tbl).update(updatePayload).eq('id', pendingId);
+  if (error) {
+    alert('Save failed: ' + error.message);
+    if (btn) { btn.textContent = 'Save Changes'; btn.disabled = false; }
+    return;
+  }
+  isDirty = false;
+  if (btn) {
+    btn.style.background = '#6B7280';
+    btn.textContent = 'Saved';
+    setTimeout(() => { if(btn){btn.style.background='#16A34A';btn.textContent='Save Changes';} }, 2000);
+  }
+}
+
+// Warn before navigating away with unsaved changes
+function checkDirty() {
+  if (isDirty) {
+    return confirm('You have unsaved changes. Leave without saving?');
+  }
+  return true;
+}
+
+// ============================================================
+// MISSING ITEMS — specific pills for what is still needed
+// ============================================================
+function getMissingItems(s, companyType) {
+  const isTechanzy = companyType === 'Techanzy';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const startDt = s.s25?.expectedStart ? new Date(s.s25.expectedStart) : null;
+  const daysToStart = startDt ? Math.ceil((startDt-today)/86400000) : null;
+  const onHold = daysToStart !== null && daysToStart > 3;
+  const missing = [];
+
+  if (isTechanzy) {
+    // Techanzy: only needs NDA (s4.ndaSignedDate), access (s7), Vanta (s8), training (s11)
+    if (!s.s4?.ndaSignedDate) missing.push({label:'NDA not signed', color:'#DC2626'});
+    if (!onHold) {
+      if (!s.s7?.confirmedDate) missing.push({label:'Access not confirmed', color:'#059669'});
+      if (!s.s8?.mdmDate) missing.push({label:'MDM not installed', color:'#0891B2'});
+      if (!s.s10?.completedDate) missing.push({label:'Service accounts incomplete', color:'#6B7280'});
+    } else if (onHold && daysToStart !== null) {
+      if (!s.s7?.confirmedDate || !s.s8?.mdmDate || !s.s10?.completedDate)
+        missing.push({label:'Stages 7-10 on hold (starts in '+daysToStart+'d)', color:'#9CA3AF'});
+    }
+    if (!s.s11?.completed) missing.push({label:'ImplementAI training not completed', color:'#6C5DD3'});
+    return missing;
+  }
+
+  // ImplementAI — full process
+  if (!s.s1?.completed) { missing.push({label:'Interview not completed', color:'#6C5DD3'}); return missing; }
+  if (!s.s1?.outcome || s.s1.outcome === '') missing.push({label:'Interview outcome not set', color:'#6C5DD3'});
+  if (!s.s2?.signedDate) { missing.push({label:'Offer not signed', color:'#0284C7'}); return missing; }
+  if (!s.s25?.candidateEmail) { missing.push({label:'Candidate email missing', color:'#D97706'}); return missing; }
+  if (!s.s3?.fullNameReceived) missing.push({label:'Full name not received', color:'#D97706'});
+  if (!s.s3?.fullAddressReceived) missing.push({label:'Full address not received', color:'#D97706'});
+  if (!s.s3?.idReceived) missing.push({label:'ID not received', color:'#D97706'});
+  const r1ok = ['Pass'].includes(s.s3?.ref1Status||'');
+  const r2ok = ['Pass'].includes(s.s3?.ref2Status||'');
+  if (!s.s3?.ref1Received) missing.push({label:'Reference 1 not received', color:'#D97706'});
+  else if (s.s3?.ref1Status==='In Progress') missing.push({label:'Reference 1 reply pending', color:'#D97706'});
+  else if (!s.s3?.ref1Status || s.s3?.ref1Status==='') missing.push({label:'Reference 1 status not set', color:'#D97706'});
+  if (!s.s3?.ref2Received) missing.push({label:'Reference 2 not received', color:'#D97706'});
+  else if (s.s3?.ref2Status==='In Progress') missing.push({label:'Reference 2 reply pending', color:'#D97706'});
+  else if (!s.s3?.ref2Status || s.s3?.ref2Status==='') missing.push({label:'Reference 2 status not set', color:'#D97706'});
+  if (!s.s4?.screenSignedDate) missing.push({label:'Screening not signed', color:'#DC2626'});
+  if (!s.s5?.signedDate) missing.push({label:'Contract not signed', color:'#7C3AED'});
+  // Stage 6 (new order): Background Check — no on-hold
+  if (!s.s9?.clearedDate) missing.push({label:'Background check pending', color:'#D97706'});
+  // Stages 7-10 — only flag if start is imminent
+  if (!onHold) {
+    if (!s.s6?.credsSentDate) missing.push({label:'365 credentials not sent', color:'#059669'});
+    if (!s.s6?.iaiEmail) missing.push({label:'IAI email not assigned', color:'#059669'});
+    if (!s.s7?.confirmedDate) missing.push({label:'Access not confirmed', color:'#059669'});
+    if (!s.s8?.mdmDate) missing.push({label:'MDM not installed', color:'#0891B2'});
+    if (!s.s10?.completedDate) missing.push({label:'Service accounts incomplete', color:'#6B7280'});
+  } else if (onHold && daysToStart !== null) {
+    if (!s.s6?.credsSentDate || !s.s7?.confirmedDate || !s.s8?.mdmDate || !s.s10?.completedDate)
+      missing.push({label:'Stages 7-10 on hold (starts in '+daysToStart+'d)', color:'#9CA3AF'});
+  }
+  // Stage 11: Training
+  if (!s.s11?.completed) missing.push({label:'ImplementAI training not completed', color:'#6C5DD3'});
+  return missing;
+}
+
+
+// ============================================================
+// COMPLETION PERCENTAGE
+// ============================================================
+function getCompletion(s, companyType) {
+  const isTechanzy = companyType === 'Techanzy';
+  if (isTechanzy) {
+    // Techanzy: NDA + access + Vanta + service accounts + training
+    const checks = [
+      s.s4?.ndaSignedDate,
+      s.s7?.confirmedDate,
+      s.s8?.mdmDate,
+      s.s8?.policiesDate,
+      s.s10?.completedDate,
+      s.s11?.completed,
+    ];
+    return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+  }
+  // ImplementAI: full 22 checkpoints
+  const checks = [
+    s.s1?.completed,
+    s.s1?.outcome && s.s1.outcome !== '',
+    s.s2?.signedDate,
+    s.s25?.candidateEmail,
+    s.s3?.fullNameReceived,
+    s.s3?.fullAddressReceived,
+    s.s3?.idReceived,
+    s.s3?.ref1Received,
+    ['Pass'].includes(s.s3?.ref1Status||''),
+    s.s3?.ref2Received,
+    ['Pass'].includes(s.s3?.ref2Status||''),
+    s.s4?.screenSignedDate,
+    s.s5?.signedDate,
+    s.s9?.clearedDate,
+    s.s6?.credsSentDate,
+    s.s6?.iaiEmail,
+    s.s7?.confirmedDate,
+    s.s8?.mdmDate,
+    s.s10?.completedDate,
+    s.s10?.services && s.s10.services.length > 0,
+    s.s11?.completed,
+    s.s11?.trainer && s.s11.trainer.length > 0,
+  ];
+  return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+}
+
+
+function pctColor(pct) {
+  if (pct >= 90) return '#16A34A';
+  if (pct >= 60) return '#0284C7';
+  if (pct >= 30) return '#D97706';
+  return '#DC2626';
+}
+
+async function renderOBList() {
+  const {data,error} = await SB.from('hr_people').select('*').order('added_at',{ascending:false});
+  if (error) { document.getElementById('lv').innerHTML = '<div class="empty"><i class="fas fa-exclamation-triangle"></i><h3>Error loading data</h3><p>'+error.message+'</p></div>'; return; }
+  if (!data||!data.length) { document.getElementById('lv').innerHTML = '<div class="empty"><i class="fas fa-users"></i><h3>No onboarding records yet</h3><p>Click Add Person to start.</p></div>'; return; }
+  document.getElementById('lv').innerHTML = data.map(p => {
+    const s = p.stages||{};
+    const stg = getStage(s, p.company_type);
+    const col = stg ? stg.color : '#16A34A';
+    const pct = getCompletion(s, p.company_type);
+    const pctCol = pctColor(pct);
+    const missing = getMissingItems(s, p.company_type);
+    const start = (s.s25&&s.s25.expectedStart) || p.start_date || '';
+    const sf = start ? new Date(start).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const startDt = start ? new Date(start) : null;
+    const daysToStart = startDt ? Math.ceil((startDt-today)/86400000) : null;
+    const daysLabel = daysToStart!==null ? (daysToStart<0?Math.abs(daysToStart)+'d overdue':daysToStart===0?'Starts today':daysToStart+'d to start') : '';
+
+    // Missing pills — show up to 3, then "+N more"
+    const pillsHtml = missing.length === 0
+      ? '<span class="pill" style="background:#DCFCE7;color:#16A34A;border:1.5px solid #16A34A35"><i class="fas fa-check" style="font-size:10px"></i> All complete</span>'
+      : missing.slice(0,3).map(m=>'<span class="pill" style="background:'+m.color+'15;color:'+m.color+';border:1.5px solid '+m.color+'30;font-size:11px;padding:3px 9px;">'+m.label+'</span>').join('')
+        + (missing.length>3?'<span class="pill" style="background:#F3F4F6;color:#6B7280;border:1.5px solid #E5E7EB;font-size:11px;padding:3px 9px;">+'+( missing.length-3)+' more</span>':'');
+
+    return '<div class="person-row" onclick="openOB(\''+p.id+'\')">'
+      +'<div class="pav" style="background:'+col+'">'+ini(p.name)+'</div>'
+      +'<div class="pinfo" style="flex:1;min-width:0">'
+        +'<div class="pname">'+p.name+'</div>'
+        +'<div class="prole">'+p.role+(p.email?' &nbsp;&middot;&nbsp; <span style="color:var(--muted)">'+p.email+'</span>':'')+'</div>'
+        +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">'+pillsHtml+'</div>'
+      +'</div>'
+      +'<div class="pmeta" style="flex-shrink:0;align-items:flex-end">'
+        // Completion percentage badge
+        +'<div style="text-align:center;min-width:52px">'
+          +'<div style="font-size:22px;font-weight:800;color:'+pctCol+';line-height:1">'+pct+'%</div>'
+          +'<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:'+pctCol+';letter-spacing:.5px">done</div>'
+        +'</div>'
+        // Start date
+        +(sf?'<div style="text-align:center">'
+          +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600">Start</div>'
+          +'<div style="font-size:12px;font-weight:700">'+sf+'</div>'
+          +(daysLabel?'<div style="font-size:10px;font-weight:600;color:'+col+'">'+daysLabel+'</div>':'')
+        +'</div>':'')
+        +'<i class="fas fa-chevron-right" style="color:var(--muted);font-size:13px"></i>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+
+// ============================================================
+// EXITING — MISSING ITEMS + COMPLETION
+// ============================================================
+function getMissingItemsEX(s, exitType, companyType) {
+  const missing = [];
+  const isTechanzy = companyType === 'Techanzy';
+
+  if (isTechanzy) {
+    // Techanzy: only needs contractor exit cert + exit checklist + account termination
+    if (!s.s1?.contractorExitLink) missing.push({label:'Contractor Exit & Data Destruction Cert missing', color:'#D97706'});
+    if (!s.s2?.checklistDate) missing.push({label:'Exit checklist not completed', color:'#0284C7'});
+    if (!s.s4?.o365TermDate) missing.push({label:'365 account not terminated', color:'#DC2626'});
+    if (!s.s4?.servicesDate) missing.push({label:'Service accounts not removed', color:'#DC2626'});
+    return missing;
+  }
+
+  // ImplementAI — full exit process
+  const docLabel = exitType === 'termination' ? 'Termination letter' : 'Resignation letter';
+  if (!s.s1?.noticeDate) { missing.push({label:'Notice date not recorded', color:'#D97706'}); return missing; }
+  if (!s.s1?.letterSignedDate) missing.push({label:docLabel+' not signed', color:'#D97706'});
+  if (!s.s2?.checklistDate) missing.push({label:'Exit checklist not completed', color:'#0284C7'});
+  if (!s.s3?.shahzebSignedDate) missing.push({label:'Shahzeb sign-off pending', color:'#7C3AED'});
+  if (!s.s3?.brunnoSignedDate) missing.push({label:'Brunno sign-off pending', color:'#7C3AED'});
+  if (!s.s4?.o365TermDate) missing.push({label:'365 account not terminated', color:'#DC2626'});
+  if (!s.s4?.servicesDate) missing.push({label:'Service accounts not removed', color:'#DC2626'});
+  if (!s.s5?.completedDate) missing.push({label:'Not fully terminated', color:'#6B7280'});
+  return missing;
+}
+
+
+function getCompletionEX(s, companyType) {
+  const isTechanzy = companyType === 'Techanzy';
+  if (isTechanzy) {
+    // Techanzy: 4 checkpoints
+    const checks = [
+      s.s1?.contractorExitLink,
+      s.s2?.checklistDate,
+      s.s4?.o365TermDate,
+      s.s4?.servicesDate,
+    ];
+    return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+  }
+  // ImplementAI: full 10 checkpoints
+  const checks = [
+    s.s1?.noticeDate,
+    s.s1?.letterSignedDate,
+    s.s2?.checklistDate,
+    s.s3?.shahzebSignedDate,
+    s.s3?.peersSignedDate,
+    s.s3?.brunnoSignedDate,
+    s.s3?.docLink,
+    s.s4?.o365TermDate,
+    s.s4?.servicesDate,
+    s.s5?.completedDate,
+  ];
+  return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+}
+
+
+async function renderEXList() {
+  const {data,error} = await SB.from('hr_exiting').select('*').order('added_at',{ascending:false});
+  if (error) { document.getElementById('lv').innerHTML = '<div class="empty"><i class="fas fa-exclamation-triangle"></i><h3>Error</h3><p>'+error.message+'</p></div>'; return; }
+  if (!data||!data.length) { document.getElementById('lv').innerHTML = '<div class="empty"><i class="fas fa-user-minus"></i><h3>No exiting records yet</h3></div>'; return; }
+  document.getElementById('lv').innerHTML = data.map(p => {
+    const isT = p.exit_type==='termination';
+    const col = isT ? '#DC2626' : '#0284C7';
+    const s = p.stages||{};
+    const pct = getCompletionEX(s, p.company_type);
+    const pctCol = pctColor(pct);
+    const missing = getMissingItemsEX(s, p.exit_type, p.company_type);
+    const pillsHtml = missing.length === 0
+      ? '<span class="pill" style="background:#DCFCE7;color:#16A34A;border:1.5px solid #16A34A35"><i class="fas fa-check" style="font-size:10px"></i> Fully terminated</span>'
+      : missing.slice(0,3).map(m=>'<span class="pill" style="background:'+m.color+'15;color:'+m.color+';border:1.5px solid '+m.color+'30;font-size:11px;padding:3px 9px;">'+m.label+'</span>').join('')
+        +(missing.length>3?'<span class="pill" style="background:#F3F4F6;color:#6B7280;border:1.5px solid #E5E7EB;font-size:11px;padding:3px 9px;">+'+(missing.length-3)+' more</span>':'');
+    return '<div class="person-row" onclick="openEX(\''+p.id+'\')">'
+      +'<div class="pav" style="background:'+col+'">'+ini(p.name)+'</div>'
+      +'<div class="pinfo" style="flex:1;min-width:0">'
+        +'<div class="pname">'+p.name
+          +' <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;background:'+(isT?'#FEE2E2':'#E0F2FE')+';color:'+col+';margin-left:6px">'+(isT?'Termination':'Resignation')+'</span>'
+        +'</div>'
+        +'<div class="prole">'+p.role+'</div>'
+        +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">'+pillsHtml+'</div>'
+      +'</div>'
+      +'<div class="pmeta" style="flex-shrink:0;align-items:flex-end;gap:10px">'
+        +'<div style="text-align:center;min-width:52px">'
+          +'<div style="font-size:22px;font-weight:800;color:'+pctCol+';line-height:1">'+pct+'%</div>'
+          +'<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:'+pctCol+';letter-spacing:.5px">done</div>'
+        +'</div>'
+        +(p.reference_recommendation&&p.reference_recommendation!=='Not Assessed'
+          ?'<div style="text-align:center">'
+            +'<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:#9CA3AF;letter-spacing:.5px;margin-bottom:3px">Reference</div>'
+            +'<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap;background:'
+              +({'Very Likely':'#DCFCE7','Likely':'#E0F2FE','Unlikely':'#FEF3C7','Would Not Give':'#FEE2E2'}[p.reference_recommendation]||'#F3F4F6')
+              +';color:'
+              +({'Very Likely':'#16A34A','Likely':'#0284C7','Unlikely':'#D97706','Would Not Give':'#DC2626'}[p.reference_recommendation]||'#6B7280')
+            +'">'+p.reference_recommendation+'</span>'
+          +'</div>'
+          :'')
+        +'<i class="fas fa-chevron-right" style="color:var(--muted);font-size:13px"></i>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+async function openOB(id) {
+  openId=id; document.getElementById('lv').style.display='none';
+  const dv=document.getElementById('dv'); dv.style.display='block';
+  dv.innerHTML='<div class="loading"><i class="fas fa-spinner"></i></div>';
+  const {data:p,error}=await SB.from('hr_people').select('*').eq('id',id).maybeSingle();
+  if(error||!p){dv.innerHTML='<div class="empty"><i class="fas fa-exclamation-triangle"></i><h3>Could not load</h3><p>'+(error?error.message:'Not found')+'</p></div>';return;}
+  setPending(id, p.stages||{}, p.log||[]);
+  dv.innerHTML=buildOBCard(p); window.scrollTo(0,0);
+}
+
+async function openEX(id) {
+  openId=id; document.getElementById('lv').style.display='none';
+  const dv=document.getElementById('dv'); dv.style.display='block';
+  dv.innerHTML='<div class="loading"><i class="fas fa-spinner"></i></div>';
+  const {data:p,error}=await SB.from('hr_exiting').select('*').eq('id',id).maybeSingle();
+  if(error||!p){dv.innerHTML='<div class="empty"><i class="fas fa-exclamation-triangle"></i><h3>Could not load</h3><p>'+(error?error.message:'Not found')+'</p></div>';return;}
+  setPending(id, p.stages||{}, p.log||[]);
+  dv.innerHTML=buildEXCard(p); window.scrollTo(0,0);
+}
+
+function backToList() {
+  openId=null; pendingId=null; pendingStages=null; pendingLog=[]; isDirty=false;
+  document.getElementById('dv').style.display='none';
+  document.getElementById('lv').style.display='block';
+  loadAndRender(); window.scrollTo(0,0);
+}
+
+function upd(id,path,val) {
+  // Update pending changes in memory — no Supabase call, no page refresh
+  if(pendingId !== id) { console.warn('upd called for wrong id'); return; }
+  updPending(path, val);
+}
+
+function tog(id,path,cb) {
+  if(pendingId !== id) { console.warn('tog called for wrong id'); return; }
+  const parts=path.split('.');
+  // Set the boolean
+  updPending(path, cb.checked);
+  // Auto-set date if checking
+  if(cb.checked) {
+    const dk=parts[parts.length-1].replace('Received','Date').replace('completed','interviewDate');
+    const parentPath=parts.slice(0,-1).join('.');
+    // Get current value of date field from pendingStages
+    let obj=pendingStages;
+    for(let i=0;i<parts.length-1;i++){if(obj[parts[i]])obj=obj[parts[i]];else{obj={};break;}}
+    if(!obj[dk]) updPending((parentPath?parentPath+'.':'')+dk, new Date().toISOString().split('T')[0]);
+  }
+}
+
+function togSvc(id,svc,checked,path) {
+  if(pendingId !== id) { console.warn('togSvc called for wrong id'); return; }
+  // Get current services from pendingStages
+  const parts=path.split('.');
+  let obj=pendingStages;
+  for(let i=0;i<parts.length-1;i++){if(!obj[parts[i]])obj[parts[i]]={};obj=obj[parts[i]];}
+  let svcs=(obj[parts[parts.length-1]]||'').split(',').map(x=>x.trim()).filter(Boolean);
+  if(checked){if(!svcs.includes(svc))svcs.push(svc);}else{svcs=svcs.filter(x=>x!==svc);}
+  updPending(path, svcs.join(', '));
+}
+
+async function delPerson(id,tbl) {
+  if(!confirm('Remove this person? This cannot be undone.'))return;
+  await SB.from(tbl).delete().eq('id',id);
+  backToList();
+}
+
+// ---- FIELD HELPERS ----
+function df(lbl,val,path,id){return '<div class="frow"><i class="fas fa-calendar" style="color:var(--muted);font-size:12px;flex-shrink:0"></i><label class="flbl">'+lbl+':</label><input type="date" value="'+(val||'')+'" onchange="upd(\''+id+'\',\''+path+'\',this.value)" class="finput" style="max-width:180px"></div>';}
+function lf(lbl,val,path,id){return '<div class="frow" style="margin-top:6px"><i class="fas fa-link" style="color:var(--muted);font-size:12px;flex-shrink:0"></i><input type="url" placeholder="'+lbl+'" value="'+(val||'')+'" onchange="upd(\''+id+'\',\''+path+'\',this.value)" class="linput">'+(val?'<a href="'+val+'" target="_blank" class="olink"><i class="fas fa-external-link-alt"></i> Open</a>':'')+'</div>';}
+function cb(lbl,chk,dv,path,id){const ds=chk&&dv?'<span class="cdate">'+new Date(dv).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+'</span>':'';return '<div class="crow"><label style="display:flex;align-items:center;gap:9px;cursor:pointer;flex:1"><input type="checkbox" '+(chk?'checked':'')+' onchange="tog(\''+id+'\',\''+path+'\',this)" style="width:17px;height:17px;accent-color:#6C5DD3;cursor:pointer;flex-shrink:0"><span class="clbl" style="font-weight:'+(chk?600:400)+'">'+lbl+'</span></label>'+ds+'</div>';}
+function tf(lbl,val,path,id,type){type=type||'text';return '<div class="frow"><label class="flbl">'+lbl+':</label><input type="'+type+'" value="'+(val||'')+'" placeholder="'+lbl+'" onchange="upd(\''+id+'\',\''+path+'\',this.value)" class="finput"></div>';}
+function sb_box(num,title,color,content,full,hold){return '<div class="sbox'+(full?' sfull':'')+'">'+'<div class="shdr"><span class="snum" style="background:'+color+'18;color:'+color+';border:1.5px solid '+color+'35">Stage '+num+'</span><span class="stitle">'+title+'</span>'+(hold?'<span style="margin-left:auto;font-size:10px;font-weight:700;background:#F3F4F6;color:#6B7280;border-radius:100px;padding:3px 10px">On Hold</span>':'')+'</div>'+'<div class="sbody">'+content+'</div></div>';}
+
+function buildOBCard(p) {
+  const s=p.stages||{};
+  const s1=s.s1||{},s2=s.s2||{},s25=s.s25||{},s3=s.s3||{},s4=s.s4||{},s5=s.s5||{},s6=s.s6||{},s7=s.s7||{},s8=s.s8||{},s9=s.s9||{},s10=s.s10||{};
+  const stg=getStage(s), col=stg?stg.color:'#16A34A';
+  const today=new Date();today.setHours(0,0,0,0);
+  const startDt=s25.expectedStart?new Date(s25.expectedStart):null;
+  const daysUntil=startDt?Math.ceil((startDt-today)/86400000):null;
+  const onHold6=daysUntil!==null&&daysUntil>3;
+  const onHold7=daysUntil!==null&&daysUntil>0;
+  const sf=s25.expectedStart?new Date(s25.expectedStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'';
+  const SVCS=['Anthropic','Apollo','Claude','Clay','Composio','Deepgram','ElevenLabs','Entra (Office 365)','GitHub','Grafana','HeyGen','Keeper','Microsoft Azure','Monday.com','n8n','OpenAI','Outlook','Perplexity','Slack','Softr','Stripe','Supabase','Teams','VAPI','Vanta','Zapier','Zendesk'];na','HeyGen','Keeper','Microsoft Azure','Monday.com','n8n','OpenAI','Outlook','Perplexity','Slack','Softr','Stripe','Supabase','Teams','VAPI','Vanta','Zapier','Zendesk'];
+  const svcs10=SVCS.map(svc=>'<label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;padding:4px 0"><input type="checkbox" '+(((s10.services||'').includes(svc))?'checked':'')+' onchange="togSvc(\''+p.id+'\',\''+svc+'\',this.checked,\'s10.services\')" style="width:15px;height:15px;accent-color:#6C5DD3">'+svc+'</label>').join('');
+  const refSel=(path,val)=>'<div class="frow"><label class="flbl">Status:</label><select onchange="upd(\''+p.id+'\',\''+path+'\',this.value)" style="border:1px solid #D1D5DB;border-radius:6px;padding:5px 10px;font-size:13px;font-family:var(--font);outline:none;background:'+(val==='Pass'?'#DCFCE7':val==='Concerns Raised'?'#FEF3C7':val==='In Progress'?'#EFF6FF':'#fff')+';color:'+(val==='Pass'?'#16A34A':val==='Concerns Raised'?'#D97706':val==='In Progress'?'#0284C7':'var(--muted)')+'"><option value="">Not started</option><option value="In Progress" '+(val==='In Progress'?'selected':'')+'>In Progress</option><option value="Concerns Raised" '+(val==='Concerns Raised'?'selected':'')+'>Concerns Raised</option><option value="Pass" '+(val==='Pass'?'selected':'')+'>Pass</option></select></div>';
+  const stage1=cb('Interview completed',s1.completed,s1.interviewDate,'s1.completed',p.id)+df('Interview date',s1.interviewDate,'s1.interviewDate',p.id)+'<div style="margin-top:12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap"><div><label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">Score (1-5)</label><input type="number" min="1" max="5" step="0.5" value="'+(s1.score||'')+'" placeholder="—" onchange="upd(\''+p.id+'\',\'s1.score\',this.value)" class="sinput" style="border-color:'+sc(s1.score)+';color:'+sc(s1.score)+';background:'+sbg(s1.score)+'"></div><div><label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">Outcome</label><select onchange="upd(\''+p.id+'\',\'s1.outcome\',this.value)" style="border:1.5px solid #D1D5DB;border-radius:8px;padding:8px 14px;font-size:14px;font-family:var(--font);outline:none"><option value="">Select</option><option value="Pass" '+(s1.outcome==='Pass'?'selected':'')+'>Pass</option><option value="Fail" '+(s1.outcome==='Fail'?'selected':'')+'>Fail</option><option value="Hold" '+(s1.outcome==='Hold'?'selected':'')+'>Hold</option></select></div></div>'+tf('Notes',s1.notes,'s1.notes',p.id);
+  const stage2=df('Offer sent',s2.sentDate,'s2.sentDate',p.id)+df('Offer signed',s2.signedDate,'s2.signedDate',p.id);
+  const stage25=tf('Candidate email',s25.candidateEmail,'s25.candidateEmail',p.id,'email')+df('Expected start',s25.expectedStart,'s25.expectedStart',p.id);
+  const stage3=df('Request sent',s3.requestSentDate,'s3.requestSentDate',p.id)+cb('Full name received',s3.fullNameReceived,s3.fullNameDate,'s3.fullNameReceived',p.id)+cb('Full address received',s3.fullAddressReceived,s3.fullAddressDate,'s3.fullAddressReceived',p.id)+cb('ID received',s3.idReceived,s3.idDate,'s3.idReceived',p.id)+lf('ID document',s3.idLink,'s3.idLink',p.id)+cb('Reference 1 received',s3.ref1Received,s3.ref1Date,'s3.ref1Received',p.id)+refSel('s3.ref1Status',s3.ref1Status)+lf('Reference 1 doc',s3.ref1Link,'s3.ref1Link',p.id)+cb('Reference 2 received',s3.ref2Received,s3.ref2Date,'s3.ref2Received',p.id)+refSel('s3.ref2Status',s3.ref2Status)+lf('Reference 2 doc',s3.ref2Link,'s3.ref2Link',p.id);
+  const stage4=df('NDA sent',s4.ndaSentDate,'s4.ndaSentDate',p.id)+df('NDA signed',s4.ndaSignedDate,'s4.ndaSignedDate',p.id)+lf('NDA link',s4.ndaSignedLink,'s4.ndaSignedLink',p.id)+df('Screening sent',s4.screenSentDate,'s4.screenSentDate',p.id)+df('Screening signed',s4.screenSignedDate,'s4.screenSignedDate',p.id)+lf('Screening link',s4.screenSignedLink,'s4.screenSignedLink',p.id);
+  const stage5='<div class="frow"><label class="flbl">Sent by:</label><select onchange="upd(\''+p.id+'\',\'s5.sentBy\',this.value)" style="border:1px solid #D1D5DB;border-radius:6px;padding:6px 12px;font-size:13px;font-family:var(--font);outline:none"><option value="">Select</option><option value="Brunno" '+(s5.sentBy==='Brunno'?'selected':'')+'>Brunno</option><option value="Piers Linney" '+(s5.sentBy==='Piers Linney'?'selected':'')+'>Piers Linney</option></select></div>'+df('Contract sent',s5.sentDate,'s5.sentDate',p.id)+df('Contract signed',s5.signedDate,'s5.signedDate',p.id)+lf('Signed contract',s5.signedLink,'s5.signedLink',p.id);
+  const stage6=(onHold6?'<div class="onhold"><i class="fas fa-clock"></i> On hold — starts in '+daysUntil+' days</div>':'')+df('365 credentials sent',s6.credsSentDate,'s6.credsSentDate',p.id)+tf('ImplementAI email',s6.iaiEmail||'','s6.iaiEmail',p.id,'email');
+  const stage7=(onHold7?'<div class="onhold"><i class="fas fa-clock"></i> On hold — not started yet</div>':'')+df('Access confirmed',s7.confirmedDate,'s7.confirmedDate',p.id);
+  const stage8=df('Vanta invite sent',s8.vantaSentDate,'s8.vantaSentDate',p.id)+df('Policies accepted',s8.policiesDate,'s8.policiesDate',p.id)+df('MDM installed',s8.mdmDate,'s8.mdmDate',p.id)+cb('Security training completed',s8.securityTraining,s8.securityTrainingDate,'s8.securityTraining',p.id)+df('Security training date',s8.securityTrainingDate,'s8.securityTrainingDate',p.id);
+  const stage9=df('Sent to Certn',s9.certnSentDate,'s9.certnSentDate',p.id)+df('Background cleared',s9.clearedDate,'s9.clearedDate',p.id)+lf('Certn report',s9.certnLink,'s9.certnLink',p.id);
+  const stage10='<div style="margin-top:6px"><label class="flbl" style="display:block;margin-bottom:8px">Services to add</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px">'+svcs10+'</div>'
+  +'<div style="margin-top:10px;display:flex;align-items:center;gap:8px">'
+  +'<input type="text" id="custom-svc-'+p.id+'" placeholder="Add another service..." style="flex:1;border:1px solid #D1D5DB;border-radius:6px;padding:6px 11px;font-size:13px;font-family:var(--font);outline:none">'
+  +'<button onclick="addCustomSvc(\''+p.id+'\')" style="background:#6C5DD3;border:none;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--font)">Add</button>'
+  +'</div>'
+  +'</div>'+df('All services added',s10.completedDate,'s10.completedDate',p.id);
+
+  // Manager field
+  const managerField=tf('Manager / Line Manager',s10.manager||'','s10.manager',p.id);
+
+  // Stage 11: ImplementAI Training
+  const s11=s.s11||{};
+  const stage11=cb('Training completed',s11.completed,s11.completedDate,'s11.completed',p.id)
+    +df('Training completion date',s11.completedDate,'s11.completedDate',p.id)
+    +tf('Trainer / responsible',s11.trainer||'','s11.trainer',p.id)
+    +'<div style="margin-top:10px;font-size:12px;color:#9CA3AF">Include: onboarding sessions, shadowing, tool training, internal SOPs.</div>';
+
+  const logH=(p.log&&p.log.length)?'<div style="margin-top:20px;border-top:1.5px solid var(--border);padding-top:18px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px"><i class="fas fa-history"></i> Activity Log</div><div style="display:flex;flex-direction:column;gap:7px;max-height:200px;overflow-y:auto">'+p.log.map(l=>'<div style="display:flex;gap:12px;font-size:12px"><span style="color:var(--muted);white-space:nowrap">'+new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</span><span>'+l.action+' <span style="color:var(--muted)">by '+l.by+'</span></span></div>').join('')+'</div></div>':'';
+  return '<div class="back-bar"><button class="back-btn" onclick="if(checkDirty())backToList()"><i class="fas fa-arrow-left"></i> Back</button>'
+  +'<button id="save-btn" onclick="saveAll()" style="background:#6B7280;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;transition:background .15s"><i class="fas fa-save"></i> Save Changes</button>'
+  +'<button class="del-btn" onclick="delPerson(\''+p.id+'\',\'hr_people\')"><i class="fas fa-trash"></i> Remove</button></div>'
+  +'<div class="card-hdr"><div class="card-hdr-inner"><div class="card-av" style="background:'+col+'">'+ini(p.name)+'</div><div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+(p.email?' &nbsp;&middot;&nbsp; '+p.email:'')+'</div></div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto">'+(s1.score?'<div style="background:'+sbg(s1.score)+';border-radius:10px;padding:6px 14px;display:flex;align-items:center;gap:4px"><span style="font-size:20px;font-weight:800;color:'+sc(s1.score)+'">'+s1.score+'</span><span style="font-size:10px;color:'+sc(s1.score)+';font-weight:700">/5</span></div>':'')+(s1.outcome?'<span style="font-size:14px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(s1.outcome==='Pass'?'#DCFCE7':s1.outcome==='Fail'?'#FEE2E2':'#F3F4F6')+';color:'+(s1.outcome==='Pass'?'#16A34A':s1.outcome==='Fail'?'#DC2626':'#6B7280')+'">'  +s1.outcome+'</span>':'')+(sf?'<div style="text-align:center"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600">Start</div><div style="font-size:13px;font-weight:700">'+sf+'</div></div>':'')+'</div></div></div>'
+  +'<div class="sgrid">'+sb_box(1,'Competence Evaluation','#6C5DD3',stage1)+sb_box(2,'Offer Letter','#0284C7',stage2)+sb_box('2.5','Handover to HR','#D97706',stage25)+sb_box(3,'Documents','#D97706',stage3)+sb_box(4,'NDA & Screening','#DC2626',stage4)+sb_box(5,'Contract','#7C3AED',stage5)+sb_box(6,'Background Check (Certn)','#D97706',stage9)+sb_box(7,'Credentials + IAI Email','#059669',stage6,false,onHold6)+sb_box(8,'Access Confirmation','#059669',stage7,false,onHold7)+sb_box(9,'Vanta','#0891B2',stage8)+sb_box(10,'Service Accounts','#6B7280',stage10,true)+sb_box(11,'ImplementAI Training','#6C5DD3',stage11,true)+'</div>'
+  +'<div class="sbox" style="margin-top:14px;border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden"><div class="shdr" style="background:#F9FAFB"><span class="snum" style="background:#F3F4F6;color:#6B7280;border:none">Info</span><span class="stitle">Manager / Line Manager</span></div><div class="sbody">'+managerField+'</div></div>'
+  +'<div class="sbox" style="margin-top:14px;border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden">'
+    +'<div class="shdr" style="background:#F9FAFB"><span class="snum" style="background:#F3F4F6;color:#6B7280;border:none"><i class="fas fa-paperclip"></i></span><span class="stitle">Extra Documents</span></div>'
+    +'<div class="sbody" id="extra-docs-'+p.id+'">'
+    +buildExtraDocs(p.id, 's10', (pendingStages&&pendingStages.s10)?pendingStages.s10.extraDocs:((s.s10&&s.s10.extraDocs)||[]))
+    +'</div>'
+  +'</div>'
+  +logH;
+}
+
+function buildEXCard(p) {
+  const s=p.stages||{},s1=s.s1||{},s2=s.s2||{},s3=s.s3||{},s4=s.s4||{},s5=s.s5||{};
+  const isT=p.exit_type==='termination', col=isT?'#DC2626':'#0284C7';
+  const dL=isT?'Termination letter':'Resignation letter';
+  const SVCS=['Anthropic','Apollo','Claude','Clay','Composio','Deepgram','ElevenLabs','Entra (Office 365)','GitHub','Grafana','HeyGen','Keeper','Microsoft Azure','Monday.com','n8n','OpenAI','Outlook','Perplexity','Slack','Softr','Stripe','Supabase','Teams','VAPI','Vanta','Zapier','Zendesk'];
+  const svcs4=SVCS.map(svc=>'<label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;padding:4px 0"><input type="checkbox" '+(((s4.servicesNotes||'').includes(svc))?'checked':'')+' onchange="togSvc(\''+p.id+'\',\''+svc+'\',this.checked,\'s4.servicesNotes\')" style="width:15px;height:15px;accent-color:#DC2626">'+svc+'</label>').join('');
+  const stage1=df('Notice received',s1.noticeDate,'s1.noticeDate',p.id)
+  +df(dL+' sent',s1.letterSentDate,'s1.letterSentDate',p.id)
+  +df(dL+' signed',s1.letterSignedDate,'s1.letterSignedDate',p.id)
+  +lf(dL+' link',s1.letterLink,'s1.letterLink',p.id)
+  +'<div style="margin-top:12px;padding-top:10px;border-top:1px dashed #E5E7EB">'
+  +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9CA3AF;margin-bottom:6px">Contractor Exit &amp; Data Destruction Certification</div>'
+  +lf('Contractor Exit &amp; Data Destruction Cert link',s1.contractorExitLink,'s1.contractorExitLink',p.id)
+  +'</div>';
+  const stage2=df('Exit checklist completed',s2.checklistDate,'s2.checklistDate',p.id);
+  const stage3=df('Shahzeb signed',s3.shahzebSignedDate,'s3.shahzebSignedDate',p.id)+df('Piers Linney signed',s3.peersSignedDate,'s3.peersSignedDate',p.id)+df('Brunno signed',s3.brunnoSignedDate,'s3.brunnoSignedDate',p.id)+lf('Signed document',s3.docLink,'s3.docLink',p.id);
+  const stage4=df('365 terminated',s4.o365TermDate,'s4.o365TermDate',p.id)+df('All services removed',s4.servicesDate,'s4.servicesDate',p.id)+'<div style="margin-top:6px"><label class="flbl" style="display:block;margin-bottom:8px">Services removed</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px">'+svcs4+'</div></div>';
+  const stage5=df('Fully terminated',s5.completedDate,'s5.completedDate',p.id);
+  return '<div class="back-bar"><button class="back-btn" onclick="if(checkDirty())backToList()"><i class="fas fa-arrow-left"></i> Back</button>'
+  +'<button id="save-btn" onclick="saveAll()" style="background:#6B7280;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;transition:background .15s"><i class="fas fa-save"></i> Save Changes</button>'
+  +'<button class="del-btn" onclick="delPerson(\''+p.id+'\',\'hr_exiting\')"><i class="fas fa-trash"></i> Remove</button></div>'
+  +'<div class="card-hdr">'
+  +'<div class="card-hdr-inner">'
+    +'<div class="card-av" style="background:'+col+'">'+ini(p.name)+'</div>'
+    +'<div style="flex:1"><div class="card-name">'+p.name+'</div><div class="card-sub">'+p.role+'</div></div>'
+    +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;margin-left:auto">'
+      // Exit type badge
+      +'<span style="font-size:13px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(isT?'#FEE2E2':'#E0F2FE')+';color:'+col+'">'+(isT?'Termination':'Resignation')+'</span>'
+      // Company type toggle
+      +'<div style="display:flex;align-items:center;gap:8px">'
+        +'<span style="font-size:11px;font-weight:600;color:#9CA3AF">Company:</span>'
+        +'<select onchange="updCompanyType(\''+p.id+'\',\'ex\',this.value)" style="border:1.5px solid #E5E7EB;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;font-family:var(--font);outline:none;background:'+(p.company_type==='Techanzy'?'#EFF6FF':'#F0FDF4')+';color:'+(p.company_type==='Techanzy'?'#0284C7':'#16A34A')+'">'
+          +'<option value="ImplementAI" '+((!p.company_type||p.company_type==='ImplementAI')?'selected':'')+'>ImplementAI</option>'
+          +'<option value="Techanzy" '+(p.company_type==='Techanzy'?'selected':'')+'>Techanzy</option>'
+        +'</select>'
+      +'</div>'
+      // Reference recommendation
+      +'<div style="display:flex;align-items:center;gap:8px">'
+        +'<span style="font-size:11px;font-weight:600;color:#9CA3AF">Work Reference:</span>'
+        +(true?'<select onchange="updRefRec(\''+p.id+'\',this.value)" style="border:1.5px solid #E5E7EB;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;font-family:var(--font);outline:none;cursor:pointer;background:'
+          +('{"Very Likely":"#DCFCE7","Likely":"#E0F2FE","Unlikely":"#FEF3C7","Would Not Give":"#FEE2E2","Not Assessed":"#F3F4F6"}[p.reference_recommendation]||"#F3F4F6"')
+          +';color:'
+          +('{"Very Likely":"#16A34A","Likely":"#0284C7","Unlikely":"#D97706","Would Not Give":"#DC2626","Not Assessed":"#6B7280"}[p.reference_recommendation]||"#6B7280"')
+          +'">'
+          +'<option value="Not Assessed" '+(p.reference_recommendation==='Not Assessed'||!p.reference_recommendation?'selected':'')+'>Not Assessed</option>'
+          +'<option value="Very Likely" '+(p.reference_recommendation==='Very Likely'?'selected':'')+'>Very Likely</option>'
+          +'<option value="Likely" '+(p.reference_recommendation==='Likely'?'selected':'')+'>Likely</option>'
+          +'<option value="Unlikely" '+(p.reference_recommendation==='Unlikely'?'selected':'')+'>Unlikely</option>'
+          +'<option value="Would Not Give" '+(p.reference_recommendation==='Would Not Give'?'selected':'')+'>Would Not Give</option>'
+          +'</select>':'')
+      +'</div>'
+    +'</div>'
+  +'</div>'
++'</div>'
+  +'<div class="sgrid">'+sb_box(1,dL,'#D97706',stage1,true)+sb_box(2,'Exit Checklist','#0284C7',stage2)+sb_box(3,'Sign-off','#7C3AED',stage3)+sb_box(4,'Account Termination','#DC2626',stage4)+sb_box(5,'Fully Terminated','#16A34A',stage5)+'</div>'
+  +'<div class="sbox" style="margin-top:14px;border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden">'
+    +'<div class="shdr" style="background:#F9FAFB"><span class="snum" style="background:#F3F4F6;color:#6B7280;border:none"><i class="fas fa-paperclip"></i></span><span class="stitle">Extra Documents</span></div>'
+    +'<div class="sbody" id="extra-docs-'+p.id+'">'
+    +buildExtraDocs(p.id, 's5', (pendingStages&&pendingStages.s5)?pendingStages.s5.extraDocs:((s.s5&&s.s5.extraDocs)||[]))
+    +'</div>'
+  +'</div>';
+}
+
+// ---- REVIEWS ----
+async function renderRVList() {
+  const {data,error}=await SB.from('hr_reviews').select('*').order('created_at',{ascending:false});
+  if(error){document.getElementById('lv').innerHTML='<div class="empty"><i class="fas fa-exclamation-triangle"></i><h3>Error</h3><p>'+error.message+'</p></div>';return;}
+  if(!data||!data.length){document.getElementById('lv').innerHTML='<div class="empty"><i class="fas fa-star"></i><h3>No performance reviews yet</h3></div>';return;}
+  const byP={};
+  data.forEach(r=>{if(!byP[r.person_id])byP[r.person_id]={name:r.person_name,role:r.person_role,reviews:[]};byP[r.person_id].reviews.push(r);});
+  document.getElementById('lv').innerHTML=Object.entries(byP).map(([pid,pd])=>{
+    const lat=pd.reviews[0];
+    const ld=lat.review_date?new Date(lat.review_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set';
+    return '<div class="person-row" onclick="openRV(\''+pid+'\')">'+'<div class="pav" style="background:#0284C7">'+ini(pd.name)+'</div>'+'<div class="pinfo"><div class="pname">'+pd.name+'</div><div class="prole">'+pd.role+'</div><span class="pill" style="background:#E0F2FE;color:#0284C7;border:1.5px solid #0284C735"><i class="fas fa-star" style="font-size:10px"></i> '+pd.reviews.length+' review'+(pd.reviews.length!==1?'s':'')+'</span></div>'+'<div class="pmeta">'+(lat.score?'<div style="background:'+sbg(lat.score)+';border-radius:10px;padding:6px 14px;display:flex;align-items:center;gap:4px"><span style="font-size:18px;font-weight:800;color:'+sc(lat.score)+'">'+lat.score+'</span><span style="font-size:10px;color:'+sc(lat.score)+';font-weight:700">/5</span></div>':'')+'<div style="text-align:center"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600">Last review</div><div style="font-size:13px;font-weight:700">'+ld+'</div></div>'+'<i class="fas fa-chevron-right" style="color:var(--muted);font-size:13px"></i></div></div>';
+  }).join('');
+}
+
+async function openRV(pid) {
+  openId=pid; document.getElementById('lv').style.display='none';
+  const dv=document.getElementById('dv'); dv.style.display='block';
+  dv.innerHTML='<div class="loading"><i class="fas fa-spinner"></i></div>';
+  const {data}=await SB.from('hr_reviews').select('*').eq('person_id',pid).order('review_date',{ascending:false});
+  if(!data||!data.length){backToList();return;}
+  const pn=data[0].person_name, pr=data[0].person_role;
+  dv.innerHTML='<div class="back-bar"><button class="back-btn" onclick="backToList()"><i class="fas fa-arrow-left"></i> Back</button>'+'<button style="background:#0284C7;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px" onclick="addRev(\''+pid+'\',\''+pn+'\',\''+pr+'\')">'+'<i class="fas fa-plus"></i> Add Review</button></div>'+'<div class="card-hdr"><div class="card-hdr-inner"><div class="card-av" style="background:#0284C7">'+ini(pn)+'</div><div style="flex:1"><div class="card-name">'+pn+'</div><div class="card-sub">'+pr+'</div></div><div class="card-badges" style="margin-left:auto"><span style="font-size:13px;font-weight:600;color:#0284C7;background:#E0F2FE;padding:6px 16px;border-radius:8px">'+data.length+' review'+(data.length!==1?'s':'')+'</span></div></div></div>'+'<div style="display:flex;flex-direction:column;gap:14px">'+data.map((rv,i)=>buildRVCard(rv,i===0)).join('')+'</div>';
+  window.scrollTo(0,0);
+}
+
+function buildRVCard(rv,isLat) {
+  const df2=rv.review_date?new Date(rv.review_date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set';
+  return '<div class="sbox" style="border-left:4px solid '+(isLat?'#0284C7':'#E5E7EB')+'">'
+  +'<div class="shdr" style="background:'+(isLat?'#E0F2FE':'')+';justify-content:space-between">'
+  +'<div style="display:flex;align-items:center;gap:10px"><span class="snum" style="background:'+(isLat?'#0284C7':'#F3F4F6')+';color:'+(isLat?'#fff':'#6B7280')+';border:none">'+(isLat?'Latest':'Previous')+'</span><span class="stitle">'+df2+'</span>'+(rv.evaluated_by?'<span style="font-size:12px;color:var(--muted)">by '+rv.evaluated_by+'</span>':'')+'</div>'
+  +'<div style="display:flex;align-items:center;gap:10px">'+(rv.score?'<div style="background:'+sbg(rv.score)+';border-radius:8px;padding:4px 12px;display:flex;align-items:center;gap:4px"><span style="font-size:18px;font-weight:800;color:'+sc(rv.score)+'">'+rv.score+'</span><span style="font-size:10px;color:'+sc(rv.score)+';font-weight:700">/5</span></div>':'')+(rv.outcome?'<span style="font-size:12px;font-weight:700;padding:4px 12px;border-radius:6px;background:'+(rv.outcome==='Pass'?'#DCFCE7':rv.outcome==='Needs Improvement'?'#FEF3C7':'#F3F4F6')+';color:'+(rv.outcome==='Pass'?'#16A34A':rv.outcome==='Needs Improvement'?'#D97706':'#6B7280')+'">'+rv.outcome+'</span>':'')+'<button onclick="delRev(\''+rv.id+'\')" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:13px;padding:4px 6px"><i class="fas fa-trash"></i></button></div></div>'
+  +'<div class="sbody"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'
+  +'<div><label style="font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">Review Date</label><input type="date" value="'+(rv.review_date||'')+'" onchange="updRev(\''+rv.id+'\',\'review_date\',this.value)" class="finput" style="width:100%"></div>'
+  +'<div><label style="font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">Evaluated By</label><input type="text" value="'+(rv.evaluated_by||'')+'" placeholder="Name" onchange="updRev(\''+rv.id+'\',\'evaluated_by\',this.value)" class="finput" style="width:100%"></div>'
+  +'<div><label style="font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">Score (1-5)</label><input type="number" min="1" max="5" step="0.5" value="'+(rv.score||'')+'" placeholder="—" onchange="updRev(\''+rv.id+'\',\'score\',this.value)" class="sinput" style="border-color:'+sc(rv.score)+';color:'+sc(rv.score)+';background:'+sbg(rv.score)+'"></div>'
+  +'<div><label style="font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">Outcome</label><select onchange="updRev(\''+rv.id+'\',\'outcome\',this.value)" style="border:1.5px solid #D1D5DB;border-radius:8px;padding:8px 14px;font-size:13px;font-family:var(--font);outline:none;width:100%"><option value="">Select</option><option value="Pass" '+(rv.outcome==='Pass'?'selected':'')+'>Pass</option><option value="Needs Improvement" '+(rv.outcome==='Needs Improvement'?'selected':'')+'>Needs Improvement</option><option value="Fail" '+(rv.outcome==='Fail'?'selected':'')+'>Fail</option></select></div>'
+  +'</div><div style="margin-bottom:10px"><label style="font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px"><i class="fas fa-link"></i> Document Link</label><div style="display:flex;align-items:center;gap:8px"><input type="url" value="'+(rv.doc_link||'')+'" placeholder="SharePoint or Drive link" onchange="updRev(\''+rv.id+'\',\'doc_link\',this.value)" class="linput" style="flex:1">'+(rv.doc_link?'<a href="'+rv.doc_link+'" target="_blank" class="olink"><i class="fas fa-external-link-alt"></i> Open</a>':'')+'</div></div>'
+  +'<div><label style="font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">Notes</label><textarea onchange="updRev(\''+rv.id+'\',\'notes\',this.value)" style="width:100%;border:1px solid #D1D5DB;border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;min-height:70px">'+(rv.notes||'')+'</textarea></div>'
+  +'</div></div>';
+}
+
+async function addRev(pid,pn,pr) {
+  await SB.from('hr_reviews').insert({person_id:pid,person_name:pn,person_role:pr,review_date:'',score:null,outcome:'',evaluated_by:'',doc_link:'',notes:'',added_by:'Brunno'});
+  openRV(pid);
+}
+
+async function updRev(rid,field,val) {
+  await SB.from('hr_reviews').update({[field]:val,updated_at:new Date().toISOString()}).eq('id',rid);
+  const {data}=await SB.from('hr_reviews').select('person_id').eq('id',rid).maybeSingle();
+  if(data)openRV(data.person_id);
+}
+
+async function delRev(id) {
+  const {data}=await SB.from('hr_reviews').select('person_id').eq('id',id).maybeSingle();
+  if(!confirm('Delete this review?'))return;
+  await SB.from('hr_reviews').delete().eq('id',id);
+  if(data)openRV(data.person_id);else backToList();
+}
+
+// ---- ADD MODAL ----
+function openAddModal() {
+  const m=document.getElementById('modal-bg');
+  m.style.display='flex';
+  const ROLES=[
+    'Solutions Engineer',
+    'Junior Solutions Engineer', 
+    'Senior Solutions Engineer',
+    'AIOS Engineer',
+    'Senior AIOS Engineer',
+    'Solutions Associate',
+    'Solutions Lead',
+    'Head of Solutions',
+    'Operations Lead',
+    'Operations Manager',
+    'Business Development Manager',
+    'Account Manager',
+    'Product Manager',
+    'Data Analyst',
+    'Marketing Manager',
+    'Finance Manager',
+    'HR Manager',
+    'Executive Assistant',
+    'Chief of Staff',
+    'Director of Engineering',
+    'Head of Engineering',
+  ];
+  const roleOpts=ROLES.map(r=>'<option value="'+r+'">').join('');
+  if(view==='reviews') {
+    m.innerHTML='<div class="modal-box"><div class="modal-title">Add Performance Review</div><div class="modal-sub">Select the person to review.</div>'
+    +'<div class="mfield"><label>Person Name *</label><input type="text" id="mn" placeholder="Type any name" autocomplete="off"></div>'
+    +'<div class="mfield"><label>Role</label><input type="text" id="mr" placeholder="Type or select a role" list="rl" autocomplete="off"><datalist id="rl">'+roleOpts+'</datalist></div>'
+    +'<div id="merr" style="color:#DC2626;font-size:13px;margin-bottom:10px;display:none"></div>'
+    +'<div style="display:flex;gap:12px"><button class="btn-p" onclick="submitRV()"><i class="fas fa-plus"></i> Create</button><button class="btn-s" onclick="closeModal()">Cancel</button></div></div>';
+    // Name field is free-type — no restriction to existing HR people
+    return;
+  }
+  m.innerHTML='<div class="modal-box"><div class="modal-title">Add Person</div><div class="modal-sub">Add to the '+(view==='onboarding'?'onboarding':'exiting')+' pipeline.</div>'
+  +'<div class="mfield"><label>Full Name *</label><input type="text" id="mn" placeholder="e.g. Jane Smith"></div>'
+  +'<div class="mfield"><label>Role *</label><input type="text" id="mr" placeholder="Type or select a role" list="rl" autocomplete="off"><datalist id="rl">'+roleOpts+'</datalist></div>'
+  +'<div class="mfield"><label>Email</label><input type="email" id="me" placeholder="email@example.com"></div>'
+  +(view==='onboarding'?'<div class="mfield"><label>Expected Start Date</label><input type="date" id="ms"></div>':'<div class="mfield"><label>Type *</label><select id="mt"><option value="resignation">Resignation</option><option value="termination">Termination</option></select></div>')
+  +'<div id="merr" style="color:#DC2626;font-size:13px;margin-bottom:10px;display:none"></div>'
+  +'<div style="display:flex;gap:12px"><button class="btn-p" onclick="submitAdd()"><i class="fas fa-plus"></i> Add</button><button class="btn-s" onclick="closeModal()">Cancel</button></div></div>';
+}
+
+function closeModal(){document.getElementById('modal-bg').style.display='none';}
+
+async function submitAdd() {
+  const name=(document.getElementById('mn')?.value||'').trim();
+  const role=(document.getElementById('mr')?.value||'').trim();
+  const email=(document.getElementById('me')?.value||'').trim();
+  const errEl=document.getElementById('merr');
+  if(!name||!role){if(errEl){errEl.textContent='Name and role are required.';errEl.style.display='block';}return;}
+  const now=new Date().toISOString();
+  if(view==='onboarding'){
+    const start=document.getElementById('ms')?.value||'';
+    const stages={s1:{completed:false,interviewDate:'',score:'',outcome:'',notes:''},s2:{sentDate:'',signedDate:''},s25:{candidateEmail:'',expectedStart:start},s3:{requestSentDate:'',fullNameReceived:false,fullAddressReceived:false,idReceived:false,idLink:'',ref1Received:false,ref1Link:'',ref1Status:'',ref2Received:false,ref2Link:'',ref2Status:''},s4:{ndaSentDate:'',ndaSignedDate:'',ndaSignedLink:'',screenSentDate:'',screenSignedDate:'',screenSignedLink:''},s5:{sentBy:'',sentDate:'',signedDate:'',signedLink:''},s6:{credsSentDate:'',iaiEmail:''},s7:{confirmedDate:''},s8:{vantaSentDate:'',policiesDate:'',mdmDate:''},s9:{certnSentDate:'',clearedDate:'',certnLink:''},s10:{services:'',completedDate:''}};
+    await SB.from('hr_people').insert({id:'OB_'+Date.now(),name,role,email,start_date:start,added_by:'Brunno',added_at:now,log:[{ts:now,action:'Added to onboarding',by:'Brunno'}],stages});
+  } else {
+    const type=document.getElementById('mt')?.value||'resignation';
+    const stages={s1:{noticeDate:'',letterSentDate:'',letterSignedDate:'',letterLink:''},s2:{checklistDate:''},s3:{shahzebSentDate:'',shahzebSignedDate:'',peersSentDate:'',peersSignedDate:'',brunnoSignedDate:'',docLink:''},s4:{o365TermDate:'',servicesDate:'',servicesNotes:''},s5:{completedDate:''}};
+    await SB.from('hr_exiting').insert({id:'EX_'+Date.now(),name,role,email,exit_type:type,added_by:'Brunno',added_at:now,log:[{ts:now,action:'Added to exiting ('+type+')',by:'Brunno'}],stages});
+  }
+  closeModal(); loadAndRender();
+}
+
+async function submitRV() {
+  const name=(document.getElementById('mn')?.value||'').trim();
+  const role=(document.getElementById('mr')?.value||'').trim();
+  const errEl=document.getElementById('merr');
+  if(!name){if(errEl){errEl.textContent='Name is required.';errEl.style.display='block';}return;}
+  const btn=document.querySelector('#modal-bg .btn-p');
+  if(btn){btn.textContent='Adding...';btn.disabled=true;}
+  // Use a simple timestamp-based ID — no regex that could fail
+  const pid='RV_'+Date.now();
+  const {data:inserted, error}=await SB.from('hr_reviews').insert({
+    id:pid, person_id:pid, person_name:name, person_role:role,
+    review_date:'', score:null, outcome:'', evaluated_by:'',
+    doc_link:'', notes:'', added_by:'Brunno'
+  }).select();
+  if(error){
+    if(errEl){errEl.textContent='Could not add review: '+error.message;errEl.style.display='block';}
+    if(btn){btn.textContent='Create';btn.disabled=false;}
+    return;
+  }
+  closeModal();
+  // Small delay to ensure Supabase replication completes
+  setTimeout(()=>openRV(pid), 500);
+}
+</script>
+</body>
+</html>
