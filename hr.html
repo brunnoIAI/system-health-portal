@@ -131,7 +131,18 @@ function sc(s) { const n=parseFloat(s); if(!n) return '#9CA3AF'; if(n<=2) return
 function sbg(s) { const n=parseFloat(s); if(!n) return '#F3F4F6'; if(n<=2) return '#FEE2E2'; if(n<4) return '#FEF3C7'; return '#DCFCE7'; }
 function ini(name) { return name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase(); }
 
-function getStage(s) {
+function getStage(s, companyType) {
+  const isTechanzy = companyType === 'Techanzy';
+  if (isTechanzy) {
+    // Techanzy: only needs NDA(4), access(7), Vanta(8), service accounts(10), training(11)
+    if (!s.s4?.ndaSignedDate) return {num:'4',name:'NDA',color:'#DC2626'};
+    if (!s.s7?.confirmedDate) return {num:'7',name:'Access Confirmation',color:'#059669'};
+    if (!s.s8?.mdmDate) return {num:'8',name:'Vanta',color:'#0891B2'};
+    if (!s.s10?.completedDate) return {num:'10',name:'Service Accounts',color:'#6B7280'};
+    if (!s.s11?.completed) return {num:'11',name:'ImplementAI Training',color:'#6C5DD3'};
+    return null;
+  }
+  // ImplementAI: full process
   if (!s.s1 || !s.s1.completed) return {num:'1',name:'Evaluation',color:'#6C5DD3'};
   if (!s.s2 || !s.s2.signedDate) return {num:'2',name:'Offer Letter',color:'#0284C7'};
   if (!s.s25 || !s.s25.candidateEmail) return {num:'2.5',name:'Handover to HR',color:'#D97706'};
@@ -148,6 +159,7 @@ function getStage(s) {
   if (!s.s11||!s.s11.completed) return {num:'11',name:'ImplementAI Training',color:'#6C5DD3'};
   return null;
 }
+
 
 
 
@@ -247,6 +259,23 @@ function updExtraDoc(id, stageKey, idx, field, val) {
   markDirty();
 }
 
+
+function updCompanyType(id, cardType, val) {
+  // company_type is a top-level field — use the __ prefix mechanism
+  if (!pendingStages) return;
+  pendingStages.__company_type = val;
+  markDirty();
+  // Re-render the card to show/hide stages based on company type
+  // We do a lightweight re-render by reloading
+  // Actually just update the select styling and re-render missing pills
+  // For now mark dirty and let save handle it
+  const selects = document.querySelectorAll('select[onchange*="updCompanyType"]');
+  selects.forEach(s => {
+    s.style.background = val === 'Techanzy' ? '#EFF6FF' : '#F0FDF4';
+    s.style.color = val === 'Techanzy' ? '#0284C7' : '#16A34A';
+  });
+}
+
 function addCustomSvc(id) {
   const input = document.getElementById('custom-svc-'+id);
   if (!input) return;
@@ -313,24 +342,34 @@ function checkDirty() {
 // ============================================================
 // MISSING ITEMS — specific pills for what is still needed
 // ============================================================
-function getMissingItems(s) {
+function getMissingItems(s, companyType) {
+  const isTechanzy = companyType === 'Techanzy';
   const today = new Date(); today.setHours(0,0,0,0);
   const startDt = s.s25?.expectedStart ? new Date(s.s25.expectedStart) : null;
-  const daysToStart = startDt ? Math.ceil((startDt - today) / 86400000) : null;
+  const daysToStart = startDt ? Math.ceil((startDt-today)/86400000) : null;
   const onHold = daysToStart !== null && daysToStart > 3;
   const missing = [];
 
-  // Stage 1
+  if (isTechanzy) {
+    // Techanzy: only needs NDA (s4.ndaSignedDate), access (s7), Vanta (s8), training (s11)
+    if (!s.s4?.ndaSignedDate) missing.push({label:'NDA not signed', color:'#DC2626'});
+    if (!onHold) {
+      if (!s.s7?.confirmedDate) missing.push({label:'Access not confirmed', color:'#059669'});
+      if (!s.s8?.mdmDate) missing.push({label:'MDM not installed', color:'#0891B2'});
+      if (!s.s10?.completedDate) missing.push({label:'Service accounts incomplete', color:'#6B7280'});
+    } else if (onHold && daysToStart !== null) {
+      if (!s.s7?.confirmedDate || !s.s8?.mdmDate || !s.s10?.completedDate)
+        missing.push({label:'Stages 7-10 on hold (starts in '+daysToStart+'d)', color:'#9CA3AF'});
+    }
+    if (!s.s11?.completed) missing.push({label:'ImplementAI training not completed', color:'#6C5DD3'});
+    return missing;
+  }
+
+  // ImplementAI — full process
   if (!s.s1?.completed) { missing.push({label:'Interview not completed', color:'#6C5DD3'}); return missing; }
   if (!s.s1?.outcome || s.s1.outcome === '') missing.push({label:'Interview outcome not set', color:'#6C5DD3'});
-
-  // Stage 2
   if (!s.s2?.signedDate) { missing.push({label:'Offer not signed', color:'#0284C7'}); return missing; }
-
-  // Stage 2.5
   if (!s.s25?.candidateEmail) { missing.push({label:'Candidate email missing', color:'#D97706'}); return missing; }
-
-  // Stage 3 — specific reference statuses
   if (!s.s3?.fullNameReceived) missing.push({label:'Full name not received', color:'#D97706'});
   if (!s.s3?.fullAddressReceived) missing.push({label:'Full address not received', color:'#D97706'});
   if (!s.s3?.idReceived) missing.push({label:'ID not received', color:'#D97706'});
@@ -342,17 +381,11 @@ function getMissingItems(s) {
   if (!s.s3?.ref2Received) missing.push({label:'Reference 2 not received', color:'#D97706'});
   else if (s.s3?.ref2Status==='In Progress') missing.push({label:'Reference 2 reply pending', color:'#D97706'});
   else if (!s.s3?.ref2Status || s.s3?.ref2Status==='') missing.push({label:'Reference 2 status not set', color:'#D97706'});
-
-  // Stage 4
   if (!s.s4?.screenSignedDate) missing.push({label:'Screening not signed', color:'#DC2626'});
-
-  // Stage 5
   if (!s.s5?.signedDate) missing.push({label:'Contract not signed', color:'#7C3AED'});
-
-  // Stage 6 (new): Background Check — no on-hold, can be done any time after contract
+  // Stage 6 (new order): Background Check — no on-hold
   if (!s.s9?.clearedDate) missing.push({label:'Background check pending', color:'#D97706'});
-
-  // Stages 7-10 — only flag if start is imminent (≤3 days) or already started
+  // Stages 7-10 — only flag if start is imminent
   if (!onHold) {
     if (!s.s6?.credsSentDate) missing.push({label:'365 credentials not sent', color:'#059669'});
     if (!s.s6?.iaiEmail) missing.push({label:'IAI email not assigned', color:'#059669'});
@@ -360,23 +393,33 @@ function getMissingItems(s) {
     if (!s.s8?.mdmDate) missing.push({label:'MDM not installed', color:'#0891B2'});
     if (!s.s10?.completedDate) missing.push({label:'Service accounts incomplete', color:'#6B7280'});
   } else if (onHold && daysToStart !== null) {
-    // Show on-hold items as a single pill
-    if (!s.s6?.credsSentDate || !s.s7?.confirmedDate || !s.s8?.mdmDate || !s.s10?.completedDate) {
+    if (!s.s6?.credsSentDate || !s.s7?.confirmedDate || !s.s8?.mdmDate || !s.s10?.completedDate)
       missing.push({label:'Stages 7-10 on hold (starts in '+daysToStart+'d)', color:'#9CA3AF'});
-    }
   }
-
   // Stage 11: Training
   if (!s.s11?.completed) missing.push({label:'ImplementAI training not completed', color:'#6C5DD3'});
-
   return missing;
 }
+
 
 // ============================================================
 // COMPLETION PERCENTAGE
 // ============================================================
-function getCompletion(s) {
-  // 20 checkpoints across all stages
+function getCompletion(s, companyType) {
+  const isTechanzy = companyType === 'Techanzy';
+  if (isTechanzy) {
+    // Techanzy: NDA + access + Vanta + service accounts + training
+    const checks = [
+      s.s4?.ndaSignedDate,
+      s.s7?.confirmedDate,
+      s.s8?.mdmDate,
+      s.s8?.policiesDate,
+      s.s10?.completedDate,
+      s.s11?.completed,
+    ];
+    return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+  }
+  // ImplementAI: full 22 checkpoints
   const checks = [
     s.s1?.completed,
     s.s1?.outcome && s.s1.outcome !== '',
@@ -391,19 +434,19 @@ function getCompletion(s) {
     ['Pass'].includes(s.s3?.ref2Status||''),
     s.s4?.screenSignedDate,
     s.s5?.signedDate,
+    s.s9?.clearedDate,
     s.s6?.credsSentDate,
     s.s6?.iaiEmail,
     s.s7?.confirmedDate,
     s.s8?.mdmDate,
-    s.s9?.clearedDate,
     s.s10?.completedDate,
     s.s10?.services && s.s10.services.length > 0,
     s.s11?.completed,
     s.s11?.trainer && s.s11.trainer.length > 0,
   ];
-  const done = checks.filter(Boolean).length;
-  return Math.round((done / checks.length) * 100);
+  return Math.round((checks.filter(Boolean).length / checks.length) * 100);
 }
+
 
 function pctColor(pct) {
   if (pct >= 90) return '#16A34A';
@@ -418,11 +461,11 @@ async function renderOBList() {
   if (!data||!data.length) { document.getElementById('lv').innerHTML = '<div class="empty"><i class="fas fa-users"></i><h3>No onboarding records yet</h3><p>Click Add Person to start.</p></div>'; return; }
   document.getElementById('lv').innerHTML = data.map(p => {
     const s = p.stages||{};
-    const stg = getStage(s);
+    const stg = getStage(s, p.company_type);
     const col = stg ? stg.color : '#16A34A';
-    const pct = getCompletion(s);
+    const pct = getCompletion(s, p.company_type);
     const pctCol = pctColor(pct);
-    const missing = getMissingItems(s);
+    const missing = getMissingItems(s, p.company_type);
     const start = (s.s25&&s.s25.expectedStart) || p.start_date || '';
     const sf = start ? new Date(start).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '';
     const today = new Date(); today.setHours(0,0,0,0);
@@ -465,10 +508,21 @@ async function renderOBList() {
 // ============================================================
 // EXITING — MISSING ITEMS + COMPLETION
 // ============================================================
-function getMissingItemsEX(s, exitType) {
+function getMissingItemsEX(s, exitType, companyType) {
   const missing = [];
-  const docLabel = exitType === 'termination' ? 'Termination letter' : 'Resignation letter';
+  const isTechanzy = companyType === 'Techanzy';
 
+  if (isTechanzy) {
+    // Techanzy: only needs contractor exit cert + exit checklist + account termination
+    if (!s.s1?.contractorExitLink) missing.push({label:'Contractor Exit & Data Destruction Cert missing', color:'#D97706'});
+    if (!s.s2?.checklistDate) missing.push({label:'Exit checklist not completed', color:'#0284C7'});
+    if (!s.s4?.o365TermDate) missing.push({label:'365 account not terminated', color:'#DC2626'});
+    if (!s.s4?.servicesDate) missing.push({label:'Service accounts not removed', color:'#DC2626'});
+    return missing;
+  }
+
+  // ImplementAI — full exit process
+  const docLabel = exitType === 'termination' ? 'Termination letter' : 'Resignation letter';
   if (!s.s1?.noticeDate) { missing.push({label:'Notice date not recorded', color:'#D97706'}); return missing; }
   if (!s.s1?.letterSignedDate) missing.push({label:docLabel+' not signed', color:'#D97706'});
   if (!s.s2?.checklistDate) missing.push({label:'Exit checklist not completed', color:'#0284C7'});
@@ -480,7 +534,20 @@ function getMissingItemsEX(s, exitType) {
   return missing;
 }
 
-function getCompletionEX(s) {
+
+function getCompletionEX(s, companyType) {
+  const isTechanzy = companyType === 'Techanzy';
+  if (isTechanzy) {
+    // Techanzy: 4 checkpoints
+    const checks = [
+      s.s1?.contractorExitLink,
+      s.s2?.checklistDate,
+      s.s4?.o365TermDate,
+      s.s4?.servicesDate,
+    ];
+    return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+  }
+  // ImplementAI: full 10 checkpoints
   const checks = [
     s.s1?.noticeDate,
     s.s1?.letterSignedDate,
@@ -493,9 +560,9 @@ function getCompletionEX(s) {
     s.s4?.servicesDate,
     s.s5?.completedDate,
   ];
-  const done = checks.filter(Boolean).length;
-  return Math.round((done / checks.length) * 100);
+  return Math.round((checks.filter(Boolean).length / checks.length) * 100);
 }
+
 
 async function renderEXList() {
   const {data,error} = await SB.from('hr_exiting').select('*').order('added_at',{ascending:false});
@@ -505,9 +572,9 @@ async function renderEXList() {
     const isT = p.exit_type==='termination';
     const col = isT ? '#DC2626' : '#0284C7';
     const s = p.stages||{};
-    const pct = getCompletionEX(s);
+    const pct = getCompletionEX(s, p.company_type);
     const pctCol = pctColor(pct);
-    const missing = getMissingItemsEX(s, p.exit_type);
+    const missing = getMissingItemsEX(s, p.exit_type, p.company_type);
     const pillsHtml = missing.length === 0
       ? '<span class="pill" style="background:#DCFCE7;color:#16A34A;border:1.5px solid #16A34A35"><i class="fas fa-check" style="font-size:10px"></i> Fully terminated</span>'
       : missing.slice(0,3).map(m=>'<span class="pill" style="background:'+m.color+'15;color:'+m.color+';border:1.5px solid '+m.color+'30;font-size:11px;padding:3px 9px;">'+m.label+'</span>').join('')
@@ -624,7 +691,7 @@ function buildOBCard(p) {
   const onHold6=daysUntil!==null&&daysUntil>3;
   const onHold7=daysUntil!==null&&daysUntil>0;
   const sf=s25.expectedStart?new Date(s25.expectedStart).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'';
-  const SVCS=['Slack','Keeper','Teams','Outlook','Claude','Apollo','n8n','Grafana','Vanta','GitHub','Supabase'];
+  const SVCS=['Anthropic','Apollo','Claude','Clay','Composio','Deepgram','ElevenLabs','Entra (Office 365)','GitHub','Grafana','HeyGen','Keeper','Microsoft Azure','Monday.com','n8n','OpenAI','Outlook','Perplexity','Slack','Softr','Stripe','Supabase','Teams','VAPI','Vanta','Zapier','Zendesk'];na','HeyGen','Keeper','Microsoft Azure','Monday.com','n8n','OpenAI','Outlook','Perplexity','Slack','Softr','Stripe','Supabase','Teams','VAPI','Vanta','Zapier','Zendesk'];
   const svcs10=SVCS.map(svc=>'<label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;padding:4px 0"><input type="checkbox" '+(((s10.services||'').includes(svc))?'checked':'')+' onchange="togSvc(\''+p.id+'\',\''+svc+'\',this.checked,\'s10.services\')" style="width:15px;height:15px;accent-color:#6C5DD3">'+svc+'</label>').join('');
   const refSel=(path,val)=>'<div class="frow"><label class="flbl">Status:</label><select onchange="upd(\''+p.id+'\',\''+path+'\',this.value)" style="border:1px solid #D1D5DB;border-radius:6px;padding:5px 10px;font-size:13px;font-family:var(--font);outline:none;background:'+(val==='Pass'?'#DCFCE7':val==='Concerns Raised'?'#FEF3C7':val==='In Progress'?'#EFF6FF':'#fff')+';color:'+(val==='Pass'?'#16A34A':val==='Concerns Raised'?'#D97706':val==='In Progress'?'#0284C7':'var(--muted)')+'"><option value="">Not started</option><option value="In Progress" '+(val==='In Progress'?'selected':'')+'>In Progress</option><option value="Concerns Raised" '+(val==='Concerns Raised'?'selected':'')+'>Concerns Raised</option><option value="Pass" '+(val==='Pass'?'selected':'')+'>Pass</option></select></div>';
   const stage1=cb('Interview completed',s1.completed,s1.interviewDate,'s1.completed',p.id)+df('Interview date',s1.interviewDate,'s1.interviewDate',p.id)+'<div style="margin-top:12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap"><div><label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">Score (1-5)</label><input type="number" min="1" max="5" step="0.5" value="'+(s1.score||'')+'" placeholder="—" onchange="upd(\''+p.id+'\',\'s1.score\',this.value)" class="sinput" style="border-color:'+sc(s1.score)+';color:'+sc(s1.score)+';background:'+sbg(s1.score)+'"></div><div><label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">Outcome</label><select onchange="upd(\''+p.id+'\',\'s1.outcome\',this.value)" style="border:1.5px solid #D1D5DB;border-radius:8px;padding:8px 14px;font-size:14px;font-family:var(--font);outline:none"><option value="">Select</option><option value="Pass" '+(s1.outcome==='Pass'?'selected':'')+'>Pass</option><option value="Fail" '+(s1.outcome==='Fail'?'selected':'')+'>Fail</option><option value="Hold" '+(s1.outcome==='Hold'?'selected':'')+'>Hold</option></select></div></div>'+tf('Notes',s1.notes,'s1.notes',p.id);
@@ -674,7 +741,7 @@ function buildEXCard(p) {
   const s=p.stages||{},s1=s.s1||{},s2=s.s2||{},s3=s.s3||{},s4=s.s4||{},s5=s.s5||{};
   const isT=p.exit_type==='termination', col=isT?'#DC2626':'#0284C7';
   const dL=isT?'Termination letter':'Resignation letter';
-  const SVCS=['Slack','Keeper','Teams','Outlook','Claude','Apollo','n8n','Grafana','Vanta','GitHub','Supabase'];
+  const SVCS=['Anthropic','Apollo','Claude','Clay','Composio','Deepgram','ElevenLabs','Entra (Office 365)','GitHub','Grafana','HeyGen','Keeper','Microsoft Azure','Monday.com','n8n','OpenAI','Outlook','Perplexity','Slack','Softr','Stripe','Supabase','Teams','VAPI','Vanta','Zapier','Zendesk'];
   const svcs4=SVCS.map(svc=>'<label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;padding:4px 0"><input type="checkbox" '+(((s4.servicesNotes||'').includes(svc))?'checked':'')+' onchange="togSvc(\''+p.id+'\',\''+svc+'\',this.checked,\'s4.servicesNotes\')" style="width:15px;height:15px;accent-color:#DC2626">'+svc+'</label>').join('');
   const stage1=df('Notice received',s1.noticeDate,'s1.noticeDate',p.id)
   +df(dL+' sent',s1.letterSentDate,'s1.letterSentDate',p.id)
@@ -685,7 +752,7 @@ function buildEXCard(p) {
   +lf('Contractor Exit &amp; Data Destruction Cert link',s1.contractorExitLink,'s1.contractorExitLink',p.id)
   +'</div>';
   const stage2=df('Exit checklist completed',s2.checklistDate,'s2.checklistDate',p.id);
-  const stage3=df('Sent to Shahzeb',s3.shahzebSentDate,'s3.shahzebSentDate',p.id)+df('Shahzeb signed',s3.shahzebSignedDate,'s3.shahzebSignedDate',p.id)+df('Sent to Piers/Lini',s3.peersSentDate,'s3.peersSentDate',p.id)+df('Piers/Lini signed',s3.peersSignedDate,'s3.peersSignedDate',p.id)+df('Brunno signed',s3.brunnoSignedDate,'s3.brunnoSignedDate',p.id)+lf('Signed document',s3.docLink,'s3.docLink',p.id);
+  const stage3=df('Shahzeb signed',s3.shahzebSignedDate,'s3.shahzebSignedDate',p.id)+df('Piers Linney signed',s3.peersSignedDate,'s3.peersSignedDate',p.id)+df('Brunno signed',s3.brunnoSignedDate,'s3.brunnoSignedDate',p.id)+lf('Signed document',s3.docLink,'s3.docLink',p.id);
   const stage4=df('365 terminated',s4.o365TermDate,'s4.o365TermDate',p.id)+df('All services removed',s4.servicesDate,'s4.servicesDate',p.id)+'<div style="margin-top:6px"><label class="flbl" style="display:block;margin-bottom:8px">Services removed</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px">'+svcs4+'</div></div>';
   const stage5=df('Fully terminated',s5.completedDate,'s5.completedDate',p.id);
   return '<div class="back-bar"><button class="back-btn" onclick="if(checkDirty())backToList()"><i class="fas fa-arrow-left"></i> Back</button>'
@@ -698,6 +765,14 @@ function buildEXCard(p) {
     +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;margin-left:auto">'
       // Exit type badge
       +'<span style="font-size:13px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+(isT?'#FEE2E2':'#E0F2FE')+';color:'+col+'">'+(isT?'Termination':'Resignation')+'</span>'
+      // Company type toggle
+      +'<div style="display:flex;align-items:center;gap:8px">'
+        +'<span style="font-size:11px;font-weight:600;color:#9CA3AF">Company:</span>'
+        +'<select onchange="updCompanyType(\''+p.id+'\',\'ex\',this.value)" style="border:1.5px solid #E5E7EB;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;font-family:var(--font);outline:none;background:'+(p.company_type==='Techanzy'?'#EFF6FF':'#F0FDF4')+';color:'+(p.company_type==='Techanzy'?'#0284C7':'#16A34A')+'">'
+          +'<option value="ImplementAI" '+((!p.company_type||p.company_type==='ImplementAI')?'selected':'')+'>ImplementAI</option>'
+          +'<option value="Techanzy" '+(p.company_type==='Techanzy'?'selected':'')+'>Techanzy</option>'
+        +'</select>'
+      +'</div>'
       // Reference recommendation
       +'<div style="display:flex;align-items:center;gap:8px">'
         +'<span style="font-size:11px;font-weight:600;color:#9CA3AF">Work Reference:</span>'
