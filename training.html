@@ -111,6 +111,8 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text);}
 .company-tag-tch{background:#EFF6FF;color:#0284C7;}
 .missing-count{font-size:11px;font-weight:700;background:#FEE2E2;color:#DC2626;padding:2px 8px;border-radius:100px;flex-shrink:0;}
 .all-done-msg{text-align:center;padding:32px;color:var(--muted);}
+.drag-item.drag-over{background:#EFF6FF;border-top:2px solid #0284C7;}
+.drag-item[draggable="true"]:active{opacity:.7;}
 </style>
 </head>
 <body>
@@ -175,34 +177,40 @@ const SB_URL = 'https://zijhsdhjxohicuoxwytk.supabase.co';
 const SB_KEY = 'sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox';
 const SB = window.supabase.createClient(SB_URL, SB_KEY);
 
-// VANTA PEOPLE — active team members (source: training sheets + HR module)
-// Note: Vanta pull pending — will expand this list with full org roster
-// Updated: 29 Jul 2026
+// VANTA PEOPLE — full active team (16 ImplementAI + 15 Techanzy)
+// Source: Brunno's confirmed list, 29 Jul 2026
 var VANTA_PEOPLE = [
-  {name:"Abdul Basit",email:"abasita33@gmail.com",company:"ImplementAI"},
-  {name:"Abdul Samad",email:"abdul@implementai.io",company:"ImplementAI"},
-  {name:"Abdullah Nadeem",email:"abdullah@implementai.io",company:"ImplementAI"},
-  {name:"Abayomi",email:"abayomi@implementai.io",company:"ImplementAI"},
-  {name:"Arsh Yaseen",email:"arsh@implementai.io",company:"ImplementAI"},
+  {name:"Abayomi Baruwa",email:"abayomi@implementai.io",company:"ImplementAI"},
   {name:"Brunno Tavarez",email:"brunno@implementai.io",company:"ImplementAI"},
-  {name:"Fida Hussain",email:"fida@implementai.io",company:"ImplementAI"},
-  {name:"Habib Qayoom",email:"habib@implementai.io",company:"ImplementAI"},
+  {name:"Dr Aalok Shukla",email:"aalok@implementai.io",company:"ImplementAI"},
+  {name:"Kamil Murgala",email:"kamil@implementai.io",company:"ImplementAI"},
   {name:"Katrina Nguyen",email:"katrina@implementai.io",company:"ImplementAI"},
+  {name:"Lucia Barreiros",email:"lucia@implementai.io",company:"ImplementAI"},
   {name:"Mahdi Messai",email:"mahdi@implementai.io",company:"ImplementAI"},
-  {name:"Mahnoor",email:"mahnoor@implementai.io",company:"ImplementAI"},
-  {name:"Meezab",email:"meezab@implementai.io",company:"ImplementAI"},
-  {name:"Mishai",email:"mishai@implementai.io",company:"ImplementAI"},
-  {name:"Muhammad Mujtaba",email:"mmujtabach1234@gmail.com",company:"ImplementAI"},
-  {name:"Muhammad Shahzeb",email:"shahzeb@implementai.io",company:"ImplementAI"},
-  {name:"Muhammad Shahan Butt",email:"shahan@implementai.io",company:"ImplementAI"},
-  {name:"Muhammad Ubaid Waseem",email:"ubaid@implementai.io",company:"ImplementAI"},
+  {name:"Mishai Du\'Jon Osbourne",email:"mishai@implementai.io",company:"ImplementAI"},
   {name:"Nabela Ryani",email:"nabela@implementai.io",company:"ImplementAI"},
-  {name:"Saad Ansari",email:"saad@implementai.io",company:"ImplementAI"},
-  {name:"Saim Malik",email:"saim@implementai.io",company:"ImplementAI"},
-  {name:"Tayyub Ahmed",email:"tayyub@implementai.io",company:"ImplementAI"},
-  {name:"Usman Ali",email:"usman@implementai.io",company:"ImplementAI"},
+  {name:"Nichola Hedger",email:"nichola@implementai.io",company:"ImplementAI"},
+  {name:"Nikhil Mehrishi",email:"nikhil@implementai.io",company:"ImplementAI"},
+  {name:"Onkar Mane",email:"onkar@implementai.io",company:"ImplementAI"},
+  {name:"Piers Linney",email:"piers@implementai.io",company:"ImplementAI"},
+  {name:"Raimondas Astrauskas",email:"raimondas@implementai.io",company:"ImplementAI"},
   {name:"Vishal Kumar",email:"vishal@implementai.io",company:"ImplementAI"},
-  {name:"Zara Abrar",email:"zara@implementai.io",company:"ImplementAI"}
+  {name:"Abdul Samad",email:"abdul@implementai.io",company:"ImplementAI"},
+  {name:"Abdullah Nadeem",email:"abdullah@implementai.io",company:"Techanzy"},
+  {name:"Arsh Yaseen",email:"arsh@implementai.io",company:"Techanzy"},
+  {name:"Azeem Shah",email:"azeem@implementai.io",company:"Techanzy"},
+  {name:"Fida Hussain",email:"fida@implementai.io",company:"Techanzy"},
+  {name:"Habib Qayoom",email:"habib@implementai.io",company:"Techanzy"},
+  {name:"Mahnoor Ijaz",email:"mahnoor@implementai.io",company:"Techanzy"},
+  {name:"Meezab Fatima",email:"meezab@implementai.io",company:"Techanzy"},
+  {name:"Muhammad Shahzeb",email:"shahzeb@implementai.io",company:"Techanzy"},
+  {name:"Muhammad Ubaid Waseem",email:"ubaid@implementai.io",company:"Techanzy"},
+  {name:"Saad Ansari",email:"saad@implementai.io",company:"Techanzy"},
+  {name:"Saim Malik",email:"saim@implementai.io",company:"Techanzy"},
+  {name:"Shahan Butt",email:"shahan@implementai.io",company:"Techanzy"},
+  {name:"Tayyub Ahmad",email:"tayyub@implementai.io",company:"Techanzy"},
+  {name:"Usman Ali",email:"usman@implementai.io",company:"Techanzy"},
+  {name:"Zara Abrar",email:"zara@implementai.io",company:"Techanzy"}
 ];
 
 const ALLOWED = '@implementai.io';
@@ -498,7 +506,8 @@ async function renderAdmin() {
       manageHtml += '<div style="padding:12px 16px;font-size:12px;color:var(--muted)">No training items yet.</div>';
     } else {
       secItems.forEach(function(item) {
-        manageHtml += '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border)">'
+        manageHtml += '<div class="drag-item" draggable="true" data-item-id="' + item.id + '" data-section-id="' + sec.id + '" style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:default">'
+          + '<i class="fas fa-grip-vertical" style="color:#D1D5DB;cursor:grab;font-size:13px;flex-shrink:0" title="Drag to reorder"></i>'
           + '<div style="flex:1;font-size:13px;font-weight:600">' + item.name + '</div>'
           + '<span style="font-size:11px;color:var(--muted)">'
             + (item.video_url ? '<i class="fas fa-video" style="color:#0284C7"></i> ' : '<i class="fas fa-video" style="color:#D1D5DB"></i> ')
@@ -639,6 +648,63 @@ async function renderAdmin() {
 
   el.innerHTML = missingHtml + coachingHtml + manageHtml + matrixHtml;
 }
+
+// Drag-and-drop reorder for training items
+var _dragItemId = null;
+var _dragSectionId = null;
+
+document.getElementById('view-admin').addEventListener('dragstart', function(e) {
+  var row = e.target.closest('.drag-item');
+  if (!row) return;
+  _dragItemId = row.getAttribute('data-item-id');
+  _dragSectionId = row.getAttribute('data-section-id');
+  e.dataTransfer.effectAllowed = 'move';
+});
+
+document.getElementById('view-admin').addEventListener('dragover', function(e) {
+  var row = e.target.closest('.drag-item');
+  if (!row || row.getAttribute('data-item-id') === _dragItemId) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.drag-item').forEach(function(r) { r.classList.remove('drag-over'); });
+  row.classList.add('drag-over');
+});
+
+document.getElementById('view-admin').addEventListener('dragleave', function(e) {
+  var row = e.target.closest('.drag-item');
+  if (row) row.classList.remove('drag-over');
+});
+
+document.getElementById('view-admin').addEventListener('drop', async function(e) {
+  e.preventDefault();
+  document.querySelectorAll('.drag-item').forEach(function(r) { r.classList.remove('drag-over'); });
+  var targetRow = e.target.closest('.drag-item');
+  if (!targetRow || !_dragItemId) return;
+  var targetId = targetRow.getAttribute('data-item-id');
+  if (targetId === _dragItemId) return;
+
+  // Get all items in the same section, reorder in DOM order
+  var sectionEl = targetRow.closest('[data-section-id="' + _dragSectionId + '"]') ||
+                  targetRow.parentElement;
+  var allRows = Array.from(sectionEl.querySelectorAll('.drag-item[data-section-id="' + _dragSectionId + '"]'));
+  var ids = allRows.map(function(r) { return r.getAttribute('data-item-id'); });
+
+  // Swap dragged item to target position
+  var fromIdx = ids.indexOf(_dragItemId);
+  var toIdx = ids.indexOf(targetId);
+  if (fromIdx < 0 || toIdx < 0) return;
+  ids.splice(fromIdx, 1);
+  ids.splice(toIdx, 0, _dragItemId);
+
+  // Update display_order in Supabase for all affected items
+  var updates = ids.map(function(id, idx) {
+    return SB.from('training_items').update({display_order: idx + 1}).eq('id', id);
+  });
+  await Promise.all(updates);
+  _dragItemId = null;
+  _dragSectionId = null;
+  renderAdmin();
+});
 
 // Event delegation for admin actions
 document.getElementById('view-admin').addEventListener('click', function(e) {
