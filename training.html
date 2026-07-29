@@ -357,10 +357,9 @@ async function renderMyTraining() {
         if (passed) {
           scoreHtml = '<span class="score-badge score-pass"><i class="fas fa-check-circle"></i> ' + comp.score + '% Passed</span>';
         } else if (failed) {
-          scoreHtml = '<span class="score-badge score-fail">' + comp.score + '% - Retry</span>'
-            + '<div class="score-wrap"><input type="number" class="score-in" data-item="' + item.id + '" placeholder="New score" min="0" max="100"><button class="score-sub" data-action="submit-score" data-item="' + item.id + '">Submit</button></div>';
+          scoreHtml = '<span class="score-badge score-fail">' + comp.score + '% - Retry the quiz to improve</span>';
         } else {
-          scoreHtml = '<div class="score-wrap"><input type="number" class="score-in" data-item="' + item.id + '" placeholder="Your score %" min="0" max="100"><button class="score-sub" data-action="submit-score" data-item="' + item.id + '">Submit</button></div>';
+          scoreHtml = '<span style="font-size:12px;color:var(--muted);font-style:italic">Complete the quiz above — your score will appear automatically</span>';
         }
 
         rowsHtml += '<div class="training-row">'
@@ -384,30 +383,7 @@ async function renderMyTraining() {
   el.innerHTML = html;
 }
 
-// Event delegation for score submission
-document.getElementById('view-my').addEventListener('click', function(e) {
-  var btn = e.target.closest('[data-action="submit-score"]');
-  if (!btn) return;
-  var itemId = btn.getAttribute('data-item');
-  var input = document.querySelector('.score-in[data-item="' + itemId + '"]');
-  if (!input) return;
-  submitScore(itemId, parseInt(input.value));
-});
-
-async function submitScore(itemId, score) {
-  if (isNaN(score) || score < 0 || score > 100) { alert('Please enter a score between 0 and 100.'); return; }
-  var itemRes = await SB.from('training_items').select('passing_score').eq('id', itemId).maybeSingle();
-  var passing = itemRes.data ? (itemRes.data.passing_score || 80) : 80;
-  var passed = score >= passing;
-  var compId = currentUser.email.replace(/[^a-zA-Z0-9]/g, '_') + '_' + itemId;
-  await SB.from('training_completions').upsert({
-    id: compId, user_email: currentUser.email,
-    user_name: currentUser.email.split('@')[0],
-    training_item_id: itemId, score: score, passed: passed,
-    completed_at: new Date().toISOString(), updated_at: new Date().toISOString()
-  });
-  renderMyTraining();
-}
+// No manual score submission — scores come from Google Sheets sync only
 
 // ---- ADMIN ----
 async function renderAdmin() {
@@ -417,12 +393,18 @@ async function renderAdmin() {
   var secRes = await SB.from('training_sections').select('*').order('display_order');
   var itemRes = await SB.from('training_items').select('*').order('display_order');
   var compRes = await SB.from('training_completions').select('*');
-  var authRes = await SB.from('portal_auth').select('email,last_login').order('email');
-
   var sections = secRes.data || [];
   var items = itemRes.data || [];
   var comps = compRes.data || [];
-  var users = (authRes.data || []).filter(function(u) { return u.email.endsWith(ALLOWED); });
+  // Build user list from completions (everyone who has done any training)
+  // plus anyone in portal_auth — union of both
+  var compUserMap = {};
+  comps.forEach(function(c) {
+    if (!compUserMap[c.user_email]) compUserMap[c.user_email] = c.user_name || c.user_email.split('@')[0];
+  });
+  var users = Object.keys(compUserMap).sort().map(function(email) {
+    return {email: email, name: compUserMap[email]};
+  });
 
   var compMap = {};
   comps.forEach(function(c) {
@@ -479,7 +461,7 @@ async function renderAdmin() {
       var uc = compMap[u.email] || {};
       var req = items.filter(function(i) { return i.is_required; }).length;
       var done = items.filter(function(i) { return i.is_required && uc[i.id] && uc[i.id].passed; }).length;
-      matrixHtml += '<tr><td><div style="font-weight:600">' + u.email.split('@')[0] + '</div><div style="font-size:11px;color:var(--muted)">' + done + '/' + req + ' required</div></td>';
+      matrixHtml += '<tr><td><div style="font-weight:600">' + (u.name || u.email.split('@')[0]) + '</div><div style="font-size:11px;color:var(--muted)">' + u.email + '</div><div style="font-size:11px;color:var(--muted)">' + done + '/' + req + ' required</div></td>';
       items.forEach(function(item) {
         var c = uc[item.id];
         if (!c) { matrixHtml += '<td style="text-align:center"><span class="cell-s cell-none">-</span></td>'; }
@@ -490,7 +472,54 @@ async function renderAdmin() {
     matrixHtml += '</tbody></table></div></div>';
   }
 
-  el.innerHTML = manageHtml + matrixHtml;
+  // ---- COACHING SECTION ----
+  var coachingRows = '';
+  comps.forEach(function(c) {
+    if (!c.notes) return;
+    var notesObj = {};
+    try { notesObj = JSON.parse(c.notes); } catch(e) { return; }
+    var missed = notesObj.missed || [];
+    if (!missed.length) return;
+    var itemName = '';
+    items.forEach(function(i) { if (i.id === c.training_item_id) itemName = i.name; });
+    missed.forEach(function(m) {
+      coachingRows += '<tr>'
+        + '<td><div style="font-weight:600">' + (c.user_name || c.user_email.split("@")[0]) + '</div><div style="font-size:11px;color:var(--muted)">' + c.user_email + '</div></td>'
+        + '<td><span style="font-size:11px;background:#F0FDF4;color:#16A34A;padding:2px 8px;border-radius:100px;font-weight:600">' + itemName + '</span></td>'
+        + '<td style="font-size:13px;color:#374151">' + m.question + '</td>'
+        + '<td style="font-size:12px;color:var(--red)">' + m.given + '</td>'
+        + '<td style="font-size:12px;color:var(--green)">' + m.correct + '</td>'
+        + '</tr>';
+    });
+  });
+
+  var coachingHtml = '';
+  if (coachingRows) {
+    coachingHtml = '<div class="edit-panel">'
+      + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
+        + '<div style="width:36px;height:36px;border-radius:8px;background:#FEF3C7;display:flex;align-items:center;justify-content:center"><i class="fas fa-chalkboard-teacher" style="color:#D97706;font-size:16px"></i></div>'
+        + '<div><div style="font-size:16px;font-weight:700">Coaching Required</div><div style="font-size:12px;color:var(--muted)">People who missed at least one question — review before their next session</div></div>'
+      + '</div>'
+      + '<div style="overflow-x:auto"><table class="matrix">'
+        + '<thead><tr>'
+          + '<th>Person</th>'
+          + '<th>Training</th>'
+          + '<th>Question Missed</th>'
+          + '<th style="color:var(--red)">Their Answer</th>'
+          + '<th style="color:var(--green)">Correct Answer</th>'
+        + '</tr></thead>'
+        + '<tbody>' + coachingRows + '</tbody>'
+      + '</table></div>'
+    + '</div>';
+  } else {
+    coachingHtml = '<div class="edit-panel" style="text-align:center;padding:32px">'
+      + '<i class="fas fa-check-circle" style="font-size:32px;color:var(--green);display:block;margin-bottom:12px"></i>'
+      + '<div style="font-size:15px;font-weight:700;color:var(--green)">No coaching needed</div>'
+      + '<div style="font-size:13px;color:var(--muted);margin-top:6px">Everyone has answered all questions correctly.</div>'
+    + '</div>';
+  }
+
+  el.innerHTML = coachingHtml + manageHtml + matrixHtml;
 }
 
 // Event delegation for admin actions
