@@ -145,7 +145,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text);}
 <div class="modal-overlay" id="set-pw-modal" style="display:none">
   <div class="modal-box">
     <h2>Set your password</h2>
-    <p>First time signing in. Create a password — min 10 characters, one uppercase, one number, one special character.</p>
+    <p>First time signing in. Create a password  -  min 10 characters, one uppercase, one number, one special character.</p>
     <div class="pw-rules">
       <p>Password must have:</p>
       <div class="pw-rule" id="r-len"><i class="fas fa-circle" style="font-size:8px"></i> At least 10 characters</div>
@@ -201,7 +201,7 @@ const PW_RULES = {
   len: v => v.length >= 10,
   up:  v => /[A-Z]/.test(v),
   num: v => /[0-9]/.test(v),
-  sp:  v => /[!@#$%^&*()\-_=+[\]{};'"\|,.<>/?]/.test(v),
+  sp:  v => /[^a-zA-Z0-9]/.test(v),
 };
 
 function checkPwRules(v) {
@@ -369,7 +369,7 @@ async function renderMyTraining() {
           const scoreSection = passed
             ? '<span class="score-badge pass"><i class="fas fa-check-circle"></i> ' + comp.score + '% Passed</span>'
             : failed
-            ? '<span class="score-badge fail">' + comp.score + '% — Retry</span>'
+            ? '<span class="score-badge fail">' + comp.score + '%  -  Retry</span>'
               + '<div class="score-input-wrap"><input type="number" class="score-input" id="sc_' + item.id + '" placeholder="New score" min="0" max="100"><button class="score-submit" onclick="submitScore('' + item.id + '')">Submit</button></div>'
             : '<div class="score-input-wrap"><input type="number" class="score-input" id="sc_' + item.id + '" placeholder="Your score %" min="0" max="100"><button class="score-submit" onclick="submitScore('' + item.id + '')">Submit</button></div>';
 
@@ -487,7 +487,7 @@ async function renderAdmin() {
             + '<td><div style="font-weight:600">' + u.email.split('@')[0] + '</div><div style="font-size:11px;color:var(--muted)">' + doneReq + '/' + totalReq + ' required</div></td>'
             + items.map(item => {
                 const comp = userComps[item.id];
-                if (!comp) return '<td class="cell-done"><span class="cell-score none">—</span></td>';
+                if (!comp) return '<td class="cell-done"><span class="cell-score none"> - </span></td>';
                 return '<td class="cell-done"><span class="cell-score ' + (comp.passed?'pass':'fail') + '">' + comp.score + '%</span></td>';
               }).join('')
             + '</tr>';
@@ -513,7 +513,7 @@ function openAddSection() {
 }
 
 function openEditSection(secId) {
-  // Find section from DOM context — re-fetch
+  // Find section from DOM context  -  re-fetch
   SB.from('training_sections').select('*').eq('id', secId).maybeSingle().then(({data: sec}) => {
     if (!sec) return;
     editingSection = sec; editingItem = null;
