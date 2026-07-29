@@ -370,18 +370,36 @@ async function renderMyTraining() {
       });
     }
 
+    var secBodyId = 'sec-body-' + sec.id;
+    var isComplete = pct === 100;
     html += '<div class="section-card">'
-      + '<div class="section-hdr">'
+      + '<div class="section-hdr" style="cursor:pointer" data-action="toggle-section" data-target="' + secBodyId + '">'
         + '<div class="section-icon"><i class="' + icon + '"></i></div>'
         + '<div><div class="section-name">' + sec.name + '</div><div class="section-desc">' + (sec.description || '') + '</div></div>'
-        + '<div style="margin-left:auto;text-align:right"><div class="section-pct" style="color:' + pctCol + '">' + pct + '%</div><div class="section-sub">' + done + '/' + secItems.length + ' done</div></div>'
+        + '<div style="margin-left:auto;text-align:right;display:flex;align-items:center;gap:14px">'
+          + '<div><div class="section-pct" style="color:' + pctCol + '">' + pct + '%</div><div class="section-sub">' + done + '/' + secItems.length + ' done</div></div>'
+          + '<i class="fas fa-chevron-down" style="color:var(--muted);font-size:13px;transition:transform .2s" id="chev-' + secBodyId + '"></i>'
+        + '</div>'
       + '</div>'
-      + rowsHtml
+      + '<div id="' + secBodyId + '" style="display:none">' + rowsHtml + '</div>'
     + '</div>';
   });
 
   el.innerHTML = html;
 }
+
+// Toggle section collapse
+document.getElementById('view-my').addEventListener('click', function(e) {
+  var hdr = e.target.closest('[data-action="toggle-section"]');
+  if (!hdr) return;
+  var targetId = hdr.getAttribute('data-target');
+  var body = document.getElementById(targetId);
+  var chev = document.getElementById('chev-' + targetId);
+  if (!body) return;
+  var isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  if (chev) chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+});
 
 // No manual score submission — scores come from Google Sheets sync only
 
@@ -441,6 +459,7 @@ async function renderAdmin() {
           + '</span>'
           + '<span style="font-size:11px;color:var(--muted)">Pass: ' + item.passing_score + '%</span>'
           + '<button class="icon-btn" data-action="edit-item" data-id="' + item.id + '" title="Edit"><i class="fas fa-edit"></i></button>'
+          + '<button class="icon-btn" data-action="delete-item" data-id="' + item.id + '" title="Delete" style="color:#DC2626"><i class="fas fa-trash"></i></button>'
         + '</div>';
       });
     }
