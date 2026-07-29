@@ -652,13 +652,24 @@ async function renderAdmin() {
 // Drag-and-drop reorder for training items
 var _dragItemId = null;
 var _dragSectionId = null;
+var _dragOrder = [];
 
 document.getElementById('view-admin').addEventListener('dragstart', function(e) {
   var row = e.target.closest('.drag-item');
   if (!row) return;
   _dragItemId = row.getAttribute('data-item-id');
   _dragSectionId = row.getAttribute('data-section-id');
+  // Snapshot current order of all items in this section
+  _dragOrder = Array.from(document.querySelectorAll('.drag-item[data-section-id="' + _dragSectionId + '"]'))
+    .map(function(r) { return r.getAttribute('data-item-id'); });
   e.dataTransfer.effectAllowed = 'move';
+  row.style.opacity = '0.5';
+});
+
+document.getElementById('view-admin').addEventListener('dragend', function(e) {
+  var row = e.target.closest('.drag-item');
+  if (row) row.style.opacity = '';
+  document.querySelectorAll('.drag-item').forEach(function(r) { r.classList.remove('drag-over'); });
 });
 
 document.getElementById('view-admin').addEventListener('dragover', function(e) {
@@ -677,32 +688,29 @@ document.getElementById('view-admin').addEventListener('dragleave', function(e) 
 
 document.getElementById('view-admin').addEventListener('drop', async function(e) {
   e.preventDefault();
-  document.querySelectorAll('.drag-item').forEach(function(r) { r.classList.remove('drag-over'); });
+  document.querySelectorAll('.drag-item').forEach(function(r) {
+    r.classList.remove('drag-over');
+    r.style.opacity = '';
+  });
   var targetRow = e.target.closest('.drag-item');
   if (!targetRow || !_dragItemId) return;
   var targetId = targetRow.getAttribute('data-item-id');
-  if (targetId === _dragItemId) return;
+  if (targetId === _dragItemId || targetRow.getAttribute('data-section-id') !== _dragSectionId) return;
 
-  // Get all items in the same section, reorder in DOM order
-  var sectionEl = targetRow.closest('[data-section-id="' + _dragSectionId + '"]') ||
-                  targetRow.parentElement;
-  var allRows = Array.from(sectionEl.querySelectorAll('.drag-item[data-section-id="' + _dragSectionId + '"]'));
-  var ids = allRows.map(function(r) { return r.getAttribute('data-item-id'); });
+  // Compute new order: remove dragged item, insert before target
+  var newOrder = _dragOrder.filter(function(id) { return id !== _dragItemId; });
+  var targetIdx = newOrder.indexOf(targetId);
+  if (targetIdx < 0) return;
+  newOrder.splice(targetIdx, 0, _dragItemId);
 
-  // Swap dragged item to target position
-  var fromIdx = ids.indexOf(_dragItemId);
-  var toIdx = ids.indexOf(targetId);
-  if (fromIdx < 0 || toIdx < 0) return;
-  ids.splice(fromIdx, 1);
-  ids.splice(toIdx, 0, _dragItemId);
-
-  // Update display_order in Supabase for all affected items
-  var updates = ids.map(function(id, idx) {
+  // Save to Supabase — update display_order for each item
+  var updates = newOrder.map(function(id, idx) {
     return SB.from('training_items').update({display_order: idx + 1}).eq('id', id);
   });
   await Promise.all(updates);
   _dragItemId = null;
   _dragSectionId = null;
+  _dragOrder = [];
   renderAdmin();
 });
 
