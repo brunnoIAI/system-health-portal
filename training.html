@@ -95,6 +95,22 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text);}
 .loading{text-align:center;padding:60px;color:var(--muted);}
 .loading i{font-size:32px;display:block;margin-bottom:12px;animation:spin 1s linear infinite;}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.missing-panel{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;}
+.missing-panel-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
+.missing-scroll{max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;}
+.missing-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--border);}
+.missing-row:last-child{border-bottom:none;}
+.missing-row:hover{background:#FAFAFA;}
+.missing-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
+.missing-name{font-size:13px;font-weight:600;}
+.missing-email{font-size:11px;color:var(--muted);}
+.missing-tags{display:flex;gap:4px;flex-wrap:wrap;flex-shrink:0;}
+.missing-tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;background:#FEF3C7;color:#D97706;}
+.company-tag-iai{background:#F0FDF4;color:#16A34A;}
+.company-tag-tch{background:#EFF6FF;color:#0284C7;}
+.missing-count{font-size:11px;font-weight:700;background:#FEE2E2;color:#DC2626;padding:2px 8px;border-radius:100px;flex-shrink:0;}
+.all-done-msg{text-align:center;padding:32px;color:var(--muted);}
 </style>
 </head>
 <body>
@@ -158,6 +174,15 @@ const LOGO_COLOUR = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAicAAABtCAYAA
 const SB_URL = 'https://zijhsdhjxohicuoxwytk.supabase.co';
 const SB_KEY = 'sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox';
 const SB = window.supabase.createClient(SB_URL, SB_KEY);
+
+// VANTA PEOPLE — authoritative list of active team members
+// Updated: 29 Jul 2026 — will be refreshed after Vanta pull completes
+var VANTA_PEOPLE = [
+  // FORMAT: {name, email, company}
+  // company: 'ImplementAI' or 'Techanzy'
+  // Populated after Vanta browser pull completes
+];
+
 const ALLOWED = '@implementai.io';
 const ADMINS = ['brunno@implementai.io'];
 
@@ -538,7 +563,59 @@ async function renderAdmin() {
     + '</div>';
   }
 
-  el.innerHTML = coachingHtml + manageHtml + matrixHtml;
+
+  // ---- MISSING COMPLETIONS PANEL ----
+  var requiredItems = items.filter(function(i) { return i.is_required; });
+  var missingHtml = '';
+
+  if (VANTA_PEOPLE.length > 0 && requiredItems.length > 0) {
+    // Use Vanta list as authoritative people source
+    var missingRows = '';
+    var missingCount = 0;
+
+    VANTA_PEOPLE.forEach(function(person) {
+      var personComps = compMap[person.email] || {};
+      var missing = requiredItems.filter(function(item) {
+        return !personComps[item.id] || !personComps[item.id].passed;
+      });
+      if (!missing.length) return;
+      missingCount++;
+      var ini = person.name.split(' ').map(function(p) { return p[0] || ''; }).join('').substring(0, 2).toUpperCase();
+      var avColor = person.company === 'Techanzy' ? '#0284C7' : '#6C5DD3';
+      var compTag = person.company === 'Techanzy'
+        ? '<span class="missing-tag company-tag-tch">Techanzy</span>'
+        : '<span class="missing-tag company-tag-iai">ImplementAI</span>';
+      var missingTagsHtml = missing.map(function(item) {
+        return '<span class="missing-tag">' + item.name.replace(' Policy','').replace(' Management','') + '</span>';
+      }).join('');
+      missingRows += '<div class="missing-row">'
+        + '<div class="missing-av" style="background:' + avColor + '">' + ini + '</div>'
+        + '<div style="flex:1;min-width:0">'
+          + '<div class="missing-name">' + person.name + ' ' + compTag + '</div>'
+          + '<div class="missing-email">' + person.email + '</div>'
+        + '</div>'
+        + '<div class="missing-tags">' + missingTagsHtml + '</div>'
+        + '<div class="missing-count">' + missing.length + ' missing</div>'
+      + '</div>';
+    });
+
+    if (missingCount === 0) {
+      missingHtml = '<div class="missing-panel"><div class="all-done-msg"><i class="fas fa-check-circle" style="font-size:28px;color:var(--green);display:block;margin-bottom:10px"></i><div style="font-size:15px;font-weight:700;color:var(--green)">Everyone is up to date</div><div style="font-size:13px;margin-top:6px">All team members have completed their required training.</div></div></div>';
+    } else {
+      missingHtml = '<div class="missing-panel">'
+        + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">'
+          + '<div style="width:36px;height:36px;border-radius:8px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-user-clock" style="color:#D97706;font-size:16px"></i></div>'
+          + '<div><div style="font-size:16px;font-weight:700">Training Outstanding</div><div class="missing-panel-sub">' + missingCount + ' of ' + VANTA_PEOPLE.length + ' people still have required training to complete</div></div>'
+        + '</div>'
+        + '<div class="missing-scroll">' + missingRows + '</div>'
+      + '</div>';
+    }
+  } else if (VANTA_PEOPLE.length === 0) {
+    missingHtml = '<div class="missing-panel" style="border-style:dashed;opacity:.6"><div class="all-done-msg"><i class="fas fa-users" style="font-size:28px;color:var(--muted);display:block;margin-bottom:10px"></i><div style="font-size:14px;font-weight:600">People list not yet loaded</div><div style="font-size:12px;margin-top:6px">Vanta people list is being pulled. Refresh after it completes.</div></div></div>';
+  }
+
+
+  el.innerHTML = missingHtml + coachingHtml + manageHtml + matrixHtml;
 }
 
 // Event delegation for admin actions
