@@ -612,12 +612,19 @@ async function renderAdmin() {
     users.forEach(function(u) {
       var uc = compMap[u.email] || {};
       var req = items.filter(function(i) { return i.is_required; }).length;
-      var done = items.filter(function(i) { return i.is_required && uc[i.id] && uc[i.id].passed; }).length;
+      var done = items.filter(function(i) { return i.is_required && isItemComplete(i, uc[i.id]); }).length;
       matrixHtml += '<tr><td><div style="font-weight:600">' + (u.name || u.email.split('@')[0]) + '</div><div style="font-size:11px;color:var(--muted)">' + u.email + '</div><div style="font-size:11px;color:var(--muted)">' + done + '/' + req + ' required</div></td>';
       items.forEach(function(item) {
         var c = uc[item.id];
-        if (!c) { matrixHtml += '<td style="text-align:center"><span class="cell-s cell-none">-</span></td>'; }
-        else { matrixHtml += '<td style="text-align:center"><span class="cell-s ' + (c.passed ? 'cell-pass' : 'cell-fail') + '">' + c.score + '%</span></td>'; }
+        if (!c) {
+          matrixHtml += '<td style="text-align:center"><span class="cell-s cell-none">-</span></td>';
+        } else {
+          var cellDone = isItemComplete(item, c);
+          var hasQuiz = (item.content_blocks || []).some(function(b) { return b.type === 'quiz'; });
+          var cellLabel = hasQuiz ? (c.score !== null ? c.score + '%' : '-') : (cellDone ? 'Watched' : 'Pending');
+          var cellClass = cellDone ? 'cell-pass' : (c.score !== null && !c.passed ? 'cell-fail' : 'cell-none');
+          matrixHtml += '<td style="text-align:center"><span class="cell-s ' + cellClass + '">' + cellLabel + '</span></td>';
+        }
       });
       matrixHtml += '</tr>';
     });
