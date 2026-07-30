@@ -571,8 +571,9 @@ async function renderAdmin() {
 
   sections.forEach(function(sec) {
     var secItems = items.filter(function(i) { return i.section_id === sec.id; });
-    manageHtml += '<div style="margin-bottom:16px;border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
-      + '<div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--canvas);border-bottom:1px solid var(--border)">'
+    manageHtml += '<div class="drag-section" draggable="true" data-sec-id="' + sec.id + '" style="margin-bottom:16px;border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
+      + '<div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--canvas);border-bottom:1px solid var(--border);cursor:default">'
+        + '<i class="fas fa-grip-vertical" style="color:#D1D5DB;cursor:grab;font-size:13px;flex-shrink:0" title="Drag to reorder"></i>'
         + '<div style="flex:1;font-size:14px;font-weight:700">' + sec.name + '</div>'
         + '<button class="icon-btn" data-action="edit-section" data-id="' + sec.id + '" title="Edit"><i class="fas fa-edit"></i></button>'
         + '<button class="add-btn" style="font-size:11px;padding:5px 10px" data-action="add-item" data-section="' + sec.id + '"><i class="fas fa-plus"></i> Add Training</button>'
