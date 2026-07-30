@@ -113,6 +113,15 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text);}
 .all-done-msg{text-align:center;padding:32px;color:var(--muted);}
 .drag-item.drag-over{background:#EFF6FF;border-top:2px solid #0284C7;}
 .drag-item[draggable="true"]:active{opacity:.7;}
+
+.abtn-doc{background:#FFF7ED;color:#EA580C;}
+.abtn-doc:hover{background:#FFEDD5;}
+.abtn-link{background:#F9FAFB;color:#6B7280;border:1px solid #E5E7EB;}
+.abtn-link:hover{background:#F3F4F6;}
+.abtn-watched{background:#F5F3FF;color:var(--brand);border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);}
+.abtn-watched:hover{background:#EDE9FE;}
+.drag-section.drag-over{border-top:2px solid #0284C7;background:#EFF6FF;}
+.block-editor-row{transition:opacity .15s;}
 </style>
 </head>
 <body>
@@ -383,10 +392,12 @@ async function renderMyTraining() {
   var html = '';
   sections.forEach(function(sec) {
     var secItems = items.filter(function(i) { return i.section_id === sec.id; });
-    var done = secItems.filter(function(i) { return comps[i.id] && comps[i.id].passed; }).length;
+
+    // Completion: item is done when all required blocks are completed
+    var done = secItems.filter(function(i) { return isItemComplete(i, comps[i.id]); }).length;
     var pct = secItems.length ? Math.round((done / secItems.length) * 100) : 0;
     var pctCol = pct === 100 ? '#16A34A' : pct >= 50 ? '#0284C7' : '#D97706';
-    var icons = {'Policies': 'fas fa-shield-alt', 'Daily Work': 'fas fa-briefcase', 'Core Values': 'fas fa-heart'};
+    var icons = {'Policies': 'fas fa-shield-alt', 'Daily Work': 'fas fa-briefcase', 'Core Values': 'fas fa-heart', 'Solutions Engineering': 'fas fa-code', 'Solutions Associate': 'fas fa-handshake', 'General': 'fas fa-building'};
     var icon = icons[sec.name] || 'fas fa-book';
 
     var rowsHtml = '';
@@ -395,66 +406,132 @@ async function renderMyTraining() {
     } else {
       secItems.forEach(function(item) {
         var comp = comps[item.id];
-        var passed = comp && comp.passed;
-        var failed = comp && comp.score !== null && !comp.passed;
-        var statusClass = passed ? 'done' : failed ? 'fail' : 'pend';
-        var statusIcon = passed ? 'fa-check' : failed ? 'fa-times' : 'fa-circle';
+        var itemDone = isItemComplete(item, comp);
+        var statusClass = itemDone ? 'done' : 'pend';
+        var statusIcon = itemDone ? 'fa-check' : 'fa-circle';
+        var blocks = item.content_blocks || [];
+        var blockComps = (comp && comp.block_completions) ? comp.block_completions : {};
 
-        var videoHtml = item.video_url
-          ? '<a href="' + item.video_url + '" target="_blank" class="abtn abtn-video"><i class="fas fa-play-circle"></i> Watch Video</a>'
-          : '<span style="font-size:12px;color:var(--muted)">No video yet</span>';
-
-        var quizHtml = item.quiz_url
-          ? '<a href="' + item.quiz_url + '" target="_blank" class="abtn abtn-quiz"><i class="fas fa-clipboard-list"></i> Take Quiz</a>'
-          : '<span style="font-size:12px;color:var(--muted)">No quiz yet</span>';
-
-        var scoreHtml = '';
-        if (passed) {
-          scoreHtml = '<span class="score-badge score-pass"><i class="fas fa-check-circle"></i> ' + comp.score + '% Passed</span>';
-        } else if (failed) {
-          scoreHtml = '<span class="score-badge score-fail">' + comp.score + '% - Retry the quiz to improve</span>';
+        var blocksHtml = '';
+        if (!blocks.length) {
+          blocksHtml = '<div style="font-size:12px;color:var(--muted);font-style:italic">No content added yet.</div>';
         } else {
-          scoreHtml = '<span style="font-size:12px;color:var(--muted);font-style:italic">Complete the quiz above — your score will appear automatically</span>';
+          blocks.forEach(function(block) {
+            var bid = block.id;
+            var bDone = blockComps[bid] === true;
+            blocksHtml += buildBlockHtml(item.id, block, bDone, comp);
+          });
         }
 
-        rowsHtml += '<div class="training-row">'
-          + '<div class="t-status ' + statusClass + '"><i class="fas ' + statusIcon + '"></i></div>'
-          + '<div class="t-name">' + item.name + '</div>'
-          + '<div class="t-actions">' + videoHtml + quizHtml + scoreHtml + '</div>'
-          + '</div>';
+        rowsHtml += '<div class="training-row" style="flex-direction:column;align-items:flex-start;gap:10px">'          + '<div style="display:flex;align-items:center;gap:12px;width:100%">'            + '<div class="t-status ' + statusClass + '"><i class="fas ' + statusIcon + '"></i></div>'            + '<div class="t-name">' + item.name + (item.is_required ? '' : ' <span style="font-size:10px;color:var(--muted);font-weight:400">(optional)</span>') + '</div>'          + '</div>'          + '<div style="padding-left:44px;display:flex;flex-direction:column;gap:8px;width:100%">' + blocksHtml + '</div>'        + '</div>';
       });
     }
 
     var secBodyId = 'sec-body-' + sec.id;
-    var isComplete = pct === 100;
-    html += '<div class="section-card">'
-      + '<div class="section-hdr" style="cursor:pointer" data-action="toggle-section" data-target="' + secBodyId + '">'
-        + '<div class="section-icon"><i class="' + icon + '"></i></div>'
-        + '<div><div class="section-name">' + sec.name + '</div><div class="section-desc">' + (sec.description || '') + '</div></div>'
-        + '<div style="margin-left:auto;text-align:right;display:flex;align-items:center;gap:14px">'
-          + '<div><div class="section-pct" style="color:' + pctCol + '">' + pct + '%</div><div class="section-sub">' + done + '/' + secItems.length + ' done</div></div>'
-          + '<i class="fas fa-chevron-down" style="color:var(--muted);font-size:13px;transition:transform .2s" id="chev-' + secBodyId + '"></i>'
-        + '</div>'
-      + '</div>'
-      + '<div id="' + secBodyId + '" style="display:none">' + rowsHtml + '</div>'
-    + '</div>';
+    html += '<div class="section-card">'      + '<div class="section-hdr" style="cursor:pointer" data-action="toggle-section" data-target="' + secBodyId + '">'        + '<div class="section-icon"><i class="' + icon + '"></i></div>'        + '<div><div class="section-name">' + sec.name + '</div><div class="section-desc">' + (sec.description || '') + '</div></div>'        + '<div style="margin-left:auto;text-align:right;display:flex;align-items:center;gap:14px">'          + '<div><div class="section-pct" style="color:' + pctCol + '">' + pct + '%</div><div class="section-sub">' + done + '/' + secItems.length + ' done</div></div>'          + '<i class="fas fa-chevron-down" style="color:var(--muted);font-size:13px;transition:transform .2s" id="chev-' + secBodyId + '"></i>'        + '</div>'      + '</div>'      + '<div id="' + secBodyId + '" style="display:none">' + rowsHtml + '</div>'    + '</div>';
   });
 
   el.innerHTML = html;
 }
 
+function isItemComplete(item, comp) {
+  if (!comp) return false;
+  var blocks = item.content_blocks || [];
+  if (!blocks.length) return comp.passed === true;
+  var blockComps = comp.block_completions || {};
+  // Item is complete when ALL required blocks are done
+  // Quiz block: must have passed=true
+  // Video/doc/link blocks: must have block_completions[id]=true
+  var quizBlock = blocks.find(function(b) { return b.type === 'quiz'; });
+  if (quizBlock && !comp.passed) return false;
+  var nonQuizRequired = blocks.filter(function(b) { return b.type !== 'quiz' && b.type !== 'note'; });
+  for (var i = 0; i < nonQuizRequired.length; i++) {
+    if (!blockComps[nonQuizRequired[i].id]) return false;
+  }
+  return true;
+}
+
+function buildBlockHtml(itemId, block, bDone, comp) {
+  var bid = block.id;
+  var label = block.label || 'Resource';
+  var url = block.url || '';
+
+  if (block.type === 'note') {
+    return '<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px 14px;font-size:13px;color:#92400E"><i class="fas fa-sticky-note" style="margin-right:8px;color:#D97706"></i>' + label + '</div>';
+  }
+
+  if (block.type === 'quiz') {
+    var scoreHtml = '';
+    if (comp && comp.passed) {
+      scoreHtml = '<span class="score-badge score-pass"><i class="fas fa-check-circle"></i> ' + comp.score + '% Passed</span>';
+    } else if (comp && comp.score !== null && comp.score !== undefined && !comp.passed) {
+      scoreHtml = '<span class="score-badge score-fail">' + comp.score + '% — Retry</span>';
+    } else {
+      scoreHtml = '<span style="font-size:12px;color:var(--muted);font-style:italic">Complete the quiz — your score will appear automatically</span>';
+    }
+    return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'      + (url ? '<a href="' + url + '" target="_blank" class="abtn abtn-quiz"><i class="fas fa-clipboard-list"></i> ' + label + '</a>' : '')      + scoreHtml    + '</div>';
+  }
+
+  // video / document / link
+  var iconClass = block.type === 'video' ? 'fas fa-play-circle' : block.type === 'document' ? 'fas fa-file-alt' : 'fas fa-external-link-alt';
+  var btnClass = block.type === 'video' ? 'abtn-video' : block.type === 'document' ? 'abtn-doc' : 'abtn-link';
+  var watchedBtn = bDone
+    ? '<span style="font-size:12px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:5px"><i class="fas fa-check-circle"></i> Done</span>'
+    : '<button class="abtn abtn-watched" data-action="mark-watched" data-item="' + itemId + '" data-block="' + bid + '">I watched this</button>';
+
+  return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'    + (url ? '<a href="' + url + '" target="_blank" class="abtn ' + btnClass + '"><i class="' + iconClass + '"></i> ' + label + '</a>' : '<span style="font-size:12px;color:var(--muted)">' + label + ' — no link yet</span>')    + watchedBtn  + '</div>';
+}
+
 // Toggle section collapse
 document.getElementById('view-my').addEventListener('click', function(e) {
   var hdr = e.target.closest('[data-action="toggle-section"]');
-  if (!hdr) return;
-  var targetId = hdr.getAttribute('data-target');
-  var body = document.getElementById(targetId);
-  var chev = document.getElementById('chev-' + targetId);
-  if (!body) return;
-  var isOpen = body.style.display !== 'none';
-  body.style.display = isOpen ? 'none' : '';
-  if (chev) chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+  if (hdr) {
+    var targetId = hdr.getAttribute('data-target');
+    var body = document.getElementById(targetId);
+    var chev = document.getElementById('chev-' + targetId);
+    if (!body) return;
+    var isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : '';
+    if (chev) chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+    return;
+  }
+
+  // Mark watched handler
+  var btn = e.target.closest('[data-action="mark-watched"]');
+  if (btn) {
+    var itemId = btn.getAttribute('data-item');
+    var blockId = btn.getAttribute('data-block');
+    markBlockWatched(itemId, blockId);
+  }
 });
+
+async function markBlockWatched(itemId, blockId) {
+  // Get or create completion record
+  var compRes = await SB.from('training_completions').select('*').eq('user_email', currentUser.email).eq('training_item_id', itemId).maybeSingle();
+  var existing = compRes.data;
+  var blockComps = (existing && existing.block_completions) ? existing.block_completions : {};
+  blockComps[blockId] = true;
+
+  var compId = currentUser.email.replace(/[^a-zA-Z0-9]/g, '_') + '__' + itemId;
+  var payload = {
+    id: compId,
+    user_email: currentUser.email,
+    user_name: currentUser.email.split('@')[0],
+    training_item_id: itemId,
+    block_completions: blockComps,
+    updated_at: new Date().toISOString()
+  };
+  // Preserve existing score/passed if present
+  if (existing) {
+    payload.score = existing.score;
+    payload.passed = existing.passed;
+    payload.completed_at = existing.completed_at;
+    payload.notes = existing.notes;
+  }
+
+  await SB.from('training_completions').upsert(payload);
+  renderMyTraining();
+}
 
 // No manual score submission — scores come from Google Sheets sync only
 
@@ -649,6 +726,61 @@ async function renderAdmin() {
   el.innerHTML = missingHtml + coachingHtml + manageHtml + matrixHtml;
 }
 
+// Section drag-to-reorder
+var _dragSecId = null;
+var _dragSecOrder = [];
+
+document.getElementById('view-admin').addEventListener('dragstart', function(e) {
+  var row = e.target.closest('.drag-section');
+  if (!row) return;
+  _dragSecId = row.getAttribute('data-sec-id');
+  _dragSecOrder = Array.from(document.querySelectorAll('.drag-section'))
+    .map(function(r) { return r.getAttribute('data-sec-id'); });
+  e.dataTransfer.effectAllowed = 'move';
+  row.style.opacity = '0.5';
+});
+
+document.getElementById('view-admin').addEventListener('dragend', function(e) {
+  var row = e.target.closest('.drag-section');
+  if (row) row.style.opacity = '';
+  document.querySelectorAll('.drag-section').forEach(function(r) { r.classList.remove('drag-over'); });
+});
+
+document.getElementById('view-admin').addEventListener('dragover', function(e) {
+  var row = e.target.closest('.drag-section');
+  if (!row || row.getAttribute('data-sec-id') === _dragSecId) return;
+  e.preventDefault();
+  document.querySelectorAll('.drag-section').forEach(function(r) { r.classList.remove('drag-over'); });
+  row.classList.add('drag-over');
+});
+
+document.getElementById('view-admin').addEventListener('dragleave', function(e) {
+  var row = e.target.closest('.drag-section');
+  if (row) row.classList.remove('drag-over');
+});
+
+document.getElementById('view-admin').addEventListener('drop', async function(e) {
+  var targetRow = e.target.closest('.drag-section');
+  if (targetRow && _dragSecId && targetRow.getAttribute('data-sec-id') !== _dragSecId) {
+    e.preventDefault();
+    document.querySelectorAll('.drag-section').forEach(function(r) { r.classList.remove('drag-over'); r.style.opacity = ''; });
+    var targetId = targetRow.getAttribute('data-sec-id');
+    var newOrder = _dragSecOrder.filter(function(id) { return id !== _dragSecId; });
+    var tIdx = newOrder.indexOf(targetId);
+    if (tIdx >= 0) {
+      newOrder.splice(tIdx, 0, _dragSecId);
+      var updates = newOrder.map(function(id, idx) {
+        return SB.from('training_sections').update({display_order: idx + 1}).eq('id', id);
+      });
+      await Promise.all(updates);
+    }
+    _dragSecId = null; _dragSecOrder = [];
+    renderAdmin();
+    return;
+  }
+  // Item drag-drop (existing handler continues below)
+});
+
 // Drag-and-drop reorder for training items
 var _dragItemId = null;
 var _dragSectionId = null;
@@ -727,6 +859,25 @@ document.getElementById('view-admin').addEventListener('click', function(e) {
   if (action === 'edit-item') loadAndEditItem(id);
   if (action === 'save-section') saveSectionForm();
   if (action === 'save-item') saveItemForm();
+  if (action === 'add-block') {
+    var type = btn.getAttribute('data-type');
+    var editor = document.getElementById('blocks-editor');
+    if (editor) {
+      var newBid = 'b' + Date.now() + Math.random().toString(36).substr(2,4);
+      var defaultLabels = {video:'Watch Video', quiz:'Take Quiz', document:'Read Document', link:'View Link', note:'Note'};
+      var tempBlock = {id: newBid, type: type, label: defaultLabels[type] || '', url: '', passing_score: 80};
+      var div = document.createElement('div');
+      div.innerHTML = buildBlockEditorRow(tempBlock);
+      editor.appendChild(div.firstChild);
+    }
+    return;
+  }
+  if (action === 'remove-block') {
+    var bid = btn.getAttribute('data-bid');
+    var rowEl = document.querySelector('.block-editor-row[data-bid="' + bid + '"]');
+    if (rowEl) rowEl.remove();
+    return;
+  }
   if (action === 'cancel-edit') { document.getElementById('edit-form-area').innerHTML = ''; editSectionId = null; editItemId = null; }
   if (action === 'delete-section') deleteSectionAction(id);
   if (action === 'delete-item') deleteItemAction(id);
@@ -773,21 +924,36 @@ async function deleteSectionAction(id) {
 function showItemForm(item, sectionId) {
   editItemId = item ? item.id : null; editSectionId = null;
   var sid = sectionId || (item ? item.section_id : '');
-  document.getElementById('edit-form-area').innerHTML = '<div style="background:var(--canvas);border-radius:8px;padding:16px;margin-bottom:16px">'
-    + '<div style="font-size:14px;font-weight:700;margin-bottom:12px">' + (item ? 'Edit Training Item' : 'New Training Item') + '</div>'
-    + '<div class="fg">'
-      + '<div class="ff" style="grid-column:1/-1"><label>Training Name</label><input type="text" id="ef-name" value="' + (item ? item.name : '') + '" placeholder="e.g. Acceptable Use Policy"></div>'
-      + '<div class="ff" style="grid-column:1/-1"><label>Description (optional)</label><input type="text" id="ef-desc" value="' + (item ? (item.description || '') : '') + '"></div>'
-      + '<div class="ff" style="grid-column:1/-1"><label><i class="fas fa-play-circle" style="color:#0284C7"></i> HeyGen Video Link</label><input type="url" id="ef-video" value="' + (item ? (item.video_url || '') : '') + '" placeholder="https://app.heygen.com/..."></div>'
-      + '<div class="ff" style="grid-column:1/-1"><label><i class="fas fa-clipboard-list" style="color:#16A34A"></i> Google Forms Quiz Link</label><input type="url" id="ef-quiz" value="' + (item ? (item.quiz_url || '') : '') + '" placeholder="https://forms.google.com/..."></div>'
-      + '<div class="ff"><label>Passing Score (%)</label><input type="number" id="ef-pass" value="' + (item ? item.passing_score : 80) + '" min="0" max="100"></div>'
-      + '<div class="ff"><label>Required?</label><select id="ef-req"><option value="true" ' + (!item || item.is_required ? 'selected' : '') + '>Yes (required)</option><option value="false" ' + (item && !item.is_required ? 'selected' : '') + '>No (optional)</option></select></div>'
-      + '<input type="hidden" id="ef-section" value="' + sid + '">'
-    + '</div>'
-    + '<div class="fa"><button class="btn-save" data-action="save-item">Save</button>'
-    + (item ? '<button class="btn-del" data-action="delete-item" data-id="' + item.id + '">Delete</button>' : '')
-    + '<button class="btn-cancel" data-action="cancel-edit">Cancel</button></div>'
-  + '</div>';
+  var blocks = (item && item.content_blocks) ? item.content_blocks : [];
+
+  // Build existing blocks HTML
+  var blocksEditorHtml = '';
+  blocks.forEach(function(block) {
+    blocksEditorHtml += buildBlockEditorRow(block);
+  });
+
+  document.getElementById('edit-form-area').innerHTML = '<div style="background:var(--canvas);border-radius:8px;padding:16px;margin-bottom:16px">'    + '<div style="font-size:14px;font-weight:700;margin-bottom:12px">' + (item ? 'Edit Training Item' : 'New Training Item') + '</div>'    + '<div class="fg">'      + '<div class="ff" style="grid-column:1/-1"><label>Training Name</label><input type="text" id="ef-name" value="' + (item ? item.name : '') + '" placeholder="e.g. Access Control Policy"></div>'      + '<div class="ff" style="grid-column:1/-1"><label>Description (optional)</label><input type="text" id="ef-desc" value="' + (item ? (item.description || '') : '') + '" placeholder="Brief description shown to trainees"></div>'      + '<div class="ff"><label>Required?</label><select id="ef-req"><option value="true" ' + (!item || item.is_required ? 'selected' : '') + '>Yes (required)</option><option value="false" ' + (item && !item.is_required ? 'selected' : '') + '>No (optional)</option></select></div>'      + '<input type="hidden" id="ef-section" value="' + sid + '">'    + '</div>'    + '<div style="margin-top:16px">'      + '<div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">'        + '<span>Content Blocks</span>'        + '<span style="font-size:11px;color:var(--muted);font-weight:400">Add videos, documents, quizzes, links, or notes</span>'      + '</div>'      + '<div id="blocks-editor" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">' + blocksEditorHtml + '</div>'      + '<div style="display:flex;gap:6px;flex-wrap:wrap">'        + '<button class="abtn abtn-video" style="font-size:12px;padding:5px 12px" data-action="add-block" data-type="video"><i class="fas fa-plus"></i> Video</button>'        + '<button class="abtn abtn-quiz" style="font-size:12px;padding:5px 12px" data-action="add-block" data-type="quiz"><i class="fas fa-plus"></i> Quiz</button>'        + '<button class="abtn abtn-doc" style="font-size:12px;padding:5px 12px" data-action="add-block" data-type="document"><i class="fas fa-plus"></i> Document</button>'        + '<button class="abtn abtn-link" style="font-size:12px;padding:5px 12px" data-action="add-block" data-type="link"><i class="fas fa-plus"></i> Link</button>'        + '<button class="abtn" style="font-size:12px;padding:5px 12px;background:#FFFBEB;color:#D97706" data-action="add-block" data-type="note"><i class="fas fa-plus"></i> Note</button>'      + '</div>'    + '</div>'    + '<div class="fa" style="margin-top:16px">'      + '<button class="btn-save" data-action="save-item">Save</button>'      + (item ? '<button class="btn-del" data-action="delete-item" data-id="' + item.id + '">Delete</button>' : '')      + '<button class="btn-cancel" data-action="cancel-edit">Cancel</button>'    + '</div>'  + '</div>';
+}
+
+function buildBlockEditorRow(block) {
+  var bid = block.id || ('b' + Date.now() + Math.random().toString(36).substr(2,4));
+  var type = block.type || 'link';
+  var label = block.label || '';
+  var url = block.url || '';
+  var passing = block.passing_score || 80;
+
+  var typeColors = {video:'#EFF6FF', quiz:'#F0FDF4', document:'#FFF7ED', link:'#F9FAFB', note:'#FFFBEB'};
+  var typeIcons  = {video:'fas fa-play-circle', quiz:'fas fa-clipboard-list', document:'fas fa-file-alt', link:'fas fa-external-link-alt', note:'fas fa-sticky-note'};
+  var typeLabels = {video:'Video', quiz:'Quiz', document:'Document', link:'Link', note:'Note'};
+  var bg = typeColors[type] || '#F9FAFB';
+  var icon = typeIcons[type] || 'fas fa-link';
+  var typeLbl = typeLabels[type] || type;
+
+  var extraField = type === 'quiz'
+    ? '<input type="number" class="block-pass" data-bid="' + bid + '" value="' + passing + '" min="0" max="100" style="width:60px;border:1px solid #D1D5DB;border-radius:6px;padding:4px 8px;font-size:12px;font-family:var(--font)" title="Passing score %"> %'
+    : '';
+
+  return '<div class="block-editor-row" data-bid="' + bid + '" data-type="' + type + '" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:' + bg + ';border-radius:8px;border:1px solid #E5E7EB">'    + '<i class="' + icon + '" style="font-size:13px;color:var(--muted);flex-shrink:0"></i>'    + '<span style="font-size:11px;font-weight:700;color:var(--muted);min-width:56px">' + typeLbl + '</span>'    + '<input type="text" class="block-label" data-bid="' + bid + '" value="' + label + '" placeholder="Label (e.g. Watch first)" style="width:160px;border:1px solid #D1D5DB;border-radius:6px;padding:4px 8px;font-size:12px;font-family:var(--font)">'    + (type !== 'note' ? '<input type="text" class="block-url" data-bid="' + bid + '" value="' + url + '" placeholder="URL" style="flex:1;border:1px solid #D1D5DB;border-radius:6px;padding:4px 8px;font-size:12px;font-family:var(--font)">' : '<input type="text" class="block-url" data-bid="' + bid + '" value="' + url + '" placeholder="Note text" style="flex:1;border:1px solid #D1D5DB;border-radius:6px;padding:4px 8px;font-size:12px;font-family:var(--font)">')    + extraField    + '<button style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px;flex-shrink:0;padding:2px 6px" data-action="remove-block" data-bid="' + bid + '" title="Remove"><i class="fas fa-times"></i></button>'  + '</div>';
 }
 
 async function loadAndEditItem(id) {
@@ -798,13 +964,41 @@ async function loadAndEditItem(id) {
 async function saveItemForm() {
   var name = (document.getElementById('ef-name').value || '').trim();
   var desc = (document.getElementById('ef-desc').value || '').trim();
-  var video = (document.getElementById('ef-video').value || '').trim();
-  var quiz = (document.getElementById('ef-quiz').value || '').trim();
-  var passing = parseInt(document.getElementById('ef-pass').value) || 80;
   var required = document.getElementById('ef-req').value === 'true';
   var sectionId = document.getElementById('ef-section').value;
   if (!name) { alert('Name is required.'); return; }
-  var payload = {name: name, description: desc, video_url: video, quiz_url: quiz, passing_score: passing, is_required: required, updated_at: new Date().toISOString()};
+
+  // Read content blocks from editor
+  var blockRows = document.querySelectorAll('#blocks-editor .block-editor-row');
+  var blocks = [];
+  blockRows.forEach(function(row) {
+    var bid = row.getAttribute('data-bid');
+    var type = row.getAttribute('data-type');
+    var labelEl = row.querySelector('.block-label[data-bid="' + bid + '"]');
+    var urlEl = row.querySelector('.block-url[data-bid="' + bid + '"]');
+    var passEl = row.querySelector('.block-pass[data-bid="' + bid + '"]');
+    var label = labelEl ? labelEl.value.trim() : '';
+    var url = urlEl ? urlEl.value.trim() : '';
+    var block = {id: bid, type: type, label: label, url: url};
+    if (passEl) block.passing_score = parseInt(passEl.value) || 80;
+    blocks.push(block);
+  });
+
+  // Also derive legacy video_url and quiz_url for backwards compat
+  var videoBlock = blocks.find(function(b) { return b.type === 'video'; });
+  var quizBlock  = blocks.find(function(b) { return b.type === 'quiz'; });
+
+  var payload = {
+    name: name,
+    description: desc,
+    is_required: required,
+    content_blocks: blocks,
+    video_url: videoBlock ? videoBlock.url : '',
+    quiz_url: quizBlock ? quizBlock.url : '',
+    passing_score: quizBlock ? (quizBlock.passing_score || 80) : 80,
+    updated_at: new Date().toISOString()
+  };
+
   if (editItemId) {
     await SB.from('training_items').update(payload).eq('id', editItemId);
   } else {
@@ -813,9 +1007,11 @@ async function saveItemForm() {
     payload.display_order = 99;
     await SB.from('training_items').insert(payload);
   }
-  document.getElementById('edit-form-area').innerHTML = ''; editItemId = null;
+  document.getElementById('edit-form-area').innerHTML = '';
+  editItemId = null;
   renderAdmin();
 }
+
 
 async function deleteItemAction(id) {
   if (!confirm('Delete this training item? All completion records will also be deleted.')) return;
