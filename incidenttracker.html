@@ -325,9 +325,14 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogi
 // ── LOAD & RENDER ─────────────────────────────────────────────────────────────
 async function loadIncidents() {
   document.getElementById('incidents-list').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i>Loading incidents...</div>';
-  var res = await SB.from('incidents').select('*').order('date_reported', {ascending: false});
-  if (res.error) { document.getElementById('incidents-list').innerHTML = '<div class="empty">Error: ' + res.error.message + '</div>'; return; }
-  allIncidents = res.data || [];
+  var res = await SB.from('incidents').select('*');
+  if (res.error) {
+    document.getElementById('incidents-list').innerHTML = '<div class="empty"><i class="fas fa-exclamation-triangle" style="font-size:28px;display:block;margin-bottom:10px"></i>Error loading incidents: ' + res.error.message + '</div>';
+    return;
+  }
+  allIncidents = (res.data || []).sort(function(a,b) {
+    return (b.date_reported||'') > (a.date_reported||'') ? 1 : -1;
+  });
   renderStats();
   renderList();
 }
