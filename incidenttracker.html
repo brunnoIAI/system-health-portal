@@ -229,7 +229,7 @@ let allIncidents = [];
 let currentFilter = 'all';
 let editingId = null;
 
-// ── AUTH ──────────────────────────────────────────────────────────────────────
+// -- AUTH ----------------------------------------------------------------------
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
@@ -322,7 +322,7 @@ document.getElementById('set-pw-btn').addEventListener('click', doSetPassword);
 document.getElementById('logout-btn').addEventListener('click', doLogout);
 document.addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 
-// ── LOAD & RENDER ─────────────────────────────────────────────────────────────
+// -- LOAD & RENDER -------------------------------------------------------------
 async function loadIncidents() {
   document.getElementById('incidents-list').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i>Loading incidents...</div>';
   var res = await SB.from('incidents').select('*');
@@ -416,7 +416,7 @@ document.getElementById('incidents-list').addEventListener('click', function(e) 
   if (inc) openDetail(inc);
 });
 
-// ── DETAIL VIEW ───────────────────────────────────────────────────────────────
+// -- DETAIL VIEW ---------------------------------------------------------------
 function openDetail(inc) {
   var timeline = inc.timeline || [];
   var followUp = inc.follow_up_actions || [];
@@ -488,10 +488,10 @@ function closeDetail() {
 }
 document.getElementById('detail-close-btn').addEventListener('click', closeDetail);
 
-// ── FORM (NEW / EDIT) ─────────────────────────────────────────────────────────
+// -- FORM (NEW / EDIT) ---------------------------------------------------------
 function openForm(inc) {
   editingId = inc ? inc.id : null;
-  document.getElementById('form-title').textContent = inc ? 'Edit Incident — ' + inc.id : 'New Incident';
+  document.getElementById('form-title').textContent = inc ? 'Edit Incident - ' + inc.id : 'New Incident';
   var v = inc || {};
   document.getElementById('form-content').innerHTML =
     '<div class="form-grid">'
@@ -503,13 +503,13 @@ function openForm(inc) {
       + '<div class="ff"><label>Date Reported</label><input type="date" id="f-date-rep" value="' + (v.date_reported||'') + '"></div>'
       + '<div class="ff"><label>Reported By</label><input type="text" id="f-reported-by" value="' + (v.reported_by||'') + '"></div>'
       + '<div class="ff"><label>Assigned To (Owner)</label><input type="text" id="f-assigned" value="' + (v.assigned_to||'') + '"></div>'
-      + '<div class="ff ff-full"><label>Description — What happened?</label><textarea id="f-desc">' + (v.description||'') + '</textarea></div>'
+      + '<div class="ff ff-full"><label>Description - What happened?</label><textarea id="f-desc">' + (v.description||'') + '</textarea></div>'
       + '<div class="ff ff-full"><label>Affected Systems (comma-separated)</label><input type="text" id="f-systems" value="' + ((v.affected_systems||[]).join(', ')) + '"></div>'
       + '<div class="ff ff-full"><label>Affected People (comma-separated)</label><input type="text" id="f-people" value="' + ((v.affected_people||[]).join(', ')) + '"></div>'
       + '<div class="ff ff-full"><label>How Discovered</label><textarea id="f-discovered">' + (v.how_discovered||'') + '</textarea></div>'
       + '<div class="ff ff-full"><label>Root Cause</label><textarea id="f-rootcause">' + (v.root_cause||'') + '</textarea></div>'
       + '<div class="ff"><label>Impact Scope</label><select id="f-scope"><option ' + (v.impact_scope==='Internal'||!v.impact_scope?'selected':'') + '>Internal</option><option ' + (v.impact_scope==='Client-Facing'?'selected':'') + '>Client-Facing</option><option ' + (v.impact_scope==='Both'?'selected':'') + '>Both</option></select></div>'
-      + '<div class="ff"><label>Financial Impact</label><input type="text" id="f-financial" value="' + (v.financial_impact||'') + '" placeholder="e.g. £2,000 refunded"></div>'
+      + '<div class="ff"><label>Financial Impact</label><input type="text" id="f-financial" value="' + (v.financial_impact||'') + '" placeholder="e.g. 2,000 refunded"></div>'
       + '<div class="ff ff-full"><label>Containment Actions</label><textarea id="f-contain">' + (v.containment_actions||'') + '</textarea></div>'
       + '<div class="ff ff-full"><label>Eradication Actions</label><textarea id="f-eradicate">' + (v.eradication_actions||'') + '</textarea></div>'
       + '<div class="ff ff-full"><label>Recovery Actions</label><textarea id="f-recover">' + (v.recovery_actions||'') + '</textarea></div>'
