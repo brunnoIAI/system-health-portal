@@ -186,7 +186,7 @@ const SB_URL = 'https://zijhsdhjxohicuoxwytk.supabase.co';
 const SB_KEY = 'sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox';
 const SB = window.supabase.createClient(SB_URL, SB_KEY);
 
-// VANTA PEOPLE — full active team (16 ImplementAI + 15 Techanzy)
+// VANTA PEOPLE - full active team (16 ImplementAI + 15 Techanzy)
 // Source: Brunno's confirmed list, 29 Jul 2026
 var VANTA_PEOPLE = [
   {name:"Abayomi Baruwa",email:"abayomi@implementai.io",company:"ImplementAI"},
@@ -464,9 +464,9 @@ function buildBlockHtml(itemId, block, bDone, comp) {
     if (comp && comp.passed) {
       scoreHtml = '<span class="score-badge score-pass"><i class="fas fa-check-circle"></i> ' + comp.score + '% Passed</span>';
     } else if (comp && comp.score !== null && comp.score !== undefined && !comp.passed) {
-      scoreHtml = '<span class="score-badge score-fail">' + comp.score + '% — Retry</span>';
+      scoreHtml = '<span class="score-badge score-fail">' + comp.score + '% - Retry</span>';
     } else {
-      scoreHtml = '<span style="font-size:12px;color:var(--muted);font-style:italic">Complete the quiz — your score will appear automatically</span>';
+      scoreHtml = '<span style="font-size:12px;color:var(--muted);font-style:italic">Complete the quiz - your score will appear automatically</span>';
     }
     return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'      + (url ? '<a href="' + url + '" target="_blank" class="abtn abtn-quiz"><i class="fas fa-clipboard-list"></i> ' + label + '</a>' : '')      + scoreHtml    + '</div>';
   }
@@ -478,7 +478,7 @@ function buildBlockHtml(itemId, block, bDone, comp) {
     ? '<span style="font-size:12px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:5px"><i class="fas fa-check-circle"></i> Done</span>'
     : '<button class="abtn abtn-watched" data-action="mark-watched" data-item="' + itemId + '" data-block="' + bid + '">I watched this</button>';
 
-  return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'    + (url ? '<a href="' + url + '" target="_blank" class="abtn ' + btnClass + '"><i class="' + iconClass + '"></i> ' + label + '</a>' : '<span style="font-size:12px;color:var(--muted)">' + label + ' — no link yet</span>')    + watchedBtn  + '</div>';
+  return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'    + (url ? '<a href="' + url + '" target="_blank" class="abtn ' + btnClass + '"><i class="' + iconClass + '"></i> ' + label + '</a>' : '<span style="font-size:12px;color:var(--muted)">' + label + ' - no link yet</span>')    + watchedBtn  + '</div>';
 }
 
 // Toggle section collapse
@@ -532,21 +532,29 @@ async function markBlockWatched(itemId, blockId) {
   renderMyTraining();
 }
 
-// No manual score submission — scores come from Google Sheets sync only
+// No manual score submission - scores come from Google Sheets sync only
 
 // ---- ADMIN ----
 async function renderAdmin() {
   var el = document.getElementById('view-admin');
   el.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><div style="margin-top:12px">Loading admin panel...</div></div>';
 
-  var secRes = await SB.from('training_sections').select('*').order('display_order');
-  var itemRes = await SB.from('training_items').select('*').order('display_order');
-  var compRes = await SB.from('training_completions').select('*');
+  var results = await Promise.all([
+    SB.from('training_sections').select('*').order('display_order'),
+    SB.from('training_items').select('*').order('display_order'),
+    SB.from('training_completions').select('*'),
+    SB.from('coaching_sessions').select('*')
+  ]);
+  var secRes  = results[0];
+  var itemRes = results[1];
+  var compRes = results[2];
+  var coachRes = results[3];
   var sections = secRes.data || [];
   var items = itemRes.data || [];
   var comps = compRes.data || [];
+  var allSessions = coachRes.data || [];
   // Build user list from completions (everyone who has done any training)
-  // plus anyone in portal_auth — union of both
+  // plus anyone in portal_auth - union of both
   var compUserMap = {};
   comps.forEach(function(c) {
     if (!compUserMap[c.user_email]) compUserMap[c.user_email] = c.user_name || c.user_email.split('@')[0];
@@ -623,110 +631,39 @@ async function renderAdmin() {
           var hasQuiz = (item.content_blocks || []).some(function(b) { return b.type === 'quiz'; });
           var cellLabel = hasQuiz ? (c.score !== null ? c.score + '%' : '-') : (cellDone ? 'Watched' : 'Pending');
           var cellClass = cellDone ? 'cell-pass' : (c.score !== null && !c.passed ? 'cell-fail' : 'cell-none');
-          matrixHtml += '<td style="text-align:center"><span class="cell-s ' + cellClass + '">' + cellLabel + '</span></td>';
-        }
-      });
-      matrixHtml += '</tr>';
-    });
-    matrixHtml += '</tbody></table></div></div>';
+          matrixHtml += '<td style="text-align:cente  // COACHING SECTION
+  var awaitingSessions = allSessions.filter(function(s) { return s.status === 'awaiting'; });
+  var completedSessions = allSessions.filter(function(s) { return s.status === 'completed'; });
+
+  function buildStars(n) {
+    var s = '';
+    for (var i = 1; i <= 5; i++) {
+      s += '<i class="fas fa-star" style="color:' + (i <= n ? '#D97706' : '#E5E7EB') + ';font-size:11px"></i>';
+    }
+    return s;
   }
 
-  // ---- COACHING SECTION ----
-  var coachingRows = '';
-  comps.forEach(function(c) {
-    if (!c.notes) return;
-    var notesObj = {};
-    try { notesObj = JSON.parse(c.notes); } catch(e) { return; }
-    var missed = notesObj.missed || [];
-    if (!missed.length) return;
-    var itemName = '';
-    items.forEach(function(i) { if (i.id === c.training_item_id) itemName = i.name; });
-    missed.forEach(function(m) {
-      coachingRows += '<tr>'
-        + '<td><div style="font-weight:600">' + (c.user_name || c.user_email.split("@")[0]) + '</div><div style="font-size:11px;color:var(--muted)">' + c.user_email + '</div></td>'
-        + '<td><span style="font-size:11px;background:#F0FDF4;color:#16A34A;padding:2px 8px;border-radius:100px;font-weight:600">' + itemName + '</span></td>'
-        + '<td style="font-size:13px;color:#374151">' + m.question + '</td>'
-        + '<td style="font-size:12px;color:var(--red)">' + m.given + '</td>'
-        + '<td style="font-size:12px;color:var(--green)">' + m.correct + '</td>'
-        + '</tr>';
-    });
+  var awaitRows = '';
+  awaitingSessions.forEach(function(s) {
+    var iName = '';
+    items.forEach(function(i) { if (i.id === s.training_item_id) iName = i.name; });
+    var initials = (s.user_name || s.user_email.split('@')[0]).substring(0,2).toUpperCase();
+    awaitRows += '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)">'      + '<div style="width:34px;height:34px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0">' + initials + '</div>'      + '<div style="flex:1;min-width:0">'        + '<div style="font-size:13px;font-weight:700">' + (s.user_name || s.user_email.split('@')[0]) + ' <span style="font-size:11px;color:var(--muted);font-weight:400">(' + s.user_email + ')</span></div>'        + '<div style="font-size:12px;color:var(--blue);font-weight:600;margin-top:2px">' + iName + '</div>'        + (s.missed_question ? '<div style="font-size:11px;color:var(--muted);margin-top:3px;font-style:italic">Missed: "' + s.missed_question.substring(0,80) + '"</div>' : '')      + '</div>'      + '<button style="background:var(--brand);border:none;border-radius:8px;padding:6px 14px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);flex-shrink:0" data-action="record-session" data-sid="' + s.id + '">Record Session</button>'    + '</div>';
   });
 
-  var coachingHtml = '';
-  if (coachingRows) {
-    coachingHtml = '<div class="edit-panel">'
-      + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
-        + '<div style="width:36px;height:36px;border-radius:8px;background:#FEF3C7;display:flex;align-items:center;justify-content:center"><i class="fas fa-chalkboard-teacher" style="color:#D97706;font-size:16px"></i></div>'
-        + '<div><div style="font-size:16px;font-weight:700">Coaching Required</div><div style="font-size:12px;color:var(--muted)">People who missed at least one question — review before their next session</div></div>'
-      + '</div>'
-      + '<div style="overflow-x:auto"><table class="matrix">'
-        + '<thead><tr>'
-          + '<th>Person</th>'
-          + '<th>Training</th>'
-          + '<th>Question Missed</th>'
-          + '<th style="color:var(--red)">Their Answer</th>'
-          + '<th style="color:var(--green)">Correct Answer</th>'
-        + '</tr></thead>'
-        + '<tbody>' + coachingRows + '</tbody>'
-      + '</table></div>'
-    + '</div>';
-  } else {
-    coachingHtml = '<div class="edit-panel" style="text-align:center;padding:32px">'
-      + '<i class="fas fa-check-circle" style="font-size:32px;color:var(--green);display:block;margin-bottom:12px"></i>'
-      + '<div style="font-size:15px;font-weight:700;color:var(--green)">No coaching needed</div>'
-      + '<div style="font-size:13px;color:var(--muted);margin-top:6px">Everyone has answered all questions correctly.</div>'
-    + '</div>';
-  }
+  var doneRows = '';
+  completedSessions.forEach(function(s) {
+    var iName = '';
+    items.forEach(function(i) { if (i.id === s.training_item_id) iName = i.name; });
+    doneRows += '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)">'      + '<div style="width:34px;height:34px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0"><i class="fas fa-check"></i></div>'      + '<div style="flex:1;min-width:0">'        + '<div style="font-size:13px;font-weight:700">' + (s.user_name || s.user_email.split('@')[0]) + ' <span style="font-size:11px;color:var(--muted);font-weight:400">(' + s.user_email + ')</span></div>'        + '<div style="font-size:12px;color:var(--green);font-weight:600;margin-top:2px">' + iName + (s.session_date ? ' &middot; ' + s.session_date : '') + '</div>'        + '<div style="display:flex;gap:12px;margin-top:5px;flex-wrap:wrap">'          + '<span style="font-size:11px;color:var(--muted)">Overall: ' + buildStars(s.rating_overall || 0) + '</span>'          + '<span style="font-size:11px;color:var(--muted)">Participation: ' + buildStars(s.rating_participation || 0) + '</span>'          + '<span style="font-size:11px;color:var(--muted)">Commitment: ' + buildStars(s.rating_commitment || 0) + '</span>'          + '<span style="font-size:11px;color:var(--muted)">Understanding: ' + buildStars(s.rating_understanding || 0) + '</span>'        + '</div>'        + (s.coaching_notes ? '<div style="font-size:12px;color:var(--mid);margin-top:5px;background:#F9FAFB;border-radius:6px;padding:6px 10px">' + s.coaching_notes + '</div>' : '')        + (s.fireflies_link ? '<div style="margin-top:5px"><a href="' + s.fireflies_link + '" target="_blank" style="font-size:11px;color:var(--blue);font-weight:600"><i class="fas fa-microphone"></i> View Transcript</a></div>' : '')      + '</div>'      + '<button style="background:none;border:1px solid var(--border);border-radius:8px;padding:5px 12px;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--font);flex-shrink:0" data-action="edit-session" data-sid="' + s.id + '">Edit</button>'    + '</div>';
+  });
 
+  var noAwait = '<div style="text-align:center;padding:32px;color:var(--muted)"><i class="fas fa-check-circle" style="font-size:28px;color:var(--green);display:block;margin-bottom:10px"></i><div style="font-weight:700;color:var(--green)">All coaching done</div></div>';
+  var noDone = '<div style="text-align:center;padding:28px;color:var(--muted)">No completed sessions yet.</div>';
 
-  // ---- MISSING COMPLETIONS PANEL ----
-  var requiredItems = items.filter(function(i) { return i.is_required; });
-  var missingHtml = '';
+  var coachingHtml = '<div class="edit-panel" style="padding:0;overflow:hidden">'    + '<div style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--border)">'      + '<div style="width:36px;height:36px;border-radius:8px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-chalkboard-teacher" style="color:#D97706;font-size:16px"></i></div>'      + '<div style="flex:1"><div style="font-size:15px;font-weight:700">Coaching</div><div style="font-size:12px;color:var(--muted)">' + awaitingSessions.length + ' awaiting &middot; ' + completedSessions.length + ' completed</div></div>'    + '</div>'    + '<div style="display:flex;border-bottom:1px solid var(--border)" id="coaching-tabs">'      + '<button class="ctab active" data-ctab="await" style="flex:1;padding:10px;border:none;background:none;font-family:var(--font);font-size:13px;font-weight:600;color:var(--brand);border-bottom:2px solid var(--brand);cursor:pointer">Awaiting Coaching (' + awaitingSessions.length + ')</button>'      + '<button class="ctab" data-ctab="done" style="flex:1;padding:10px;border:none;background:none;font-family:var(--font);font-size:13px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer">Coaching Completed (' + completedSessions.length + ')</button>'    + '</div>'    + '<div id="ctab-await" style="max-height:320px;overflow-y:auto">' + (awaitRows || noAwait) + '</div>'    + '<div id="ctab-done" style="max-height:320px;overflow-y:auto;display:none">' + (doneRows || noDone) + '</div>'  + '</div>';
 
-  if (VANTA_PEOPLE.length > 0 && requiredItems.length > 0) {
-    // Use Vanta list as authoritative people source
-    var missingRows = '';
-    var missingCount = 0;
-
-    VANTA_PEOPLE.forEach(function(person) {
-      var personComps = compMap[person.email] || {};
-      var missing = requiredItems.filter(function(item) {
-        return !personComps[item.id] || !personComps[item.id].passed;
-      });
-      if (!missing.length) return;
-      missingCount++;
-      var ini = person.name.split(' ').map(function(p) { return p[0] || ''; }).join('').substring(0, 2).toUpperCase();
-      var avColor = person.company === 'Techanzy' ? '#0284C7' : '#6C5DD3';
-      var compTag = person.company === 'Techanzy'
-        ? '<span class="missing-tag company-tag-tch">Techanzy</span>'
-        : '<span class="missing-tag company-tag-iai">ImplementAI</span>';
-      var missingTagsHtml = missing.map(function(item) {
-        return '<span class="missing-tag">' + item.name.replace(' Policy','').replace(' Management','') + '</span>';
-      }).join('');
-      missingRows += '<div class="missing-row">'
-        + '<div class="missing-av" style="background:' + avColor + '">' + ini + '</div>'
-        + '<div style="flex:1;min-width:0">'
-          + '<div class="missing-name">' + person.name + ' ' + compTag + '</div>'
-          + '<div class="missing-email">' + person.email + '</div>'
-        + '</div>'
-        + '<div class="missing-tags">' + missingTagsHtml + '</div>'
-        + '<div class="missing-count">' + missing.length + ' missing</div>'
-      + '</div>';
-    });
-
-    if (missingCount === 0) {
-      missingHtml = '<div class="missing-panel"><div class="all-done-msg"><i class="fas fa-check-circle" style="font-size:28px;color:var(--green);display:block;margin-bottom:10px"></i><div style="font-size:15px;font-weight:700;color:var(--green)">Everyone is up to date</div><div style="font-size:13px;margin-top:6px">All team members have completed their required training.</div></div></div>';
-    } else {
-      missingHtml = '<div class="missing-panel">'
-        + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">'
-          + '<div style="width:36px;height:36px;border-radius:8px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-user-clock" style="color:#D97706;font-size:16px"></i></div>'
-          + '<div><div style="font-size:16px;font-weight:700">Training Outstanding</div><div class="missing-panel-sub">' + missingCount + ' of ' + VANTA_PEOPLE.length + ' people still have required training to complete</div></div>'
-        + '</div>'
-        + '<div class="missing-scroll">' + missingRows + '</div>'
-      + '</div>';
-    }
-  } else if (VANTA_PEOPLE.length === 0) {
-    missingHtml = '<div class="missing-panel" style="border-style:dashed;opacity:.6"><div class="all-done-msg"><i class="fas fa-users" style="font-size:28px;color:var(--muted);display:block;margin-bottom:10px"></i><div style="font-size:14px;font-weight:600">People list not yet loaded</div><div style="font-size:12px;margin-top:6px">Vanta people list is being pulled. Refresh after it completes.</div></div></div>';
+14px;font-weight:600">People list not yet loaded</div><div style="font-size:12px;margin-top:6px">Vanta people list is being pulled. Refresh after it completes.</div></div></div>';
   }
 
 
@@ -841,10 +778,31 @@ document.getElementById('view-admin').addEventListener('click', function(e) {
   var action = btn.getAttribute('data-action');
   var id = btn.getAttribute('data-id');
   var section = btn.getAttribute('data-section');
+  // Coaching tab switch
+  var ctab = e.target.closest('.ctab');
+  if (ctab) {
+    document.querySelectorAll('.ctab').forEach(function(t) {
+      t.style.color = 'var(--muted)';
+      t.style.borderBottomColor = 'transparent';
+    });
+    ctab.style.color = 'var(--brand)';
+    ctab.style.borderBottomColor = 'var(--brand)';
+    var which = ctab.getAttribute('data-ctab');
+    var awaitEl = document.getElementById('ctab-await');
+    var doneEl  = document.getElementById('ctab-done');
+    if (awaitEl) awaitEl.style.display = which === 'await' ? '' : 'none';
+    if (doneEl)  doneEl.style.display  = which === 'done'  ? '' : 'none';
+    return;
+  }
+  // Coaching session actions
+  var sid = btn ? btn.getAttribute('data-sid') : null;
+  if (action === 'record-session' && sid) { openCoachingForm(sid); return; }
+  if (action === 'edit-session'   && sid) { openCoachingForm(sid); return; }
   if (action === 'add-section') showSectionForm(null);
   if (action === 'edit-section') loadAndEditSection(id);
   if (action === 'add-item') showItemForm(null, section);
   if (action === 'edit-item') loadAndEditItem(id);
+  if (action === 'save-coaching' && btn) { saveCoachingSession(btn.getAttribute('data-sid')); return; }
   if (action === 'save-section') saveSectionForm();
   if (action === 'save-item') saveItemForm();
   if (action === 'add-block') {
@@ -1009,4 +967,61 @@ async function deleteItemAction(id) {
 
 </script>
 </body>
-</html>
+</html
+function buildStarInput(fid, val) {
+  var h = '<div style="display:flex;gap:6px;margin-top:4px">';
+  for (var i = 1; i <= 5; i++) {
+    h += '<i class="fas fa-star cstar" data-fid="' + fid + '" data-v="' + i + '" style="font-size:22px;cursor:pointer;color:' + (i <= val ? '#D97706' : '#E5E7EB') + '"></i>';
+  }
+  h += '</div><input type="hidden" id="' + fid + '" value="' + val + '">';
+  return h;
+}
+
+function wireStars() {
+  document.querySelectorAll('.cstar').forEach(function(star) {
+    star.addEventListener('click', function() {
+      var fid = this.getAttribute('data-fid');
+      var v = parseInt(this.getAttribute('data-v'));
+      document.getElementById(fid).value = v;
+      document.querySelectorAll('.cstar[data-fid="' + fid + '"]').forEach(function(s) {
+        s.style.color = parseInt(s.getAttribute('data-v')) <= v ? '#D97706' : '#E5E7EB';
+      });
+    });
+  });
+}
+
+async function openCoachingForm(sid) {
+  var res = await SB.from('coaching_sessions').select('*').eq('id', sid).maybeSingle();
+  var s = res.data || {};
+  var itemName = '';
+  var itemsRes = await SB.from('training_items').select('id,name');
+  (itemsRes.data || []).forEach(function(i) { if (i.id === s.training_item_id) itemName = i.name; });
+
+  var today = new Date().toISOString().split('T')[0];
+  var html = '<div style="background:var(--canvas);border-radius:8px;padding:16px;margin-bottom:16px">'    + '<div style="font-size:14px;font-weight:700;margin-bottom:12px">Record Coaching Session</div>'    + '<div style="background:#FEF3C7;border-radius:8px;padding:10px 14px;margin-bottom:14px">'      + '<div style="font-size:13px;font-weight:700">' + (s.user_name || (s.user_email || '').split('@')[0]) + '</div>'      + '<div style="font-size:12px;color:var(--muted);margin-top:2px">' + itemName + '</div>'      + (s.missed_question ? '<div style="font-size:11px;color:var(--mid);margin-top:4px;font-style:italic">Missed: "' + s.missed_question.substring(0,100) + '"</div>' : '')    + '</div>'    + '<div class="fg">'      + '<div class="ff"><label>Session Date</label><input type="date" id="cs-date" value="' + (s.session_date || today) + '"></div>'      + '<div class="ff"><label>Duration (minutes)</label><input type="number" id="cs-dur" value="' + (s.duration_minutes || 10) + '" min="1" max="120"></div>'      + '<div class="ff"><label>Coached By</label><input type="text" id="cs-by" value="' + (s.coached_by || (currentUser ? currentUser.email.split('@')[0] : '')) + '"></div>'      + '<div class="ff"><label>Fireflies Transcript Link</label><input type="url" id="cs-ff" value="' + (s.fireflies_link || '') + '" placeholder="https://app.fireflies.ai/..."></div>'      + '<div class="ff" style="grid-column:1/-1"><label>Coaching Notes</label><textarea id="cs-notes" style="min-height:80px">' + (s.coaching_notes || '') + '</textarea></div>'      + '<div class="ff"><label>Overall (1-5)</label>' + buildStarInput('cs-overall', s.rating_overall || 0) + '</div>'      + '<div class="ff"><label>Participation (1-5)</label>' + buildStarInput('cs-participation', s.rating_participation || 0) + '</div>'      + '<div class="ff"><label>Commitment (1-5)</label>' + buildStarInput('cs-commitment', s.rating_commitment || 0) + '</div>'      + '<div class="ff"><label>Understanding (1-5)</label>' + buildStarInput('cs-understanding', s.rating_understanding || 0) + '</div>'    + '</div>'    + '<div class="fa" style="margin-top:16px">'      + '<button class="btn-save" data-action="save-coaching" data-sid="' + sid + '">Save &amp; Mark Complete</button>'      + '<button class="btn-cancel" data-action="cancel-edit">Cancel</button>'    + '</div>'  + '</div>';
+
+  document.getElementById('edit-form-area').innerHTML = html;
+  wireStars();
+  document.getElementById('edit-form-area').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+async function saveCoachingSession(sid) {
+  var payload = {
+    session_date:        document.getElementById('cs-date') ? document.getElementById('cs-date').value || null : null,
+    duration_minutes:   parseInt(document.getElementById('cs-dur') ? document.getElementById('cs-dur').value : '10') || 10,
+    coached_by:         document.getElementById('cs-by') ? document.getElementById('cs-by').value.trim() : '',
+    fireflies_link:     document.getElementById('cs-ff') ? document.getElementById('cs-ff').value.trim() : '',
+    coaching_notes:     document.getElementById('cs-notes') ? document.getElementById('cs-notes').value.trim() : '',
+    rating_overall:     parseInt(document.getElementById('cs-overall') ? document.getElementById('cs-overall').value : '0') || 0,
+    rating_participation: parseInt(document.getElementById('cs-participation') ? document.getElementById('cs-participation').value : '0') || 0,
+    rating_commitment:  parseInt(document.getElementById('cs-commitment') ? document.getElementById('cs-commitment').value : '0') || 0,
+    rating_understanding: parseInt(document.getElementById('cs-understanding') ? document.getElementById('cs-understanding').value : '0') || 0,
+    status:             'completed',
+    updated_at:         new Date().toISOString()
+  };
+  await SB.from('coaching_sessions').update(payload).eq('id', sid);
+  document.getElementById('edit-form-area').innerHTML = '';
+  renderAdmin();
+}
+
+>
