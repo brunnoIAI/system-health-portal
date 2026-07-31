@@ -539,16 +539,23 @@ async function renderAdmin() {
   var el = document.getElementById('view-admin');
   el.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><div style="margin-top:12px">Loading admin panel...</div></div>';
 
-  var _r = await Promise.all([
-    SB.from('training_sections').select('*').order('display_order'),
-    SB.from('training_items').select('*').order('display_order'),
-    SB.from('training_completions').select('*'),
-    SB.from('coaching_sessions').select('*')
-  ]);
+  var _r;
+  try {
+    _r = await Promise.all([
+      SB.from('training_sections').select('*').order('display_order'),
+      SB.from('training_items').select('*').order('display_order'),
+      SB.from('training_completions').select('id,user_email,user_name,training_item_id,score,passed,block_completions,notes'),
+      SB.from('coaching_sessions').select('id,user_email,user_name,training_item_id,missed_question,status,session_date,duration_minutes,coached_by,fireflies_link,coaching_notes,rating_overall,rating_participation,rating_commitment,rating_understanding')
+    ]);
+  } catch(err) {
+    el.innerHTML = '<div class="loading" style="color:var(--red)"><i class="fas fa-exclamation-triangle" style="display:block;font-size:28px;margin-bottom:10px"></i>Failed to load admin panel: ' + (err.message || err) + '</div>';
+    return;
+  }
   var secRes  = _r[0];
   var itemRes = _r[1];
   var compRes = _r[2];
   var coachRes = _r[3];
+  if (secRes.error) { el.innerHTML = '<div class="loading" style="color:var(--red)">Error: ' + secRes.error.message + '</div>'; return; }
   var allSessions = coachRes.data || [];
   var sections = secRes.data || [];
   var items = itemRes.data || [];
