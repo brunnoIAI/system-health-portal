@@ -513,13 +513,28 @@ function isItemComplete(item, comp) {
   var blockComps = comp.block_completions || {};
   var quizBlock = blocks.find(function(b) { return b.type === 'quiz'; });
   var nonQuizBlocks = blocks.filter(function(b) { return b.type !== 'quiz' && b.type !== 'note'; });
-  // If there is a quiz: item complete when quiz is passed
   if (quizBlock) return comp.passed === true;
-  // No quiz: item complete when all video/doc/link blocks are marked watched
   for (var i = 0; i < nonQuizBlocks.length; i++) {
     if (!blockComps[nonQuizBlocks[i].id]) return false;
   }
   return nonQuizBlocks.length > 0;
+}
+
+function isSectionRequiredForDept(section, userDept) {
+  var reqDepts = section.required_departments || ['All'];
+  if (reqDepts.indexOf('All') >= 0) return true;
+  if (!userDept) return true;
+  return reqDepts.indexOf(userDept) >= 0;
+}
+
+function getRequiredItemsForUser(items, sections, userDept) {
+  var secMap = {};
+  sections.forEach(function(s) { secMap[s.id] = s; });
+  return items.filter(function(item) {
+    var sec = secMap[item.section_id];
+    if (!sec) return true;
+    return isSectionRequiredForDept(sec, userDept);
+  });
 }
 
 function buildBlockHtml(itemId, block, bDone, comp) {
@@ -683,8 +698,13 @@ async function renderAdmin() {
     matrixHtml += '</tr></thead><tbody>';
     users.forEach(function(u) {
       var uc = compMap[u.email] || {};
-      var req = items.filter(function(i) { return i.is_required; }).length;
-      var done = items.filter(function(i) { return i.is_required && isItemComplete(i, uc[i.id]); }).length;
+      var personDept = (function() {
+        var vp = VANTA_PEOPLE.find(function(p) { return p.email === u.email; });
+        return vp ? vp.department : '';
+      })();
+      var reqItems = getRequiredItemsForUser(items.filter(function(i) { return i.is_required; }), sections, personDept);
+      var req = reqItems.length;
+      var done = reqItems.filter(function(i) { return isItemComplete(i, uc[i.id]); }).length;
       matrixHtml += '<tr><td><div style="font-weight:600">' + (u.name || u.email.split('@')[0]) + '</div><div style="font-size:11px;color:var(--muted)">' + u.email + '</div><div style="font-size:11px;color:var(--muted)">' + done + '/' + req + ' required</div></td>';
       items.forEach(function(item) {
         var c = uc[item.id];
@@ -762,8 +782,9 @@ async function renderAdmin() {
 
     VANTA_PEOPLE.forEach(function(person) {
       var personComps = compMap[person.email] || {};
-      var missing = requiredItems.filter(function(item) {
-        return !personComps[item.id] || !personComps[item.id].passed;
+      var personReqItems = getRequiredItemsForUser(requiredItems, sections, person.department || '');
+      var missing = personReqItems.filter(function(item) {
+        return !isItemComplete(item, personComps[item.id]);
       });
       if (!missing.length) return;
       missingCount++;
