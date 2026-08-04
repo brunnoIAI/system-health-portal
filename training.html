@@ -333,7 +333,7 @@ async function doLogin() {
   var btn = document.getElementById('login-btn');
   btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
   var hash = await sha256(pendingEmail + ':' + pw);
-  var authRes = await SB.from('portal_auth').select('pw_hash,failed_attempts,locked_until').eq('email', pendingEmail).maybeSingle();
+  var authRes = await SB.from('portal_auth').select('pw_hash,failed_attempts,locked_until,department').eq('email', pendingEmail).maybeSingle();
   btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
   var authRow = authRes.data;
   if (!authRow || !authRow.pw_hash) { errEl.textContent = 'No password set.'; errEl.style.display = 'block'; return; }
@@ -362,7 +362,21 @@ async function doSetPassword() {
   await SB.from('portal_auth').upsert({email: pendingEmail, pw_hash: hash, pw_set_at: new Date().toISOString(), last_login: new Date().toISOString(), failed_attempts: 0});
   document.getElementById('set-pw-modal').style.display = 'none';
   btn.disabled = false; btn.textContent = 'Set Password & Sign In';
-  completeLogin(pendingEmail, '');
+  // New user -- show dept selection before entering
+  document.getElementById('set-pw-modal').style.display = 'none';
+  document.getElementById('dept-modal').style.display = 'flex';
+  // dept-save-btn will call completeLogin after selection
+  document.getElementById('dept-save-btn').removeEventListener('click', saveDept);
+  document.getElementById('dept-save-btn').addEventListener('click', function() {
+    var dept = document.getElementById('dept-select').value;
+    var errEl = document.getElementById('dept-err');
+    errEl.style.display = 'none';
+    if (!dept) { errEl.textContent = 'Please select your department.'; errEl.style.display = 'block'; return; }
+    SB.from('portal_auth').update({department: dept}).eq('email', pendingEmail).then(function() {
+      document.getElementById('dept-modal').style.display = 'none';
+      completeLogin(pendingEmail, dept);
+    });
+  });
 }
 
 function completeLogin(email, dept) {
@@ -392,8 +406,6 @@ async function saveDept() {
   document.getElementById('dept-modal').style.display = 'none';
   showTab('my');
 }
-
-document.getElementById('dept-save-btn').addEventListener('click', saveDept);
 
 function doLogout() {
   currentUser = null; pendingEmail = null;
