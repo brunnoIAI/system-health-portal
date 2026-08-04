@@ -140,6 +140,30 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text);}
   </div>
 </div>
 
+
+<div class="overlay" id="dept-modal">
+  <div class="modal" style="max-width:440px">
+    <h2>Welcome to the Training Portal</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">Before you start, please select your department so we can show you the trainings that are required for your role.</p>
+    <div class="lf">
+      <label>Your Department</label>
+      <select id="dept-select" style="width:100%;border:1px solid #D1D5DB;border-radius:8px;padding:10px 14px;font-family:var(--font);font-size:14px;outline:none">
+        <option value="">-- Select your department --</option>
+        <option value="AIOS Engineering">AIOS Engineering</option>
+        <option value="Solutions Engineering">Solutions Engineering</option>
+        <option value="Solutions Associate">Solutions Associate</option>
+        <option value="Leadership">Leadership</option>
+        <option value="Design">Design</option>
+        <option value="QA Engineering">QA Engineering</option>
+        <option value="Sales">Sales</option>
+        <option value="Operations">Operations</option>
+      </select>
+    </div>
+    <div class="err-box" id="dept-err"></div>
+    <button class="login-btn" id="dept-save-btn" style="margin-top:8px">Confirm &amp; Continue</button>
+  </div>
+</div>
+
 <div class="overlay" id="set-pw-modal">
   <div class="modal">
     <h2>Set your password</h2>
@@ -186,41 +210,56 @@ const SB_URL = 'https://zijhsdhjxohicuoxwytk.supabase.co';
 const SB_KEY = 'sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox';
 const SB = window.supabase.createClient(SB_URL, SB_KEY);
 
-// VANTA PEOPLE — full active team (16 ImplementAI + 15 Techanzy)
-// Source: Brunno's confirmed list, 29 Jul 2026
+// VANTA PEOPLE -- full active team with roles and departments
+// Source: Brunno confirmed list, 4 Aug 2026
+// Fired/left removed: Arsh Yaseen, Vishal Kumar
 var VANTA_PEOPLE = [
-  {name:"Abayomi Baruwa",email:"abayomi@implementai.io",company:"ImplementAI"},
-  {name:"Brunno Tavarez",email:"brunno@implementai.io",company:"ImplementAI"},
-  {name:"Dr Aalok Shukla",email:"aalok@implementai.io",company:"ImplementAI"},
-  {name:"Kamil Murgala",email:"kamil@implementai.io",company:"ImplementAI"},
-  {name:"Katrina Nguyen",email:"katrina@implementai.io",company:"ImplementAI"},
-  {name:"Lucia Barreiros",email:"lucia@implementai.io",company:"ImplementAI"},
-  {name:"Mahdi Messai",email:"mahdi@implementai.io",company:"ImplementAI"},
-  {name:"Mishai Du\'Jon Osbourne",email:"mishai@implementai.io",company:"ImplementAI"},
-  {name:"Nabela Ryani",email:"nabela@implementai.io",company:"ImplementAI"},
-  {name:"Nichola Hedger",email:"nichola@implementai.io",company:"ImplementAI"},
-  {name:"Nikhil Mehrishi",email:"nikhil@implementai.io",company:"ImplementAI"},
-  {name:"Onkar Mane",email:"onkar@implementai.io",company:"ImplementAI"},
-  {name:"Piers Linney",email:"piers@implementai.io",company:"ImplementAI"},
-  {name:"Raimondas Astrauskas",email:"raimondas@implementai.io",company:"ImplementAI"},
-  {name:"Vishal Kumar",email:"vishal@implementai.io",company:"ImplementAI"},
-  {name:"Abdul Samad",email:"abdul@implementai.io",company:"ImplementAI"},
-  {name:"Abdullah Nadeem",email:"abdullah@implementai.io",company:"Techanzy"},
-  {name:"Arsh Yaseen",email:"arsh@implementai.io",company:"Techanzy"},
-  {name:"Azeem Shah",email:"azeem@implementai.io",company:"Techanzy"},
-  {name:"Fida Hussain",email:"fida@implementai.io",company:"Techanzy"},
-  {name:"Habib Qayoom",email:"habib@implementai.io",company:"Techanzy"},
-  {name:"Mahnoor Ijaz",email:"mahnoor@implementai.io",company:"Techanzy"},
-  {name:"Meezab Fatima",email:"meezab@implementai.io",company:"Techanzy"},
-  {name:"Muhammad Shahzeb",email:"shahzeb@implementai.io",company:"Techanzy"},
-  {name:"Muhammad Ubaid Waseem",email:"ubaid@implementai.io",company:"Techanzy"},
-  {name:"Saad Ansari",email:"saad@implementai.io",company:"Techanzy"},
-  {name:"Saim Malik",email:"saim@implementai.io",company:"Techanzy"},
-  {name:"Shahan Butt",email:"shahan@implementai.io",company:"Techanzy"},
-  {name:"Tayyub Ahmad",email:"tayyub@implementai.io",company:"Techanzy"},
-  {name:"Usman Ali",email:"usman@implementai.io",company:"Techanzy"},
-  {name:"Zara Abrar",email:"zara@implementai.io",company:"Techanzy"}
+  {name:"Dr Aalok Shukla",email:"aalok@implementai.io",company:"ImplementAI",role:"CEO",department:"Leadership"},
+  {name:"Abayomi Baruwa",email:"abayomi@implementai.io",company:"ImplementAI",role:"QA and Engineering Operations Internal Auditor",department:"QA Engineering"},
+  {name:"Abdul Samad",email:"abdul@implementai.io",company:"ImplementAI",role:"Web Designer",department:"Design"},
+  {name:"Brunno Tavarez",email:"brunno@implementai.io",company:"ImplementAI",role:"Internal Compliance Program Coordinator and Operational Continuity Lead",department:"Operations"},
+  {name:"Kamil Murgala",email:"kamil@implementai.io",company:"ImplementAI",role:"Solutions Associate Lead",department:"Solutions Associate"},
+  {name:"Katrina Nguyen",email:"katrina@implementai.io",company:"ImplementAI",role:"Special Projects Lead",department:"Sales"},
+  {name:"Lucia Barreiros",email:"lucia@implementai.io",company:"ImplementAI",role:"Solutions Associate",department:"Solutions Associate"},
+  {name:"Mahdi Messai",email:"mahdi@implementai.io",company:"ImplementAI",role:"AIOS Engineer",department:"AIOS Engineering"},
+  {name:"Mishai Du\'Jon Osbourne",email:"mishai@implementai.io",company:"ImplementAI",role:"Solutions Associate",department:"Solutions Associate"},
+  {name:"Nabela Ryani",email:"nabela@implementai.io",company:"ImplementAI",role:"Solutions Associate",department:"Solutions Associate"},
+  {name:"Nichola Hedger",email:"nichola@implementai.io",company:"ImplementAI",role:"Executive Assistant to Piers Linney",department:"Operations"},
+  {name:"Nikhil Mehrishi",email:"nikhil@implementai.io",company:"ImplementAI",role:"Head of Delivery",department:"Leadership"},
+  {name:"Onkar Mane",email:"onkar@implementai.io",company:"ImplementAI",role:"Product Manager and Solutions Engineering Lead",department:"Solutions Engineering"},
+  {name:"Piers Linney",email:"piers@implementai.io",company:"ImplementAI",role:"Executive Chairman and ISMS Lead",department:"Leadership"},
+  {name:"Raimondas Astrauskas",email:"ray@implementai.io",company:"ImplementAI",role:"Designer",department:"Design"},
+  {name:"Abdullah Nadeem",email:"abdullah@implementai.io",company:"Techanzy",role:"Solutions Engineer",department:"Solutions Engineering"},
+  {name:"Azeem Shah",email:"azeem@implementai.io",company:"Techanzy",role:"AIOS Head of Engineers",department:"AIOS Engineering"},
+  {name:"Fida Hussain",email:"fida@implementai.io",company:"Techanzy",role:"AIOS Engineer",department:"AIOS Engineering"},
+  {name:"Habib Qayoom",email:"habib@implementai.io",company:"Techanzy",role:"Engineering Lead",department:"AIOS Engineering"},
+  {name:"Mahnoor Ijaz",email:"mahnoor@implementai.io",company:"Techanzy",role:"QA Engineer",department:"QA Engineering"},
+  {name:"Meezab Fatima",email:"meezab@implementai.io",company:"Techanzy",role:"Solutions Engineering Lead and Product Owner",department:"Solutions Engineering"},
+  {name:"Muhammad Shahzeb",email:"shahzeb@implementai.io",company:"Techanzy",role:"Technical Lead",department:"Leadership"},
+  {name:"Muhammad Shahan Butt",email:"shahan@implementai.io",company:"Techanzy",role:"Solutions Engineer",department:"Solutions Engineering"},
+  {name:"Muhammad Ubaid Waseem",email:"ubaid@implementai.io",company:"Techanzy",role:"AIOS Engineer",department:"AIOS Engineering"},
+  {name:"Saad Ansari",email:"saad@implementai.io",company:"Techanzy",role:"Solutions Engineer",department:"Solutions Engineering"},
+  {name:"Saim Malik",email:"saim@implementai.io",company:"Techanzy",role:"AIOS Engineer",department:"AIOS Engineering"},
+  {name:"Tayyub Ahmad",email:"tayyub@implementai.io",company:"Techanzy",role:"Solutions Engineer and Solutions Engineering Lead",department:"Solutions Engineering"},
+  {name:"Usman Ali",email:"usman@implementai.io",company:"Techanzy",role:"Solutions Engineer",department:"Solutions Engineering"},
+  {name:"Zara Abrar",email:"zara@implementai.io",company:"Techanzy",role:"Solutions Engineer",department:"Solutions Engineering"},
+  {name:"Abdul Basit",email:"abasita33@gmail.com",company:"Techanzy",role:"AIOS Engineer",department:"AIOS Engineering"},
+  {name:"Muhammad Mujtaba",email:"mmujtabach1234@gmail.com",company:"Techanzy",role:"AIOS Engineer",department:"AIOS Engineering"}
 ];
+
+// DEPARTMENTS -- available department options for training sections
+var DEPARTMENTS = [
+  'All',
+  'AIOS Engineering',
+  'Solutions Engineering',
+  'Solutions Associate',
+  'Leadership',
+  'Design',
+  'QA Engineering',
+  'Sales',
+  'Operations'
+];
+
 
 const ALLOWED = '@implementai.io';
 const ADMINS = ['brunno@implementai.io'];
@@ -307,7 +346,7 @@ async function doLogin() {
     errEl.textContent = 'Incorrect password. ' + (5 - att) + ' attempts remaining.'; errEl.style.display = 'block'; return;
   }
   await SB.from('portal_auth').update({failed_attempts: 0, last_login: new Date().toISOString()}).eq('email', pendingEmail);
-  completeLogin(pendingEmail);
+  completeLogin(pendingEmail, authRow.department || '');
 }
 
 async function doSetPassword() {
@@ -323,20 +362,38 @@ async function doSetPassword() {
   await SB.from('portal_auth').upsert({email: pendingEmail, pw_hash: hash, pw_set_at: new Date().toISOString(), last_login: new Date().toISOString(), failed_attempts: 0});
   document.getElementById('set-pw-modal').style.display = 'none';
   btn.disabled = false; btn.textContent = 'Set Password & Sign In';
-  completeLogin(pendingEmail);
+  completeLogin(pendingEmail, '');
 }
 
-function completeLogin(email) {
+function completeLogin(email, dept) {
   var parts = email.split('@')[0].split('.');
   var initials = parts.map(function(p) { return p[0] ? p[0].toUpperCase() : ''; }).join('').substring(0, 2);
-  currentUser = {email: email, initials: initials, isAdmin: ADMINS.indexOf(email) >= 0};
+  currentUser = {email: email, initials: initials, isAdmin: ADMINS.indexOf(email) >= 0, department: dept || ''};
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-av').textContent = initials;
   document.getElementById('user-name').textContent = email.split('@')[0];
   if (currentUser.isAdmin) document.getElementById('tab-admin').style.display = '';
+  if (!dept) {
+    document.getElementById('dept-modal').style.display = 'flex';
+  } else {
+    showTab('my');
+  }
+}
+
+
+async function saveDept() {
+  var dept = document.getElementById('dept-select').value;
+  var errEl = document.getElementById('dept-err');
+  errEl.style.display = 'none';
+  if (!dept) { errEl.textContent = 'Please select your department.'; errEl.style.display = 'block'; return; }
+  await SB.from('portal_auth').update({department: dept}).eq('email', currentUser.email);
+  currentUser.department = dept;
+  document.getElementById('dept-modal').style.display = 'none';
   showTab('my');
 }
+
+document.getElementById('dept-save-btn').addEventListener('click', saveDept);
 
 function doLogout() {
   currentUser = null; pendingEmail = null;
@@ -397,6 +454,9 @@ async function renderMyTraining() {
     var done = secItems.filter(function(i) { return isItemComplete(i, comps[i.id]); }).length;
     var pct = secItems.length ? Math.round((done / secItems.length) * 100) : 0;
     var pctCol = pct === 100 ? '#16A34A' : pct >= 50 ? '#0284C7' : '#D97706';
+    var reqDepts = sec.required_departments || ['All'];
+    var userDept = currentUser.department || '';
+    var isRequired = reqDepts.indexOf('All') >= 0 || !userDept || reqDepts.indexOf(userDept) >= 0;
     var icons = {'Policies': 'fas fa-shield-alt', 'Daily Work': 'fas fa-briefcase', 'Core Values': 'fas fa-heart', 'Solutions Engineering': 'fas fa-code', 'Solutions Associate': 'fas fa-handshake', 'General': 'fas fa-building'};
     var icon = icons[sec.name] || 'fas fa-book';
 
@@ -464,9 +524,9 @@ function buildBlockHtml(itemId, block, bDone, comp) {
     if (comp && comp.passed) {
       scoreHtml = '<span class="score-badge score-pass"><i class="fas fa-check-circle"></i> ' + comp.score + '% Passed</span>';
     } else if (comp && comp.score !== null && comp.score !== undefined && !comp.passed) {
-      scoreHtml = '<span class="score-badge score-fail">' + comp.score + '% — Retry</span>';
+      scoreHtml = '<span class="score-badge score-fail">' + comp.score + '% - Retry</span>';
     } else {
-      scoreHtml = '<span style="font-size:12px;color:var(--muted);font-style:italic">Complete the quiz — your score will appear automatically</span>';
+      scoreHtml = '<span style="font-size:12px;color:var(--muted);font-style:italic">Complete the quiz - your score will appear automatically</span>';
     }
     return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'      + (url ? '<a href="' + url + '" target="_blank" class="abtn abtn-quiz"><i class="fas fa-clipboard-list"></i> ' + label + '</a>' : '')      + scoreHtml    + '</div>';
   }
@@ -478,7 +538,7 @@ function buildBlockHtml(itemId, block, bDone, comp) {
     ? '<span style="font-size:12px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:5px"><i class="fas fa-check-circle"></i> Done</span>'
     : '<button class="abtn abtn-watched" data-action="mark-watched" data-item="' + itemId + '" data-block="' + bid + '">I watched this</button>';
 
-  return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'    + (url ? '<a href="' + url + '" target="_blank" class="abtn ' + btnClass + '"><i class="' + iconClass + '"></i> ' + label + '</a>' : '<span style="font-size:12px;color:var(--muted)">' + label + ' — no link yet</span>')    + watchedBtn  + '</div>';
+  return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'    + (url ? '<a href="' + url + '" target="_blank" class="abtn ' + btnClass + '"><i class="' + iconClass + '"></i> ' + label + '</a>' : '<span style="font-size:12px;color:var(--muted)">' + label + ' - no link yet</span>')    + watchedBtn  + '</div>';
 }
 
 // Toggle section collapse
@@ -532,7 +592,7 @@ async function markBlockWatched(itemId, blockId) {
   renderMyTraining();
 }
 
-// No manual score submission — scores come from Google Sheets sync only
+// No manual score submission - scores come from Google Sheets sync only
 
 // ---- ADMIN ----
 async function renderAdmin() {
@@ -546,7 +606,7 @@ async function renderAdmin() {
   var items = itemRes.data || [];
   var comps = compRes.data || [];
   // Build user list from completions (everyone who has done any training)
-  // plus anyone in portal_auth — union of both
+  // plus anyone in portal_auth - union of both
   var compUserMap = {};
   comps.forEach(function(c) {
     if (!compUserMap[c.user_email]) compUserMap[c.user_email] = c.user_name || c.user_email.split('@')[0];
@@ -574,7 +634,7 @@ async function renderAdmin() {
     manageHtml += '<div class="drag-section" draggable="true" data-sec-id="' + sec.id + '" style="margin-bottom:16px;border:1.5px solid var(--border);border-radius:10px;overflow:hidden">'
       + '<div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--canvas);border-bottom:1px solid var(--border);cursor:default">'
         + '<i class="fas fa-grip-vertical" style="color:#D1D5DB;cursor:grab;font-size:13px;flex-shrink:0" title="Drag to reorder"></i>'
-        + '<div style="flex:1;font-size:14px;font-weight:700">' + sec.name + '</div>'
+        + '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">' + sec.name + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + ((sec.required_departments || ['All']).join(', ')) + '</div></div>'
         + '<button class="icon-btn" data-action="edit-section" data-id="' + sec.id + '" title="Edit"><i class="fas fa-edit"></i></button>'
         + '<button class="add-btn" style="font-size:11px;padding:5px 10px" data-action="add-item" data-section="' + sec.id + '"><i class="fas fa-plus"></i> Add Training</button>'
       + '</div>';
@@ -657,7 +717,7 @@ async function renderAdmin() {
     coachingHtml = '<div class="edit-panel">'
       + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
         + '<div style="width:36px;height:36px;border-radius:8px;background:#FEF3C7;display:flex;align-items:center;justify-content:center"><i class="fas fa-chalkboard-teacher" style="color:#D97706;font-size:16px"></i></div>'
-        + '<div><div style="font-size:16px;font-weight:700">Coaching Required</div><div style="font-size:12px;color:var(--muted)">People who missed at least one question — review before their next session</div></div>'
+        + '<div><div style="font-size:16px;font-weight:700">Coaching Required</div><div style="font-size:12px;color:var(--muted)">People who missed at least one question - review before their next session</div></div>'
       + '</div>'
       + '<div style="overflow-x:auto"><table class="matrix">'
         + '<thead><tr>'
@@ -871,6 +931,22 @@ document.getElementById('view-admin').addEventListener('click', function(e) {
   if (action === 'delete-item') deleteItemAction(id);
 });
 
+
+function buildDeptCheckboxes(selected) {
+  var depts = ['All','AIOS Engineering','Solutions Engineering','Solutions Associate','Leadership','Design','QA Engineering','Sales','Operations'];
+  return depts.map(function(d) {
+    var chk = selected.indexOf(d) >= 0 ? 'checked' : '';
+    return '<label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--mid);cursor:pointer;background:#F9FAFB;border:1px solid var(--border);border-radius:6px;padding:4px 10px"><input type="checkbox" value="' + d + '" class="dept-chk" ' + chk + ' style="cursor:pointer"> ' + d + '</label>';
+  }).join('');
+}
+
+function readDeptCheckboxes() {
+  var checked = [];
+  document.querySelectorAll('.dept-chk:checked').forEach(function(cb) { checked.push(cb.value); });
+  if (checked.indexOf('All') >= 0) return ['All'];
+  return checked.length > 0 ? checked : ['All'];
+}
+
 function showSectionForm(sec) {
   editSectionId = sec ? sec.id : null; editItemId = null;
   document.getElementById('edit-form-area').innerHTML = '<div style="background:var(--canvas);border-radius:8px;padding:16px;margin-bottom:16px">'
@@ -878,6 +954,7 @@ function showSectionForm(sec) {
     + '<div class="fg">'
       + '<div class="ff" style="grid-column:1/-1"><label>Section Name</label><input type="text" id="ef-name" value="' + (sec ? sec.name : '') + '" placeholder="e.g. Policies, Core Values, Daily Work"></div>'
       + '<div class="ff" style="grid-column:1/-1"><label>Description (optional)</label><input type="text" id="ef-desc" value="' + (sec ? (sec.description || '') : '') + '" placeholder="Brief description"></div>'
+      + '<div class="ff" style="grid-column:1/-1"><label>Required for Departments</label><div id="dept-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">' + buildDeptCheckboxes(sec ? (sec.required_departments || ['All']) : ['All']) + '</div></div>'
     + '</div>'
     + '<div class="fa"><button class="btn-save" data-action="save-section">Save</button>'
     + (sec ? '<button class="btn-del" data-action="delete-section" data-id="' + sec.id + '">Delete</button>' : '')
@@ -894,10 +971,11 @@ async function saveSectionForm() {
   var name = (document.getElementById('ef-name').value || '').trim();
   var desc = (document.getElementById('ef-desc').value || '').trim();
   if (!name) { alert('Name is required.'); return; }
+  var reqDepts = readDeptCheckboxes();
   if (editSectionId) {
-    await SB.from('training_sections').update({name: name, description: desc, updated_at: new Date().toISOString()}).eq('id', editSectionId);
+    await SB.from('training_sections').update({name: name, description: desc, required_departments: reqDepts, updated_at: new Date().toISOString()}).eq('id', editSectionId);
   } else {
-    await SB.from('training_sections').insert({id: 'SEC_' + Date.now(), name: name, description: desc, display_order: 99});
+    await SB.from('training_sections').insert({id: 'SEC_' + Date.now(), name: name, description: desc, required_departments: reqDepts, display_order: 99});
   }
   document.getElementById('edit-form-area').innerHTML = ''; editSectionId = null;
   renderAdmin();
