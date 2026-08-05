@@ -414,8 +414,8 @@ function renderDashboard(){
           <div class="bnum"><div class="bnum-val" style="color:#0284C7">${overallPct}%</div><div class="bnum-lbl">Overall</div></div>
         </div>
       </div>
-      <div style="margin-bottom:4px;"><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Today: ${todayHrs.toFixed(1)}h logged of 8h</span><span style="color:${tc};font-weight:700;">${todayPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,100)}%;background:${tc};"></div></div></div>
-      <div><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Overall avg: ~${dailyEst.toFixed(1)}h/day across ${active.length} active tasks</span><span style="color:#0284C7;font-weight:700;">${overallPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(overallPct,100)}%;background:#0284C7;"></div></div></div>
+      <div style="margin-bottom:4px;"><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Today: ${fmtHrs(todayHrs)} logged of 8h</span><span style="color:${tc};font-weight:700;">${todayPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,100)}%;background:${tc};"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Overall avg: ~${fmtHrs(dailyEst)}/day across ${active.length} active tasks</span><span style="color:#0284C7;font-weight:700;">${overallPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(overallPct,100)}%;background:#0284C7;"></div></div></div>
       <div class="bchips">${calcBreakdown().map(b=>`<div class="bchip"><strong>${b.hrs}h</strong> ${b.label}</div>`).join('')}<div class="bchip" style="margin-left:auto;"><strong>${totalEst.toFixed(0)}h</strong> est total</div></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -491,7 +491,7 @@ function renderToday(){
       <button class="bg" style="font-size:9.5px;padding:3px 8px;margin-left:auto;" onclick="logLogout()"><i class="fas fa-door-open"></i> Log Logout</button>
     </div>
     <div class="busy-card" style="margin-bottom:14px;">
-      <div class="busy-hdr"><div><div class="busy-title">Today - ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div><div class="busy-note">Every action logged - meetings, emails, Slack, Teams DMs</div></div><div class="bnum"><div class="bnum-val" style="color:${tc};font-size:22px;">${todayPct}%</div><div class="bnum-lbl">${todayHrs.toFixed(1)}h / 8h</div></div></div>
+      <div class="busy-hdr"><div><div class="busy-title">Today - ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div><div class="busy-note">Every action logged - meetings, emails, Slack, Teams DMs</div></div><div class="bnum"><div class="bnum-val" style="color:${tc};font-size:22px;">${todayPct}%</div><div class="bnum-lbl">${fmtHrs(todayHrs)} / 8h</div></div></div>
       <div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,100)}%;background:${tc};"></div></div>
       <div class="bchips">${calcBreakdown().map(b=>`<div class="bchip"><strong>${b.hrs}h</strong> ${b.label}</div>`).join('')||'<div class="bchip">No time logged yet</div>'}</div>
     </div>
@@ -653,10 +653,10 @@ function renderDayHistory(){
   return`
     ${wh?`<div class="work-hrs-bar" style="margin-bottom:10px;"><i class="fas fa-clock" style="color:var(--brand);"></i><div class="wh-item"><strong>Login:</strong> ${(wh.login_time||'').substring(0,5)}</div><div class="wh-item"><strong>Lunch:</strong> ${(wh.lunch_start||'12:00').substring(0,5)}-${(wh.lunch_end||'13:00').substring(0,5)}</div>${wh.logout_time?`<div class="wh-item" style="color:#16A34A;"><strong>Logout:</strong> ${wh.logout_time.substring(0,5)}</div>`:''}</div>`:''}
     <div class="dc ${isToday?'today':''}">
-      <div class="dhdr"><div><div class="ddate">${isToday?'Today - ':''} ${fmtDate(targetDate)}</div><div class="dpct">${pct}% of workday</div></div><div><div class="dhrs" style="color:${barColor}">${totalHrs.toFixed(1)}h</div><div class="dpct">logged</div></div></div>
+      <div class="dhdr"><div><div class="ddate">${isToday?'Today - ':''} ${fmtDate(targetDate)}</div><div class="dpct">${pct}% of workday</div></div><div><div class="dhrs" style="color:${barColor}">${fmtHrs(totalHrs)}</div><div class="dpct">logged</div></div></div>
       <div class="dbar"><div class="dbar-fill" style="width:${pct}%;background:${barColor};"></div></div>
       ${logs.length===0&&doneTasks.length===0?`<div class="empty" style="padding:14px"><i class="fas fa-clock"></i><p style="margin-top:5px;font-size:11px;">${isToday?'Log time to see today\'s breakdown':'No time logged for this day'}</p></div>`:''}
-      ${logs.map(l=>`<div class="drow"><div class="ddot" style="background:#6C5DD3;"></div><div class="dname">${l.notes||'Time entry'}</div><div class="dhrs2">${parseFloat(l.hours).toFixed(1)}h</div></div>`).join('')}
+      ${logs.map(l=>`<div class="drow"><div class="ddot" style="background:#6C5DD3;"></div><div class="dname">${l.notes||'Time entry'}</div><div class="dhrs2">${fmtHrs(l.hours)}</div></div>`).join('')}
       ${doneTasks.map(t=>`<div class="drow"><div class="ddot" style="background:#16A34A;"></div><div class="dname"><i class="fas fa-check" style="color:#16A34A;margin-right:3px;font-size:9px;"></i>${t.title}</div><div class="dhrs2">${t.estimated_hours||'?'}h est</div></div>`).join('')}
     </div>
     ${focus?`<div class="dc" style="margin-top:8px;"><div class="dhdr"><div class="ddate"><i class="fas fa-sun" style="color:#F59E0B;margin-right:4px;"></i>Focus Log</div><div style="color:#F59E0B;">${'⭐'.repeat(focus.day_rating||3)}</div></div>${focus.summary?`<div style="font-size:12px;margin-bottom:5px;">${focus.summary}</div>`:''}${focus.wins?`<div style="font-size:11px;color:#16A34A;"><i class="fas fa-check-circle" style="margin-right:3px;"></i>${focus.wins}</div>`:''}${focus.blockers?`<div style="font-size:11px;color:#DC2626;margin-top:3px;"><i class="fas fa-triangle-exclamation" style="margin-right:3px;"></i>${focus.blockers}</div>`:''}</div>`:''}
@@ -672,10 +672,10 @@ function renderWeekHistory(){
   const days=[];for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(d.getDate()+i);days.push(d.toISOString().split('T')[0]);}
   const twh=days.reduce((s,d)=>s+allTimeLogs.filter(l=>l.log_date===d).reduce((ss,l)=>ss+parseFloat(l.hours||0),0),0);
   return`<div style="background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:12px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;"><div style="font-size:12px;font-weight:700;color:var(--text);">Week Summary</div><div style="font-size:18px;font-weight:800;color:var(--brand);">${twh.toFixed(1)}h</div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;"><div style="font-size:12px;font-weight:700;color:var(--text);">Week Summary</div><div style="font-size:18px;font-weight:800;color:var(--brand);">${fmtHrs(twh)}</div></div>
     <div class="wgrid">${days.map(d=>{const hl=allTimeLogs.filter(l=>l.log_date===d);const hrs=hl.reduce((s,l)=>s+parseFloat(l.hours||0),0);const pct=Math.min(Math.round((hrs/8)*100),100);const isToday=d===TODAY;const dt=new Date(d);return`<div class="wcell ${isToday?'today':''} ${hrs>0?'has-data':''}" onclick="histOff=${Math.round((new Date(d)-new Date())/86400000)};histPeriod='day';renderHistory();"><div class="wdn">${dt.toLocaleDateString('en-GB',{weekday:'short'})}</div><div class="wdd">${dt.getDate()}</div><div class="wdh">${hrs>0?hrs.toFixed(1)+'h':'-'}</div><div class="wdbar"><div class="wdbar-fill" style="width:${pct}%;"></div></div></div>`;}).join('')}</div>
   </div>
-  ${days.filter(d=>allTimeLogs.some(l=>l.log_date===d)).map(d=>{const logs=allTimeLogs.filter(l=>l.log_date===d);const hrs=logs.reduce((s,l)=>s+parseFloat(l.hours||0),0);const isToday=d===TODAY;return`<div class="dc ${isToday?'today':''}"><div class="dhdr"><div class="ddate">${isToday?'Today - ':''} ${fmtDate(d)}</div><div class="dhrs">${hrs.toFixed(1)}h</div></div>${logs.map(l=>`<div class="drow"><div class="ddot" style="background:#6C5DD3;"></div><div class="dname">${l.notes||'Time entry'}</div><div class="dhrs2">${parseFloat(l.hours).toFixed(1)}h</div></div>`).join('')}</div>`;}).join('')}`;
+  ${days.filter(d=>allTimeLogs.some(l=>l.log_date===d)).map(d=>{const logs=allTimeLogs.filter(l=>l.log_date===d);const hrs=logs.reduce((s,l)=>s+parseFloat(l.hours||0),0);const isToday=d===TODAY;return`<div class="dc ${isToday?'today':''}"><div class="dhdr"><div class="ddate">${isToday?'Today - ':''} ${fmtDate(d)}</div><div class="dhrs">${fmtHrs(hrs)}</div></div>${logs.map(l=>`<div class="drow"><div class="ddot" style="background:#6C5DD3;"></div><div class="dname">${l.notes||'Time entry'}</div><div class="dhrs2">${fmtHrs(l.hours)}</div></div>`).join('')}</div>`;}).join('')}`;
 }
 
 function renderMonthHistory(){
@@ -688,17 +688,17 @@ function renderMonthHistory(){
   const dw=Object.keys(byDate).length;
   return`<div style="background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:12px;">
     <div style="display:flex;gap:18px;margin-bottom:10px;">
-      <div><div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;">Total Hours</div><div style="font-size:22px;font-weight:800;color:var(--brand);">${tmh.toFixed(1)}h</div></div>
+      <div><div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;">Total Hours</div><div style="font-size:22px;font-weight:800;color:var(--brand);">${fmtHrs(tmh)}</div></div>
       <div><div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;">Days Logged</div><div style="font-size:22px;font-weight:800;color:var(--text);">${dw}</div></div>
       <div><div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;">Avg / Day</div><div style="font-size:22px;font-weight:800;color:#0284C7;">${dw>0?(tmh/dw).toFixed(1):0}h</div></div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;">
       ${['M','T','W','T','F','S','S'].map(d=>`<div style="font-size:8.5px;font-weight:600;color:var(--muted);text-align:center;padding:2px 0;">${d}</div>`).join('')}
       ${Array(firstDay.getDay()===0?6:firstDay.getDay()-1).fill(0).map(()=>`<div></div>`).join('')}
-      ${monthDates.map(d=>{const hrs=byDate[d]||0;const isToday=d===TODAY;const dt=new Date(d);const intensity=Math.min(hrs/8,1);const bg=hrs>0?`rgba(108,93,211,${0.15+intensity*0.7})`:'#F3F4F6';const color=hrs>0?'#fff':'#9CA3AF';return`<div style="background:${bg};border-radius:3px;padding:3px 1px;text-align:center;cursor:pointer;${isToday?'outline:2px solid var(--brand);':''}" onclick="histOff=${Math.round((new Date(d)-new Date())/86400000)};histPeriod='day';renderHistory();" title="${fmtDate(d)}: ${hrs.toFixed(1)}h"><div style="font-size:9px;font-weight:600;color:${color};">${dt.getDate()}</div>${hrs>0?`<div style="font-size:8px;color:${color};opacity:.9;">${hrs.toFixed(0)}h</div>`:''}</div>`;}).join('')}
+      ${monthDates.map(d=>{const hrs=byDate[d]||0;const isToday=d===TODAY;const dt=new Date(d);const intensity=Math.min(hrs/8,1);const bg=hrs>0?`rgba(108,93,211,${0.15+intensity*0.7})`:'#F3F4F6';const color=hrs>0?'#fff':'#9CA3AF';return`<div style="background:${bg};border-radius:3px;padding:3px 1px;text-align:center;cursor:pointer;${isToday?'outline:2px solid var(--brand);':''}" onclick="histOff=${Math.round((new Date(d)-new Date())/86400000)};histPeriod='day';renderHistory();" title="${fmtDate(d)}: ${fmtHrs(hrs)}"><div style="font-size:9px;font-weight:600;color:${color};">${dt.getDate()}</div>${hrs>0?`<div style="font-size:8px;color:${color};opacity:.9;">${hrs.toFixed(0)}h</div>`:''}</div>`;}).join('')}
     </div>
   </div>
-  ${Object.entries(byDate).sort((a,b)=>b[0].localeCompare(a[0])).map(([d,hrs])=>`<div class="dc ${d===TODAY?'today':''}" style="margin-bottom:6px;"><div class="dhdr"><div class="ddate">${d===TODAY?'Today - ':''} ${fmtDate(d)}</div><div class="dhrs">${hrs.toFixed(1)}h</div></div>${allTimeLogs.filter(l=>l.log_date===d).map(l=>`<div class="drow"><div class="ddot" style="background:#6C5DD3;"></div><div class="dname">${l.notes||'Time entry'}</div><div class="dhrs2">${parseFloat(l.hours).toFixed(1)}h</div></div>`).join('')}</div>`).join('')}`;
+  ${Object.entries(byDate).sort((a,b)=>b[0].localeCompare(a[0])).map(([d,hrs])=>`<div class="dc ${d===TODAY?'today':''}" style="margin-bottom:6px;"><div class="dhdr"><div class="ddate">${d===TODAY?'Today - ':''} ${fmtDate(d)}</div><div class="dhrs">${fmtHrs(hrs)}</div></div>${allTimeLogs.filter(l=>l.log_date===d).map(l=>`<div class="drow"><div class="ddot" style="background:#6C5DD3;"></div><div class="dname">${l.notes||'Time entry'}</div><div class="dhrs2">${fmtHrs(l.hours)}</div></div>`).join('')}</div>`).join('')}`;
 }
 
 // TIME LOG - includes done tasks
@@ -712,8 +712,8 @@ async function renderTimeLog(){
   const weekTotal=Object.entries(byDate).filter(([d])=>new Date(d)>=new Date(Date.now()-7*86400000)).flatMap(([,l])=>l).reduce((s,l)=>s+parseFloat(l.hours||0),0);
   document.getElementById('main-content').innerHTML=`
     <div class="stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px;">
-      <div class="stat"><div class="slbl">Today</div><div class="sval">${todayTotal.toFixed(1)}h</div><div class="ssub">${Math.round((todayTotal/8)*100)}% of workday</div></div>
-      <div class="stat"><div class="slbl">This Week</div><div class="sval">${weekTotal.toFixed(1)}h</div></div>
+      <div class="stat"><div class="slbl">Today</div><div class="sval">${fmtHrs(todayTotal)}</div><div class="ssub">${Math.round((todayTotal/8)*100)}% of workday</div></div>
+      <div class="stat"><div class="slbl">This Week</div><div class="sval">${fmtHrs(weekTotal)}</div></div>
       <div class="stat"><div class="slbl">Daily Avg</div><div class="sval">${(weekTotal/5).toFixed(1)}h</div></div>
     </div>
     <div class="shdr"><div class="stitle"><i class="fas fa-clock"></i> Time Entries + Completed Tasks</div><button class="bp" style="font-size:9.5px;padding:4px 9px;" onclick="openLogTime('')"><i class="fas fa-plus"></i> Log Time</button></div>
@@ -721,8 +721,8 @@ async function renderTimeLog(){
       const dt=entries.reduce((s,l)=>s+parseFloat(l.hours||0),0);
       const dd=doneByDate[date]||[];
       return`<div style="margin-bottom:12px;">
-        <div style="font-size:10.5px;font-weight:700;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;"><span>${fmtDate(date)}${date===TODAY?' (Today)':''}</span><span style="color:var(--brand);">${dt.toFixed(1)}h</span></div>
-        ${entries.map(l=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#F9FAFB;border-radius:6px;margin-bottom:3px;font-size:10.5px;"><span style="font-weight:700;color:var(--brand);min-width:32px;">${parseFloat(l.hours).toFixed(1)}h</span><span style="flex:1;color:#374151;">${l.notes||'Time entry'}</span></div>`).join('')}
+        <div style="font-size:10.5px;font-weight:700;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;"><span>${fmtDate(date)}${date===TODAY?' (Today)':''}</span><span style="color:var(--brand);">${fmtHrs(dt)}</span></div>
+        ${entries.map(l=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#F9FAFB;border-radius:6px;margin-bottom:3px;font-size:10.5px;"><span style="font-weight:700;color:var(--brand);min-width:32px;">${fmtHrs(l.hours)}</span><span style="flex:1;color:#374151;">${l.notes||'Time entry'}</span></div>`).join('')}
         ${dd.map(t=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#F0FDF4;border-radius:6px;margin-bottom:3px;font-size:10.5px;border:1px solid #BBF7D0;"><i class="fas fa-check" style="color:#16A34A;width:20px;"></i><span style="flex:1;color:#166534;">${t.title}</span><span style="font-size:9px;color:#16A34A;font-weight:600;">${t.estimated_hours||'?'}h est</span></div>`).join('')}
       </div>`;
     }).join('')}`;
@@ -910,7 +910,6 @@ function focusCard(t){
         </div>
       </div>
     </div>
-    ${stages.length>0?`
     <div class="stages-list">
       ${stages.map(s=>`
         <div class="stage-row">
@@ -920,7 +919,13 @@ function focusCard(t){
           </div>
           <span class="stage-name ${s.status==='done'?'done':''}">${s.stage_name}</span>
         </div>`).join('')}
-    </div>`:''}
+      <div style="margin-top:5px;">
+        <button onclick="addStage('${t.id}');event.stopPropagation();" 
+          style="background:none;border:1px dashed #D1D5DB;border-radius:6px;padding:3px 9px;font-size:9.5px;color:var(--muted);cursor:pointer;font-family:var(--font);width:100%;">
+          <i class="fas fa-plus" style="margin-right:3px;"></i>Add stage
+        </button>
+      </div>
+    </div>
     ${sessions.length>0?`
     <div style="margin-top:8px;border-top:1px solid #F3F4F6;padding-top:6px;">
       <div style="font-size:9.5px;font-weight:600;color:var(--muted);margin-bottom:4px;">SESSIONS (${sessions.length})</div>
@@ -994,10 +999,13 @@ async function removeFromFocus(id){
 // TIMER
 async function startTimer(taskId,taskTitle){
   if(activeTimers[taskId])return;
+  // Ask what this session is about BEFORE starting
+  const sessionNote=prompt('What are you working on in this session?\n(e.g. "Building v2 document", "Reviewing Aalok feedback")')||'Work session';
   // Create a session record in DB
   const{data}=await SB.from('brunno_sessions').insert({
     task_id:taskId,task_title:taskTitle,
     started_at:new Date().toISOString(),
+    session_note:sessionNote,
     log_date:TODAY
   }).select().single();
   const sessionId=data?.id;
@@ -1011,7 +1019,7 @@ async function startTimer(taskId,taskTitle){
       el.textContent=m+':'+s;
     }
   },1000);
-  activeTimers[taskId]={intervalId,startedAt,sessionId,taskTitle};
+  activeTimers[taskId]={intervalId,startedAt,sessionId,taskTitle,sessionNote};
   // Re-render to show running state
   await loadAll();renderFocusQueue();
 }
@@ -1021,20 +1029,19 @@ async function stopTimer(taskId,silent=false){
   if(!t)return;
   clearInterval(t.intervalId);
   const durationMins=Math.round((Date.now()-t.startedAt)/60000);
-  const note=silent?'Session paused':prompt(`Session note (${durationMins} min):`)||'Work session';
-  // Update session record
+  const note=t.sessionNote||'Work session';
+  // Update session record with final duration
   await SB.from('brunno_sessions').update({
     stopped_at:new Date().toISOString(),
-    duration_minutes:durationMins,
-    session_note:note
+    duration_minutes:Math.max(durationMins,1)
   }).eq('id',t.sessionId);
-  // Add to time log
-  const hrs=Math.round(durationMins/60*4)/4; // round to nearest 0.25h
-  if(hrs>=0.05){
+  // Add to time log - store as decimal hours
+  const hrs=parseFloat((durationMins/60).toFixed(2));
+  if(hrs>=0.02){
     await SB.from('brunno_time_log').insert({
       task_id:taskId,log_date:TODAY,
-      hours:Math.max(hrs,0.05),
-      notes:t.taskTitle+' - '+note
+      hours:Math.max(hrs,0.02),
+      notes:t.taskTitle+(note&&note!=='Work session'?' - '+note:'')
     });
   }
   delete activeTimers[taskId];
@@ -1063,6 +1070,20 @@ async function cycleStage(stageId,currentStatus){
   await loadAll();renderFocusQueue();
 }
 
+async function addStage(taskId){
+  const name=prompt('Stage name:\n(e.g. "Present v3 to Aalok", "Incorporate v3 feedback")');
+  if(!name)return;
+  const existing=allStages.filter(s=>s.task_id===taskId);
+  const nextOrder=(existing.length>0?Math.max(...existing.map(s=>s.stage_order||0)):0)+1;
+  await SB.from('brunno_task_stages').insert({
+    task_id:taskId,
+    stage_name:name,
+    stage_order:nextOrder,
+    status:'todo'
+  });
+  await loadAll();renderFocusQueue();
+}
+
 function formatMins(mins){
   if(!mins||mins===0)return'0m';
   const h=Math.floor(mins/60);const m=mins%60;
@@ -1073,6 +1094,22 @@ function statusLabel(s){return{todo:'To Do',in_progress:'In Progress',blocked:'B
 function catLabel(c){return{all:'All',compliance:'Compliance',system_health:'System Health',hr:'HR',training:'Training',chasing:'Chasing',admin:'Admin',ad_hoc:'Ad Hoc',general:'General',manual:'Manual',slack:'Slack',teams:'Teams',email:'Email'}[c]||c;}
 function fmtDate(d){if(!d)return'';const dt=new Date(d);if(isNaN(dt))return d;return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
 function fmtTime(d){if(!d)return'';const dt=new Date(d);if(isNaN(dt))return'';return dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}
+
+// Display decimal hours as H:MM  (0.75 -> 0:45,  1.5 -> 1:30,  2.583 -> 2:35)
+function fmtHrs(decimalHours){
+  if(!decimalHours&&decimalHours!==0)return'-';
+  const totalMins=Math.round(parseFloat(decimalHours)*60);
+  const h=Math.floor(totalMins/60);
+  const m=(totalMins%60).toString().padStart(2,'0');
+  return h>0?h+':'+m:'0:'+m;
+}
+// Display minutes as H:MM
+function fmtMins2(mins){
+  if(!mins||mins===0)return'0:00';
+  const h=Math.floor(mins/60);
+  const m=(mins%60).toString().padStart(2,'0');
+  return h>0?h+':'+m:'0:'+m;
+}
 </script>
 </body>
 </html>
