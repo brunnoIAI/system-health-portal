@@ -833,8 +833,23 @@ async function logLogout(){
   const t=prompt('What time are you finishing? (e.g. 17:30)');
   if(!t)return;
   await SB.from('brunno_work_hours').update({logout_time:t+':00'}).eq('work_date',TODAY);
-  alert('Logged out at '+t+'. Have a good evening!');
+  // Recalculate actual hours: logout - login - lunch (1h default)
+  const wh=allWorkHours.find(w=>w.work_date===TODAY)||{};
+  const loginStr=wh.login_time||'08:30:00';
+  const [lh,lm]=(loginStr||'08:30').split(':').map(Number);
+  const [oh,om]=t.split(':').map(Number);
+  const totalMins=(oh*60+om)-(lh*60+lm)-60; // minus 1h lunch
+  const actualHrs=Math.round(Math.max(totalMins,0)/60*100)/100;
+  await SB.from('brunno_earnings').upsert({
+    work_date:TODAY,standard_hours:8,actual_hours:actualHrs,
+    notes:`Login ${loginStr.substring(0,5)} / Logout ${t} / Lunch 12:00-13:00`
+  },{onConflict:'work_date'});
   await loadAll();renderView(view);
+}
+
+async function logLogoutFromEarnings(){
+  await logLogout();
+  renderEarnings();
 }
 
 
@@ -1169,8 +1184,11 @@ const STANDARD_HOURS = 8;
 const EUR_RATE = 1.17; // approximate - update periodically
 
 async function renderEarnings(){
+  // Join earnings with work_hours to get login/logout times
   const {data:rows} = await SB.from('brunno_earnings').select('*').order('work_date',{ascending:false}).limit(60);
+  const {data:whRows} = await SB.from('brunno_work_hours').select('*').order('work_date',{ascending:false}).limit(60);
   const earnings = rows || [];
+  const whMap = {};(whRows||[]).forEach(w=>{whMap[w.work_date]=w;});
 
   // Totals
   const totalActual = earnings.reduce((s,r)=>s+parseFloat(r.actual_hours||0),0);
@@ -1245,9 +1263,10 @@ async function renderEarnings(){
         <thead>
           <tr style="background:#F9FAFB;">
             <th style="padding:8px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Date</th>
-            <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Standard</th>
+            <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Login</th>
+            <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Logout</th>
             <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Worked</th>
-            <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:#D97706;text-transform:uppercase;">Overtime</th>
+            <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:#D97706;text-transform:uppercase;">OT</th>
             <th style="padding:8px 14px;text-align:right;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">GBP</th>
             <th style="padding:8px 14px;text-align:right;font-size:10px;font-weight:700;color:#6C5DD3;text-transform:uppercase;">EUR</th>
             <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;"></th>
@@ -1262,15 +1281,25 @@ async function renderEarnings(){
             const dayName=dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
             const pct=Math.min(Math.round((hrs/8)*100),150);
             const barColor=ot>0?'#D97706':hrs>=8?'#16A34A':'#6C5DD3';
+            const wh=whMap[r.work_date]||{};
+            const loginStr=wh.login_time?wh.login_time.substring(0,5):'-';
+            const logoutStr=wh.logout_time?wh.logout_time.substring(0,5):'-';
+            const hasLogout=!!wh.logout_time;
             return`<tr style="border-top:1px solid #F3F4F6;${isToday?'background:#FAFAF5;':i%2===0?'':'background:#FAFAFA;'}">
               <td style="padding:9px 14px;">
                 <div style="font-size:11.5px;font-weight:${isToday?'700':'600'};color:var(--text);">${dayName}${isToday?' <span style="font-size:9px;background:#EDE9FF;color:#6C5DD3;padding:1px 5px;border-radius:5px;font-weight:700;">TODAY</span>':''}</div>
-                ${r.notes&&!r.notes.includes('Auto-synced')?`<div style="font-size:9.5px;color:var(--muted);">${r.notes}</div>`:''}
               </td>
-              <td style="padding:9px 14px;text-align:center;font-size:11px;color:var(--muted);">${fmtHrs(r.standard_hours)}</td>
+              <td style="padding:9px 14px;text-align:center;font-size:11px;font-weight:600;color:${loginStr!=='-'?'#374151':'var(--muted)'};">${loginStr}</td>
+              <td style="padding:9px 14px;text-align:center;">
+                ${hasLogout
+                  ?`<span style="font-size:11px;font-weight:600;color:#374151;">${logoutStr}</span>`
+                  :isToday
+                    ?`<button onclick="logLogoutFromEarnings()" style="background:#EDE9FF;border:none;border-radius:5px;padding:3px 8px;font-size:9.5px;color:#6C5DD3;cursor:pointer;font-family:var(--font);font-weight:600;">Log out</button>`
+                    :`<span style="color:var(--muted);font-size:10px;">-</span>`}
+              </td>
               <td style="padding:9px 14px;text-align:center;">
                 <div style="font-size:11.5px;font-weight:700;color:var(--text);">${fmtHrs(hrs)}</div>
-                <div style="background:#F3F4F6;border-radius:3px;height:3px;width:60px;margin:2px auto 0;overflow:hidden;"><div style="width:${Math.min(pct,100)}%;height:100%;background:${barColor};border-radius:3px;"></div></div>
+                <div style="background:#F3F4F6;border-radius:3px;height:3px;width:50px;margin:2px auto 0;overflow:hidden;"><div style="width:${Math.min(pct,100)}%;height:100%;background:${barColor};border-radius:3px;"></div></div>
               </td>
               <td style="padding:9px 14px;text-align:center;font-size:11.5px;font-weight:700;color:${ot>0?'#D97706':'var(--muted)'};">${ot>0?fmtHrs(ot):'-'}</td>
               <td style="padding:9px 14px;text-align:right;font-size:12px;font-weight:700;color:var(--text);">£${parseFloat(r.gross_gbp||0).toFixed(2)}</td>
@@ -1284,7 +1313,7 @@ async function renderEarnings(){
         <tfoot>
           <tr style="background:#F5F3FF;border-top:2px solid #DDD6FE;">
             <td style="padding:10px 14px;font-size:11px;font-weight:700;color:#4C1D95;">TOTAL (${earnings.length} days)</td>
-            <td style="padding:10px 14px;text-align:center;font-size:11px;color:var(--muted);">${fmtHrs(totalStd)}</td>
+            <td colspan="2" style="padding:10px 14px;text-align:center;font-size:10px;color:var(--muted);">${earnings.length} days</td>
             <td style="padding:10px 14px;text-align:center;font-size:11.5px;font-weight:800;color:#4C1D95;">${fmtHrs(totalActual)}</td>
             <td style="padding:10px 14px;text-align:center;font-size:11.5px;font-weight:700;color:#D97706;">${totalOT>0?fmtHrs(totalOT):'-'}</td>
             <td style="padding:10px 14px;text-align:right;font-size:13px;font-weight:800;color:#4C1D95;">£${totalGBP.toFixed(2)}</td>
