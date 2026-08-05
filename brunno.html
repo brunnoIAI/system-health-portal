@@ -926,8 +926,8 @@ function focusCard(t){
           </div>
           <span class="stage-name ${s.status==='done'?'done':''}">${s.stage_name}</span>
         </div>`).join('')}
-      <div style="margin-top:5px;">
-        <button onclick="addStage('${t.id}');event.stopPropagation();" 
+      <div style="margin-top:5px;" id="add-stage-wrap-${t.id}">
+        <button id="add-stage-btn-${t.id}" onclick="addStage('${t.id}');event.stopPropagation();" 
           style="background:none;border:1px dashed #D1D5DB;border-radius:6px;padding:3px 9px;font-size:9.5px;color:var(--muted);cursor:pointer;font-family:var(--font);width:100%;">
           <i class="fas fa-plus" style="margin-right:3px;"></i>Add stage
         </button>
@@ -1004,11 +1004,39 @@ async function removeFromFocus(id){
 }
 
 // TIMER
-async function startTimer(taskId,taskTitle){
-  if(activeTimers[taskId])return;
-  // Ask what this session is about BEFORE starting
-  const sessionNote=prompt('What are you working on in this session?\n(e.g. "Building v2 document", "Reviewing Aalok feedback")')||'Work session';
-  // Create a session record in DB
+function showSessionInput(taskId,taskTitle){
+  // Show inline input directly on the card - no browser prompt
+  const card=document.getElementById('fqc-'+taskId);
+  if(!card)return;
+  // Remove any existing inline input on other cards
+  document.querySelectorAll('.inline-session-input').forEach(el=>el.remove());
+  const div=document.createElement('div');
+  div.className='inline-session-input';
+  div.style.cssText='background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:8px;padding:9px 11px;margin-top:8px;';
+  div.innerHTML=`
+    <div style="font-size:10px;font-weight:600;color:#166534;margin-bottom:5px;"><i class="fas fa-play" style="margin-right:4px;"></i>What are you working on in this session?</div>
+    <input id="session-note-${taskId}" type="text" placeholder='e.g. "Building v2 document", "Reviewing Aalok feedback"'
+      style="width:100%;border:1.5px solid #86EFAC;border-radius:6px;padding:6px 9px;font-size:11px;font-family:var(--font);outline:none;margin-bottom:7px;"
+      onkeydown="if(event.key==='Enter')confirmStartTimer('${taskId}','${taskTitle.replace(/'/g,"\'")}')">
+    <div style="display:flex;gap:5px;">
+      <button onclick="confirmStartTimer('${taskId}','${taskTitle.replace(/'/g,"\'")}'); event.stopPropagation();"
+        style="background:#16A34A;border:none;border-radius:6px;padding:5px 12px;font-size:10.5px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);">
+        <i class="fas fa-play"></i> Start timer
+      </button>
+      <button onclick="this.closest('.inline-session-input').remove(); event.stopPropagation();"
+        style="background:none;border:1.5px solid #D1D5DB;border-radius:6px;padding:5px 10px;font-size:10.5px;color:var(--muted);cursor:pointer;font-family:var(--font);">
+        Cancel
+      </button>
+    </div>`;
+  card.appendChild(div);
+  setTimeout(()=>document.getElementById('session-note-'+taskId)?.focus(),50);
+}
+
+async function confirmStartTimer(taskId,taskTitle){
+  const noteEl=document.getElementById('session-note-'+taskId);
+  const sessionNote=(noteEl?.value||'').trim()||'Work session';
+  document.querySelector('.inline-session-input')?.remove();
+  // Create session record
   const{data}=await SB.from('brunno_sessions').insert({
     task_id:taskId,task_title:taskTitle,
     started_at:new Date().toISOString(),
@@ -1027,8 +1055,12 @@ async function startTimer(taskId,taskTitle){
     }
   },1000);
   activeTimers[taskId]={intervalId,startedAt,sessionId,taskTitle,sessionNote};
-  // Re-render to show running state
   await loadAll();renderFocusQueue();
+}
+
+async function startTimer(taskId,taskTitle){
+  if(activeTimers[taskId])return;
+  showSessionInput(taskId,taskTitle);
 }
 
 async function stopTimer(taskId,silent=false){
@@ -1077,18 +1109,48 @@ async function cycleStage(stageId,currentStatus){
   await loadAll();renderFocusQueue();
 }
 
-async function addStage(taskId){
-  const name=prompt('Stage name:\n(e.g. "Present v3 to Aalok", "Incorporate v3 feedback")');
+function showStageInput(taskId){
+  // Show inline input directly below the Add stage button
+  const btn=document.getElementById('add-stage-btn-'+taskId);
+  if(!btn)return;
+  // Remove any other open stage inputs
+  document.querySelectorAll('.inline-stage-input').forEach(el=>el.remove());
+  const div=document.createElement('div');
+  div.className='inline-stage-input';
+  div.style.cssText='margin-top:5px;';
+  div.innerHTML=`
+    <div style="display:flex;gap:4px;align-items:center;">
+      <input id="stage-name-${taskId}" type="text" placeholder="Stage name..."
+        style="flex:1;border:1.5px solid #C4B5FD;border-radius:6px;padding:5px 8px;font-size:10.5px;font-family:var(--font);outline:none;"
+        onkeydown="if(event.key==='Enter')confirmAddStage('${taskId}');if(event.key==='Escape')this.closest('.inline-stage-input').remove();">
+      <button onclick="confirmAddStage('${taskId}'); event.stopPropagation();"
+        style="background:var(--brand);border:none;border-radius:6px;padding:5px 9px;font-size:10px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);">
+        Add
+      </button>
+      <button onclick="this.closest('.inline-stage-input').remove(); event.stopPropagation();"
+        style="background:none;border:1.5px solid #D1D5DB;border-radius:6px;padding:4px 7px;font-size:10px;color:var(--muted);cursor:pointer;font-family:var(--font);">
+        ✕
+      </button>
+    </div>`;
+  btn.parentNode.insertBefore(div, btn);
+  setTimeout(()=>document.getElementById('stage-name-'+taskId)?.focus(),50);
+}
+
+async function confirmAddStage(taskId){
+  const nameEl=document.getElementById('stage-name-'+taskId);
+  const name=(nameEl?.value||'').trim();
   if(!name)return;
+  document.querySelector('.inline-stage-input')?.remove();
   const existing=allStages.filter(s=>s.task_id===taskId);
   const nextOrder=(existing.length>0?Math.max(...existing.map(s=>s.stage_order||0)):0)+1;
   await SB.from('brunno_task_stages').insert({
-    task_id:taskId,
-    stage_name:name,
-    stage_order:nextOrder,
-    status:'todo'
+    task_id:taskId,stage_name:name,stage_order:nextOrder,status:'todo'
   });
   await loadAll();renderFocusQueue();
+}
+
+async function addStage(taskId){
+  showStageInput(taskId);
 }
 
 function formatMins(mins){
