@@ -217,6 +217,7 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
   <div class="nav active" onclick="setView('dashboard')"><i class="fas fa-gauge-high"></i> Dashboard <span class="nbadge red" id="nb-urgent">0</span></div>
   <div class="nav" onclick="setView('today')"><i class="fas fa-sun"></i> Today <span class="nbadge" id="nb-today">0</span></div>
   <div class="nav" onclick="setView('focus')"><i class="fas fa-crosshairs"></i> Focus Queue <span class="nbadge" style="background:#16A34A;" id="nb-focus">0</span></div>
+  <div class="nav" onclick="setView('earnings')"><i class="fas fa-sterling-sign"></i> Earnings</div>
   <div class="nav" onclick="setView('tasks')"><i class="fas fa-list-check"></i> All Tasks <span class="nbadge" id="nb-tasks">0</span></div>
   <div class="ssec">Incoming</div>
   <div class="nav" onclick="setView('requests')"><i class="fas fa-inbox"></i> Requests <span class="nbadge red" id="nb-reqs">0</span></div>
@@ -321,6 +322,11 @@ async function loadAll(){
   allTasks=t.data||[];allRequests=r.data||[];allControls=c.data||[];
   allTimeLogs=tl.data||[];allFocus=f.data||[];allWorkHours=wh.data||[];
   allSessions=sess.data||[];allStages=stg.data||[];
+  // Sync today's actual hours from time log into earnings
+  const todayLogged=allTimeLogs.filter(l=>l.log_date===TODAY).reduce((s,l)=>s+parseFloat(l.hours||0),0);
+  if(todayLogged>0){
+    SB.from('brunno_earnings').upsert({work_date:TODAY,actual_hours:Math.round(todayLogged*100)/100,standard_hours:8,notes:'Auto-synced from time log'},{onConflict:'work_date'}).then(()=>{});
+  }
   updateBadges();
 }
 
@@ -345,7 +351,7 @@ function setView(v){
 }
 
 function renderView(v){
-  const titles={dashboard:'Dashboard',focus:'Focus Queue',today:"Today's Activity",tasks:'All Tasks',requests:'Requests & Comms',history:'Day / Week / Month',timelog:'Time Log',focus:'Focus Log',compliance:'Vanta Controls',audit:'Audit Tracker'};
+  const titles={dashboard:'Dashboard',focus:'Focus Queue',today:"Today's Activity",tasks:'All Tasks',requests:'Requests & Comms',history:'Day / Week / Month',timelog:'Time Log',focus:'Focus Log',compliance:'Vanta Controls',audit:'Audit Tracker',earnings:'Earnings & Hours'};
   document.getElementById('page-title').textContent=titles[v]||v;
   if(v==='dashboard')renderDashboard();
   else if(v==='focus')renderFocusQueue();
@@ -357,6 +363,7 @@ function renderView(v){
   else if(v==='focus')renderFocus();
   else if(v==='compliance')renderCompliance();
   else if(v==='audit')renderAudit();
+  else if(v==='earnings')renderEarnings();
 }
 
 // BUSYNESS - only actual logged hours for today
@@ -1088,6 +1095,158 @@ function formatMins(mins){
   if(!mins||mins===0)return'0m';
   const h=Math.floor(mins/60);const m=mins%60;
   return h>0?`${h}h ${m}m`:`${m}m`;
+}
+
+
+// ===================== EARNINGS =====================
+const HOURLY_GBP = 18.75;
+const STANDARD_HOURS = 8;
+const EUR_RATE = 1.18; // approximate - update periodically
+
+async function renderEarnings(){
+  const {data:rows} = await SB.from('brunno_earnings').select('*').order('work_date',{ascending:false}).limit(60);
+  const earnings = rows || [];
+
+  // Totals
+  const totalActual = earnings.reduce((s,r)=>s+parseFloat(r.actual_hours||0),0);
+  const totalOT = earnings.reduce((s,r)=>s+parseFloat(r.overtime_hours||0),0);
+  const totalStd = earnings.reduce((s,r)=>s+parseFloat(r.standard_hours||0),0);
+  const totalGBP = earnings.reduce((s,r)=>s+parseFloat(r.gross_gbp||0),0);
+  const totalEUR = earnings.reduce((s,r)=>s+parseFloat(r.gross_eur||0),0);
+
+  // This week
+  const weekStart = new Date(); weekStart.setDate(weekStart.getDate()-weekStart.getDay()+1);
+  const weekStr = weekStart.toISOString().split('T')[0];
+  const weekRows = earnings.filter(r=>r.work_date>=weekStr);
+  const weekGBP = weekRows.reduce((s,r)=>s+parseFloat(r.gross_gbp||0),0);
+  const weekHrs = weekRows.reduce((s,r)=>s+parseFloat(r.actual_hours||0),0);
+
+  // Today
+  const todayRow = earnings.find(r=>r.work_date===TODAY);
+  const todayGBP = todayRow ? parseFloat(todayRow.gross_gbp||0) : 0;
+  const todayHrs = todayRow ? parseFloat(todayRow.actual_hours||0) : 0;
+  const todayOT = todayRow ? parseFloat(todayRow.overtime_hours||0) : 0;
+
+  document.getElementById('main-content').innerHTML=`
+    <!-- CONTRACT BANNER -->
+    <div style="background:linear-gradient(135deg,#1E1B4B,#312E81);border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+      <div><div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">Hourly Rate</div><div style="font-size:22px;font-weight:800;color:#fff;">£18.75</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.15);height:36px;"></div>
+      <div><div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">Standard Day</div><div style="font-size:22px;font-weight:800;color:#fff;">8h</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.15);height:36px;"></div>
+      <div><div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">Monthly</div><div style="font-size:22px;font-weight:800;color:#fff;">£3,000</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.15);height:36px;"></div>
+      <div><div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">EUR Rate</div><div style="font-size:22px;font-weight:800;color:#A5B4FC;">×${EUR_RATE}</div></div>
+      <div style="margin-left:auto;text-align:right;">
+        <div style="font-size:10px;color:rgba(255,255,255,.5);">Mon-Fri, 5 days/week</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);">Overtime tracked above 8h/day</div>
+      </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px;">
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;">
+        <div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Today</div>
+        <div style="font-size:20px;font-weight:800;color:var(--text);">£${todayGBP.toFixed(2)}</div>
+        <div style="font-size:10px;color:var(--muted);">${fmtHrs(todayHrs)} worked${todayOT>0?' · <span style="color:#D97706;font-weight:600;">OT '+fmtHrs(todayOT)+'</span>':''}</div>
+        <div style="font-size:10px;color:#6C5DD3;margin-top:1px;">€${(todayGBP*EUR_RATE).toFixed(2)}</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;">
+        <div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">This Week</div>
+        <div style="font-size:20px;font-weight:800;color:var(--text);">£${weekGBP.toFixed(2)}</div>
+        <div style="font-size:10px;color:var(--muted);">${fmtHrs(weekHrs)} across ${weekRows.length} day${weekRows.length!==1?'s':''}</div>
+        <div style="font-size:10px;color:#6C5DD3;margin-top:1px;">€${(weekGBP*EUR_RATE).toFixed(2)}</div>
+      </div>
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;">
+        <div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Total Hours</div>
+        <div style="font-size:20px;font-weight:800;color:var(--text);">${fmtHrs(totalActual)}</div>
+        <div style="font-size:10px;color:var(--muted);">${earnings.length} days logged</div>
+        ${totalOT>0?`<div style="font-size:10px;color:#D97706;font-weight:600;margin-top:1px;">OT: ${fmtHrs(totalOT)}</div>`:''}
+      </div>
+      <div style="background:#fff;border:1.5px solid #C4B5FD;border-radius:9px;padding:12px 14px;background:#F5F3FF;">
+        <div style="font-size:9.5px;font-weight:600;color:#6C5DD3;text-transform:uppercase;margin-bottom:3px;">Total Earned</div>
+        <div style="font-size:20px;font-weight:800;color:#4C1D95;">£${totalGBP.toFixed(2)}</div>
+        <div style="font-size:10px;color:#6C5DD3;margin-top:1px;">€${totalEUR.toFixed(2)}</div>
+      </div>
+    </div>
+
+    <!-- DAILY BREAKDOWN TABLE -->
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:12.5px;font-weight:700;color:var(--text);"><i class="fas fa-table" style="color:var(--brand);margin-right:6px;"></i>Daily Breakdown</div>
+        <button class="bp" style="font-size:9.5px;padding:4px 10px;" onclick="addEarningsDay()"><i class="fas fa-plus"></i> Add Day</button>
+      </div>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="background:#F9FAFB;">
+            <th style="padding:8px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Date</th>
+            <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Standard</th>
+            <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Worked</th>
+            <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:#D97706;text-transform:uppercase;">Overtime</th>
+            <th style="padding:8px 14px;text-align:right;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">GBP</th>
+            <th style="padding:8px 14px;text-align:right;font-size:10px;font-weight:700;color:#6C5DD3;text-transform:uppercase;">EUR</th>
+            <th style="padding:8px 14px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${earnings.map((r,i)=>{
+            const ot=parseFloat(r.overtime_hours||0);
+            const hrs=parseFloat(r.actual_hours||0);
+            const isToday=r.work_date===TODAY;
+            const dt=new Date(r.work_date);
+            const dayName=dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+            const pct=Math.min(Math.round((hrs/8)*100),150);
+            const barColor=ot>0?'#D97706':hrs>=8?'#16A34A':'#6C5DD3';
+            return`<tr style="border-top:1px solid #F3F4F6;${isToday?'background:#FAFAF5;':i%2===0?'':'background:#FAFAFA;'}">
+              <td style="padding:9px 14px;">
+                <div style="font-size:11.5px;font-weight:${isToday?'700':'600'};color:var(--text);">${dayName}${isToday?' <span style="font-size:9px;background:#EDE9FF;color:#6C5DD3;padding:1px 5px;border-radius:5px;font-weight:700;">TODAY</span>':''}</div>
+                ${r.notes&&!r.notes.includes('Auto-synced')?`<div style="font-size:9.5px;color:var(--muted);">${r.notes}</div>`:''}
+              </td>
+              <td style="padding:9px 14px;text-align:center;font-size:11px;color:var(--muted);">${fmtHrs(r.standard_hours)}</td>
+              <td style="padding:9px 14px;text-align:center;">
+                <div style="font-size:11.5px;font-weight:700;color:var(--text);">${fmtHrs(hrs)}</div>
+                <div style="background:#F3F4F6;border-radius:3px;height:3px;width:60px;margin:2px auto 0;overflow:hidden;"><div style="width:${Math.min(pct,100)}%;height:100%;background:${barColor};border-radius:3px;"></div></div>
+              </td>
+              <td style="padding:9px 14px;text-align:center;font-size:11.5px;font-weight:700;color:${ot>0?'#D97706':'var(--muted)'};">${ot>0?fmtHrs(ot):'-'}</td>
+              <td style="padding:9px 14px;text-align:right;font-size:12px;font-weight:700;color:var(--text);">£${parseFloat(r.gross_gbp||0).toFixed(2)}</td>
+              <td style="padding:9px 14px;text-align:right;font-size:12px;font-weight:600;color:#6C5DD3;">€${parseFloat(r.gross_eur||0).toFixed(2)}</td>
+              <td style="padding:9px 14px;text-align:center;">
+                <button onclick="editEarningsDay('${r.work_date}',${hrs})" style="background:none;border:1px solid var(--border);border-radius:5px;padding:3px 7px;font-size:9.5px;color:var(--muted);cursor:pointer;">Edit</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+        <tfoot>
+          <tr style="background:#F5F3FF;border-top:2px solid #DDD6FE;">
+            <td style="padding:10px 14px;font-size:11px;font-weight:700;color:#4C1D95;">TOTAL (${earnings.length} days)</td>
+            <td style="padding:10px 14px;text-align:center;font-size:11px;color:var(--muted);">${fmtHrs(totalStd)}</td>
+            <td style="padding:10px 14px;text-align:center;font-size:11.5px;font-weight:800;color:#4C1D95;">${fmtHrs(totalActual)}</td>
+            <td style="padding:10px 14px;text-align:center;font-size:11.5px;font-weight:700;color:#D97706;">${totalOT>0?fmtHrs(totalOT):'-'}</td>
+            <td style="padding:10px 14px;text-align:right;font-size:13px;font-weight:800;color:#4C1D95;">£${totalGBP.toFixed(2)}</td>
+            <td style="padding:10px 14px;text-align:right;font-size:13px;font-weight:700;color:#6C5DD3;">€${totalEUR.toFixed(2)}</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-top:8px;text-align:right;">EUR conversion at ×${EUR_RATE} (approximate). Update rate in settings if needed.</div>`;
+}
+
+async function addEarningsDay(){
+  const date=prompt('Date (YYYY-MM-DD):');if(!date)return;
+  const hrs=parseFloat(prompt('Hours worked:')||'8');
+  const note=prompt('Notes (optional):')||'';
+  await SB.from('brunno_earnings').upsert({
+    work_date:date,standard_hours:8,actual_hours:hrs,notes:note
+  },{onConflict:'work_date'});
+  await renderEarnings();
+}
+
+async function editEarningsDay(date,currentHrs){
+  const hrs=parseFloat(prompt(`Hours worked on ${date}:`,currentHrs)||currentHrs);
+  const note=prompt('Notes (optional):')||'';
+  await SB.from('brunno_earnings').update({actual_hours:hrs,notes:note||null}).eq('work_date',date);
+  await renderEarnings();
 }
 
 function statusLabel(s){return{todo:'To Do',in_progress:'In Progress',blocked:'Blocked',done:'Done',cancelled:'Cancelled'}[s]||s;}
