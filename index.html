@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 5 Aug 2026, 16:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 5 Aug 2026, 16:25 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -759,7 +759,123 @@ const ISSUES = [
   {id:"TASK-VISHAL-RL-001",title:"Vishal Kumar — Relieving Letter Request (x2 emails)",priority:"p2",status:"working",tab:"all",occ:2,dateFirst:"5 Aug 2026",dateLast:"5 Aug 2026",whatItDoes:"Vishal Kumar sent two relieving letter requests from personal email addresses (vishalsingh763158@gmail.com and vishal.workspace07@gmail.com). Needs to be processed or escalated to Aalok/Nikhil.",responsible:"Brunno",escalated:false,howItHappens:"Received in brunno@ inbox at 14:04 and 14:16 UTC. Vishal is confirmed FIRED / no longer with ImplementAI."},
   {id:"TASK-ARK-H-DOCS-001",title:"Ark-H Handling — New Supplier Assessment Docs (via Mishai)",priority:"p2",status:"working",tab:"all",occ:1,dateFirst:"5 Aug 2026",dateLast:"5 Aug 2026",whatItDoes:"Neil Horton from Ark-H sent New Supplier Assessment Documentation to Mishai. Mishai forwarded to Brunno. Needs review and response.",responsible:"Brunno / Mishai",escalated:false,howItHappens:"Forwarded email received at 08:43 UTC. Neil Horton email at 09:00 UTC to Mishai."},
   {id:"TASK-NEXORA-MEETING-001",title:"Nexora — Meeting Time Zone Issue Resolved",priority:"p3",status:"working",tab:"all",occ:1,dateFirst:"5 Aug 2026",dateLast:"5 Aug 2026",whatItDoes:"Howard Lea (Nexora) flagged that the IAI meeting was scheduled at 4am EST. Brunno replied and adjusted. New meeting invite sent. Shahan Butt accepted.",responsible:"Brunno / Shahan",escalated:false,howItHappens:"Howard email at 15:44 UTC, Brunno replied and resent invite at 15:47-15:48 UTC. Shahan accepted at 15:48 UTC."},
-  {id:"TASK-GITHUB-SYNC-001",title:"GitHub Actions — Sync to IAI Repo Workflow Failing (ongoing)",priority:"p2",status:"working",tab:"all",occ:7,dateFirst:"5 Aug 2026",dateLast:"5 Aug 2026",whatItDoes:"GitHub Actions sync-to-IAI-repo workflow is failing repeatedly today. 7 failed runs recorded in brunno@ inbox. Known issue GITHUB-PORTAL-001.",responsible:"Habib",escalated:false,howItHappens:"Failures at 08:51, 09:29, 10:25, 10:32, 10:47, 14:44, 16:00 UTC. All from brunnoIAI/system-health-portal repo."}
+  {id:"TASK-GITHUB-SYNC-001",title:"GitHub Actions — Sync to IAI Repo Workflow Failing (ongoing)",priority:"p2",status:"working",tab:"all",occ:7,dateFirst:"5 Aug 2026",dateLast:"5 Aug 2026",whatItDoes:"GitHub Actions sync-to-IAI-repo workflow is failing repeatedly today. 7 failed runs recorded in brunno@ inbox. Known issue GITHUB-PORTAL-001.",responsible:"Habib",escalated:false,howItHappens:"Failures at 08:51, 09:29, 10:25, 10:32, 10:47, 14:44, 16:00 UTC. All from brunnoIAI/system-health-portal repo."},
+
+    {
+      id: "NEXORA-TZ-001",
+      title: "Nexora meeting scheduled at 4am EST — corrected same day",
+      priority: "p3",
+      status: "resolved",
+      tab: "tasks",
+      tags: [],
+      mondayId: "",
+      system: "EMAIL",
+      responsible: "Brunno",
+      dateFirst: "2026-08-05",
+      dateLast: "2026-08-05",
+      dateResolved: "2026-08-05",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Howard Lea (Nexora) replied that the IAI meeting invite was set for 4am his time (Eastern Standard Time). Brunno apologised and adjusted the meeting time.",
+      howItHappens: "Meeting was created without accounting for Nexora contact's timezone (EST vs UK time). Howard flagged via email at 15:44 UTC. Brunno corrected and resent invite at 15:48 UTC.",
+      relatedIds: [],
+      context: "Nexora client relationship. Shahan also accepted the invite. Meeting rescheduled successfully.",
+      occurrences: [{ n: 1, when: "2026-08-05 15:44 UTC", what: "Howard Lea flagged meeting time was 4am EST. Brunno adjusted and resent." }],
+      comments: [],
+      rootCause: "Timezone not checked when creating cross-timezone meeting invite.",
+      fixApplied: "Meeting time adjusted and new invite sent. Howard confirmed.",
+      resolvedBy: "Brunno"
+    },
+    {
+      id: "VISHAL-RELIEF-001",
+      title: "Vishal Kumar (fired) requesting relieving letter x2",
+      priority: "p2",
+      status: "open",
+      tab: "tasks",
+      tags: [],
+      mondayId: "",
+      system: "EMAIL",
+      responsible: "Brunno",
+      dateFirst: "2026-08-05",
+      dateLast: "2026-08-05",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Vishal Kumar (fired/no longer with ImplementAI) sent two emails today from personal Gmail accounts requesting a relieving letter. Two different Gmail addresses used.",
+      howItHappens: "Vishal was terminated. He is now requesting formal documentation via personal email. Two emails received: vishalsingh763158@gmail.com at 14:16 UTC and vishal.workspace07@gmail.com at 14:04 UTC.",
+      relatedIds: [],
+      context: "Vishal Kumar is confirmed fired/no longer with ImplementAI. HR offboarding process may need to include relieving letter issuance. Needs to be handled by Aalok or Nikhil.",
+      occurrences: [{ n: 1, when: "2026-08-05 14:04 UTC", what: "First email from vishal.workspace07@gmail.com requesting relieving letter." }, { n: 2, when: "2026-08-05 14:16 UTC", what: "Second email from vishalsingh763158@gmail.com requesting relieving letter." }],
+      comments: []
+    },
+    {
+      id: "WORKSTREET-PENTEST-001",
+      title: "Workstreet pentest access — chased, audit upcoming",
+      priority: "p2",
+      status: "open",
+      tab: "tasks",
+      tags: ["escalated"],
+      mondayId: "",
+      system: "EMAIL",
+      responsible: "Brunno",
+      dateFirst: "2026-08-05",
+      dateLast: "2026-08-05",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno chased Bianca at Workstreet (bianca@workstreet.com) for pentest access instructions update. ISO audit is coming up and pentest results are needed.",
+      howItHappens: "Email sent at 14:03 UTC: 'Any updates on this? We need to understand what the progress is. We have an audit coming.' Waiting on Workstreet response.",
+      relatedIds: ["WORKSTREET-INV-001"],
+      context: "Prescient Security ISO 27001 audit in progress. James Burton (prescientsecurity.com) is out today, returning tomorrow. Pentest from Workstreet is a dependency.",
+      occurrences: [{ n: 1, when: "2026-08-05 14:03 UTC", what: "Brunno chased Bianca at Workstreet for pentest progress. No response yet." }],
+      comments: []
+    },
+    {
+      id: "AIRTABLE-HELLO-001",
+      title: "Airtable bases must be under hello@ — team directive issued",
+      priority: "p3",
+      status: "open",
+      tab: "tasks",
+      tags: [],
+      mondayId: "",
+      system: "SLACK",
+      responsible: "Meezab",
+      dateFirst: "2026-08-05",
+      dateLast: "2026-08-05",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Meezab posted <!channel> in #solutions-hq at 12:30 UTC directing all team members to ensure Airtable bases for clients are created under hello@implementai.io. Any bases on personal accounts must be migrated.",
+      howItHappens: "Team directive in #solutions-hq. No incidents reported yet but compliance needs to be tracked.",
+      relatedIds: [],
+      context: "Meezab (Shahzeb@) sent channel-wide message. New team member U0BN1CY4JJ1 is being onboarded with AIOS org + PBX setup (Meezab setting up Zoiper extension, Onkar providing AIOS access).",
+      occurrences: [{ n: 1, when: "2026-08-05 12:30 UTC", what: "Meezab posted channel directive: all Airtable client bases must be under hello@implementai.io." }],
+      comments: []
+    },
+    {
+      id: "NEXORA-ONBOARD-001",
+      title: "Nexora — IAI meeting held, Barco ClickShare follow-up scheduled",
+      priority: "p3",
+      status: "open",
+      tab: "tasks",
+      tags: [],
+      mondayId: "",
+      system: "EMAIL",
+      responsible: "Brunno",
+      dateFirst: "2026-08-05",
+      dateLast: "2026-08-05",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno scheduled a follow-up meeting with Howard Lea (Nexora) for tomorrow at 9:30am re Barco ClickShare chatbot feedback. Two Teams meeting threads active today: 'IAI <> Nexora' and 'Nexora - IAI - Agent Development and Progress'.",
+      howItHappens: "Email sent at 08:31 UTC: 'Invite sent for tomorrow 9:30 am'. Shahan Butt is also on the invite. Howard confirmed (15:44 UTC reply about timezone, corrected). Meeting rescheduled.",
+      relatedIds: ["NEXORA-TZ-001"],
+      context: "Active client engagement. Two separate Teams meeting threads updated today. Shahan Butt (solutions engineer) involved.",
+      occurrences: [{ n: 1, when: "2026-08-05 08:31 UTC", what: "Brunno confirmed follow-up meeting with Nexora for tomorrow 9:30am." }],
+      comments: []
+    }
+
 ];
 
 const GOD_MODE_CONFIGS = {
