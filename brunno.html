@@ -1101,7 +1101,7 @@ function formatMins(mins){
 // ===================== EARNINGS =====================
 const HOURLY_GBP = 18.75;
 const STANDARD_HOURS = 8;
-const EUR_RATE = 1.18; // approximate - update periodically
+const EUR_RATE = 1.17; // approximate - update periodically
 
 async function renderEarnings(){
   const {data:rows} = await SB.from('brunno_earnings').select('*').order('work_date',{ascending:false}).limit(60);
@@ -1136,7 +1136,7 @@ async function renderEarnings(){
       <div style="width:1px;background:rgba(255,255,255,.15);height:36px;"></div>
       <div><div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">Monthly</div><div style="font-size:22px;font-weight:800;color:#fff;">£3,000</div></div>
       <div style="width:1px;background:rgba(255,255,255,.15);height:36px;"></div>
-      <div><div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">EUR Rate</div><div style="font-size:22px;font-weight:800;color:#A5B4FC;">×${EUR_RATE}</div></div>
+      <div><div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;">EUR Rate</div><div style="font-size:22px;font-weight:800;color:#A5B4FC;">×1.17</div></div>
       <div style="margin-left:auto;text-align:right;">
         <div style="font-size:10px;color:rgba(255,255,255,.5);">Mon-Fri, 5 days/week</div>
         <div style="font-size:10px;color:rgba(255,255,255,.4);">Overtime tracked above 8h/day</div>
@@ -1229,7 +1229,7 @@ async function renderEarnings(){
         </tfoot>
       </table>
     </div>
-    <div style="font-size:10px;color:var(--muted);margin-top:8px;text-align:right;">EUR conversion at ×${EUR_RATE} (approximate). Update rate in settings if needed.</div>`;
+    <div style="font-size:10px;color:var(--muted);margin-top:8px;text-align:right;">EUR conversion fixed at ×1.17 (conservative baseline).</div>`;
 }
 
 async function addEarningsDay(){
