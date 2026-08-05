@@ -455,14 +455,24 @@ function renderToday(){
   const todayColor=todayPct>100?'#DC2626':todayPct>80?'#D97706':'#6C5DD3';
   const timeline=[
     {time:'06:00',title:'7am System Health Sweep (Slack, Teams, Email, Grafana)',type:'done',hrs:1.5,src:'system_health'},
-    {time:'08:29',title:'Sent meeting invite - IAI Nexora (Howard Lea + Shahan)',type:'email',hrs:0.1,src:'email'},
-    {time:'08:31',title:'Email reply to Howard Lea (Nexora) - Barco ClickShare feedback',type:'email',hrs:0.15,src:'email'},
-    {time:'08:45',title:'Teams: Mishai forwarded Ark-H supplier docs - Brunno tagged by Aalok',type:'teams',hrs:0.25,src:'teams'},
-    {time:'08:52',title:'Email reply to James Burton (Prescient Security) - ISO cert request',type:'email',hrs:0.15,src:'email'},
-    {time:'09:00',title:'Slack DM: Chased Tayler (Workstreet) on pen test - Tayler replied, added pen test lead',type:'slack',hrs:0.25,src:'slack'},
-    {time:'09:10',title:'Slack DMs: Habib (system health update), Meezab (Supabase update)',type:'slack',hrs:0.15,src:'slack'},
+    {time:'07:44',title:'Teams DM - Lucia: Chrome sign-in question (first message)',type:'teams',hrs:0.1,src:'teams'},
+    {time:'08:13',title:'Teams DM - Nabela: SharePoint access for Lucia still broken',type:'teams',hrs:0.1,src:'teams'},
+    {time:'08:14',title:'Teams DM - Lucia: Device encryption check + Microsoft account setup guidance',type:'teams',hrs:0.2,src:'teams'},
+    {time:'08:15',title:'Teams DM - Nabela: Replied - try deleting cookies and reload. Fixed.',type:'teams',hrs:0.1,src:'teams'},
+    {time:'08:18',title:'Teams DM - Parthiv: Sent credentials and training portal link',type:'teams',hrs:0.1,src:'teams'},
+    {time:'08:29',title:'Email sent - IAI Nexora meeting invite (Howard Lea + Shahan)',type:'email',hrs:0.1,src:'email'},
+    {time:'08:31',title:'Email reply - Howard Lea (Nexora): Barco ClickShare feedback',type:'email',hrs:0.1,src:'email'},
+    {time:'08:34',title:'Teams DM - Lucia: Restart guidance, complianceAI@ admin issue',type:'teams',hrs:0.2,src:'teams'},
+    {time:'08:45',title:'Teams group: Mishai forwarded Ark-H supplier docs - Brunno tagged by Aalok (24hr deadline)',type:'teams',hrs:0.25,src:'teams'},
+    {time:'08:52',title:'Email reply - James Burton (Prescient Security): ISO cert request',type:'email',hrs:0.1,src:'email'},
+    {time:'08:58',title:'Teams DM - Lucia: PC restarted, still running on compliance@ - offered call after Nabela',type:'teams',hrs:0.1,src:'teams'},
+    {time:'09:00',title:'Onboarding call with Nabela',type:'meeting',hrs:0.5,src:'teams'},
+    {time:'09:00',title:'Slack DM - Chased Tayler (Workstreet) on pen test. Tayler replied, added pen test lead to Slack.',type:'slack',hrs:0.25,src:'slack'},
+    {time:'09:10',title:'Slack DMs - Habib (system health update), Meezab (Supabase update)',type:'slack',hrs:0.1,src:'slack'},
     {time:'09:15',title:'IAI Parthiv onboarding meeting (09:15-09:45)',type:'meeting',hrs:0.5,src:'teams'},
-    {time:'09:51',title:'Teams: Parthiv confirmed training completed',type:'teams',hrs:0.1,src:'teams'},
+    {time:'09:51',title:'Teams DM - Parthiv: Confirmed training completed',type:'teams',hrs:0.1,src:'teams'},
+    {time:'10:11',title:'Teams DM - Parthiv: Connect in 5 minutes (MDM + Keeper next)',type:'teams',hrs:0.1,src:'teams'},
+    {time:'10:22',title:'Teams DM - Abayomi: Checked in on Parthiv session - almost done',type:'teams',hrs:0.25,src:'teams'},
     {time:'10:30',title:'Catch-up with Nikhil - extended call (10:30-11:30+)',type:'meeting',hrs:1.0,src:'teams'},
     {time:'15:00',title:'Vanta - Audit Readiness Simulation event (15:00-16:00)',type:'pending',hrs:1.0,src:'compliance'},
   ];
@@ -471,10 +481,10 @@ function renderToday(){
       <div class="busy-header"><div><div class="busy-title">Today - ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div><div class="busy-note">Every action logged - meetings, emails, Slack DMs, Teams chats, system work</div></div><div class="busy-num"><div class="busy-num-val" style="color:${todayColor};font-size:24px;">${todayPct}%</div><div class="busy-num-lbl">${todayHrs.toFixed(1)}h / 8h</div></div></div>
       <div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,100)}%;background:${todayColor};"></div></div>
       <div class="busy-breakdown">
-        <div class="bchip"><i class="fas fa-video" style="color:#464EB8;margin-right:3px;"></i><strong>2</strong> meetings (1.5h)</div>
-        <div class="bchip"><i class="fas fa-envelope" style="color:#1D4ED8;margin-right:3px;"></i><strong>3</strong> emails sent (0.5h)</div>
-        <div class="bchip"><i class="fab fa-slack" style="color:#4A154B;margin-right:3px;"></i><strong>3</strong> Slack DMs (0.4h)</div>
-        <div class="bchip"><i class="fas fa-users" style="color:#464EB8;margin-right:3px;"></i><strong>Teams</strong> Ark-H/Lucia issue (0.25h)</div>
+        <div class="bchip"><i class="fas fa-video" style="color:#464EB8;margin-right:3px;"></i><strong>3</strong> meetings (2h)</div>
+        <div class="bchip"><i class="fas fa-envelope" style="color:#1D4ED8;margin-right:3px;"></i><strong>3</strong> emails sent (0.3h)</div>
+        <div class="bchip"><i class="fab fa-slack" style="color:#4A154B;margin-right:3px;"></i><strong>3</strong> Slack DMs (0.35h)</div>
+        <div class="bchip"><i class="fas fa-users" style="color:#464EB8;margin-right:3px;"></i><strong>Teams DMs</strong> Lucia, Nabela, Parthiv, Abayomi (2.75h)</div>
         <div class="bchip"><i class="fas fa-chart-line" style="color:var(--brand);margin-right:3px;"></i><strong>1</strong> system sweep (1.5h)</div>
       </div>
     </div>
