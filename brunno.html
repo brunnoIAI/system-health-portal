@@ -170,6 +170,44 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 .role-chip i{color:rgba(255,255,255,.7);font-size:13px;}
 .rct{font-size:10.5px;font-weight:600;color:#fff;}
 .rcs{font-size:9px;color:rgba(255,255,255,.5);}
+
+/* FOCUS QUEUE */
+.fq-board{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.fq-col{background:#F9FAFB;border:2px dashed #E5E7EB;border-radius:12px;padding:14px;min-height:260px;}
+.fq-col.active-drop{border-color:var(--brand);background:#F5F3FF;}
+.fq-col-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.fq-col-title i{font-size:11px;}
+.fq-card{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:8px;cursor:grab;transition:all .15s;position:relative;}
+.fq-card:active{cursor:grabbing;}
+.fq-card.dragging{opacity:.4;transform:scale(.97);}
+.fq-card.focus-active{border-color:#16A34A;background:#F0FDF4;}
+.fq-card.focus-active .fq-timer{color:#16A34A;}
+.fq-card-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:5px;line-height:1.3;}
+.fq-card-meta{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:7px;}
+.fq-timer{font-size:18px;font-weight:800;color:var(--brand);font-variant-numeric:tabular-nums;margin:4px 0;}
+.fq-timer-lbl{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;}
+.fq-btns{display:flex;gap:5px;margin-top:7px;}
+.btn-start{background:#16A34A;border:none;border-radius:7px;padding:6px 12px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:4px;}
+.btn-stop{background:#DC2626;border:none;border-radius:7px;padding:6px 12px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:4px;}
+.btn-pause{background:#D97706;border:none;border-radius:7px;padding:6px 12px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:4px;}
+.btn-remove{background:none;border:1.5px solid #E5E7EB;border-radius:7px;padding:5px 8px;font-size:10px;color:var(--muted);cursor:pointer;font-family:var(--font);}
+.btn-remove:hover{border-color:#DC2626;color:#DC2626;}
+.stages-list{margin-top:8px;border-top:1px solid #F3F4F6;padding-top:7px;}
+.stage-row{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:10.5px;}
+.stage-check{width:14px;height:14px;border-radius:4px;border:1.5px solid #D1D5DB;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stage-check.done{background:#16A34A;border-color:#16A34A;color:#fff;}
+.stage-check.active{background:#EDE9FF;border-color:#6C5DD3;color:#6C5DD3;}
+.stage-name{flex:1;color:#374151;}
+.stage-name.done{text-decoration:line-through;color:var(--muted);}
+.sessions-list{margin-top:8px;}
+.session-row{display:flex;align-items:center;gap:7px;padding:4px 8px;background:#F9FAFB;border-radius:6px;margin-bottom:3px;font-size:10px;}
+.session-dur{font-weight:700;color:var(--brand);min-width:36px;}
+.session-note{flex:1;color:#374151;}
+.session-date{color:var(--muted);}
+.pool-empty{text-align:center;padding:30px 10px;color:var(--muted);font-size:11px;}
+.pool-empty i{font-size:24px;display:block;margin-bottom:6px;}
+.drag-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;font-style:italic;}
+
 </style>
 </head>
 <body>
@@ -178,6 +216,7 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
   <div class="ssec">Overview</div>
   <div class="nav active" onclick="setView('dashboard')"><i class="fas fa-gauge-high"></i> Dashboard <span class="nbadge red" id="nb-urgent">0</span></div>
   <div class="nav" onclick="setView('today')"><i class="fas fa-sun"></i> Today <span class="nbadge" id="nb-today">0</span></div>
+  <div class="nav" onclick="setView('focus')"><i class="fas fa-crosshairs"></i> Focus Queue <span class="nbadge" style="background:#16A34A;" id="nb-focus">0</span></div>
   <div class="nav" onclick="setView('tasks')"><i class="fas fa-list-check"></i> All Tasks <span class="nbadge" id="nb-tasks">0</span></div>
   <div class="ssec">Incoming</div>
   <div class="nav" onclick="setView('requests')"><i class="fas fa-inbox"></i> Requests <span class="nbadge red" id="nb-reqs">0</span></div>
@@ -265,17 +304,23 @@ window.addEventListener('DOMContentLoaded',async()=>{
   renderView('dashboard');
 });
 
+let allSessions=[],allStages=[];
+let activeTimers={};  // taskId -> {intervalId, startedAt, sessionId}
+
 async function loadAll(){
-  const[t,r,c,tl,f,wh]=await Promise.all([
+  const[t,r,c,tl,f,wh,sess,stg]=await Promise.all([
     SB.from('brunno_tasks').select('*').order('created_at',{ascending:false}),
     SB.from('brunno_requests').select('*').order('created_at',{ascending:false}),
     SB.from('brunno_controls').select('*').order('status'),
     SB.from('brunno_time_log').select('*').order('log_date',{ascending:false}).order('created_at',{ascending:false}),
     SB.from('brunno_focus_log').select('*').order('log_date',{ascending:false}),
-    SB.from('brunno_work_hours').select('*').order('work_date',{ascending:false}).limit(30)
+    SB.from('brunno_work_hours').select('*').order('work_date',{ascending:false}).limit(30),
+    SB.from('brunno_sessions').select('*').order('started_at',{ascending:false}).limit(200),
+    SB.from('brunno_task_stages').select('*').order('stage_order')
   ]);
   allTasks=t.data||[];allRequests=r.data||[];allControls=c.data||[];
   allTimeLogs=tl.data||[];allFocus=f.data||[];allWorkHours=wh.data||[];
+  allSessions=sess.data||[];allStages=stg.data||[];
   updateBadges();
 }
 
@@ -288,6 +333,9 @@ function updateBadges(){
   document.getElementById('nb-tasks').textContent=active.length;
   document.getElementById('nb-today').textContent=todayLogs;
   document.getElementById('nb-reqs').textContent=newReqs;
+  const focusCount=allTasks.filter(t=>t.in_focus_queue).length;
+  const nbFocus=document.getElementById('nb-focus');
+  if(nbFocus)nbFocus.textContent=focusCount;
 }
 
 function setView(v){
@@ -297,9 +345,10 @@ function setView(v){
 }
 
 function renderView(v){
-  const titles={dashboard:'Dashboard',today:"Today's Activity",tasks:'All Tasks',requests:'Requests & Comms',history:'Day / Week / Month',timelog:'Time Log',focus:'Focus Log',compliance:'Vanta Controls',audit:'Audit Tracker'};
+  const titles={dashboard:'Dashboard',focus:'Focus Queue',today:"Today's Activity",tasks:'All Tasks',requests:'Requests & Comms',history:'Day / Week / Month',timelog:'Time Log',focus:'Focus Log',compliance:'Vanta Controls',audit:'Audit Tracker'};
   document.getElementById('page-title').textContent=titles[v]||v;
   if(v==='dashboard')renderDashboard();
+  else if(v==='focus')renderFocusQueue();
   else if(v==='today')renderToday();
   else if(v==='tasks')renderTasks();
   else if(v==='requests')renderRequests();
@@ -776,6 +825,248 @@ async function logLogout(){
   await SB.from('brunno_work_hours').update({logout_time:t+':00'}).eq('work_date',TODAY);
   alert('Logged out at '+t+'. Have a good evening!');
   await loadAll();renderView(view);
+}
+
+
+// ===================== FOCUS QUEUE =====================
+
+async function renderFocusQueue(){
+  const focusTasks=allTasks.filter(t=>t.in_focus_queue).sort((a,b)=>(a.focus_order||0)-(b.focus_order||0));
+  const poolTasks=allTasks.filter(t=>!t.in_focus_queue&&t.status!=='done'&&t.status!=='cancelled');
+
+  document.getElementById('main-content').innerHTML=`
+    <div style="background:linear-gradient(135deg,#1E1B4B,#312E81);border-radius:10px;padding:14px 18px;margin-bottom:16px;color:#fff;">
+      <div style="font-size:15px;font-weight:800;margin-bottom:3px;"><i class="fas fa-crosshairs" style="margin-right:7px;color:#A5B4FC;"></i>Focus Queue</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.6);">Drag tasks from the pool into your queue to work on them today. Start a timer when you begin. Stop it when you pause or finish a session.</div>
+    </div>
+
+    <div class="fq-board">
+      <!-- LEFT: FOCUS QUEUE (today's tasks) -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:7px;">
+          <span style="background:#6C5DD3;color:#fff;border-radius:6px;padding:2px 8px;font-size:10px;">${focusTasks.length}</span>
+          In my focus today
+          <span style="font-size:9.5px;color:var(--muted);font-weight:400;margin-left:3px;">← drag from pool</span>
+        </div>
+        <div id="focus-drop-zone" class="fq-col" 
+          ondragover="event.preventDefault();this.classList.add('active-drop')" 
+          ondragleave="this.classList.remove('active-drop')"
+          ondrop="dropToFocus(event)">
+          ${focusTasks.length===0
+            ?`<div class="pool-empty"><i class="fas fa-crosshairs"></i>Nothing in focus yet<br><span style="font-size:10px;">Drag tasks here from the pool →</span></div>`
+            :focusTasks.map(t=>focusCard(t)).join('')}
+        </div>
+      </div>
+
+      <!-- RIGHT: TASK POOL -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:7px;">
+          <span style="background:#9CA3AF;color:#fff;border-radius:6px;padding:2px 8px;font-size:10px;">${poolTasks.length}</span>
+          Task pool — everything on your plate
+          <button class="bg" style="font-size:9.5px;padding:3px 8px;margin-left:auto;" onclick="openModal('add-task')"><i class="fas fa-plus"></i></button>
+        </div>
+        <div id="pool-drop-zone" class="fq-col"
+          ondragover="event.preventDefault();this.classList.add('active-drop')"
+          ondragleave="this.classList.remove('active-drop')"
+          ondrop="dropToPool(event)">
+          ${poolTasks.length===0
+            ?`<div class="pool-empty"><i class="fas fa-check-circle" style="color:#16A34A;"></i>Pool is empty</div>`
+            :poolTasks.map(t=>poolCard(t)).join('')}
+        </div>
+      </div>
+    </div>`;
+
+  // Restart any active timers
+  Object.keys(activeTimers).forEach(tid=>{
+    const el=document.getElementById('timer-'+tid);
+    if(el) tickTimer(tid);
+  });
+}
+
+function focusCard(t){
+  const isRunning=!!activeTimers[t.id];
+  const stages=allStages.filter(s=>s.task_id===t.id);
+  const sessions=allSessions.filter(s=>s.task_id===t.id);
+  const totalMins=sessions.reduce((s,sess)=>s+(sess.duration_minutes||0),0);
+  const prio={critical:'#DC2626',high:'#D97706',medium:'#6C5DD3',low:'#9CA3AF'}[t.priority]||'#9CA3AF';
+
+  return`<div class="fq-card ${isRunning?'focus-active':''}" id="fqc-${t.id}" 
+    draggable="true" ondragstart="dragStart(event,'${t.id}')">
+    <div style="display:flex;align-items:flex-start;gap:7px;">
+      <div style="width:3px;border-radius:2px;background:${prio};min-height:32px;flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="fq-card-title">${t.title}</div>
+        <div class="fq-card-meta">
+          <span class="chip chip-cat">${catLabel(t.category)}</span>
+          ${totalMins>0?`<span style="font-size:9.5px;color:var(--brand);font-weight:700;"><i class="fas fa-clock" style="margin-right:2px;"></i>${formatMins(totalMins)} total</span>`:''}
+        </div>
+        ${isRunning?`<div class="fq-timer-lbl">Running</div><div class="fq-timer" id="timer-${t.id}">00:00</div>`:''}
+        <div class="fq-btns">
+          ${isRunning
+            ?`<button class="btn-stop" onclick="stopTimer('${t.id}')"><i class="fas fa-stop"></i> Stop</button>
+               <button class="btn-pause" onclick="pauseTimer('${t.id}')"><i class="fas fa-pause"></i> Pause</button>`
+            :`<button class="btn-start" onclick="startTimer('${t.id}','${t.title.replace(/'/g,"\'")}')"><i class="fas fa-play"></i> Start</button>`}
+          <button class="btn-remove" onclick="removeFromFocus('${t.id}')">↩ Pool</button>
+        </div>
+      </div>
+    </div>
+    ${stages.length>0?`
+    <div class="stages-list">
+      ${stages.map(s=>`
+        <div class="stage-row">
+          <div class="stage-check ${s.status==='done'?'done':s.status==='in_progress'?'active':''}" 
+            onclick="cycleStage('${s.id}','${s.status}')">
+            ${s.status==='done'?'<i class="fas fa-check" style="font-size:8px;"></i>':s.status==='in_progress'?'<i class="fas fa-circle-half-stroke" style="font-size:8px;"></i>':''}
+          </div>
+          <span class="stage-name ${s.status==='done'?'done':''}">${s.stage_name}</span>
+        </div>`).join('')}
+    </div>`:''}
+    ${sessions.length>0?`
+    <div style="margin-top:8px;border-top:1px solid #F3F4F6;padding-top:6px;">
+      <div style="font-size:9.5px;font-weight:600;color:var(--muted);margin-bottom:4px;">SESSIONS (${sessions.length})</div>
+      ${sessions.slice(0,3).map(s=>`
+        <div class="session-row">
+          <span class="session-dur">${formatMins(s.duration_minutes||0)}</span>
+          <span class="session-note">${s.session_note||'Work session'}</span>
+          <span class="session-date">${fmtDate(s.log_date)}</span>
+        </div>`).join('')}
+      ${sessions.length>3?`<div style="font-size:9.5px;color:var(--muted);padding:3px 8px;">+${sessions.length-3} more sessions</div>`:''}
+    </div>`:''}
+  </div>`;
+}
+
+function poolCard(t){
+  const prio={critical:'#DC2626',high:'#D97706',medium:'#6C5DD3',low:'#9CA3AF'}[t.priority]||'#9CA3AF';
+  const sessions=allSessions.filter(s=>s.task_id===t.id);
+  const totalMins=sessions.reduce((s,sess)=>s+(sess.duration_minutes||0),0);
+  return`<div class="fq-card" draggable="true" ondragstart="dragStart(event,'${t.id}')" 
+    style="cursor:grab;">
+    <div style="display:flex;align-items:flex-start;gap:7px;">
+      <div style="width:3px;border-radius:2px;background:${prio};min-height:28px;flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="fq-card-title">${t.title}</div>
+        <div class="fq-card-meta">
+          <span class="chip chip-${t.status}">${statusLabel(t.status)}</span>
+          <span class="chip chip-cat">${catLabel(t.category)}</span>
+          ${totalMins>0?`<span style="font-size:9.5px;color:var(--brand);font-weight:700;">${formatMins(totalMins)}</span>`:''}
+        </div>
+      </div>
+      <button class="bp" style="font-size:9.5px;padding:4px 8px;flex-shrink:0;" 
+        onclick="addToFocus('${t.id}');event.stopPropagation();">
+        <i class="fas fa-arrow-left"></i> Focus
+      </button>
+    </div>
+  </div>`;
+}
+
+// DRAG AND DROP
+let draggedId=null;
+function dragStart(event,id){draggedId=id;event.dataTransfer.effectAllowed='move';}
+
+async function dropToFocus(event){
+  event.preventDefault();
+  document.getElementById('focus-drop-zone').classList.remove('active-drop');
+  if(!draggedId)return;
+  await addToFocus(draggedId);
+  draggedId=null;
+}
+
+async function dropToPool(event){
+  event.preventDefault();
+  document.getElementById('pool-drop-zone').classList.remove('active-drop');
+  if(!draggedId)return;
+  await removeFromFocus(draggedId);
+  draggedId=null;
+}
+
+async function addToFocus(id){
+  await SB.from('brunno_tasks').update({in_focus_queue:true,updated_at:new Date().toISOString()}).eq('id',id);
+  await loadAll();renderFocusQueue();
+}
+
+async function removeFromFocus(id){
+  // Stop timer if running
+  if(activeTimers[id]) await stopTimer(id,true);
+  await SB.from('brunno_tasks').update({in_focus_queue:false,updated_at:new Date().toISOString()}).eq('id',id);
+  await loadAll();renderFocusQueue();
+}
+
+// TIMER
+async function startTimer(taskId,taskTitle){
+  if(activeTimers[taskId])return;
+  // Create a session record in DB
+  const{data}=await SB.from('brunno_sessions').insert({
+    task_id:taskId,task_title:taskTitle,
+    started_at:new Date().toISOString(),
+    log_date:TODAY
+  }).select().single();
+  const sessionId=data?.id;
+  const startedAt=Date.now();
+  const intervalId=setInterval(()=>{
+    const el=document.getElementById('timer-'+taskId);
+    if(el){
+      const elapsed=Math.floor((Date.now()-startedAt)/1000);
+      const m=Math.floor(elapsed/60).toString().padStart(2,'0');
+      const s=(elapsed%60).toString().padStart(2,'0');
+      el.textContent=m+':'+s;
+    }
+  },1000);
+  activeTimers[taskId]={intervalId,startedAt,sessionId,taskTitle};
+  // Re-render to show running state
+  await loadAll();renderFocusQueue();
+}
+
+async function stopTimer(taskId,silent=false){
+  const t=activeTimers[taskId];
+  if(!t)return;
+  clearInterval(t.intervalId);
+  const durationMins=Math.round((Date.now()-t.startedAt)/60000);
+  const note=silent?'Session paused':prompt(`Session note (${durationMins} min):`)||'Work session';
+  // Update session record
+  await SB.from('brunno_sessions').update({
+    stopped_at:new Date().toISOString(),
+    duration_minutes:durationMins,
+    session_note:note
+  }).eq('id',t.sessionId);
+  // Add to time log
+  const hrs=Math.round(durationMins/60*4)/4; // round to nearest 0.25h
+  if(hrs>=0.05){
+    await SB.from('brunno_time_log').insert({
+      task_id:taskId,log_date:TODAY,
+      hours:Math.max(hrs,0.05),
+      notes:t.taskTitle+' - '+note
+    });
+  }
+  delete activeTimers[taskId];
+  await loadAll();renderFocusQueue();
+}
+
+async function pauseTimer(taskId){
+  await stopTimer(taskId,false);
+}
+
+function tickTimer(taskId){
+  if(!activeTimers[taskId])return;
+  const el=document.getElementById('timer-'+taskId);
+  if(!el)return;
+  const elapsed=Math.floor((Date.now()-activeTimers[taskId].startedAt)/1000);
+  const m=Math.floor(elapsed/60).toString().padStart(2,'0');
+  const s=(elapsed%60).toString().padStart(2,'0');
+  el.textContent=m+':'+s;
+}
+
+async function cycleStage(stageId,currentStatus){
+  const next={todo:'in_progress',in_progress:'done',done:'todo'}[currentStatus]||'todo';
+  const upd={status:next};
+  if(next==='done')upd.completed_at=new Date().toISOString();
+  await SB.from('brunno_task_stages').update(upd).eq('id',stageId);
+  await loadAll();renderFocusQueue();
+}
+
+function formatMins(mins){
+  if(!mins||mins===0)return'0m';
+  const h=Math.floor(mins/60);const m=mins%60;
+  return h>0?`${h}h ${m}m`:`${m}m`;
 }
 
 function statusLabel(s){return{todo:'To Do',in_progress:'In Progress',blocked:'Blocked',done:'Done',cancelled:'Cancelled'}[s]||s;}
