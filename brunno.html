@@ -217,7 +217,6 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
   <div class="nav active" onclick="setView('dashboard')"><i class="fas fa-gauge-high"></i> Dashboard <span class="nbadge red" id="nb-urgent">0</span></div>
   <div class="nav" onclick="setView('today')"><i class="fas fa-sun"></i> Today <span class="nbadge" id="nb-today">0</span></div>
   <div class="nav" onclick="setView('focus')"><i class="fas fa-crosshairs"></i> Focus Queue <span class="nbadge" style="background:#16A34A;" id="nb-focus">0</span></div>
-  <div class="nav" onclick="setView('earnings')"><i class="fas fa-sterling-sign"></i> Earnings</div>
   <div class="nav" onclick="setView('tasks')"><i class="fas fa-list-check"></i> All Tasks <span class="nbadge" id="nb-tasks">0</span></div>
   <div class="ssec">Incoming</div>
   <div class="nav" onclick="setView('requests')"><i class="fas fa-inbox"></i> Requests <span class="nbadge red" id="nb-reqs">0</span></div>
@@ -232,7 +231,11 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
   <div class="nav" onclick="window.location.href='index.html'"><i class="fas fa-bug"></i> System Health</div>
   <div class="nav" onclick="window.location.href='hr.html'"><i class="fas fa-users"></i> HR Portal</div>
   <div class="nav" onclick="window.location.href='training.html'"><i class="fas fa-graduation-cap"></i> Training</div>
-  <div class="sfooter"><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;background:var(--brand);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;">BT</div><div><div style="color:#fff;font-weight:600;font-size:10.5px;">Brunno Tavarez</div><div style="font-size:9px;color:rgba(255,255,255,.4);">Compliance Lead</div></div></div></div>
+  <div class="sfooter"><div style="display:flex;align-items:center;gap:8px;cursor:pointer;border-radius:8px;padding:4px 6px;transition:background .15s;" onclick="setView('earnings')" title="My Earnings (private)">
+  <div style="width:28px;height:28px;background:var(--brand);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;">BT</div>
+  <div style="flex:1;"><div style="color:#fff;font-weight:600;font-size:10.5px;">Brunno Tavarez</div><div style="font-size:9px;color:rgba(255,255,255,.4);">Compliance Lead</div></div>
+  <i class="fas fa-chart-line" style="color:rgba(255,255,255,.25);font-size:10px;" title="Earnings"></i>
+</div></div>
 </nav>
 
 <div class="main">
@@ -351,7 +354,7 @@ function setView(v){
 }
 
 function renderView(v){
-  const titles={dashboard:'Dashboard',focus:'Focus Queue',today:"Today's Activity",tasks:'All Tasks',requests:'Requests & Comms',history:'Day / Week / Month',timelog:'Time Log',focus:'Focus Log',compliance:'Vanta Controls',audit:'Audit Tracker',earnings:'Earnings & Hours'};
+  const titles={dashboard:'Dashboard',focus:'Focus Queue',today:"Today's Activity",tasks:'All Tasks',requests:'Requests & Comms',history:'Day / Week / Month',timelog:'Time Log',focus:'Focus Log',compliance:'Vanta Controls',audit:'Audit Tracker',earnings:'My Earnings'};
   document.getElementById('page-title').textContent=titles[v]||v;
   if(v==='dashboard')renderDashboard();
   else if(v==='focus')renderFocusQueue();
@@ -445,7 +448,7 @@ function calcBreakdown(){
     {label:'Slack DMs',kw:['Slack DM','Slack']},
     {label:'Teams DMs',kw:['Teams DM','Teams group']},
     {label:'system sweep',kw:['sweep','Grafana']},
-  ].map(c=>({label:c.label,hrs:tl.filter(l=>c.kw.some(k=>(l.notes||'').includes(k))).reduce((s,l)=>s+parseFloat(l.hours||0),0).toFixed(1)})).filter(b=>parseFloat(b.hrs)>0);
+  ].map(c=>({label:c.label,hrs:fmtHrs(tl.filter(l=>c.kw.some(k=>(l.notes||'').includes(k))).reduce((s,l)=>s+parseFloat(l.hours||0),0))})).filter(b=>b.hrs!=='0:00'&&b.hrs!=='-');
 }
 
 function miniCard(t){return`<div class="tc" onclick="setView('tasks')" style="margin-bottom:5px;"><div class="ttop"><div class="tbar ${t.priority}" style="min-height:28px;"></div><div class="tmain"><div class="ttitle">${t.title}</div><div class="tmeta"><span class="chip chip-${t.status}">${statusLabel(t.status)}</span><span class="chip chip-cat">${catLabel(t.category)}</span>${t.source&&t.source!=='manual'?`<span class="chip chip-${t.source}">${t.source.toUpperCase()}</span>`:''}</div></div></div></div>`;}
@@ -456,37 +459,27 @@ function renderToday(){
   const{todayHrs,todayPct}=calcBusyness();
   const tc=todayPct>100?'#DC2626':todayPct>80?'#D97706':'#6C5DD3';
   const wh=getWorkHoursToday();
-  // Today's time log entries
+  const now=new Date();
+  const nowMins=now.getHours()*60+now.getMinutes();
+
+  // Build timeline from actual time log entries - sorted by notes/time
   const todayLogs=allTimeLogs.filter(l=>l.log_date===TODAY);
   // Done tasks completed today
   const doneTodayTasks=allTasks.filter(t=>t.status==='done'&&t.completed_at&&t.completed_at.startsWith(TODAY));
-  // In-progress tasks with source activity today
-  const activeTodayTasks=allTasks.filter(t=>t.status==='in_progress'&&t.created_at&&t.created_at.startsWith(TODAY));
 
-  const timeline=[
-    {time:'07:44',title:'Teams DM - Lucia: Chrome sign-in question',type:'done',hrs:0.05,src:'teams'},
-    {time:'07:59',title:'Teams DM - Lucia: Replied on Chrome + Portuguese note',type:'done',hrs:0.05,src:'teams'},
-    {time:'08:13',title:'Teams DM - Nabela: SharePoint still broken for Lucia',type:'done',hrs:0.05,src:'teams'},
-    {time:'08:14',title:'Teams DM - Lucia: Device encryption + Microsoft account guidance',type:'done',hrs:0.1,src:'teams'},
-    {time:'08:15',title:'Teams DM - Nabela: Delete cookies fix. Confirmed working.',type:'done',hrs:0.05,src:'teams'},
-    {time:'08:18',title:'Teams DM - Parthiv: Sent credentials + training portal link',type:'done',hrs:0.05,src:'teams'},
-    {time:'08:29',title:'Email sent - IAI Nexora meeting invite (Howard + Shahan)',type:'email',hrs:0.1,src:'email'},
-    {time:'08:31',title:'Email reply - Howard Lea (Nexora): Barco ClickShare feedback',type:'email',hrs:0.1,src:'email'},
-    {time:'08:34',title:'Teams DM - Lucia: Restart guidance, complianceAI@ admin issue',type:'done',hrs:0.1,src:'teams'},
-    {time:'08:45',title:'Teams group - Mishai/Aalok: Ark-H supplier docs, 24hr deadline',type:'done',hrs:0.25,src:'teams'},
-    {time:'08:52',title:'Email reply - James Burton (Prescient): ISO cert request',type:'email',hrs:0.1,src:'email'},
-    {time:'08:58',title:'Teams DM - Lucia: PC restarted, still on compliance@ admin',type:'done',hrs:0.05,src:'teams'},
-    {time:'09:00',title:'Teams DM - Lucia: Offered call after Nabela onboarding',type:'done',hrs:0.05,src:'teams'},
-    {time:'09:00',title:'Slack DM - Chased Tayler (Workstreet) pen test (~10 min)',type:'done',hrs:0.1,src:'slack'},
-    {time:'09:10',title:'Slack DMs - Habib + Meezab updates (~10 min)',type:'done',hrs:0.1,src:'slack'},
-    {time:'09:15',title:'IAI Parthiv onboarding meeting (09:15-09:45, 30 min)',type:'meeting',hrs:0.5,src:'teams'},
-    {time:'09:45',title:'Teams DM - Parthiv: Training completed',type:'done',hrs:0.05,src:'teams'},
-    {time:'10:11',title:'Teams DM - Parthiv: Connect in 5 min (MDM + Keeper next)',type:'done',hrs:0.05,src:'teams'},
-    {time:'10:22',title:'Teams DM - Abayomi: Parthiv session check (~10 min)',type:'done',hrs:0.15,src:'teams'},
-    {time:'10:30',title:'Catch-up with Nikhil (10:30-11:00, 30 min per calendar)',type:'meeting',hrs:0.5,src:'teams'},
-    {time:'10:40',title:'Teams DM - Lucia: Asked for quick call, sign-out question',type:'done',hrs:0.05,src:'teams'},
-    {time:'10:45',title:'Teams DM - Lucia: Replied "call me..." (call pending)',type:'in_progress',hrs:0.05,src:'teams'},
-    {time:'15:00',title:'Vanta - Audit Readiness Simulation (15:00-16:00)',type:'pending',hrs:1.0,src:'compliance'},
+  // Calendar events with DYNAMIC status based on current time
+  function calStatus(startH,startM,endH,endM){
+    const startMins=startH*60+startM;
+    const endMins=endH*60+endM;
+    if(nowMins>=endMins)return'done';
+    if(nowMins>=startMins)return'in_progress';
+    return'pending';
+  }
+  const calEvents=[
+    {t:'09:15-09:45',n:'IAI Parthiv onboarding',s:calStatus(9,15,9,45),o:'You (organiser)'},
+    {t:'10:30-11:00',n:'Catch-up with Nikhil',s:calStatus(10,30,11,0),o:'Nikhil Mehrishi'},
+    {t:'12:00-13:00',n:'Lunch',s:calStatus(12,0,13,0),o:''},
+    {t:'15:00-16:00',n:'Vanta Audit Readiness Simulation',s:calStatus(15,0,16,0),o:'Vanta Team'},
   ];
 
   document.getElementById('main-content').innerHTML=`
@@ -498,38 +491,47 @@ function renderToday(){
       <button class="bg" style="font-size:9.5px;padding:3px 8px;margin-left:auto;" onclick="logLogout()"><i class="fas fa-door-open"></i> Log Logout</button>
     </div>
     <div class="busy-card" style="margin-bottom:14px;">
-      <div class="busy-hdr"><div><div class="busy-title">Today - ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div><div class="busy-note">Every action logged - meetings, emails, Slack, Teams DMs</div></div><div class="bnum"><div class="bnum-val" style="color:${tc};font-size:22px;">${todayPct}%</div><div class="bnum-lbl">${fmtHrs(todayHrs)} / 8h</div></div></div>
+      <div class="busy-hdr"><div><div class="busy-title">Today - ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div><div class="busy-note">Every action logged from time log and sessions</div></div><div class="bnum"><div class="bnum-val" style="color:${tc};font-size:22px;">${todayPct}%</div><div class="bnum-lbl">${fmtHrs(todayHrs)} / 8:00</div></div></div>
       <div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,100)}%;background:${tc};"></div></div>
-      <div class="bchips">${calcBreakdown().map(b=>`<div class="bchip"><strong>${b.hrs}h</strong> ${b.label}</div>`).join('')||'<div class="bchip">No time logged yet</div>'}</div>
+      <div class="bchips">${calcBreakdown().map(b=>`<div class="bchip"><strong>${b.hrs}</strong> ${b.label}</div>`).join('')||'<div class="bchip">No time logged yet</div>'}</div>
     </div>
     <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;">
       <div>
-        <div class="shdr"><div class="stitle"><i class="fas fa-timeline"></i> Timeline</div><button class="bp" style="font-size:9.5px;padding:4px 9px;" onclick="openModal('add-task')"><i class="fas fa-plus"></i> Log</button></div>
-        <div class="tl">${timeline.map(m=>`<div class="tli"><div class="tldot ${m.type}"></div><div class="tltime">${m.time}</div><div class="tltitle">${m.title}</div><div class="tlmeta">${catLabel(m.src)}</div><span class="tlhrs">${m.hrs}h</span></div>`).join('')}</div>
+        <div class="shdr"><div class="stitle"><i class="fas fa-timeline"></i> Timeline (from time log)</div><button class="bp" style="font-size:9.5px;padding:4px 9px;" onclick="openLogTime('')"><i class="fas fa-plus"></i> Log</button></div>
+        <div class="tl">
+          ${todayLogs.length===0
+            ?'<div class="empty" style="padding:20px"><i class="fas fa-clock"></i><p style="margin-top:6px;font-size:11px;">No time logged today yet</p></div>'
+            :todayLogs.map(l=>{
+              // Determine dot type from notes content
+              const n=(l.notes||'').toLowerCase();
+              const dtype=n.includes('meeting')||n.includes('call')||n.includes('onboarding')||n.includes('catch-up')||n.includes('vanta audit')?'meeting'
+                :n.includes('email')?'email'
+                :n.includes('slack')?'slack'
+                :n.includes('teams')?'teams'
+                :'done';
+              return`<div class="tli">
+                <div class="tldot ${dtype}"></div>
+                <div class="tltitle">${l.notes||'Time entry'}</div>
+                <span class="tlhrs">${fmtHrs(l.hours)}</span>
+              </div>`;
+            }).join('')}
+        </div>
       </div>
       <div>
         <div class="shdr"><div class="stitle"><i class="fas fa-calendar"></i> Calendar</div></div>
         <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
-          ${[
-            {t:'09:15-09:45',n:'IAI Parthiv onboarding',s:'done',o:'You (organiser)'},
-            {t:'10:30-11:00',n:'Catch-up with Nikhil',s:'done',o:'Nikhil Mehrishi'},
-            {t:'12:00-13:00',n:'Lunch',s:'pending',o:''},
-            {t:'15:00-16:00',n:'Vanta Audit Readiness Simulation',s:'pending',o:'Vanta Team'},
-          ].map(e=>`<div style="background:#fff;border:1.5px solid ${e.s==='done'?'#BBF7D0':e.s==='in_progress'?'#C4B5FD':'var(--border)'};border-radius:7px;padding:8px 11px;"><div style="font-size:9.5px;color:var(--muted);margin-bottom:1px;">${e.t}</div><div style="font-size:11.5px;font-weight:600;color:var(--text);">${e.n}</div>${e.o?`<div style="font-size:9.5px;color:var(--muted);">${e.o}</div>`:''}<span class="chip chip-${e.s==='done'?'done':e.s==='in_progress'?'in_progress':'todo'}" style="margin-top:3px;">${e.s==='done'?'Done':e.s==='in_progress'?'In progress':'Upcoming'}</span></div>`).join('')}
+          ${calEvents.map(e=>`<div style="background:#fff;border:1.5px solid ${e.s==='done'?'#BBF7D0':e.s==='in_progress'?'#C4B5FD':'var(--border)'};border-radius:7px;padding:8px 11px;">
+            <div style="font-size:9.5px;color:var(--muted);margin-bottom:1px;">${e.t}</div>
+            <div style="font-size:11.5px;font-weight:600;color:var(--text);">${e.n}</div>
+            ${e.o?`<div style="font-size:9.5px;color:var(--muted);">${e.o}</div>`:''}
+            <span class="chip chip-${e.s==='done'?'done':e.s==='in_progress'?'in_progress':'todo'}" style="margin-top:3px;">${e.s==='done'?'Done':e.s==='in_progress'?'In progress':'Upcoming'}</span>
+          </div>`).join('')}
         </div>
-        <div class="shdr"><div class="stitle"><i class="fas fa-check-circle"></i> Done Today</div></div>
+        <div class="shdr"><div class="stitle"><i class="fas fa-check-circle"></i> Done Today (${doneTodayTasks.length})</div></div>
         <div style="display:flex;flex-direction:column;gap:4px;">
-          ${doneTodayTasks.length===0?'<div style="font-size:11px;color:var(--muted);padding:8px 0;">Mark tasks as done and they appear here</div>':doneTodayTasks.map(t=>`<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:7px;padding:6px 10px;font-size:11px;font-weight:600;color:#166534;"><i class="fas fa-check" style="margin-right:5px;"></i>${t.title}</div>`).join('')}
-        </div>
-        <div class="shdr" style="margin-top:12px;"><div class="stitle"><i class="fas fa-envelope"></i> Emails</div></div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
-          ${[
-            {d:'sent',p:'James Burton','s':'ISO cert - letter of engagement',t:'08:52'},
-            {d:'sent',p:'Howard Lea','s':'Barco ClickShare feedback',t:'08:31'},
-            {d:'sent',p:'Howard + Shahan','s':'IAI Nexora meeting invite',t:'08:29'},
-            {d:'recv',p:'James Burton','s':'Auto-reply: out today',t:'08:54'},
-            {d:'recv',p:'Shahan Butt','s':'Accepted: IAI Nexora',t:'08:58'},
-          ].map(e=>`<div style="background:#fff;border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:10.5px;"><div style="display:flex;gap:4px;margin-bottom:1px;"><span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;background:${e.d==='sent'?'#EDE9FF':'#E0F2FE'};color:${e.d==='sent'?'#6C5DD3':'#0284C7'}">${e.d.toUpperCase()}</span><span style="color:var(--muted);font-size:9px;">${e.t}</span><span style="font-weight:600;color:var(--text);">${e.p}</span></div><div style="color:var(--muted);">${e.s}</div></div>`).join('')}
+          ${doneTodayTasks.length===0
+            ?'<div style="font-size:11px;color:var(--muted);padding:8px 0;">Mark tasks as done and they appear here</div>'
+            :doneTodayTasks.map(t=>`<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:7px;padding:6px 10px;font-size:11px;font-weight:600;color:#166534;"><i class="fas fa-check" style="margin-right:5px;"></i>${t.title}</div>`).join('')}
         </div>
       </div>
     </div>`;
@@ -571,6 +573,7 @@ function taskCard(t){
           ${t.source&&t.source!=='manual'?`<span class="chip chip-${t.source}">${t.source.toUpperCase()}</span>`:''}
           ${t.due_date?`<span class="chip ${isOverdue?'chip-overdue':'chip-due'}">${isOverdue?'Overdue: ':''} ${fmtDate(t.due_date)}</span>`:''}
           ${t.completed_at?`<span style="font-size:9px;color:#16A34A;margin-left:2px;">Done ${fmtDate(t.completed_at)}</span>`:''}
+          ${(()=>{const taskSessions=allSessions.filter(s=>s.task_id===t.id);const totalMins=taskSessions.reduce((s,sess)=>s+(sess.duration_minutes||0),0);const taskLogs=allTimeLogs.filter(l=>l.task_id===t.id);const loggedHrs=taskLogs.reduce((s,l)=>s+parseFloat(l.hours||0),0);const loggedMins=Math.round(loggedHrs*60);const combinedMins=Math.max(totalMins,loggedMins);return combinedMins>0?`<span style="font-size:9.5px;color:var(--brand);font-weight:700;background:var(--brand-light);padding:1px 6px;border-radius:7px;"><i class="fas fa-clock" style="margin-right:2px;font-size:8px;"></i>${fmtMins2(combinedMins)}</span>`:'';})()}
         </div>
       </div>
       ${t.estimated_hours?`<div style="text-align:right;flex-shrink:0;"><div class="thrs">${t.estimated_hours}h</div><div style="font-size:8.5px;color:var(--muted);">est</div></div>`:''}
