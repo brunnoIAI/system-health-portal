@@ -404,8 +404,8 @@ function renderDashboard(){
     </div>
     <div class="work-hrs-bar">
       <div style="display:flex;align-items:center;gap:7px;"><i class="fas fa-clock" style="color:var(--brand);"></i><span style="font-size:11px;font-weight:700;color:var(--text);">Work Hours Today</span></div>
-      <div class="wh-item"><strong>Login:</strong> ${(wh.login_time||'08:30').substring(0,5)}</div>
-      <div class="wh-item"><strong>Lunch:</strong> ${(wh.lunch_start||'12:00').substring(0,5)}-${(wh.lunch_end||'13:00').substring(0,5)}</div>
+      <div class="wh-item"><strong>Login:</strong> ${(wh.login_time||'08:50').substring(0,5)}</div>
+      <div class="wh-item"><strong>Lunch:</strong> ${wh.notes&&wh.notes.includes('Lunch:')?wh.notes:'flexible'}</div>
       <div class="wh-item" style="color:${wh.logout_time?'#16A34A':'var(--muted)'};">${wh.logout_time?'Logged out: '+(wh.logout_time||'').substring(0,5):'Logout: not yet logged'}</div>
       <button class="bg" style="font-size:10px;padding:3px 8px;margin-left:auto;" onclick="logLogout()"><i class="fas fa-door-open"></i> Log Logout</button>
     </div>
@@ -485,7 +485,7 @@ function renderToday(){
   document.getElementById('main-content').innerHTML=`
     <div class="work-hrs-bar">
       <i class="fas fa-clock" style="color:var(--brand);"></i>
-      <div class="wh-item"><strong>Login:</strong> ${(wh.login_time||'08:30').substring(0,5)}</div>
+      <div class="wh-item"><strong>Login:</strong> ${(wh.login_time||'08:50').substring(0,5)}</div>
       <div class="wh-item"><strong>Lunch:</strong> ${(wh.lunch_start||'12:00').substring(0,5)}-${(wh.lunch_end||'13:00').substring(0,5)}</div>
       <div class="wh-item" style="color:${wh.logout_time?'#16A34A':'var(--muted)'};">${wh.logout_time?'Logged out: '+(wh.logout_time||'').substring(0,5):'Logout: not yet logged'}</div>
       <button class="bg" style="font-size:9.5px;padding:3px 8px;margin-left:auto;" onclick="logLogout()"><i class="fas fa-door-open"></i> Log Logout</button>
@@ -833,16 +833,20 @@ async function logLogout(){
   const t=prompt('What time are you finishing? (e.g. 17:30)');
   if(!t)return;
   await SB.from('brunno_work_hours').update({logout_time:t+':00'}).eq('work_date',TODAY);
-  // Recalculate actual hours: logout - login - lunch (1h default)
+  // Ask for lunch duration - flexible, not fixed
+  const lunchMinsStr=prompt('How long was your lunch break? (minutes, e.g. 60, 45, 30 - or 0 if no break)','60');
+  const lunchMins=parseInt(lunchMinsStr||'60')||0;
   const wh=allWorkHours.find(w=>w.work_date===TODAY)||{};
-  const loginStr=wh.login_time||'08:30:00';
-  const [lh,lm]=(loginStr||'08:30').split(':').map(Number);
+  const loginStr=wh.login_time||'08:50:00';
+  const [lh,lm]=(loginStr||'08:50').split(':').map(Number);
   const [oh,om]=t.split(':').map(Number);
-  const totalMins=(oh*60+om)-(lh*60+lm)-60; // minus 1h lunch
+  const totalMins=(oh*60+om)-(lh*60+lm)-lunchMins;
   const actualHrs=Math.round(Math.max(totalMins,0)/60*100)/100;
+  // Save lunch time to work_hours
+  await SB.from('brunno_work_hours').update({lunch_start:null,lunch_end:null,notes:`Lunch: ${lunchMins}min`}).eq('work_date',TODAY);
   await SB.from('brunno_earnings').upsert({
     work_date:TODAY,standard_hours:8,actual_hours:actualHrs,
-    notes:`Login ${loginStr.substring(0,5)} / Logout ${t} / Lunch 12:00-13:00`
+    notes:`Login ${loginStr.substring(0,5)} / Logout ${t} / Lunch ${lunchMins}min`
   },{onConflict:'work_date'});
   await loadAll();renderView(view);
 }
