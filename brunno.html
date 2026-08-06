@@ -381,13 +381,14 @@ function calcBusyness(){
   const nowMins=now.getHours()*60+now.getMinutes();
   const dayProgress=Math.min(Math.max((nowMins-startMins)/(endMins-startMins),0),1);
 
-  const interactionScore=Math.min(interactions*3,30);   // up to 30pts
-  const doneScore=Math.min(doneTodayCount*10,30);        // up to 30pts
-  const inProgressScore=Math.min(inProgressCount*2,20); // up to 20pts
-  const timeScore=Math.round(dayProgress*20);            // up to 20pts
-  const todayPct=Math.min(interactionScore+doneScore+inProgressScore+timeScore,100);
+  // No caps - scores can exceed 100 to reflect real busyness
+  const interactionScore=interactions*3;    // 3pts per interaction
+  const doneScore=doneTodayCount*10;        // 10pts per task done today
+  const inProgressScore=inProgressCount*2; // 2pts per in-progress task
+  const timeScore=Math.round(dayProgress*20); // up to 20pts for time of day
+  const todayPct=interactionScore+doneScore+inProgressScore+timeScore;
 
-  // OVERALL score - measures load on your plate
+  // OVERALL score - no cap, reflects real workload
   const active=allTasks.filter(t=>t.status!=='done'&&t.status!=='cancelled');
   const criticalCount=active.filter(t=>t.priority==='critical').length;
   const highCount=active.filter(t=>t.priority==='high').length;
@@ -395,11 +396,12 @@ function calcBusyness(){
   const doneThisWeek=allTasks.filter(t=>t.status==='done'&&t.completed_at&&t.completed_at>=weekAgo).length;
   const createdThisWeek=allTasks.filter(t=>t.created_at&&t.created_at>=weekAgo).length;
 
-  const activeScore=Math.min(active.length*2,40);        // up to 40pts
-  const criticalScore=Math.min(criticalCount*8,24);       // up to 24pts
-  const doneWeekScore=Math.min(doneThisWeek*4,18);        // up to 18pts - reward for completing
-  const createdWeekScore=Math.min(createdThisWeek*2,18);  // up to 18pts
-  const overallPct=Math.min(activeScore+criticalScore+doneWeekScore+createdWeekScore,100);
+  const activeScore=active.length*2;        // 2pts per active task
+  const criticalScore=criticalCount*8;      // 8pts per critical task
+  const highScore=highCount*4;              // 4pts per high task
+  const doneWeekScore=doneThisWeek*4;       // 4pts per task done this week
+  const createdWeekScore=createdThisWeek*2; // 2pts per task created this week
+  const overallPct=activeScore+criticalScore+highScore+doneWeekScore+createdWeekScore;
 
   // Keep these for display compatibility
   const totalEst=active.reduce((s,t)=>s+parseFloat(t.estimated_hours||0),0);
@@ -423,7 +425,7 @@ function renderDashboard(){
   const overdue=active.filter(t=>t.due_date&&new Date(t.due_date)<new Date());
   const newReqs=allRequests.filter(r=>r.status==='new');
   const{todayHrs,todayPct,totalEst,dailyEst,overallPct}=calcBusyness();
-  const tc=todayPct>100?'#DC2626':todayPct>80?'#D97706':'#6C5DD3';
+  const tc=todayPct>150?'#7F1D1D':todayPct>120?'#DC2626':todayPct>80?'#D97706':'#6C5DD3';
   const wh=getWorkHoursToday();
   document.getElementById('main-content').innerHTML=`
     <div class="roles-row">
@@ -447,15 +449,15 @@ function renderDashboard(){
     </div>
     <div class="busy-card">
       <div class="busy-hdr">
-        <div><div class="busy-title"><i class="fas fa-gauge-high" style="color:var(--brand);margin-right:5px;"></i>Busyness Meter</div><div class="busy-note">Today = activity score (interactions + tasks done + in-progress + time of day). Overall = workload score (tasks on plate, complexity, completions).</div></div>
+        <div><div class="busy-title"><i class="fas fa-gauge-high" style="color:var(--brand);margin-right:5px;"></i>Busyness Meter</div><div class="busy-note">Today = activity score (no cap — can exceed 100%). Overall = workload score. Bar fills to 100% at score 200, so 100% shown = score of 200.</div></div>
         <div class="busy-nums">
           <div class="bnum"><div class="bnum-val" style="color:${tc}">${todayPct}%</div><div class="bnum-lbl">Today</div></div>
           <div style="width:1px;background:var(--border);height:32px;"></div>
           <div class="bnum"><div class="bnum-val" style="color:#0284C7">${overallPct}%</div><div class="bnum-lbl">Overall</div></div>
         </div>
       </div>
-      <div style="margin-bottom:4px;"><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Today: ${fmtHrs(todayHrs)} logged of 8h</span><span style="color:${tc};font-weight:700;">${todayPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,100)}%;background:${tc};"></div></div></div>
-      <div><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Overall avg: ~${fmtHrs(dailyEst)}/day across ${active.length} active tasks</span><span style="color:#0284C7;font-weight:700;">${overallPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(overallPct,100)}%;background:#0284C7;"></div></div></div>
+      <div style="margin-bottom:4px;"><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Today: ${fmtHrs(todayHrs)} logged of 8h</span><span style="color:${tc};font-weight:700;">${todayPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,200)*0.5}%;background:${tc};"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Overall avg: ~${fmtHrs(dailyEst)}/day across ${active.length} active tasks</span><span style="color:#0284C7;font-weight:700;">${overallPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(overallPct,200)*0.5}%;background:#0284C7;"></div></div></div>
       <div class="bchips">${calcBreakdown().map(b=>`<div class="bchip"><strong>${b.hrs}h</strong> ${b.label}</div>`).join('')}<div class="bchip" style="margin-left:auto;"><strong>${totalEst.toFixed(0)}h</strong> est total</div></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -487,7 +489,7 @@ function miniReq(r){const bg=r.source==='slack'?'#4A154B':r.source==='teams'?'#4
 // TODAY - includes done tasks and time log entries
 function renderToday(){
   const{todayHrs,todayPct}=calcBusyness();
-  const tc=todayPct>100?'#DC2626':todayPct>80?'#D97706':'#6C5DD3';
+  const tc=todayPct>150?'#7F1D1D':todayPct>120?'#DC2626':todayPct>80?'#D97706':'#6C5DD3';
   const wh=getWorkHoursToday();
   const now=new Date();
   const nowMins=now.getHours()*60+now.getMinutes();
@@ -522,7 +524,7 @@ function renderToday(){
     </div>
     <div class="busy-card" style="margin-bottom:14px;">
       <div class="busy-hdr"><div><div class="busy-title">Today - ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div><div class="busy-note">Activity score: interactions logged + tasks completed + workload + time of day</div></div><div class="bnum"><div class="bnum-val" style="color:${tc};font-size:22px;">${todayPct}%</div><div class="bnum-lbl">${fmtHrs(todayHrs)} / 8:00</div></div></div>
-      <div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,100)}%;background:${tc};"></div></div>
+      <div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,200)*0.5}%;background:${tc};"></div></div>
       <div class="bchips">${calcBreakdown().map(b=>`<div class="bchip"><strong>${b.hrs}</strong> ${b.label}</div>`).join('')||'<div class="bchip">No time logged yet</div>'}</div>
     </div>
     <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;">
