@@ -208,6 +208,27 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 .pool-empty i{font-size:24px;display:block;margin-bottom:6px;}
 .drag-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;font-style:italic;}
 
+
+/* TASK ACTIVITY LOG */
+.task-activity{margin-top:9px;border-top:1px solid #F3F4F6;padding-top:8px;}
+.activity-title{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;}
+.activity-item{display:flex;gap:7px;padding:5px 0;border-bottom:1px solid #F9FAFB;font-size:10.5px;}
+.activity-item:last-child{border-bottom:none;}
+.activity-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:8px;margin-top:1px;}
+.activity-icon.email_received{background:#EFF6FF;color:#1D4ED8;}
+.activity-icon.email_sent{background:#F0FDF4;color:#16A34A;}
+.activity-icon.teams_message{background:#EDE9FF;color:#6C5DD3;}
+.activity-icon.slack_message{background:#F5F0FF;color:#4A154B;}
+.activity-icon.action_taken{background:#FEF3C7;color:#D97706;}
+.activity-icon.note{background:#F3F4F6;color:#6B7280;}
+.activity-body{flex:1;min-width:0;}
+.activity-summary{font-weight:600;color:var(--text);line-height:1.3;}
+.activity-detail{color:var(--muted);margin-top:1px;line-height:1.4;font-size:10px;}
+.activity-meta{font-size:9px;color:var(--muted);margin-top:2px;}
+.add-update-btn{background:none;border:1px dashed #D1D5DB;border-radius:5px;padding:3px 8px;font-size:9.5px;color:var(--muted);cursor:pointer;font-family:var(--font);}
+.add-update-btn:hover{border-color:var(--brand);color:var(--brand);}
+.update-input-area{background:#F9FAFB;border:1.5px solid #C4B5FD;border-radius:7px;padding:8px;margin-top:6px;}
+
 </style>
 </head>
 <body>
@@ -308,7 +329,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   renderView('dashboard');
 });
 
-let allSessions=[],allStages=[];
+let allSessions=[],allStages=[],allTaskUpdates=[];
 let activeTimers={};  // taskId -> {intervalId, startedAt, sessionId}
 
 async function loadAll(){
@@ -320,11 +341,13 @@ async function loadAll(){
     SB.from('brunno_focus_log').select('*').order('log_date',{ascending:false}),
     SB.from('brunno_work_hours').select('*').order('work_date',{ascending:false}).limit(30),
     SB.from('brunno_sessions').select('*').order('started_at',{ascending:false}).limit(200),
-    SB.from('brunno_task_stages').select('*').order('stage_order')
+    SB.from('brunno_task_stages').select('*').order('stage_order'),
+    SB.from('brunno_task_updates').select('*').order('update_time',{ascending:false}).limit(500)
   ]);
   allTasks=t.data||[];allRequests=r.data||[];allControls=c.data||[];
   allTimeLogs=tl.data||[];allFocus=f.data||[];allWorkHours=wh.data||[];
   allSessions=sess.data||[];allStages=stg.data||[];
+  allTaskUpdates=upd.data||[];
   // Earnings are clock-based only - no auto-sync from time log
   updateBadges();
 }
@@ -620,8 +643,45 @@ function taskCard(t){
       </div>
       <div class="tactions" onclick="event.stopPropagation()">
         <button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="openLogTime('${t.id}')"><i class="fas fa-clock"></i> Log Time</button>
+        <button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="showAddUpdate('${t.id}');event.stopPropagation();"><i class="fas fa-plus"></i> Update</button>
         <button class="bg" style="font-size:9.5px;padding:3px 8px;color:#DC2626;border-color:#FCA5A5;" onclick="deleteTask('${t.id}')"><i class="fas fa-trash"></i></button>
       </div>
+      ${(()=>{
+        const updates=allTaskUpdates.filter(u=>u.task_id===t.id);
+        if(updates.length===0)return'';
+        const icons={email_received:'fa-envelope',email_sent:'fa-paper-plane',teams_message:'fa-users',slack_message:'fa-hashtag',action_taken:'fa-bolt',note:'fa-note-sticky'};
+        return`<div class="task-activity" onclick="event.stopPropagation()">
+          <div class="activity-title">
+            <span><i class="fas fa-clock-rotate-left" style="margin-right:4px;"></i>Activity Log (${updates.length})</span>
+          </div>
+          ${updates.slice(0,5).map(u=>`<div class="activity-item">
+            <div class="activity-icon ${u.update_type}"><i class="fas ${icons[u.update_type]||'fa-circle'}"></i></div>
+            <div class="activity-body">
+              <div class="activity-summary">${u.summary}</div>
+              ${u.detail?`<div class="activity-detail">${u.detail.substring(0,120)}${u.detail.length>120?'...':''}</div>`:''}
+              <div class="activity-meta">${u.from_person||''} · ${fmtDate(u.update_date)}</div>
+            </div>
+          </div>`).join('')}
+          ${updates.length>5?`<div style="font-size:9.5px;color:var(--muted);padding:3px 0;">+${updates.length-5} more updates</div>`:''}
+          <div id="update-input-${t.id}" style="display:none;" class="update-input-area" onclick="event.stopPropagation()">
+            <div style="font-size:9.5px;font-weight:600;color:#6C5DD3;margin-bottom:5px;">Add update</div>
+            <select id="utype-${t.id}" style="border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:10px;font-family:var(--font);margin-bottom:5px;width:100%;">
+              <option value="action_taken">Action taken</option>
+              <option value="email_sent">Email sent</option>
+              <option value="email_received">Email received</option>
+              <option value="teams_message">Teams message</option>
+              <option value="slack_message">Slack message</option>
+              <option value="note">Note</option>
+            </select>
+            <input type="text" id="usummary-${t.id}" placeholder="Brief summary..." style="width:100%;border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:10px;font-family:var(--font);margin-bottom:4px;">
+            <textarea id="udetail-${t.id}" placeholder="More detail (optional)..." style="width:100%;border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:10px;font-family:var(--font);min-height:45px;resize:vertical;margin-bottom:5px;"></textarea>
+            <div style="display:flex;gap:5px;">
+              <button onclick="saveTaskUpdate('${t.id}');event.stopPropagation();" style="background:var(--brand);border:none;border-radius:5px;padding:4px 10px;font-size:9.5px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);">Save</button>
+              <button onclick="document.getElementById('update-input-${t.id}').style.display='none';event.stopPropagation();" style="background:none;border:1px solid var(--border);border-radius:5px;padding:4px 8px;font-size:9.5px;color:var(--muted);cursor:pointer;font-family:var(--font);">Cancel</button>
+            </div>
+          </div>
+        </div>`;
+      })()}
     </div>
   </div>`;
 }
@@ -1417,6 +1477,26 @@ async function editEarningsDay(date,currentHrs){
   const note=prompt('Notes (optional):')||'';
   await SB.from('brunno_earnings').update({actual_hours:hrs,notes:note||null}).eq('work_date',date);
   await renderEarnings();
+}
+
+
+function showAddUpdate(taskId){
+  const el=document.getElementById('update-input-'+taskId);
+  if(el){el.style.display=el.style.display==='none'?'block':'none';if(el.style.display==='block')document.getElementById('usummary-'+taskId)?.focus();}
+}
+
+async function saveTaskUpdate(taskId){
+  const utype=document.getElementById('utype-'+taskId)?.value||'note';
+  const summary=(document.getElementById('usummary-'+taskId)?.value||'').trim();
+  const detail=(document.getElementById('udetail-'+taskId)?.value||'').trim();
+  if(!summary){alert('Please enter a summary');return;}
+  await SB.from('brunno_task_updates').insert({
+    task_id:taskId,update_date:TODAY,update_type:utype,
+    source:'manual',from_person:'Brunno Tavarez',
+    summary,detail:detail||null
+  });
+  document.getElementById('update-input-'+taskId).style.display='none';
+  await loadAll();renderView(view);
 }
 
 function statusLabel(s){return{todo:'To Do',in_progress:'In Progress',blocked:'Blocked',done:'Done',cancelled:'Cancelled'}[s]||s;}
