@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 5 Aug 2026, 16:25 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 6 Aug 2026, 09:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -876,6 +876,119 @@ const ISSUES = [
       comments: []
     }
 
+  ,{
+    id:"VAPI-OUTAGE-016",
+    title:"VAPI CRITICAL+WARNING Outage — 04:17 to 05:17 UTC 6 Aug 2026 (Self-Resolved)",
+    priority:"p2",
+    status:"resolved",
+    tab:"voice",
+    occ:1,
+    dateFirst:"6 Aug 2026",
+    dateLast:"6 Aug 2026",
+    dateResolved:"6 Aug 2026",
+    daysOpen:0,
+    responsible:"Habib",
+    escalatedAalok:false,
+    silentFailure:false,
+    mondayId:"PENDING",
+    whatItDoes:"VAPI provider fired WARNING at 04:17 UTC then escalated to CRITICAL at 04:18 UTC. Both resolved by 05:17 UTC — approximately 60 minutes of degraded/outage status. Self-resolved, no engineer action required.",
+    howItHappens:"Grafana alert pipeline detected provider-degraded-vapi then provider-major-outage-vapi. Resolved alerts confirmed in #aios-alerts at 05:17 UTC.",
+    relatedIds:"VAPI-OUTAGE-015",
+    context:"Second VAPI outage in 2 days (VAPI-OUTAGE-015 was Aug 5 19:53-20:53 UTC). Both self-resolved. Pattern of recurring short VAPI cycles continues.",
+    occurrences:[{n:1,when:"2026-08-06 04:17 UTC",what:"WARNING fired 04:17, CRITICAL fired 04:18, both RESOLVED 05:17 UTC. Duration ~60 min. Self-resolved."}],
+    comments:[],
+    rootCause:"VAPI provider-side instability. Self-resolved.",
+    fixApplied:"No action required. Self-resolved.",
+    resolvedBy:"Self-resolved"
+  }
+  ,{
+    id:"CAMPAIGN-SCHEDULER-BUG-001",
+    title:"Campaign Scheduler Bug — Shows COMPLETED After New Contacts Uploaded",
+    priority:"p2",
+    status:"working",
+    tab:"platform",
+    occ:1,
+    dateFirst:"6 Aug 2026",
+    dateLast:"6 Aug 2026",
+    daysOpen:0,
+    responsible:"Faisal",
+    escalatedAalok:false,
+    silentFailure:false,
+    mondayId:"PENDING",
+    whatItDoes:"After uploading new contacts to CRM and scheduling a campaign, the campaign status still shows COMPLETED. Refreshing the page does not change the status. New contacts are not being picked up by the scheduler.",
+    howItHappens:"Reported by U0AFL (solutions engineer) in #aios-dev at 08:31 UTC 6 Aug 2026. Tagged Faisal. 8 replies in thread. Screenshot attached.",
+    relatedIds:"AIOS-TRIGGER-001",
+    context:"Potential bug in campaign scheduler state machine — completed status not resetting when new contacts are added post-completion.",
+    occurrences:[{n:1,when:"2026-08-06 08:31 UTC",what:"Reported in #aios-dev by solutions engineer. Faisal tagged. 8 replies active."}],
+    comments:[]
+  }
+  ,{
+    id:"DEV-LOGIN-001",
+    title:"dev@ Account Login Failure — Unable to Access dev@implementai.io",
+    priority:"p2",
+    status:"working",
+    tab:"platform",
+    occ:1,
+    dateFirst:"6 Aug 2026",
+    dateLast:"6 Aug 2026",
+    daysOpen:0,
+    responsible:"Meezab",
+    escalatedAalok:false,
+    silentFailure:false,
+    mondayId:"PENDING",
+    whatItDoes:"Onkar is unable to login to the dev@ account. Flagged to Meezab in #solutions-hq with a screenshot. Brunno also tagged as FYI.",
+    howItHappens:"Reported by Onkar (Onkar) in #solutions-hq at 08:44 UTC 6 Aug 2026. Meezab engaged. 5 replies in thread.",
+    relatedIds:"",
+    context:"dev@ is a shared account used by solutions/engineering team. Could be a password change, MFA issue, or account lockout.",
+    occurrences:[{n:1,when:"2026-08-06 08:44 UTC",what:"Onkar reported in #solutions-hq, tagged Meezab and Brunno (FYI). 5 replies."}],
+    comments:[]
+  }
+  ,{
+    id:"EMPLOYMENT-VERIFY-001",
+    title:"External Employment Verification Request — Vishal Kumar (Fired)",
+    priority:"p3",
+    status:"open",
+    tab:"tasks",
+    occ:1,
+    dateFirst:"6 Aug 2026",
+    dateLast:"6 Aug 2026",
+    daysOpen:0,
+    responsible:"Brunno",
+    escalatedAalok:false,
+    silentFailure:false,
+    mondayId:"PENDING",
+    whatItDoes:"Ramandeep Kaur from Verification Street sent an employment verification request for Vishal Kumar to brunno@implementai.io at 08:49 UTC. Vishal Kumar was fired and is no longer with ImplementAI.",
+    howItHappens:"Email received from ramandeep@verificationstreet.com at 08:49 UTC 6 Aug 2026. Subject: Employment Verification - Vishal Kumar. Has attachments. Unread.",
+    relatedIds:"",
+    context:"Vishal Kumar is confirmed fired (per team records). HR/compliance response needed. Brunno to coordinate with Aalok or Nikhil on what to disclose.",
+    occurrences:[{n:1,when:"2026-08-06 08:49 UTC",what:"Email received from Verification Street requesting employment verification for Vishal Kumar."}],
+    comments:[]
+  }
+  ,{
+    id:"CC-SCAN-20260806",
+    title:"Command Centre Scan — Thursday 6 Aug 2026 (09:00 UK)",
+    priority:"p3",
+    status:"resolved",
+    tab:"tasks",
+    occ:1,
+    dateFirst:"6 Aug 2026",
+    dateLast:"6 Aug 2026",
+    dateResolved:"6 Aug 2026",
+    daysOpen:0,
+    responsible:"Brunno",
+    escalatedAalok:false,
+    silentFailure:false,
+    mondayId:"",
+    whatItDoes:"Full Command Centre scan: Teams DMs and channels, all 8 Slack channels, Outlook inbox and sent, today calendar. Completed 09:00 UK.",
+    howItHappens:"Manual scan triggered at 09:00 UTC. Sources: #aios, #aios-alerts, #aios-dev, #system-health-hq, #system-health-daily, #solutions-hq, #aios-support, #aios-bot, Teams chats, Outlook inbox/sent, Calendar.",
+    relatedIds:"",
+    context:"Scan findings: VAPI-OUTAGE-016 (new, resolved), CAMPAIGN-SCHEDULER-BUG-001 (new bug), DEV-LOGIN-001 (new), EMPLOYMENT-VERIFY-001 (new). Calendar: IAI-Nexora meeting at 14:30 UK. Monday write still blocked Day 11. All providers quiet at 09:00 UK except AIOS-NAV-001 still open.",
+    occurrences:[{n:1,when:"2026-08-06 09:00 UK",what:"Full scan completed. 4 new items found. 3 active issues confirmed ongoing."}],
+    comments:[],
+    rootCause:"Scheduled scan.",
+    fixApplied:"N/A",
+    resolvedBy:"Brunno"
+  }
 ];
 
 const GOD_MODE_CONFIGS = {
