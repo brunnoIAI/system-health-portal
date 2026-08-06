@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 6 Aug 2026, 16:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 6 Aug 2026, 16:25 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -1065,6 +1065,29 @@ const ISSUES = [
       occurrences: [{n:1, when:"2026-08-06 09:46 UTC", what:"Chris Barrett (Amtivo) ISO 27001 quote follow-up. UNREAD. Reply needed."}],
       comments: []
     },
+    {
+      id: "WISPR-MCP-001",
+      title: "Wispr Flow MCP not connecting in staging",
+      priority: "p3",
+      status: "open",
+      tab: "integrations",
+      tags: [],
+      mondayId: null,
+      system: "INTG",
+      responsible: "Faisal",
+      dateFirst: "2026-08-06",
+      dateLast: "2026-08-06",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Wispr Flow MCP integration fails to connect in staging environment.",
+      howItHappens: "Aalok tested Wispr Flow MCP in staging for custom app and it does not connect. Tagged Faisal in #aios-dev at 16:31 UTC with screenshots.",
+      relatedIds: [],
+      context: "Aalok posted in #aios-dev at 16:31 UTC 6 Aug 2026 with 3 PNG screenshots. Faisal tagged for investigation.",
+      occurrences: [{n: 1, when: "2026-08-06 16:31 UTC", what: "Aalok reported Wispr Flow MCP not connecting in staging, tagged Faisal, 3 screenshots attached"}],
+      comments: []
+    },
+
   ];
 
 const GOD_MODE_CONFIGS = {
