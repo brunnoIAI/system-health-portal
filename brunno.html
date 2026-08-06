@@ -333,7 +333,7 @@ let allSessions=[],allStages=[],allTaskUpdates=[];
 let activeTimers={};  // taskId -> {intervalId, startedAt, sessionId}
 
 async function loadAll(){
-  const[t,r,c,tl,f,wh,sess,stg]=await Promise.all([
+  const[t,r,c,tl,f,wh,sess,stg,upd]=await Promise.all([
     SB.from('brunno_tasks').select('*').order('created_at',{ascending:false}),
     SB.from('brunno_requests').select('*').order('created_at',{ascending:false}),
     SB.from('brunno_controls').select('*').order('status'),
@@ -346,7 +346,7 @@ async function loadAll(){
   ]);
   allTasks=t.data||[];allRequests=r.data||[];allControls=c.data||[];
   allTimeLogs=tl.data||[];allFocus=f.data||[];allWorkHours=wh.data||[];
-  allSessions=sess.data||[];allStages=stg.data||[];
+  allSessions=sess.data||[];allStages=stg.data||[];allTaskUpdates=upd.data||[];
   allTaskUpdates=upd.data||[];
   // Earnings are clock-based only - no auto-sync from time log
   updateBadges();
@@ -593,16 +593,39 @@ function renderToday(){
 }
 
 // ALL TASKS - shows all statuses with filter
+let taskStatusFilter='active'; // 'active','todo','in_progress','blocked','done','all'
+let taskCatFilter='all';
+
 function renderTasks(){
+  const filtered=filterTasksFull(allTasks,taskStatusFilter,taskCatFilter);
+  const statusCounts={
+    active:allTasks.filter(t=>!['done','cancelled'].includes(t.status)).length,
+    todo:allTasks.filter(t=>t.status==='todo').length,
+    in_progress:allTasks.filter(t=>t.status==='in_progress').length,
+    blocked:allTasks.filter(t=>t.status==='blocked').length,
+    done:allTasks.filter(t=>t.status==='done').length,
+    all:allTasks.filter(t=>t.status!=='cancelled').length,
+  };
   const cats=['all','compliance','system_health','hr','training','chasing','admin','ad_hoc'];
-  const filtered=filterTasks(allTasks,taskFilter);
   document.getElementById('main-content').innerHTML=`
-    <div class="filters">
-      ${cats.map(c=>`<div class="fchip ${taskFilter===c?'active':''}" onclick="setTaskFilter('${c}')">${catLabel(c)}</div>`).join('')}
-      <div class="fchip ${taskFilter==='done'?'active':''}" onclick="setTaskFilter('done')">Done</div>
-      <div class="fchip ${taskFilter==='all_including_done'?'active':''}" onclick="setTaskFilter('all_including_done')">All incl. Done</div>
+    <div style="display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap;">
+      ${[['active','All Open','#6C5DD3'],['todo','To Do','#9CA3AF'],['in_progress','In Progress','#D97706'],['blocked','Blocked','#DC2626'],['done','Done','#16A34A'],['all','All','#374151']].map(([s,label,col])=>`
+        <div onclick="taskStatusFilter='${s}';renderTasks();" style="padding:5px 12px;border-radius:16px;font-size:11px;font-weight:700;cursor:pointer;border:2px solid ${taskStatusFilter===s?col:'#E5E7EB'};background:${taskStatusFilter===s?col+'18':'#fff'};color:${taskStatusFilter===s?col:'#9CA3AF'};">
+          ${label} <span style="font-size:9px;font-weight:600;opacity:.8;">${statusCounts[s]||0}</span>
+        </div>`).join('')}
+    </div>
+    <div class="filters" style="margin-bottom:10px;">
+      ${cats.map(c=>`<div class="fchip ${taskCatFilter===c?'active':''}" onclick="taskCatFilter='${c}';renderTasks();">${catLabel(c)}</div>`).join('')}
     </div>
     <div id="task-list">${filtered.length===0?'<div class="empty"><i class="fas fa-list-check"></i><h3 style="margin-top:7px;font-size:13px;">No tasks here</h3></div>':filtered.map(t=>taskCard(t)).join('')}</div>`;
+}
+
+function filterTasksFull(tasks,status,cat){
+  let out=tasks.filter(t=>t.status!=='cancelled');
+  if(status==='active') out=out.filter(t=>!['done'].includes(t.status));
+  else if(status!=='all') out=out.filter(t=>t.status===status);
+  if(cat!=='all') out=out.filter(t=>t.category===cat);
+  return out;
 }
 
 function setTaskFilter(f){taskFilter=f;renderTasks();}
