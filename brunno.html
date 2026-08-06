@@ -325,11 +325,7 @@ async function loadAll(){
   allTasks=t.data||[];allRequests=r.data||[];allControls=c.data||[];
   allTimeLogs=tl.data||[];allFocus=f.data||[];allWorkHours=wh.data||[];
   allSessions=sess.data||[];allStages=stg.data||[];
-  // Sync today's actual hours from time log into earnings
-  const todayLogged=allTimeLogs.filter(l=>l.log_date===TODAY).reduce((s,l)=>s+parseFloat(l.hours||0),0);
-  if(todayLogged>0){
-    SB.from('brunno_earnings').upsert({work_date:TODAY,actual_hours:Math.round(todayLogged*100)/100,standard_hours:8,notes:'Auto-synced from time log'},{onConflict:'work_date'}).then(()=>{});
-  }
+  // Earnings are clock-based only - no auto-sync from time log
   updateBadges();
 }
 
@@ -867,20 +863,29 @@ async function logLogout(){
   const t=prompt('What time are you finishing? (e.g. 17:30)');
   if(!t)return;
   await SB.from('brunno_work_hours').update({logout_time:t+':00'}).eq('work_date',TODAY);
-  // Ask for lunch duration - flexible, not fixed
-  const lunchMinsStr=prompt('How long was your lunch break? (minutes, e.g. 60, 45, 30 - or 0 if no break)','60');
-  const lunchMins=parseInt(lunchMinsStr||'60')||0;
+  // CLOCK-BASED ONLY: earnings = logout time - login time - lunch duration
+  // Get login time from work_hours
   const wh=allWorkHours.find(w=>w.work_date===TODAY)||{};
-  const loginStr=wh.login_time||'08:50:00';
-  const [lh,lm]=(loginStr||'08:50').split(':').map(Number);
+  const loginStr=(wh.login_time||'08:50:00');
+  const [lh,lm]=loginStr.split(':').map(Number);
   const [oh,om]=t.split(':').map(Number);
+  // Calculate lunch duration from saved lunch_start/end if available
+  let lunchMins=0;
+  if(wh.lunch_start&&wh.lunch_end){
+    const [ls,lsm]=(wh.lunch_start||'12:30').split(':').map(Number);
+    const [le,lem]=(wh.lunch_end||'13:18').split(':').map(Number);
+    lunchMins=(le*60+lem)-(ls*60+lsm);
+  } else {
+    // Ask only if we don't have it recorded
+    const lunchMinsStr=prompt('How long was your lunch break? (minutes, e.g. 48, 30, 60 - or 0 if no break)',wh.lunch_start?'48':'60');
+    lunchMins=parseInt(lunchMinsStr||'48')||0;
+  }
   const totalMins=(oh*60+om)-(lh*60+lm)-lunchMins;
   const actualHrs=Math.round(Math.max(totalMins,0)/60*100)/100;
-  // Save lunch time to work_hours
-  await SB.from('brunno_work_hours').update({lunch_start:null,lunch_end:null,notes:`Lunch: ${lunchMins}min`}).eq('work_date',TODAY);
+  // Save to earnings - clock-based only
   await SB.from('brunno_earnings').upsert({
     work_date:TODAY,standard_hours:8,actual_hours:actualHrs,
-    notes:`Login ${loginStr.substring(0,5)} / Logout ${t} / Lunch ${lunchMins}min`
+    notes:`Clock: login ${loginStr.substring(0,5)} / logout ${t} / lunch ${lunchMins}min`
   },{onConflict:'work_date'});
   await loadAll();renderView(view);
 }
@@ -1227,6 +1232,37 @@ async function renderEarnings(){
   const {data:whRows} = await SB.from('brunno_work_hours').select('*').order('work_date',{ascending:false}).limit(60);
   const earnings = rows || [];
   const whMap = {};(whRows||[]).forEach(w=>{whMap[w.work_date]=w;});
+
+  // For today with no logout: calculate live clock hours
+  // Earnings are ALWAYS clock-based: (logout OR now) - login - lunch_duration
+  const todayEarningsRow = earnings.find(r=>r.work_date===TODAY);
+  const todayWH = whMap[TODAY]||{};
+  if(todayEarningsRow && todayWH.login_time && !todayWH.logout_time){
+    // Live calculation: now - login - lunch taken so far
+    const now = new Date();
+    const [lh,lm] = (todayWH.login_time||'08:50').split(':').map(Number);
+    const loginMins = lh*60+lm;
+    const nowMins = now.getHours()*60+now.getMinutes();
+    // Lunch: if lunch_start exists and lunch_end exists, subtract actual lunch
+    // If lunch_start but no lunch_end, subtract time since lunch_start (still at lunch)
+    let lunchMins = 0;
+    if(todayWH.lunch_start && todayWH.lunch_end){
+      const [ls,lsm]=(todayWH.lunch_start||'12:30').split(':').map(Number);
+      const [le,lem]=(todayWH.lunch_end||'13:18').split(':').map(Number);
+      lunchMins=(le*60+lem)-(ls*60+lsm);
+    } else if(todayWH.lunch_start && !todayWH.lunch_end){
+      // Still at lunch - subtract time since lunch started
+      const [ls,lsm]=(todayWH.lunch_start||'12:30').split(':').map(Number);
+      lunchMins=Math.max(nowMins-(ls*60+lsm),0);
+    }
+    const workedMins=Math.max(nowMins-loginMins-lunchMins,0);
+    const liveHrs=Math.round(workedMins/60*100)/100;
+    // Update the row in our local array for display (don't save to DB until logout)
+    todayEarningsRow.actual_hours=liveHrs;
+    todayEarningsRow.overtime_hours=Math.max(liveHrs-8,0).toFixed(2);
+    todayEarningsRow.gross_gbp=(liveHrs*18.75).toFixed(2);
+    todayEarningsRow.gross_eur=(liveHrs*18.75*1.17).toFixed(2);
+  }
 
   // Totals
   const totalActual = earnings.reduce((s,r)=>s+parseFloat(r.actual_hours||0),0);
