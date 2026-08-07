@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 7 Aug 2026, 09:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 7 Aug 2026, 11:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -1087,6 +1087,63 @@ const ISSUES = [
       occurrences: [{n: 1, when: "2026-08-06 16:31 UTC", what: "Aalok reported Wispr Flow MCP not connecting in staging, tagged Faisal, 3 screenshots attached"}],
       comments: []
     },
+    {id:"BDR-OFFER-REPLY-001",title:"Gavin Fernandes Replied to BDR Offer Letter",priority:"p3",status:"working",tab:"tasks",occ:1,dateFirst:"7 Aug 2026",dateLast:"7 Aug 2026",
+      responsible:"Katrina Nguyen",
+      whatItDoes:"Gavin Fernandes replied to the BDR role offer letter sent by Katrina. Reply received in brunno@ inbox at 09:57 UTC 7 Aug 2026.",
+      howItHappens:"Candidate responded to offer. Requires HR follow-up to progress onboarding.",
+      relatedIds:"BDR-OFFER-001",
+      occurrences:[{n:1,when:"2026-08-07 09:57 UTC",what:"Gavin Fernandes replied to Implement AI BDR offer letter from gavfer3011@gmail.com"}],
+      comments:[]
+    },
+    {id:"CHATGPT-RENEW-001",title:"ChatGPT Business Subscription Renews Aug 14",priority:"p3",status:"working",tab:"tasks",occ:1,dateFirst:"7 Aug 2026",dateLast:"7 Aug 2026",
+      responsible:"Brunno Tavarez",
+      whatItDoes:"OpenAI notification that IAI Solutions Workspace ChatGPT Business subscription renews on 14 Aug 2026. Confirm budget approval and card validity.",
+      howItHappens:"Routine renewal notification received in brunno@ inbox at 09:16 UTC 7 Aug.",
+      relatedIds:"CHATGPT-ACCESS-001",
+      occurrences:[{n:1,when:"2026-08-07 09:16 UTC",what:"OpenAI email: ChatGPT Business subscription for IAI Solutions Workspace renews Aug 14 2026"}],
+      comments:[]
+    },
+    {id:"EMPLOYMENT-VERIFY-002",title:"Employment Verification Follow-up — Vishal Kumar (Ramandeep Kaur)",priority:"p2",status:"working",tab:"tasks",occ:2,dateFirst:"7 Aug 2026",dateLast:"7 Aug 2026",
+      responsible:"Brunno Tavarez",
+      whatItDoes:"Ramandeep Kaur from Verification Street sent a follow-up reply re Vishal Kumar employment verification. Previous exchange existed (EMPLOYMENT-VERIFY-001). Action required to respond.",
+      howItHappens:"Received in brunno@ inbox at 04:05 UTC 7 Aug from ramandeep@verificationstreet.com.",
+      relatedIds:"EMPLOYMENT-VERIFY-001",
+      occurrences:[{n:1,when:"2026-08-07 04:05 UTC",what:"Ramandeep Kaur (Verification Street) sent follow-up reply re Vishal Kumar employment verification — action required"}],
+      comments:[]
+    },
+    {id:"NEXORA-ORGANISER-FLAG-001",title:"Nexora 17:00 Meeting Organised by Ex-Employee Syed Tabrez",priority:"p2",status:"working",tab:"tasks",occ:1,dateFirst:"7 Aug 2026",dateLast:"7 Aug 2026",
+      responsible:"Brunno Tavarez",
+      whatItDoes:"Calendar shows 17:00-17:30 UK meeting 'Nexora - IAI - Agent Development and Progress' is still organised by Syed Tabrez who is no longer with ImplementAI. Attendees include Howard Lea (Nexora), Ben Clifford, Nikhil Mehrishi, Kamil Murgala. Needs verification and organiser transfer.",
+      howItHappens:"Syed Tabrez was fired/left ImplementAI. Calendar invite still shows him as organiser for today's Nexora meeting.",
+      relatedIds:"",
+      occurrences:[{n:1,when:"2026-08-07 17:00 UTC",what:"Nexora meeting at 17:00 still organised by ex-employee Syed Tabrez — verify if meeting is still valid and transfer ownership"}],
+      comments:[]
+    },
+    {id:"QA-PROCESS-DOC-001",title:"QA/Testing Process Documentation Requested by Shahzeb",priority:"p3",status:"working",tab:"tasks",occ:1,dateFirst:"7 Aug 2026",dateLast:"7 Aug 2026",
+      responsible:"Shahzeb Muhammad",
+      whatItDoes:"Shahzeb asked in #aios-dev for any existing QA/testing process documentation. New team member U096NHA0W5T joined the channel. Documentation gap identified.",
+      howItHappens:"Posted in #aios-dev at 10:51 UTC 7 Aug: 'Is there any documentation currently we have right now for our testing / QA process? If so pls share here'",
+      relatedIds:"",
+      occurrences:[{n:1,when:"2026-08-07 10:51 UTC",what:"Shahzeb asked #aios-dev for QA/testing documentation — new team member onboarding, documentation gap"}],
+      comments:[]
+    },
+    {id:"DEV-EMAIL-CC-DIRECTIVE-001",title:"Shahzeb Directive: CC Dev Team on All Client Emails",priority:"p3",status:"working",tab:"tasks",occ:1,dateFirst:"7 Aug 2026",dateLast:"7 Aug 2026",
+      responsible:"Shahzeb Muhammad",
+      whatItDoes:"Shahzeb posted in #solutions-hq at 17:13 UTC directing Brunno, U095NGUJV2R and U097LTWGRUK to CC shahzeb@ and dev@ on all client emails where applicable. Action required to confirm acknowledgement and update process.",
+      howItHappens:"Posted in #solutions-hq: 'Pls remember to cc me shahzeb@ and dev@ in all emails to clients where its applicable so we are always in the loop'",
+      relatedIds:"CLIENT-IAI-EMAIL-001",
+      occurrences:[{n:1,when:"2026-08-07 17:13 UTC",what:"Shahzeb directive in #solutions-hq to CC dev team on all client emails"}],
+      comments:[]
+    },
+    {id:"DEV-WALKTHROUGH-REQUEST-001",title:"Shahan/Meezab Requesting 20-Min Dev Walkthrough Call Tomorrow",priority:"p3",status:"working",tab:"tasks",occ:1,dateFirst:"7 Aug 2026",dateLast:"7 Aug 2026",
+      responsible:"Meezab Fatima",
+      whatItDoes:"Shahan (U095NGUJV2R) asked Shahzeb and Meezab to be available for a 20-minute walkthrough call tomorrow to demonstrate something. Shahzeb confirmed 'after 10am UK works'.",
+      howItHappens:"Posted in #solutions-hq at 15:31 UTC 7 Aug. Shahzeb confirmed availability at 15:34 UTC.",
+      relatedIds:"",
+      occurrences:[{n:1,when:"2026-08-07 15:31 UTC",what:"Shahan requested 20-min dev walkthrough call for 8 Aug after 10am UK — Shahzeb confirmed"}],
+      comments:[]
+    },
+
 
   ];
 
