@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 7 Aug 2026, 14:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 7 Aug 2026, 4pm UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -602,6 +602,142 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+    {
+    "id": "COMPOSIO-OUTAGE-006",
+    "title": "Composio repeated CRITICAL outage cycles - still firing",
+    "priority": "p1",
+    "status": "working",
+    "tab": "platform",
+    "tags": [
+        "escalated"
+    ],
+    "mondayId": "",
+    "system": "COMPOSIO",
+    "responsible": "Habib",
+    "dateFirst": "2026-08-07",
+    "dateLast": "2026-08-07",
+    "daysOpen": 0,
+    "escalatedAalok": false,
+    "silentFailure": false,
+    "whatItDoes": "Composio provider cycling CRITICAL+RESOLVED multiple times today (06:27, 08:14, 14:22, 20:23 UTC). Most recent alert still open as of 4pm sweep.",
+    "howItHappens": "Grafana alert provider-outage-composio firing repeatedly. Pattern suggests upstream instability not a single clean outage.",
+    "relatedIds": [
+        "ESCALATION-001"
+    ],
+    "context": "7 Aug 2026 4pm sweep. Multiple cycles throughout the day. VAPI also had a cycle (10:49-11:19 UTC, resolved). Pod restart cascade at 16:40-16:50 UTC also self-resolved.",
+    "occurrences": [
+        {
+            "n": 1,
+            "when": "2026-08-07 06:27 UTC",
+            "what": "CRITICAL fired"
+        },
+        {
+            "n": 2,
+            "when": "2026-08-07 08:14 UTC",
+            "what": "CRITICAL fired"
+        },
+        {
+            "n": 3,
+            "when": "2026-08-07 14:22 UTC",
+            "what": "CRITICAL fired"
+        },
+        {
+            "n": 4,
+            "when": "2026-08-07 20:23 UTC",
+            "what": "CRITICAL fired (still open at 4pm sweep)"
+        }
+    ],
+    "comments": []
+},
+    {
+    "id": "AIOS-CREDIT-MISCOUNT-001",
+    "title": "Credit miscalculation: Reflect Digital showing 4.1M credits, 161 activities mispriced",
+    "priority": "p2",
+    "status": "working",
+    "tab": "platform",
+    "tags": [
+        "silent"
+    ],
+    "mondayId": "",
+    "system": "AIOS",
+    "responsible": "Faisal",
+    "dateFirst": "2026-08-07",
+    "dateLast": "2026-08-07",
+    "daysOpen": 0,
+    "escalatedAalok": true,
+    "silentFailure": true,
+    "whatItDoes": "Reflect Digital account showing 4.1 million credits used. Root cause: 161 billable activities currently marked as base model (should be billed at higher rate). Causing credit miscalculation across platform.",
+    "howItHappens": "Brunno flagged in #aios at ~13:00 UTC. Faisal confirmed: 161 activities marked as base model incorrectly. Aalok and Faisal investigating credit conversion formulae.",
+    "relatedIds": [
+        "COST-ERR-001"
+    ],
+    "context": "7 Aug 2026. Brunno: 'reflect digital is showing 4.1 million credits used'. Faisal: '161 billable activities that are currently marked base model causing credit miscalculation'. May affect other client accounts too.",
+    "occurrences": [
+        {
+            "n": 1,
+            "when": "2026-08-07 ~13:00 UTC",
+            "what": "Brunno flagged in #aios, Faisal confirmed root cause"
+        }
+    ],
+    "comments": []
+},
+    {
+    "id": "IAI-ACADEMY-CONF-001",
+    "title": "IAI Academy not ready for Monday conference - Aalok needs login",
+    "priority": "p2",
+    "status": "working",
+    "tab": "platform",
+    "tags": [],
+    "mondayId": "",
+    "system": "AIOS",
+    "responsible": "Faisal",
+    "dateFirst": "2026-08-07",
+    "dateLast": "2026-08-07",
+    "daysOpen": 0,
+    "escalatedAalok": true,
+    "silentFailure": false,
+    "whatItDoes": "Brunno asked Faisal to make Academy live for a conference on Monday. Aalok needs login credentials to demo the sales part. Faisal confirmed Academy is in dev and will be available for testing mid-week - not ready for Monday.",
+    "howItHappens": "#aios-dev 7 Aug. Brunno: 'can we make the academy live? We need to show it on a conference Monday. Need to give the login to Aalok.' Faisal: 'Its in dev...will be available for testing mid [week]'.",
+    "relatedIds": [],
+    "context": "Conference is Monday 10 Aug 2026. Academy and Billing both in active development. Faisal said client-side is built and could potentially be used.",
+    "occurrences": [
+        {
+            "n": 1,
+            "when": "2026-08-07 ~15:00 UTC",
+            "what": "Brunno raised in #aios-dev, Faisal confirmed not ready"
+        }
+    ],
+    "comments": []
+},
+    {
+    "id": "PASSWORD-MGMT-001",
+    "title": "Passwords meeting needed - remove Automate123, implement OnePassword",
+    "priority": "p2",
+    "status": "working",
+    "tab": "security",
+    "tags": [],
+    "mondayId": "",
+    "system": "SECURITY",
+    "responsible": "Shahzeb",
+    "dateFirst": "2026-08-07",
+    "dateLast": "2026-08-07",
+    "daysOpen": 0,
+    "escalatedAalok": false,
+    "silentFailure": false,
+    "whatItDoes": "Brunno wants to hold a passwords meeting to implement OnePassword system and remove all Automate123 default passwords. Shahzeb agreed to tomorrow (8 Aug).",
+    "howItHappens": "#solutions-hq 7 Aug. Brunno: 'let's do a call today to talk and implement the one password system. We need to get rid of all Automate123 passwords too.' Shahzeb: 'Can we do passwords meeting tomorrow?'",
+    "relatedIds": [],
+    "context": "Meeting deferred to 8 Aug 2026. Brunno also needs to get rid of Automate123 for good.",
+    "occurrences": [
+        {
+            "n": 1,
+            "when": "2026-08-07 ~10:30 UTC",
+            "what": "Brunno raised in #solutions-hq, Shahzeb agreed to tomorrow"
+        }
+    ],
+    "comments": []
+},
+    
   {id:"PHISH-EXEC-001",title:"Social Engineering Attack — Kamil Phishing Email Impersonating Aalok",priority:"p2",status:"working",tab:"security",occ:1,dateFirst:"28 Jul 2026",dateLast:"29 Jul 2026",whatItDoes:"Kamil Murgala received phishing email using Aalok's name asking for his WhatsApp number. Brunno filed formal incident INC-2026-001 in Teams Incidents channel at 12:43 UTC 28 Jul.",howItHappens:"Social engineering attempt targeting team member via email impersonation of CEO.",responsibleParty:"Security",timeline:[{dot:"red",label:"28 Jul 12:43 UTC — Kamil receives phishing email impersonating Aalok"},{dot:"amber",label:"28 Jul — Brunno files INC-2026-001 in Teams Incidents"},{dot:"amber",label:"29 Jul — Brunno proposes incident tracking platform in #aios-security, Aalok responds"}]},
   {id:"CRM-PERM-001",title:"CRM Intermittent Random Permissions Loss on Opportunity Records",priority:"p2",status:"working",tab:"bugs",occ:1,dateFirst:"20 Jul 2026",dateLast:"29 Jul 2026",whatItDoes:"CRM showing random permissions loss on opportunity records. Zendesk Ticket #312 created 20 Jul, still open as of 29 Jul.",howItHappens:"Intermittent permissions issue affecting CRM opportunity records. Root cause under investigation by Abdullah Nadeem.",responsibleParty:"Abdullah Nadeem",timeline:[{dot:"red",label:"20 Jul — Ticket #312 created: CRM Intermittent Random Permissions Loss"},{dot:"amber",label:"28 Jul — Updated by Abdullah Nadeem, still open"},{dot:"amber",label:"29 Jul — Updated by System, still unresolved"}]},
   {id:"CUA-PASSWORD-VISIBLE-001",title:"Computer Use Agent Exposes Passwords on Screen During Runs",priority:"p2",status:"working",tab:"security",occ:1,dateFirst:"16 Jul 2026",dateLast:"29 Jul 2026",whatItDoes:"Computer use agent screen recordings show passwords being typed in plaintext. Security risk for all CUA runs involving login credentials.",howItHappens:"CUA browser automation types credentials directly without masking. Aalok flagged in #aios-security 16 Jul.",responsibleParty:"Shahzeb",timeline:[{dot:"red",label:"16 Jul — Aalok flags CUA password visibility in #aios-security"},{dot:"amber",label:"16 Jul — Shahzeb adds to task list"},{dot:"amber",label:"29 Jul — Still unresolved, no fix deployed"}]},
