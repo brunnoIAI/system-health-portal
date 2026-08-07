@@ -337,6 +337,7 @@ function checkDirty() {
 // MISSING ITEMS — specific pills for what is still needed
 // ============================================================
 function getMissingItems(s) {
+  if (s.completion_override) return [];
   const today = new Date(); today.setHours(0,0,0,0);
   const startDt = s.s25?.expectedStart ? new Date(s.s25.expectedStart) : null;
   const daysToStart = startDt ? Math.ceil((startDt - today) / 86400000) : null;
@@ -399,6 +400,8 @@ function getMissingItems(s) {
 // COMPLETION PERCENTAGE
 // ============================================================
 function getCompletion(s) {
+  // Manual override — admin decision to approve despite incomplete checkpoints
+  if (s.completion_override) return 100;
   // 20 checkpoints across all stages
   const checks = [
     s.s1?.completed,
