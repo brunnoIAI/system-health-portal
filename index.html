@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Mon 10 Aug 2026, 16:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 10 Aug 2026, 4:25pm UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -1632,6 +1632,55 @@ const ISSUES = [
       occurrences: [{ n: 1, when: "2026-08-10", what: "Directive posted to all solutions engineers" }],
       comments: []
     },
+    {
+      id: "AALOK-CODING-BAN-001",
+      title: "Aalok directive: pause Command coding, switch to GLM",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Brunno",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Aalok instructed Brunno at 16:22 UTC 10 Aug to immediately stop using Command for coding tasks. Brunno has spent $2K+ in the last months on coding via Command. Aalok also requested switching to GLM model for future work.",
+      howItHappens: "Direct Teams DM from Aalok at 16:22 UTC: 'pls can you pause coding in command for now. You've spent $2K+ in last months. You can use it for normal work but not coding. i would also like you to use the GLM model.'",
+      relatedIds: "COST-ERR-001",
+      context: "New operational constraint effective immediately. Brunno to acknowledge and comply.",
+      occurrences: [
+        { n: 1, when: "2026-08-10 16:22 UTC", what: "Aalok DM: pause Command coding, use GLM instead" }
+      ],
+      comments: []
+    },
+    {
+      id: "NEXORA-UPDATE-001",
+      title: "Nexora: Barco trade-in ready for testing (Howard Lea)",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Brunno",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno sent Howard Lea (Nexora) an update at 15:12 UTC covering three agents: Barco trade-in (ready for testing, passed 72-cycle QA), UCC Attach, and LG BDM status.",
+      howItHappens: "Outbound email from brunno@ to howard.lea@nexora at 15:12 UTC 10 Aug 2026.",
+      relatedIds: "",
+      context: "Positive progress. Awaiting Howard Lea's testing feedback on Barco trade-in agent.",
+      occurrences: [
+        { n: 1, when: "2026-08-10 15:12 UTC", what: "Email sent: Barco trade-in ready for testing + UCC Attach + LG BDM status update" }
+      ],
+      comments: []
+    },
+
 
 
   ];
