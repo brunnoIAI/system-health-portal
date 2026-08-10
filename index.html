@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Mon 10 Aug 2026, 15:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Mon 10 Aug 2026, 16:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -625,10 +625,34 @@ const ISSUES = [
       comments: []
     },
     {
+      id: "NEXORA-BARCO-UPDATE-001",
+      title: "Nexora — Barco Trade-in update sent to Howard Lea",
+      priority: "p3",
+      status: "working",
+      tab: "tasks",
+      tags: [],
+      mondayId: "",
+      system: "EMAIL",
+      responsible: "Brunno",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno sent update to Howard Lea (Nexora) at 15:12 UTC covering: Barco Trade-in agent ready for testing (passed 72-check QA), UCC Attach agent status, and LG BDM agent status.",
+      howItHappens: "Outbound email from brunno@implementai.io to Howard Lea at 15:12 UTC Aug 10 2026.",
+      relatedIds: ["NEXORA-CANCEL-001", "NEXORA-ONBOARD-001"],
+      context: "Follow-up on Nexora account. Three agents covered: Barco Trade-in (ready), UCC Attach, LG BDM.",
+      occurrences: [
+        { n: 1, when: "2026-08-10 15:12 UTC", what: "Brunno sent Barco Trade-in / UCC Attach / LG BDM status update to Howard Lea (Nexora)" }
+      ],
+      comments: []
+    },
+    {
       id: "HR-EMAILS-MEETING-001",
       title: "HR emails catch-up meeting - Katrina set up for 15:10 UK today",
       priority: "p3",
-      status: "open",
+      status: "working",
       tab: "tasks",
       tags: [],
       mondayId: "",
