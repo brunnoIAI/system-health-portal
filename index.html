@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Mon 10 Aug 2026, 10:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Mon 10 Aug 2026, 12:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -1287,6 +1287,95 @@ const ISSUES = [
   {id:"SOL-HQ-DATE-CREATED-001",title:"Shahzeb Directive: Add Date Created Column to All Client Airtable Views",priority:"p3",status:"working",tab:"tasks",occ:1,dateFirst:"7 Aug 2026",dateLast:"7 Aug 2026",whatItDoes:"Shahzeb posted in #solutions-hq at 13:06 UTC directing team to ensure all client Airtable views include the Date Created column. Triggered by U095NGUJV2R request at 12:37 UTC for time-sensitive research clients (ECW, Luxury Hub, NCM). Shahzeb also asked for this to be kept in Slack.",howItHappens:"Slack #solutions-hq discussion at 12:37-13:17 UTC 7 Aug 2026. Shahzeb confirmed Airtable tracks Date Created automatically but it needs adding to shared views.",responsibleParty:"Shahzeb / Solutions Team",timeline:[{dot:"amber",label:"7 Aug 12:37 UTC — U095NGUJV2R requests Date Created on all research databases"},{dot:"amber",label:"7 Aug 13:06 UTC — Shahzeb confirms and directs team to add to all client views"},{dot:"amber",label:"7 Aug 13:17 UTC — Shahzeb: keep all comms in Slack not Teams"}],comments:[]},
 
   {id:"NEXORA-CANCEL-001",title:"Nexora 17:00 Meeting Cancelled — Organiser Syed Tabrez is Ex-Employee",priority:"p2",status:"working",tab:"platform",occ:1,dateFirst:"7 Aug 2026",dateLast:"7 Aug 2026",whatItDoes:"The Nexora - IAI - Agent Development and Progress meeting scheduled at 17:00 UK today was cancelled. The organiser is Syed Tabrez who is no longer with ImplementAI. Shahan accepted the IAI Nexora review meeting at 13:41 UTC. A separate IAI Nexora review meeting was sent today at 13:40 UTC to Shahan and Howard Lea.",howItHappens:"Calendar shows Nexora 17:00 cancelled (organiser syed@implementai.io). Brunno sent a new IAI Nexora review invite at 13:40 UTC to shahan@ and howard.lea@Nexora.com. Ben Clifford from Nexora sent an auto-reply at 13:37 UTC.",responsibleParty:"Brunno",timeline:[{dot:"red",label:"7 Aug — Nexora 17:00 meeting cancelled (Syed Tabrez organiser, ex-employee)"},{dot:"green",label:"7 Aug 13:40 UTC — Brunno sent new IAI Nexora review meeting to Shahan + Howard Lea"},{dot:"amber",label:"7 Aug 13:41 UTC — Shahan accepted the new invite"},{dot:"amber",label:"7 Aug 13:37 UTC — Ben Clifford (Nexora) auto-replied"}],comments:[]},
+
+    {
+      id: "CRM-DELETE-001",
+      title: "Cannot delete contacts in CRM via Command",
+      priority: "p2",
+      status: "open",
+      tab: "platform",
+      tags: ["bug"],
+      mondayId: null,
+      system: "CRM",
+      responsible: "Faisal",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "User cannot delete contacts in CRM via Command agent. Likely intentional guard but now causing operational issues.",
+      howItHappens: "Reported by U0AFLT6TH0E in #aios-dev at ~09:32 UTC 10 Aug. Cannot delete contacts via Command - assumed intentional to prevent accidental CRM damage but creating a blocker.",
+      relatedIds: [],
+      context: "#aios-dev 10 Aug 2026",
+      occurrences: [{ n: 1, when: "2026-08-10", what: "First reported in #aios-dev by U0AFLT6TH0E" }],
+      comments: []
+    },
+    {
+      id: "CRM-FIGURES-001",
+      title: "CRM figures always wrong / display bug",
+      priority: "p2",
+      status: "open",
+      tab: "platform",
+      tags: ["bug"],
+      mondayId: null,
+      system: "CRM",
+      responsible: "Faisal",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 0,
+      escalatedAalok: true,
+      silentFailure: false,
+      whatItDoes: "CRM figures are consistently incorrect. Aalok flagged as a bug and asked to either hide the figures or fix them.",
+      howItHappens: "Aalok (U06CBJGQ353) posted in #aios-dev at ~09:54 UTC 10 Aug: 'Hi can we just hide the figures or fix them? as these are always wrong / bug'",
+      relatedIds: ["CRM-DELETE-001"],
+      context: "#aios-dev 10 Aug 2026",
+      occurrences: [{ n: 1, when: "2026-08-10", what: "Aalok flagged in #aios-dev" }],
+      comments: []
+    },
+    {
+      id: "ENG-MEETING-001",
+      title: "Brunno requesting AIOS engineers meeting this week",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: null,
+      system: "OPS",
+      responsible: "Brunno",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno posted in #aios requesting a 45-minute meeting with all AIOS engineers this week. Also posted same request in #solutions-hq for solutions engineers.",
+      howItHappens: "Brunno (U08CX1GBU4R) posted in #aios at ~09:54 UTC and #solutions-hq at ~09:53 UTC 10 Aug. U097LTWGRUK replied in #aios suggesting Friday (biweekly slot available).",
+      relatedIds: ["SOL-ENG-MEETING-001"],
+      context: "#aios + #solutions-hq 10 Aug 2026",
+      occurrences: [{ n: 1, when: "2026-08-10", what: "Brunno posted meeting request in both channels" }],
+      comments: []
+    },
+    {
+      id: "SOL-BIWEEKLY-FORMAT-001",
+      title: "Solutions biweekly meetings to include new format from next session",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: null,
+      system: "OPS",
+      responsible: "Meezab",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Starting from next biweekly engineer team meeting, every session will include a new format element (details in #solutions-hq). All solution engineers notified.",
+      howItHappens: "U097LTWGRUK posted in #solutions-hq at ~09:23 UTC 10 Aug. No biweekly meeting this Friday per reply from same user in #aios.",
+      relatedIds: [],
+      context: "#solutions-hq 10 Aug 2026",
+      occurrences: [{ n: 1, when: "2026-08-10", what: "Directive posted to all solutions engineers" }],
+      comments: []
+    },
 
 
   ];
