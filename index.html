@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Mon 10 Aug 2026, 12:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Mon 10 Aug 2026, 14:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -602,6 +602,84 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+    {
+      id: "ABAYOMI-CALL-001",
+      title: "Abayomi Baruwa requested a call - Teams DM",
+      priority: "p3",
+      status: "open",
+      tab: "tasks",
+      tags: [],
+      mondayId: "",
+      system: "TEAMS",
+      responsible: "Brunno",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Abayomi sent a Teams DM at 13:16 UTC saying 'Now' in response to Brunno's earlier message. Brunno replied 'call when you can then'. A call is pending.",
+      howItHappens: "Teams DM between Brunno and Abayomi Baruwa (QA/Eng Ops). Abayomi indicated availability for a call at 13:16 UTC today.",
+      relatedIds: [],
+      context: "Teams DM chat. Abayomi said 'Now', Brunno replied 'call when you can then'. Call not yet confirmed as completed.",
+      occurrences: [
+        { n: 1, when: "2026-08-10 13:16 UTC", what: "Abayomi sent 'Now' in Teams DM. Brunno replied 'call when you can then'." }
+      ],
+      comments: []
+    },
+    {
+      id: "OPENAI-DEGRADE-002",
+      title: "OpenAI provider degraded and self-resolved - 10 Aug 2026",
+      priority: "p3",
+      status: "resolved",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "GRAFANA",
+      responsible: "Habib",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "OpenAI provider degraded WARNING fired today, then self-resolved. Two alerts seen in #aios-alerts: WARNING at ~09:25 UTC, RESOLVED confirmation shortly after.",
+      howItHappens: "Grafana fired provider-degraded-openai WARNING. Self-resolved without engineer intervention. Seen in #aios-alerts today.",
+      relatedIds: ["OPENAI-DEGRADE-001"],
+      context: "New cycle today. All providers otherwise quiet. Pattern consistent with previous self-resolving OpenAI cycles.",
+      occurrences: [
+        { n: 1, when: "2026-08-10 ~09:25 UTC", what: "WARNING fired in #aios-alerts." },
+        { n: 2, when: "2026-08-10 ~09:45 UTC", what: "RESOLVED - self-resolved, confirmed in #aios-alerts." }
+      ],
+      comments: [],
+      dateResolved: "2026-08-10",
+      rootCause: "External OpenAI provider degradation, self-resolved.",
+      fixApplied: "None required - self-resolved.",
+      resolvedBy: "Auto"
+    },
+    {
+      id: "NIKHIL-CANCEL-REPLY-001",
+      title: "Nikhil replied to Human First Collective cancellation email",
+      priority: "p2",
+      status: "working",
+      tab: "tasks",
+      tags: ["escalated"],
+      mondayId: "",
+      system: "EMAIL",
+      responsible: "Nikhil",
+      dateFirst: "2026-08-10",
+      dateLast: "2026-08-10",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Nikhil Mehrishi replied to Chantel Jordan's cancellation email at 12:13 UTC. He apologised for the missed Teams message and acknowledged her position. CLIENT-CANCEL-001 is being actioned.",
+      howItHappens: "Chantel Jordan (chantel.jordan@humanfirstcollective.com) sent cancellation at 10:58 UTC. Nikhil replied at 12:13 UTC on behalf of IAI.",
+      relatedIds: ["CLIENT-CANCEL-001"],
+      context: "Brunno's inbox shows Nikhil's reply (UNREAD as of 2pm scan). The client cancellation is now being handled. Follow up needed to confirm outcome.",
+      occurrences: [
+        { n: 1, when: "2026-08-10 10:58 UTC", what: "Chantel Jordan sent Notice of Cancellation email." },
+        { n: 2, when: "2026-08-10 12:13 UTC", what: "Nikhil Mehrishi replied, apologising and acknowledging the situation." }
+      ],
+      comments: []
+    },
     {
     "id": "COMPOSIO-OUTAGE-006",
     "title": "Composio repeated CRITICAL outage cycles - still firing",
