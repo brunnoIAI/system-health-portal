@@ -318,7 +318,9 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 
 <script>
 const SB=window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co','sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox');
-const TODAY=new Date().toISOString().split('T')[0];
+// Use local date (not UTC) - important for users in non-UTC timezones (e.g. Bali UTC+8)
+const _now=new Date();
+const TODAY=new Date(_now.getTime()-_now.getTimezoneOffset()*60000).toISOString().split('T')[0];
 let view='dashboard',allTasks=[],allRequests=[],allControls=[],allTimeLogs=[],allFocus=[],allWorkHours=[];
 let taskFilter='all',expandedTask=null,histPeriod='day',histOff=0;
 
