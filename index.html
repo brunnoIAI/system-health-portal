@@ -1,4 +1,4 @@
-<!-- build:1786464200 -->
+<!-- build:1786465516 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Tue 11 Aug 2026, 16:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Tue 11 Aug 2026, 16:25 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -1910,7 +1910,60 @@ const ISSUES = [
       { n: 1, when: "2026-08-11 15:03 UTC", what: "Ticket #349 marked Solved by Abdullah Nadeem." }
     ],
     comments: []
+  },,
+  {
+    id: "EXPORT-BUG-002",
+    title: "Export Going to Email Instead of Download",
+    priority: "p2",
+    status: "resolved",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "AIOS Platform",
+    responsible: "Ubaid Waseem",
+    dateFirst: "2026-08-11",
+    dateLast: "2026-08-11",
+    dateResolved: "2026-08-11",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Export function sends data to user email instead of triggering a browser download.",
+    howItHappens: "Bug in export flow routing. Aalok flagged in #aios-dev at 09:43 UTC, tagged Faisal. Ubaid deployed fix live at 13:35 UTC same day.",
+    relatedIds: [],
+    context: "Urgently flagged by Aalok in #aios-dev 11 Aug. Fixed and confirmed live by 13:35 UTC.",
+    resolvedBy: "Ubaid Waseem",
+    rootCause: "Export routing bug sending to email instead of download.",
+    fixApplied: "Fix deployed to production 13:35 UTC 11 Aug 2026.",
+    occurrences: [
+      { n: 1, when: "2026-08-11 09:43 UTC", what: "Aalok flagged export going to email, tagged Faisal as urgent." },
+      { n: 2, when: "2026-08-11 13:35 UTC", what: "Ubaid fix confirmed live in production." }
+    ],
+    comments: []
   },
+  {
+    id: "AGENT-FORMS-LOCKED-001",
+    title: "Agent-Forms Login - Password Changed / Access Lost",
+    priority: "p2",
+    status: "open",
+    tab: "platform",
+    tags: ["silent"],
+    mondayId: "",
+    system: "AIOS Platform",
+    responsible: "Meezab Fatima",
+    dateFirst: "2026-08-11",
+    dateLast: "2026-08-11",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: true,
+    whatItDoes: "Solutions team cannot log into agent-forms. Password appears to have changed without notice.",
+    howItHappens: "Onkar reported in #solutions-hq at 09:46 UTC that agent-forms password has changed and he cannot log in. Tagged Meezab. No resolution as of 16:00 UTC.",
+    relatedIds: [],
+    context: "Onkar (U09C1VD3WSZ) reported at 09:46 UTC 11 Aug. Meezab tagged. 4 replies in thread. Still unresolved at EOD.",
+    occurrences: [
+      { n: 1, when: "2026-08-11 09:46 UTC", what: "Onkar reported unable to log in to agent-forms, password changed. Tagged Meezab in #solutions-hq." }
+    ],
+    comments: []
+  }
 ];
 
 const GOD_MODE_CONFIGS = {
@@ -2317,7 +2370,11 @@ TIME LOG (estimated):
 - Compliance training invite: 10 min
 - ISO training acceptances x2: 5 min
 - Vanta alert reply to Piers: 10 min
-TOTAL: ~2h 05min</div></div><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">7 Aug 2026, 14:00 UK</span><span class="raw-source">Command Centre Full Scan — Slack + Teams + Outlook + Calendar</span></div><div class="raw-body">CALENDAR: ISO Soc2 catch-up 14:00 UK (Brunno organiser, Aalok accepted). Nexora 17:00 CANCELLED (organiser Syed Tabrez ex-employee). New Nexora review meeting sent 13:40 UTC to Shahan + Howard Lea. POD A Huddle CANCELLED. ABKN Weekly CANCELLED. Lunch 12:00. INBOX: ChatGPT plan will not renew (12:57 UTC) + new sign-in alert (12:55 UTC) + login code (12:54 UTC) — possible unauthorised access. ChatGPT Business renews Aug 14 (09:16 UTC). BDR-OFFER-REPLY-001 Gavin Fernandes replied positively (09:57 UTC). EMPLOYMENT-VERIFY-002 Ramandeep Kaur follow-up on Vishal Kumar (04:05 UTC). SENT: Nexora review invite to Shahan + Howard Lea (13:40 UTC). ISO Soc2 invite to Aalok x2 (07:57 + 10:05 UTC). SLACK #solutions-hq: 14 messages. Shahzeb directive add Date Created to all Airtable client views (13:06 UTC). Shahan walkthrough call request for 8 Aug after 10am (15:31 UTC, confirmed Shahzeb after 10am). Brunno: channels cleanup proposed for next week. #aios-dev: GLM-FAIL-001 KNOWN (Aalok asked Faisal why GLM fails on Command 07:53 UTC). Shahzeb QA doc request (10:51 UTC). New member U096NHA0W5T joined. ALL OTHER CHANNELS SILENT. TEAMS: ISO Soc2 meeting chat active — Aalok 5min late (13:09 UTC). Solutions HQ group: Aalok shared V3 delivery playbook (10:35 UTC). ABKN cancelled — Nikhil asked to reschedule Monday. NEW ITEMS: CHATGPT-CANCEL-001, SOL-HQ-DATE-CREATED-001, NEXORA-CANCEL-001.</div></div><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">9 Jul 2026, 15:00 UK</span><span class="raw-source">Portal v3 — Supabase + HR Connected</span></div><div class="raw-body">Portal v3 updated 9 Jul 2026. HR module now connected to Supabase (hr_people + hr_exiting tables). System health data updated to 9 Jul 2026. GitHub: brunnoIAI/system-health-portal. Hosted: system.implementai.net.</div></div></div></div>';}
+- Andrew Butterworth billing email (Aalok request): 15 min
+- Weekly Review attendance (Nikhil, 15:30-17:00): 90 min
+- EOD Command Centre scan: 25 min
+- Portal update: 20 min
+TOTAL: ~4h 30min (standard 8h day, 07:00-16:25 excl lunch)</div></div><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">7 Aug 2026, 14:00 UK</span><span class="raw-source">Command Centre Full Scan — Slack + Teams + Outlook + Calendar</span></div><div class="raw-body">CALENDAR: ISO Soc2 catch-up 14:00 UK (Brunno organiser, Aalok accepted). Nexora 17:00 CANCELLED (organiser Syed Tabrez ex-employee). New Nexora review meeting sent 13:40 UTC to Shahan + Howard Lea. POD A Huddle CANCELLED. ABKN Weekly CANCELLED. Lunch 12:00. INBOX: ChatGPT plan will not renew (12:57 UTC) + new sign-in alert (12:55 UTC) + login code (12:54 UTC) — possible unauthorised access. ChatGPT Business renews Aug 14 (09:16 UTC). BDR-OFFER-REPLY-001 Gavin Fernandes replied positively (09:57 UTC). EMPLOYMENT-VERIFY-002 Ramandeep Kaur follow-up on Vishal Kumar (04:05 UTC). SENT: Nexora review invite to Shahan + Howard Lea (13:40 UTC). ISO Soc2 invite to Aalok x2 (07:57 + 10:05 UTC). SLACK #solutions-hq: 14 messages. Shahzeb directive add Date Created to all Airtable client views (13:06 UTC). Shahan walkthrough call request for 8 Aug after 10am (15:31 UTC, confirmed Shahzeb after 10am). Brunno: channels cleanup proposed for next week. #aios-dev: GLM-FAIL-001 KNOWN (Aalok asked Faisal why GLM fails on Command 07:53 UTC). Shahzeb QA doc request (10:51 UTC). New member U096NHA0W5T joined. ALL OTHER CHANNELS SILENT. TEAMS: ISO Soc2 meeting chat active — Aalok 5min late (13:09 UTC). Solutions HQ group: Aalok shared V3 delivery playbook (10:35 UTC). ABKN cancelled — Nikhil asked to reschedule Monday. NEW ITEMS: CHATGPT-CANCEL-001, SOL-HQ-DATE-CREATED-001, NEXORA-CANCEL-001.</div></div><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">9 Jul 2026, 15:00 UK</span><span class="raw-source">Portal v3 — Supabase + HR Connected</span></div><div class="raw-body">Portal v3 updated 9 Jul 2026. HR module now connected to Supabase (hr_people + hr_exiting tables). System health data updated to 9 Jul 2026. GitHub: brunnoIAI/system-health-portal. Hosted: system.implementai.net.</div></div></div></div>';}
 </script>
 <script>
 // ============================================================
