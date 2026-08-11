@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 11 Aug 2026, 10:00am UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 11 Aug 2026, 12:00pm UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -2876,7 +2876,29 @@ async function loadRemoteData() {
         {id:"GAVIN-ONBOARD-DAY2-001",title:"Gavin Fernandes Day 2 onboarding - Vanta done, Certn confirmed",priority:"p3",status:"working",tab:"platform",tags:[],mondayId:"",system:"IMPLAI",responsible:"Brunno",dateFirst:"11 Aug 2026",dateLast:"11 Aug 2026",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Gavin Fernandes completed Vanta training on Day 2. Asked Brunno via Teams DM whether to use personal or work email for Certn. Brunno confirmed Certn invite was sent to his Gmail. Gavin confirmed receipt.",howItHappens:"Day 2 of Gavin onboarding. Brunno managing ISO/security compliance tasks.",relatedIds:["GAVIN-ONBOARD-001"],context:"Gavin: I have finished vanta trainings. When signing in to Certn do I use personal or work email? Brunno: it was sent to your gmail. Gavin: Yes.",occurrences:[{n:1,when:"11 Aug 2026 09:10-10:00 UTC",what:"Gavin completed Vanta training, Certn email confirmed"}],comments:[]},
         {id:"LUCIA-VIRTUAL-UK-001",title:"Lucia: Virtual UK phone number for agent testing - compliance query answered",priority:"p3",status:"working",tab:"platform",tags:[],mondayId:"",system:"IMPLAI",responsible:"Brunno",dateFirst:"11 Aug 2026",dateLast:"11 Aug 2026",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Lucia Barreiros asked Brunno via Teams DM at 09:55 UTC whether there are compliance restrictions on creating a virtual UK phone number for testing agents. Brunno replied advising call.com app and to ask the SA team.",howItHappens:"New team member needs a virtual UK number for agent testing.",relatedIds:[],context:"Lucia: I need to create a virtual UK phone number for testing agents, are there any compliance restrictions? Brunno: I was using call.com app but ask SA team what they currently use.",occurrences:[{n:1,when:"11 Aug 2026 09:55 UTC",what:"Lucia DM to Brunno, resolved with guidance"}],comments:[]},
         {id:"WEEKLY-REVIEW-DELIVERY-001",title:"Calendar: Weekly Review - Delivery Team at 3:30pm UK today",priority:"p3",status:"open",tab:"platform",tags:[],mondayId:"",system:"IMPLAI",responsible:"Nikhil",dateFirst:"11 Aug 2026",dateLast:"11 Aug 2026",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Weekly Review - Delivery Team meeting scheduled for 15:30-17:00 UK today (Tue 11 Aug). Organiser: Nikhil Mehrishi. Microsoft Teams meeting. POD A Daily Huddle cancelled (Kamil organiser). Lunch 12:00-13:00.",howItHappens:"Recurring weekly meeting. Nikhil is organiser.",relatedIds:[],context:"Calendar confirmed. Also: accepted ISO Audit training invites for Solution Engineers and AIOS Engineers (both sent to Meezab).",occurrences:[{n:1,when:"11 Aug 2026 15:30 UK",what:"Weekly Review Delivery Team - Teams meeting, Nikhil organiser"}],comments:[]}
-];
+    {
+      id: "SALES-REP-ACCOUNT-001",
+      title: "New sales rep account request — AIOS access needed",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "AIOS",
+      responsible: "Meezab",
+      dateFirst: "2026-08-11",
+      dateLast: "2026-08-11",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "User U0AFLT6TH0E posted in #aios at ~09:00 UTC requesting an AIOS account for a new sales representative. Email not specified in message.",
+      howItHappens: "Manual account creation request posted in #aios channel. Needs Meezab or admin to create and provision account.",
+      relatedIds: [],
+      context: "Posted 11 Aug 2026 ~09:00 UTC. Account details (email) not yet provided.",
+      occurrences: [{ n: 1, when: "2026-08-11", what: "Request posted in #aios by U0AFLT6TH0E" }],
+      comments: []
+    },
+  ];
         else s4.assignments[r.issue_id] = r.assignee_email;
         saveStore(s4); renderWorkload(); updateMyItemsBadge();
       }).subscribe();
