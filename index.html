@@ -567,7 +567,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Tue 11 Aug 2026, 16:25 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 12 Aug 2026, 09:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -1875,7 +1875,7 @@ const ISSUES = [
     system: "PLATFORM",
     responsible: "Brunno",
     dateFirst: "2026-08-11",
-    dateLast: "2026-08-11",
+    dateLast: "2026-08-12",
     daysOpen: 0,
     escalatedAalok: false,
     silentFailure: false,
@@ -1964,7 +1964,56 @@ const ISSUES = [
     ],
     comments: []
   }
-];
+,
+    {
+      id: "NEW-MEMBER-001",
+      title: "New Solutions Engineer Joined - #solutions-hq Announcement",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Meezab",
+      dateFirst: "2026-08-12",
+      dateLast: "2026-08-12",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Meezab announced a new AIOS Solutions Engineer joining the team via #solutions-hq <!channel> at 08:35 UTC. User ID U0BP1U09FMM joined the channel.",
+      howItHappens: "New team member onboarding. Meezab posted introduction. Action: ensure portal access, Monday board access, and compliance training assigned.",
+      relatedIds: ["EMPLOYMENT-VERIFY-002"],
+      context: "New SE onboarding. Meezab: <!channel> We have a new team member joined us recently <@U0BP1U09FMM> - AIOS Solution Engineer.",
+      occurrences: [
+        { n: 1, when: "2026-08-12 08:35 UTC", what: "Meezab announced new SE in #solutions-hq" }
+      ],
+      comments: []
+    },
+    {
+      id: "CLAUDE-SONNET5-001",
+      title: "Aalok Requesting Claude Sonnet 5 Release in AIOS",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Faisal",
+      dateFirst: "2026-08-12",
+      dateLast: "2026-08-12",
+      daysOpen: 0,
+      escalatedAalok: true,
+      silentFailure: false,
+      whatItDoes: "Aalok posted in #aios-dev at 08:20 UTC asking Faisal and U0790KJ70FR whether Claude Sonnet 5 (cheaper than 4.6) can be released in AIOS. Awaiting engineering response.",
+      howItHappens: "Feature request / model upgrade. Aalok: 'sonnet 5 is cheaper then 4.6, can we release in aios?'. Tagged Faisal (U073DBB8ATE) and U0790KJ70FR.",
+      relatedIds: ["ANTHROPIC-RETIRE-001"],
+      context: "Aalok asking for cost-optimised model upgrade. No response from engineers yet at 9am sweep.",
+      occurrences: [
+        { n: 1, when: "2026-08-12 08:20 UTC", what: "Aalok posted in #aios-dev requesting Sonnet 5 release" }
+      ],
+      comments: []
+    }
+  ];
 
 const GOD_MODE_CONFIGS = {
   all:{title:"All Issues — System Health Overview",subtitle:"11 Aug 2026 | Portal v3 | 9am scan complete. 7 new items: GAVIN-ONBOARD-002, CRM-DELETE-001, CRM-FIGURES-001, SOL-ENG-MEETING-001, AIOS-ENG-MEETING-001, AGENT-FORMS-PASS-001, ISO-TRAINING-INVITE-001",stats:[{cls:"red",icon:"fa-fire",val:"4",label:"P1 Critical Open",sub:"COST, ESCALATION, OPS-SILENT, HIGH-VOLUME"},{cls:"amber",icon:"fa-exclamation",val:"13",label:"P2 Significant Open",sub:"Active issues"},{cls:"grey",icon:"fa-info-circle",val:"1",label:"P3 Low Open",sub:"Monitor"},{cls:"green",icon:"fa-check-circle",val:"35+",label:"Resolved",sub:"Since May 2026"},{cls:"brand",icon:"fa-robot",val:"280+",label:"Alerts Self-Resolved",sub:"Provider alerts since May"},{cls:"blue",icon:"fa-database",val:"LIVE",label:"Supabase + HR",sub:"Real-time sync active"}],statusItems:[{dot:"red",label:"HIGH-VOLUME-CAMPAIGN-001 — All agents unavailable during 5,000-call campaign (Ticket #293, open)"},{dot:"red",label:"ESCALATION-001 — Day 68+, zero engineer response, #system-health-hq silent since Jun 4"},{dot:"amber",label:"CREDIT-ANOMALY-001 — Reflect Digital 4.1M credits flagged as unrealistic (NEW Jul 9)"},{dot:"amber",label:"EMMA-VOICE-001 — Emma voice no longer available on sales agent (Ticket #294)"},{dot:"amber",label:"COST-ERR-001 occ=125+ — 15 Anthropic + 15 Twilio Jul 3-9"},{dot:"green",label:"POSITIVE: Task stop mechanism deployed to staging (Abayomi Jul 9)"},{dot:"green",label:"POSITIVE: New frontend+backend build live (Abayomi Jul 4)"},{dot:"green",label:"POSITIVE: Dhia termination + ISO27001 audit completed (Jul 4)"}]},
