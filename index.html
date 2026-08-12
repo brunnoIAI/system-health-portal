@@ -583,7 +583,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 12 Aug 2026, 16:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 12 Aug 2026, 16:25 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -2648,6 +2648,91 @@ const ISSUES = [
             ],
             comments: []
         },
+
+,
+
+    {
+      id: 'ANTHROPIC-DEGRADE-003',
+      title: 'Anthropic provider degraded - new cycle',
+      priority: 'p2',
+      status: 'open',
+      tab: 'platform',
+      tags: [],
+      mondayId: '',
+      system: 'Anthropic',
+      responsible: 'Habib',
+      dateFirst: '12 Aug 2026',
+      dateLast: '12 Aug 2026',
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: 'Anthropic WARNING fired ~14:07 UTC. Still firing at 4pm EOD sweep (~1h03min duration).',
+      howItHappens: 'provider-degraded-anthropic alert fired in #aios-alerts. No resolution seen at EOD.',
+      relatedIds: ['ANTHROPIC-DEGRADE-002'],
+      context: 'New cycle started ~14:02 UTC. WARNING confirmed at 14:07 UTC. STILL FIRING at EOD.',
+      occurrences: [
+        { n: 1, when: '2026-08-12 ~14:02 UTC', what: 'WARNING fired, still open at 4pm EOD' }
+      ],
+      comments: []
+    },
+    {
+      id: 'ANDREW-BILLING-001',
+      title: 'Finance Invoices meeting with Andrew Butterworth - completed',
+      priority: 'p3',
+      status: 'resolved',
+      tab: 'platform',
+      tags: [],
+      mondayId: '',
+      system: 'Finance',
+      responsible: 'Brunno',
+      dateFirst: '12 Aug 2026',
+      dateLast: '12 Aug 2026',
+      dateResolved: '12 Aug 2026',
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: 'Andrew Butterworth (Project X Holdings) replied to billing email and proposed 1pm meeting. Meeting held 13:00-13:30 UK.',
+      howItHappens: 'Andrew replied at 05:35 UTC. Brunno accepted. Meeting completed.',
+      relatedIds: [],
+      context: 'Andrew: "That would be great, I will send over a meeting request for 1 pm today." Meeting completed 13:00-13:30 UK.',
+      rootCause: 'N/A - meeting completed successfully.',
+      fixApplied: 'Meeting held. Follow-up actions TBD.',
+      resolvedBy: 'Brunno',
+      occurrences: [
+        { n: 1, when: '2026-08-12 05:35 UTC', what: 'Andrew replied proposing 1pm meeting' },
+        { n: 2, when: '2026-08-12 13:00-13:30 UK', what: 'Finance Invoices meeting completed' }
+      ],
+      comments: []
+    },
+    {
+      id: 'EMPLOYMENT-VERIFY-002',
+      title: 'Employment verification - Vishal Kumar (Ramandeep Kaur)',
+      priority: 'p3',
+      status: 'resolved',
+      tab: 'platform',
+      tags: [],
+      mondayId: '',
+      system: 'HR',
+      responsible: 'Brunno',
+      dateFirst: '12 Aug 2026',
+      dateLast: '12 Aug 2026',
+      dateResolved: '12 Aug 2026',
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: 'Ramandeep Kaur from Verification Street requesting employment verification for Vishal Kumar. Brunno replied confirming the document is genuine.',
+      howItHappens: 'Email chain: ramandeep@verificationstreet.com -> brunno@. Brunno replied at 08:56 and 09:41 UTC.',
+      relatedIds: [],
+      context: 'Brunno confirmed: "Oh, sorry, I missed that. Yes, the document is genuine." Multiple emails exchanged. Resolved.',
+      rootCause: 'N/A - routine HR verification.',
+      fixApplied: 'Brunno confirmed document genuine.',
+      resolvedBy: 'Brunno',
+      occurrences: [
+        { n: 1, when: '2026-08-12 04:02 UTC', what: 'Ramandeep Kaur requests verification' },
+        { n: 2, when: '2026-08-12 09:41 UTC', what: 'Brunno confirms document genuine' }
+      ],
+      comments: []
+    }
 
 ];
 
