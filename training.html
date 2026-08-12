@@ -78,6 +78,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text);}
 .matrix tr:last-child td{border-bottom:none;}
 .cell-s{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:100px;}
 .cell-pass{background:#DCFCE7;color:var(--green);}
+.cell-amber{background:#FEF3C7;color:#D97706;}
 .cell-fail{background:#FEE2E2;color:var(--red);}
 .cell-none{background:#F3F4F6;color:var(--muted);}
 .edit-panel{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;}
@@ -714,7 +715,11 @@ async function renderAdmin() {
           var cellDone = isItemComplete(item, c);
           var hasQuiz = (item.content_blocks || []).some(function(b) { return b.type === 'quiz'; });
           var cellLabel = hasQuiz ? (c.score !== null ? c.score + '%' : '-') : (cellDone ? 'Watched' : 'Pending');
-          var cellClass = cellDone ? 'cell-pass' : (c.score !== null && !c.passed ? 'cell-fail' : 'cell-none');
+          var cellScore = (c.score !== null && c.score !== undefined) ? c.score : null;
+          var cellClass = cellScore === null ? (cellDone ? 'cell-pass' : 'cell-none') :
+            cellScore >= 90 ? 'cell-pass' :
+            cellScore >= 80 ? 'cell-amber' :
+            'cell-fail';
           matrixHtml += '<td style="text-align:center"><span class="cell-s ' + cellClass + '">' + cellLabel + '</span></td>';
         }
       });
