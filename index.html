@@ -583,7 +583,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 12 Aug 2026, 10:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 12 Aug 2026, 12:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -2203,7 +2203,154 @@ const ISSUES = [
           ],
           comments: []
         },
-  ];
+  
+        {
+            id: "SENDGRID-DEGRADE-002",
+            title: "SendGrid CRITICAL + WARNING Outage",
+            priority: "p2",
+            status: "working",
+            tab: "voice",
+            tags: [],
+            mondayId: "",
+            system: "PROVIDER",
+            responsible: "Habib",
+            dateFirst: "12 Aug 2026",
+            dateLast: "12 Aug 2026",
+            daysOpen: 0,
+            escalatedAalok: false,
+            silentFailure: false,
+            whatItDoes: "SendGrid provider fired CRITICAL at 06:37 UTC then WARNING at 06:39 UTC Aug 12. No resolution alert seen as of 12pm sweep. Outbound email delivery may be degraded.",
+            howItHappens: "Grafana #aios-alerts bot posted CRITICAL then WARNING for external-provider sendgrid. No matching resolution alert seen in channel.",
+            relatedIds: ["SENDGRID-DEGRADE-001"],
+            context: "Previous SENDGRID-DEGRADE-001 had multiple cycles. This is a new cycle on Aug 12. Monitor for resolution.",
+            occurrences: [
+                { n: 1, when: "12 Aug 2026 06:37 UTC", what: "CRITICAL fired" },
+                { n: 2, when: "12 Aug 2026 06:39 UTC", what: "WARNING fired - no resolution seen" }
+            ],
+            comments: []
+        },
+        {
+            id: "SUPPORT-TASK-025",
+            title: "Ticket #352 - Task Agent Hallucinating and Populating Imaginary Data",
+            priority: "p2",
+            status: "working",
+            tab: "tasks",
+            tags: [],
+            mondayId: "",
+            system: "TASK",
+            responsible: "Abdullah Nadeem",
+            dateFirst: "12 Aug 2026",
+            dateLast: "12 Aug 2026",
+            daysOpen: 0,
+            escalatedAalok: false,
+            silentFailure: false,
+            whatItDoes: "Zendesk Ticket #352 raised by Abdullah Nadeem. Task Agent is hallucinating and populating imaginary data into workflows. High priority.",
+            howItHappens: "Detected via #aios-support Zendesk bot notification at ~09:38 UTC Aug 12.",
+            relatedIds: [],
+            context: "Priority: High. Status: New. Requester: Abdullah Nadeem.",
+            occurrences: [
+                { n: 1, when: "12 Aug 2026", what: "Ticket #352 created - Task Agent hallucinating data" }
+            ],
+            comments: []
+        },
+        {
+            id: "SUPPORT-TASK-026",
+            title: "Ticket #353 - All Agents Not Displaying Across Platform",
+            priority: "p1",
+            status: "working",
+            tab: "platform",
+            tags: ["escalated"],
+            mondayId: "",
+            system: "PLATFORM",
+            responsible: "Abdullah Nadeem",
+            dateFirst: "12 Aug 2026",
+            dateLast: "12 Aug 2026",
+            daysOpen: 0,
+            escalatedAalok: false,
+            silentFailure: false,
+            whatItDoes: "Zendesk Ticket #353 - all agents not displaying across the platform, page keeps loading. Platform-wide display failure. P1 candidate.",
+            howItHappens: "Detected via #aios-support Zendesk bot at ~10:11 UTC Aug 12. Abdullah Nadeem filed 1 reply on thread.",
+            relatedIds: ["SUPPORT-TASK-026"],
+            context: "This is potentially platform-wide. If confirmed, escalate immediately to Shahzeb/Faisal/Habib.",
+            occurrences: [
+                { n: 1, when: "12 Aug 2026", what: "Ticket #353 created - all agents not displaying, page keeps loading" }
+            ],
+            comments: []
+        },
+        {
+            id: "AALOK-MODEL-001",
+            title: "Aalok: Simplify AIOS Models for Cost + Performance",
+            priority: "p3",
+            status: "working",
+            tab: "platform",
+            tags: [],
+            mondayId: "",
+            system: "PLATFORM",
+            responsible: "Aalok",
+            dateFirst: "12 Aug 2026",
+            dateLast: "12 Aug 2026",
+            daysOpen: 0,
+            escalatedAalok: true,
+            silentFailure: false,
+            whatItDoes: "Aalok (U06CBJGQ353) posted in #aios today with a table showing variance in model usage across ANALYST and TASK agents. Wants to simplify/standardise models to optimise cost and performance. Also asks about Gemini usage.",
+            howItHappens: "Posted in #aios at ~10:39 UTC Aug 12. Attached PDF with model breakdown by account. 3 replies from Shahan and others.",
+            relatedIds: ["AALOK-CODING-BAN-001"],
+            context: "Strategic/product discussion. Brunno to monitor for engineer response and any decisions made.",
+            occurrences: [
+                { n: 1, when: "12 Aug 2026", what: "Aalok posted model simplification proposal in #aios with PDF attachment" }
+            ],
+            comments: []
+        },
+        {
+            id: "EXPORT-BUG-003",
+            title: "Task Run Export Email Not Arriving",
+            priority: "p2",
+            status: "working",
+            tab: "tasks",
+            tags: [],
+            mondayId: "",
+            system: "TASK",
+            responsible: "Faisal",
+            dateFirst: "12 Aug 2026",
+            dateLast: "12 Aug 2026",
+            daysOpen: 0,
+            escalatedAalok: false,
+            silentFailure: true,
+            whatItDoes: "User U09C1VD3WSZ reported in #aios-dev that task run export emails are not arriving after multiple attempts. Checked spam. 8 replies in thread - Faisal (U0AUZE1AN9F) tagged.",
+            howItHappens: "Reported in #aios-dev at ~09:10 UTC Aug 12. Ubaid previously fixed a similar export bug on Aug 11 (EXPORT-BUG-002) but this may be a recurrence or a different user.",
+            relatedIds: ["EXPORT-BUG-002"],
+            context: "Monitor whether this is the same root cause as EXPORT-BUG-002 or a new variant. Faisal tagged.",
+            occurrences: [
+                { n: 1, when: "12 Aug 2026", what: "User cannot receive export email for task runs after multiple attempts" }
+            ],
+            comments: []
+        },
+        {
+            id: "KEEPER-UPDATE-001",
+            title: "Keeper Password Updated - dev@ Credentials Shared in #solutions-hq",
+            priority: "p2",
+            status: "working",
+            tab: "security",
+            tags: ["escalated"],
+            mondayId: "",
+            system: "SECURITY",
+            responsible: "Meezab",
+            dateFirst: "12 Aug 2026",
+            dateLast: "12 Aug 2026",
+            daysOpen: 0,
+            escalatedAalok: false,
+            silentFailure: false,
+            whatItDoes: "Meezab (U083CKBCF7Y) posted <!channel> in #solutions-hq announcing an updated Keeper password for dev@implementai.io, shared in plain text in the channel thread broadcast.",
+            howItHappens: "Posted in #solutions-hq at ~10:31 UTC Aug 12. Credentials shared as thread broadcast visible to channel members.",
+            relatedIds: ["ONKAR-PASSWORD-COMPLIANCE-001"],
+            context: "Credentials should not be shared in plain text in Slack channels. Flag for compliance review. Related to prior password-sharing incident.",
+            occurrences: [
+                { n: 1, when: "12 Aug 2026", what: "dev@ Keeper password posted in #solutions-hq channel broadcast" }
+            ],
+            comments: []
+        },
+
+];
 
 const GOD_MODE_CONFIGS = {
   all:{title:"All Issues — System Health Overview",subtitle:"11 Aug 2026 | Portal v3 | 9am scan complete. 7 new items: GAVIN-ONBOARD-002, CRM-DELETE-001, CRM-FIGURES-001, SOL-ENG-MEETING-001, AIOS-ENG-MEETING-001, AGENT-FORMS-PASS-001, ISO-TRAINING-INVITE-001",stats:[{cls:"red",icon:"fa-fire",val:"4",label:"P1 Critical Open",sub:"COST, ESCALATION, OPS-SILENT, HIGH-VOLUME"},{cls:"amber",icon:"fa-exclamation",val:"13",label:"P2 Significant Open",sub:"Active issues"},{cls:"grey",icon:"fa-info-circle",val:"1",label:"P3 Low Open",sub:"Monitor"},{cls:"green",icon:"fa-check-circle",val:"35+",label:"Resolved",sub:"Since May 2026"},{cls:"brand",icon:"fa-robot",val:"280+",label:"Alerts Self-Resolved",sub:"Provider alerts since May"},{cls:"blue",icon:"fa-database",val:"LIVE",label:"Supabase + HR",sub:"Real-time sync active"}],statusItems:[{dot:"red",label:"HIGH-VOLUME-CAMPAIGN-001 — All agents unavailable during 5,000-call campaign (Ticket #293, open)"},{dot:"red",label:"ESCALATION-001 — Day 68+, zero engineer response, #system-health-hq silent since Jun 4"},{dot:"amber",label:"CREDIT-ANOMALY-001 — Reflect Digital 4.1M credits flagged as unrealistic (NEW Jul 9)"},{dot:"amber",label:"EMMA-VOICE-001 — Emma voice no longer available on sales agent (Ticket #294)"},{dot:"amber",label:"COST-ERR-001 occ=125+ — 15 Anthropic + 15 Twilio Jul 3-9"},{dot:"green",label:"POSITIVE: Task stop mechanism deployed to staging (Abayomi Jul 9)"},{dot:"green",label:"POSITIVE: New frontend+backend build live (Abayomi Jul 4)"},{dot:"green",label:"POSITIVE: Dhia termination + ISO27001 audit completed (Jul 4)"}]},
