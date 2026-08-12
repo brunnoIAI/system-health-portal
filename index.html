@@ -453,7 +453,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
               #aios, #aios-security, #aios-support, #system-health-hq, #aios-bot: SILENT.
               Teams: 47 chats, meeting chats active (compliance training, weekly review, Nexora, SA compliance).
               7 new portal items logged. Monday board updates pending (write access check required).
-              TIME LOG: ~1h standard (07:00-10:00 UK, 3h into day).
+              TIME LOG: 9h standard (07:00-16:00 UK, full day). SA compliance training 11:00-11:30 COMPLETED. Finance Invoices meeting 13:00-13:30 with Andrew Butterworth COMPLETED. 4pm sweep done.
             </span>
           </div>
     <div class="login-logo">
@@ -583,7 +583,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 12 Aug 2026, 15:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 12 Aug 2026, 16:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -620,6 +620,51 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 const ISSUES = [
 
         {
+          id: 'ADVANTOS-CALL-001',
+          title: 'Advantos calls show In Progress after termination, no transcript push',
+          priority: 'p2',
+          status: 'open',
+          tab: 'voice',
+          tags: ['silent'],
+          mondayId: '',
+          system: 'VAPI',
+          responsible: 'Faisal',
+          dateFirst: '12 Aug 2026',
+          dateLast: '12 Aug 2026',
+          daysOpen: 0,
+          escalatedAalok: false,
+          silentFailure: true,
+          whatItDoes: 'Test calls made via web agent for Advantos client terminate on user side but platform keeps showing the call as In Progress. No transcript is pushed after call ends.',
+          howItHappens: 'Reported in #aios by U095NGUJV2R at ~14:22 UTC 12 Aug. Tagged U0790KJ70FR. 3 replies in thread. Likely linked to VAPI-OUTAGE-018 firing at 12:56 UTC same day.',
+          relatedIds: ['VAPI-OUTAGE-018'],
+          context: '4pm sweep 12 Aug 2026',
+          occurrences: [{ n: 1, when: '12 Aug 2026 ~14:22 UTC', what: 'Reported by U095NGUJV2R in #aios. Calls terminated but stuck In Progress, no transcript pushed.' }],
+          comments: []
+        },
+        {
+          id: 'AALOK-MODEL-001',
+          title: 'Aalok model simplification proposal for AIOS analyst and task agents',
+          priority: 'p3',
+          status: 'open',
+          tab: 'platform',
+          tags: [],
+          mondayId: '',
+          system: 'IMPLAI',
+          responsible: 'Aalok',
+          dateFirst: '12 Aug 2026',
+          dateLast: '12 Aug 2026',
+          daysOpen: 0,
+          escalatedAalok: false,
+          silentFailure: false,
+          whatItDoes: 'Aalok shared a PDF in #aios proposing to simplify and optimise models used in AIOS ANALYST and TASK agents to reduce cost variance. Includes per-account breakdown. Gemini usage flagged as infrequent.',
+          howItHappens: 'Aalok (U06CBJGQ353) posted in #aios at ~09:52 UTC 12 Aug with PDF. 3 replies from Shahan and team. Decision on model strategy pending from engineering.',
+          relatedIds: ['SONNET5-REQUEST-001'],
+          context: '4pm sweep 12 Aug 2026',
+          occurrences: [{ n: 1, when: '12 Aug 2026 ~09:52 UTC', what: 'Aalok posted model simplification proposal PDF in #aios with per-account table, 3 replies, decision pending.' }],
+          comments: []
+        },
+
+        {
           id: 'VAPI-OUTAGE-018',
           title: 'VAPI CRITICAL outage - firing now',
           priority: 'p1',
@@ -644,7 +689,7 @@ const ISSUES = [
           id: 'SENDGRID-DEGRADE-003',
           title: 'SendGrid CRITICAL + WARNING - new cycle Aug 12',
           priority: 'p2',
-          status: 'open',
+          status: 'resolved',
           tab: 'platform',
           tags: [],
           mondayId: '',
@@ -3238,7 +3283,59 @@ function renderMyItems(){const panel=document.getElementById("tab-myitems");if(!
 function viewPersonItems(email,clickedEl){const u=getUserByEmail(email);if(!u)return;const assignments=getStore().assignments||{};const personIssues=ISSUES.filter(i=>assignments[i.id]===email&&i.status!=="resolved");document.querySelectorAll(".workload-person").forEach(el=>el.classList.remove("active-person"));if(clickedEl)clickedEl.classList.add("active-person");const panel=document.getElementById("tab-person");document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");panel.style.display="block";currentTab="person";document.getElementById("topbar-section").textContent=u.name+"'s Items";const pic=getAvatarDataUri(email);let html='<div style="margin-bottom:14px;"><button onclick="switchTab(\'all\',document.querySelector(\'[data-tab=\\\'all\\\']\'))" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-arrow-left"></i> Back to All Issues</button></div><div class="person-header">'+(pic?'<div class="person-avatar-lg"><img src="'+pic+'"></div>':'<div class="person-avatar-lg" style="background:'+(u.color||"#6C5DD3")+'">'+u.initials+'</div>')+'<div class="person-info"><h2>'+u.name+"'s Items</h2><p>"+u.role+'</p></div><div class="person-stats"><div class="pstat"><div class="pstat-num">'+personIssues.length+'</div><div class="pstat-lbl">Open</div></div><div class="pstat"><div class="pstat-num">'+personIssues.filter(i=>i.priority==="p1").length+'</div><div class="pstat-lbl">P1</div></div></div></div>';if(!personIssues.length)html+='<div class="my-items-empty"><i class="fas fa-inbox"></i><h3>No items assigned to '+u.name+'</h3></div>';else{personIssues.sort((a,b)=>({p1:0,p2:1,p3:2}[a.priority]||3)-({p1:0,p2:1,p3:2}[b.priority]||3));html+='<div class="issues-list">';personIssues.forEach(i=>{html+=buildCard(i);});html+='</div>';}panel.innerHTML=html;document.getElementById("god-mode-area").innerHTML="";}
 function filterCards(filter,btn){document.querySelectorAll(".filter-pill").forEach(p=>p.classList.remove("active"));btn.classList.add("active");const list=document.getElementById("issues-list-all");if(!list)return;const assignments=getStore().assignments||{};list.querySelectorAll(".issue-card").forEach(card=>{const priority=card.dataset.priority,tags=(card.dataset.tags||"").split(",");const assignedToMe=assignments[card.dataset.id]===currentUser.email;let show=true;if(filter==="p1")show=priority==="p1";else if(filter==="p2")show=priority==="p2";else if(filter==="p3")show=priority==="p3";else if(filter==="escalated")show=tags.includes("escalated");else if(filter==="silent")show=tags.includes("silent");else if(filter==="assigned-me")show=assignedToMe;card.style.display=show?"":"none";});}
 function searchCards(q){const list=document.getElementById("issues-list-all")||document.getElementById("issues-list-"+currentTab);if(!list)return;const query=q.toLowerCase();list.querySelectorAll(".issue-card").forEach(card=>{card.style.display=card.textContent.toLowerCase().includes(query)?"":"none";});}
-function renderRaw(){if(!currentUser||currentUser.perm!=="admin"){document.getElementById("tab-raw").innerHTML='<div class="no-access"><i class="fas fa-lock"></i><h3>Restricted Access</h3><p>Raw Sweep Log is only accessible to the Operational Continuity Lead.</p></div>';return;}document.getElementById("tab-raw").innerHTML='<div class="raw-log-wrap"><div class="raw-log-header"><i class="fas fa-terminal" style="color:#D97706;"></i><h3>Raw Sweep Log</h3><p>Restricted: Operational Continuity Lead only</p></div><div class="raw-entries"><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">11 Aug 2026, 14:00 UK</span><span class="raw-source">Command Centre Full Scan — Slack + Teams + Outlook + Calendar</span></div><div class="raw-body">CALENDAR: POD A Daily Huddle CANCELLED (Kamil). Lunch 12:00-13:00 UK. Weekly Review - Delivery Team 15:30-17:00 UK (Nikhil, 9 attendees) — UPCOMING. SA compliance training invite sent to Nabela, Mishai, Kamil, Lucia (13:21 UTC). ISO Audit training AIOS Engineers: ACCEPTED. ISO Audit training Solution Engineers: ACCEPTED.
+function renderRaw(){if(!currentUser||currentUser.perm!=="admin"){document.getElementById("tab-raw").innerHTML='<div class="no-access"><i class="fas fa-lock"></i><h3>Restricted Access</h3><p>Raw Sweep Log is only accessible to the Operational Continuity Lead.</p></div>';return;}document.getElementById("tab-raw").innerHTML='<div class="raw-log-wrap"><div class="raw-log-header"><i class="fas fa-terminal" style="color:#D97706;"></i><h3>Raw Sweep Log</h3><p>Restricted: Operational Continuity Lead only</p></div><div class="raw-entries">
+            <div class="raw-entry">
+              <div class="raw-header">12 Aug 2026 — 16:00 UK — 4pm Command Centre Full Scan</div>
+              <pre>SOURCES: Teams DMs (48 chats, 3 active today), Slack x8 channels, Outlook inbox (5 emails), sent (4 emails), Calendar (4 events).
+
+CALENDAR: SA compliance training 11:00-11:30 COMPLETED. Lunch 12:00-13:00. Finance Invoices (Andrew Butterworth) 13:00-13:30 COMPLETED. POD A CANCELLED (Kamil).
+
+SLACK #aios-alerts (8 alerts today):
+  - SENDGRID-DEGRADE-003: CRITICAL+WARNING ~08:10 UTC, RESOLVED ~14:50 UTC. CONFIRMED DONE.
+  - VAPI-OUTAGE-018: WARNING+CRITICAL ~12:56-12:58 UTC, NO resolution alert seen. STILL OPEN.
+  - ANTHROPIC-DEGRADE-002: NEW cycle WARNING fired ~14:07 UTC, STILL FIRING at sweep time (~1h).
+
+SLACK #aios (2 msgs):
+  - ADVANTOS-CALL-001 NEW (P2): U095NGUJV2R ~14:22 UTC - Advantos calls stuck In Progress after termination, no transcript push. Tagged U0790KJ70FR, 3 replies.
+  - AALOK-MODEL-001 NEW (P3): Aalok ~09:52 UTC - model simplification PDF shared, 3 replies, decision pending.
+
+SLACK #aios-dev (7 msgs):
+  - SCHED-CALL-BUG-001 KNOWN: U0AFLT6TH0E cannot schedule call, says must be in future even though it is. 9 replies, Faisal tagged.
+  - VOICE-UI-001 KNOWN: Voice UI gender filter + sort order, 17 replies.
+  - EXPORT-BUG-004 KNOWN: Task run export email not arriving, 8 replies.
+  - SONNET5-REQUEST-001 KNOWN: Aalok requesting Sonnet 5 release in AIOS.
+  - Aalok asking about voice option in Vapi/AIOS (linked to VOICE-UI-001).
+
+SLACK #solutions-hq (6 msgs):
+  - KEEPER-PASSWORD-002 UPDATE: Meezab rotated Keeper password at ~16:04 UTC and shared with team. PARTIAL RESOLUTION.
+  - New SE member U0BP1U09FMM joined then LEFT channel same day.
+
+SLACK #aios-support (3 msgs):
+  - Ticket #353 (All agents not displaying) - SUPPORT-TASK-027 KNOWN.
+  - Ticket #352 (Task Agent hallucinating) - SUPPORT-TASK-028 KNOWN.
+  - Ticket #349 (Command Agent Email Integration) - updated by System.
+
+INBOX (5 emails):
+  - CERTN-REPORT-001 KNOWN: Gavin Fernandes Certn report ready.
+  - Microsoft passkeys/SMS auth retirement notice (routine).
+  - Ramandeep Kaur employment verify reply x2 (EMPLOYMENT-VERIFY-002 KNOWN).
+  - Andrew Butterworth billing reply (ANDREW-BILLING-001 KNOWN, meeting confirmed 1pm).
+
+SENT (4 emails):
+  - Employment verify x2 to Ramandeep Kaur.
+  - Nexora Barco fw to Shahan.
+  - Finance Invoices accept to Andrew Butterworth.
+
+TEAMS: 3 meeting chats updated today (SA compliance, Finance Invoices, ISO Audit training).
+MONDAY WRITE: BLOCKED (USER_UNAUTHORIZED, Day 12+).
+#aios-security: SILENT. #system-health-hq: SILENT Day 70+. Teams Incidents: SILENT Day 15+.
+
+NEW ITEMS: ADVANTOS-CALL-001 (P2), AALOK-MODEL-001 (P3).
+RESOLVED: SENDGRID-DEGRADE-003 (confirmed resolved ~14:50 UTC).
+UPDATES: KEEPER-PASSWORD-002 partial fix (password rotated, shared with team).
+TIME LOG: 9h standard (07:00-16:00 UK).</pre>
+            </div>
+<div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">11 Aug 2026, 14:00 UK</span><span class="raw-source">Command Centre Full Scan — Slack + Teams + Outlook + Calendar</span></div><div class="raw-body">CALENDAR: POD A Daily Huddle CANCELLED (Kamil). Lunch 12:00-13:00 UK. Weekly Review - Delivery Team 15:30-17:00 UK (Nikhil, 9 attendees) — UPCOMING. SA compliance training invite sent to Nabela, Mishai, Kamil, Lucia (13:21 UTC). ISO Audit training AIOS Engineers: ACCEPTED. ISO Audit training Solution Engineers: ACCEPTED.
 
 TEAMS DMs:
 - Gavin Fernandes DM: Completed Vanta training. Certn login question (personal email). Brunno answered + confirmed remote. POSITIVE.
