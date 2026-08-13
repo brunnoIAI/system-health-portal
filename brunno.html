@@ -749,7 +749,7 @@ function taskCardGrid(t){
   const stages=allStages.filter(s=>s.task_id===t.id).sort((a,b)=>(a.stage_order||0)-(b.stage_order||0));
   const icons={email_received:'fa-envelope',email_sent:'fa-paper-plane',teams_message:'fa-users',slack_message:'fa-hashtag',action_taken:'fa-bolt',note:'fa-note-sticky'};
 
-  return`<div id="tc-${t.id}" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:12px;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 4px 16px rgba(0,0,0,.12)':'0 1px 4px rgba(0,0,0,.05)'};${isDone?'opacity:.7;':''}" onclick="toggleTask('${t.id}')">
+  return`<div id="tc-${t.id}" class="tc ${isExp?'exp':''} ${isDone?'done-card':''}" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:12px;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 4px 16px rgba(0,0,0,.12)':'0 1px 4px rgba(0,0,0,.05)'};${isDone?'opacity:.7;':''}" onclick="toggleTask('${t.id}')">
 
     <!-- TOP: always visible -->
     <div style="padding:14px 15px 12px 19px;">
@@ -780,7 +780,7 @@ function taskCardGrid(t){
     </div>
 
     <!-- EXPANDED BODY: full controls, identical to original taskCard -->
-    ${isExp?`<div class="tbody" onclick="event.stopPropagation()">
+    <div class="tbody" onclick="event.stopPropagation()">
       ${t.description||t.notes?`<div class="tnotes">${t.description||t.notes}</div>`:''}
 
       <!-- Status / category / due / hours editor -->
@@ -852,7 +852,7 @@ function taskCardGrid(t){
           </div>
         </div>
       </div>`:''}
-    </div>`:''}
+    </div>
   </div>`;
 }
 
