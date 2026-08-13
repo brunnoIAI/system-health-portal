@@ -76,6 +76,13 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 .fchip.active{border-color:var(--brand);color:var(--brand);background:var(--brand-light);}
 
 .tc{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
+/* Grid card class - no list styling, no margin, no padding conflicts */
+.tcg{background:#fff;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;overflow:visible;}
+.tcg:hover{border-color:var(--brand);box-shadow:0 3px 12px rgba(108,93,211,.12);}
+.tcg.exp{border-color:var(--brand);box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.tcg.done-card{opacity:.7;}
+.tcg .tbody{display:none;margin-top:0;padding-top:0;border-top:1px solid var(--border);}
+.tcg.exp .tbody{display:block;}
 .tc:hover{border-color:var(--brand);box-shadow:0 2px 8px rgba(108,93,211,.1);}
 .tc.exp{border-color:var(--brand);}
 .tc.done-card{opacity:.75;border-style:dashed;}
@@ -230,9 +237,7 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 .update-input-area{background:#F9FAFB;border:1.5px solid #C4B5FD;border-radius:7px;padding:8px;margin-top:6px;}
 
 
-/* Grid card overrides - remove .tc list styling inside the grid */
-#task-list .tc{margin-bottom:0!important;padding:0!important;border-radius:12px!important;overflow:visible!important;}
-#task-list .tc .tbody{padding:0;}
+/* Grid uses .tcg class - no overrides needed */
 @media(max-width:1200px){
   #task-list{grid-template-columns:repeat(3,1fr)!important;}
 }
@@ -668,7 +673,7 @@ function taskCard(t){
   const isOverdue=t.due_date&&new Date(t.due_date)<new Date()&&t.status!=='done';
   const isExp=expandedTask===t.id;
   const isDone=t.status==='done'||t.status==='cancelled';
-  return`<div class="tc ${isExp?'exp':''} ${isDone?'done-card':''}" id="tc-${t.id}" onclick="toggleTask('${t.id}')">
+  return`<div class="tcg ${isExp?'exp':''} ${isDone?'done-card':''}" id="tc-${t.id}" onclick="toggleTask('${t.id}')">
     <div class="ttop">
       <div class="tbar ${t.priority}"></div>
       <div class="tmain">
@@ -752,7 +757,7 @@ function taskCardGrid(t){
   const stages=allStages.filter(s=>s.task_id===t.id).sort((a,b)=>(a.stage_order||0)-(b.stage_order||0));
   const icons={email_received:'fa-envelope',email_sent:'fa-paper-plane',teams_message:'fa-users',slack_message:'fa-hashtag',action_taken:'fa-bolt',note:'fa-note-sticky'};
 
-  return`<div id="tc-${t.id}" class="tc ${isExp?'exp':''} ${isDone?'done-card':''}" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:12px;cursor:pointer;position:relative;overflow:visible;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 4px 16px rgba(0,0,0,.12)':'0 1px 4px rgba(0,0,0,.05)'};${isDone?'opacity:.7;':''}" onclick="toggleTask('${t.id}')">
+  return`<div id="tc-${t.id}" class="tcg ${isExp?'exp':''} ${isDone?'done-card':''}" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:12px;cursor:pointer;position:relative;overflow:visible;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 4px 16px rgba(0,0,0,.12)':'0 1px 4px rgba(0,0,0,.05)'};${isDone?'opacity:.7;':''}" onclick="toggleTask('${t.id}')">
 
     <!-- TOP: always visible -->
     <div style="padding:14px 15px 12px 19px;">
