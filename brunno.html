@@ -230,6 +230,9 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 .update-input-area{background:#F9FAFB;border:1.5px solid #C4B5FD;border-radius:7px;padding:8px;margin-top:6px;}
 
 
+/* Grid card overrides - remove .tc list styling inside the grid */
+#task-list .tc{margin-bottom:0!important;padding:0!important;border-radius:12px!important;overflow:visible!important;}
+#task-list .tc .tbody{padding:0;}
 @media(max-width:1200px){
   #task-list{grid-template-columns:repeat(3,1fr)!important;}
 }
@@ -749,7 +752,7 @@ function taskCardGrid(t){
   const stages=allStages.filter(s=>s.task_id===t.id).sort((a,b)=>(a.stage_order||0)-(b.stage_order||0));
   const icons={email_received:'fa-envelope',email_sent:'fa-paper-plane',teams_message:'fa-users',slack_message:'fa-hashtag',action_taken:'fa-bolt',note:'fa-note-sticky'};
 
-  return`<div id="tc-${t.id}" class="tc ${isExp?'exp':''} ${isDone?'done-card':''}" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:12px;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 4px 16px rgba(0,0,0,.12)':'0 1px 4px rgba(0,0,0,.05)'};${isDone?'opacity:.7;':''}" onclick="toggleTask('${t.id}')">
+  return`<div id="tc-${t.id}" class="tc ${isExp?'exp':''} ${isDone?'done-card':''}" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:12px;cursor:pointer;position:relative;overflow:visible;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 4px 16px rgba(0,0,0,.12)':'0 1px 4px rgba(0,0,0,.05)'};${isDone?'opacity:.7;':''}" onclick="toggleTask('${t.id}')">
 
     <!-- TOP: always visible -->
     <div style="padding:14px 15px 12px 19px;">
@@ -1269,7 +1272,7 @@ function poolCardGrid(t){
   const pCol={critical:'#DC2626',high:'#D97706',medium:'#6C5DD3',low:'#9CA3AF'}[t.priority]||'#9CA3AF';
   const sCol={todo:'#9CA3AF',in_progress:'#D97706',blocked:'#DC2626'}[t.status]||'#9CA3AF';
   return`<div draggable="true" ondragstart="dragStart(event,'${t.id}')"
-    style="background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 12px;cursor:grab;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s;box-shadow:0 1px 3px rgba(0,0,0,.04);"
+    style="background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 12px;cursor:grab;position:relative;overflow:visible;transition:box-shadow .15s,border-color .15s;box-shadow:0 1px 3px rgba(0,0,0,.04);"
     onmouseover="this.style.borderColor='${pCol}';this.style.boxShadow='0 2px 10px rgba(0,0,0,.09)'"
     onmouseout="this.style.borderColor='#E5E7EB';this.style.boxShadow='0 1px 3px rgba(0,0,0,.04)'">
     <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${pCol};border-radius:10px 0 0 10px;"></div>
