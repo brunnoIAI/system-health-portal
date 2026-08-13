@@ -582,7 +582,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 13 Aug 2026, 14:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 13 Aug 2026, 16:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -4508,7 +4508,95 @@ async function loadRemoteData() {
       occurrences: [{ n: 1, when: "2026-08-11", what: "Request posted in #aios by U0AFLT6TH0E" }],
       comments: []
     },
-  ];
+  ,
+  {
+    id: "GOOD-BROTHER-001",
+    title: "Good Brother - Cannot Access Command Agent",
+    priority: "p2",
+    status: "working",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "PLATFORM",
+    responsible: "Shahan",
+    dateFirst: "2026-08-13",
+    dateLast: "2026-08-13",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "User U0AJU83SAJG cannot access Good Brother command agent. Tried connecting several agents but all failed. Cannot send prompts to the active command agent.",
+    howItHappens: "Reported in #aios at 14:13 UTC Aug 13. 8 replies in thread. U095NGUJV2R also tagged.",
+    relatedIds: [],
+    context: "Client-facing access failure. Good Brother is an active client.",
+    occurrences: [{"n": 1, "when": "2026-08-13 14:13 UTC", "what": "User reported in #aios, 8 replies"}],
+    comments: []
+  },
+  {
+    id: "LEMLIST-STAGING-001",
+    title: "Lemlist Integration Broken on Staging",
+    priority: "p2",
+    status: "working",
+    tab: "integrations",
+    tags: [],
+    mondayId: "",
+    system: "INTG",
+    responsible: "Faisal",
+    dateFirst: "2026-08-13",
+    dateLast: "2026-08-13",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Cannot connect Lemlist on staging - 'cannot connect to this service' error. Aalok flagged this directly.",
+    howItHappens: "Aalok (U06CBJGQ353) reported in #aios-dev at 13:47 UTC Aug 13. Tagged U0790KJ70FR. 7 replies.",
+    relatedIds: ["LEMLIST-CONN-001"],
+    context: "Staging integration failure. Lemlist has had recurring connection issues (LEMLIST-CONN-001).",
+    occurrences: [{"n": 1, "when": "2026-08-13 13:47 UTC", "what": "Aalok flagged in #aios-dev, 7 replies"}],
+    comments: []
+  },
+  {
+    id: "ANTHROPIC-DEGRADE-003",
+    title: "Anthropic Provider Degraded - New Cycle",
+    priority: "p2",
+    status: "working",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "PLATFORM",
+    responsible: "Habib",
+    dateFirst: "2026-08-13",
+    dateLast: "2026-08-13",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Anthropic provider degraded WARNING fired at 14:52 UTC Aug 13. Status unknown - no resolution seen yet in this sweep.",
+    howItHappens: "#aios-alerts bot message at 14:52 UTC. Previous Anthropic cycle resolved at 18:37 UTC Aug 12 per memory.",
+    relatedIds: ["ANTHROPIC-DEGRADE-002"],
+    context: "New degraded cycle. Anthropic has been cycling frequently - all previous cycles self-resolved within 1-3h.",
+    occurrences: [{"n": 1, "when": "2026-08-13 14:52 UTC", "what": "WARNING fired in #aios-alerts, no resolution seen at 15:00 UTC"}],
+    comments: []
+  },
+  {
+    id: "ISO-AMTIVO-002",
+    title: "ISO 27001 Quote Follow-Up from Chris Barrett - Action Required",
+    priority: "p3",
+    status: "open",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Brunno",
+    dateFirst: "2026-08-13",
+    dateLast: "2026-08-13",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Chris Barrett at Amtivo following up on ISO 27001 personalised quote. UNREAD email. He notes he hasn't heard back and will mark as expired.",
+    howItHappens: "Email received 14:18 UTC Aug 13 from Chris.Barrett@amtivo.com. Subject: RE: ISO 27001 Certification - Your Personalised Quote.",
+    relatedIds: ["ISO-AMTIVO-001"],
+    context: "Urgent - Chris is about to mark the quote as expired. Reply needed today.",
+    occurrences: [{"n": 1, "when": "2026-08-13 14:18 UTC", "what": "Follow-up email received, UNREAD, quote about to expire"}],
+    comments: []
+  }];
         else s4.assignments[r.issue_id] = r.assignee_email;
         saveStore(s4); renderWorkload(); updateMyItemsBadge();
       }).subscribe();
