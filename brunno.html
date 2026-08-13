@@ -229,6 +229,17 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 .add-update-btn:hover{border-color:var(--brand);color:var(--brand);}
 .update-input-area{background:#F9FAFB;border:1.5px solid #C4B5FD;border-radius:7px;padding:8px;margin-top:6px;}
 
+
+@media(max-width:1200px){
+  #task-list{grid-template-columns:repeat(3,1fr)!important;}
+}
+@media(max-width:900px){
+  #task-list{grid-template-columns:repeat(2,1fr)!important;}
+  #pool-drop-zone{grid-template-columns:1fr!important;}
+}
+@media(max-width:600px){
+  #task-list{grid-template-columns:1fr!important;}
+}
 </style>
 </head>
 <body>
@@ -487,7 +498,7 @@ function renderDashboard(){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div>
         <div class="shdr"><div class="stitle"><i class="fas fa-fire"></i> Critical & High</div><button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="setView('tasks')">All</button></div>
-        ${critical.concat(active.filter(t=>t.priority==='high')).slice(0,5).map(t=>miniCard(t)).join('')||'<div class="empty" style="padding:12px"><i class="fas fa-check-circle" style="color:#16A34A"></i><p style="margin-top:5px;font-size:11px;">Nothing critical</p></div>'}
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">${critical.concat(active.filter(t=>t.priority==='high')).slice(0,6).map(t=>miniCard(t)).join('')||'<div class="empty" style="padding:12px;grid-column:1/-1;"><i class="fas fa-check-circle" style="color:#16A34A"></i><p style="margin-top:5px;font-size:11px;">Nothing critical</p></div>'}</div>
       </div>
       <div>
         <div class="shdr"><div class="stitle"><i class="fas fa-inbox"></i> New Requests (${newReqs.length})</div><button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="setView('requests')">All</button></div>
@@ -507,7 +518,20 @@ function calcBreakdown(){
   ].map(c=>({label:c.label,hrs:fmtHrs(tl.filter(l=>c.kw.some(k=>(l.notes||'').includes(k))).reduce((s,l)=>s+parseFloat(l.hours||0),0))})).filter(b=>b.hrs!=='0:00'&&b.hrs!=='-');
 }
 
-function miniCard(t){return`<div class="tc" onclick="setView('tasks')" style="margin-bottom:5px;"><div class="ttop"><div class="tbar ${t.priority}" style="min-height:28px;"></div><div class="tmain"><div class="ttitle">${t.title}</div><div class="tmeta"><span class="chip chip-${t.status}">${statusLabel(t.status)}</span><span class="chip chip-cat">${catLabel(t.category)}</span>${t.source&&t.source!=='manual'?`<span class="chip chip-${t.source}">${t.source.toUpperCase()}</span>`:''}</div></div></div></div>`;}
+function miniCard(t){
+  const pCol={critical:'#DC2626',high:'#D97706',medium:'#6C5DD3',low:'#9CA3AF'}[t.priority]||'#9CA3AF';
+  const sCol={todo:'#9CA3AF',in_progress:'#D97706',blocked:'#DC2626',done:'#16A34A'}[t.status]||'#9CA3AF';
+  return`<div onclick="setView('tasks')" style="background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;padding:11px 13px;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:box-shadow .15s,border-color .15s;" onmouseover="this.style.borderColor='${pCol}';this.style.boxShadow='0 3px 12px rgba(0,0,0,.09)'" onmouseout="this.style.borderColor='#E5E7EB';this.style.boxShadow='0 1px 4px rgba(0,0,0,.05)'">
+    <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${pCol};border-radius:10px 0 0 10px;"></div>
+    <div style="padding-left:7px;">
+      <div style="font-size:10.5px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:6px;">${t.title.length>65?t.title.substring(0,65)+'…':t.title}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;">
+        <span style="font-size:8.5px;font-weight:700;padding:2px 6px;border-radius:8px;background:${sCol}18;color:${sCol};border:1px solid ${sCol}30;">${statusLabel(t.status)}</span>
+        <span style="font-size:8.5px;padding:2px 6px;border-radius:8px;background:#F3F4F6;color:#6B7280;">${catLabel(t.category)}</span>
+        ${t.source&&t.source!=='manual'?`<span style="font-size:8.5px;padding:2px 6px;border-radius:8px;background:#EEF2FF;color:#6C5DD3;">${t.source.toUpperCase()}</span>`:''}
+      </div>
+    </div>
+  </div>`;}
 function miniReq(r){const bg=r.source==='slack'?'#4A154B':r.source==='teams'?'#464EB8':'#1D4ED8';return`<div class="req-card"><div class="req-top"><span class="req-src" style="background:${bg}">${r.source.toUpperCase()}</span><span class="req-from">${r.from_person||'?'}</span><span class="req-time">${fmtTime(r.created_at)}</span></div><div class="req-body">${(r.request_summary||r.message_preview||'').substring(0,80)}...</div><div style="display:flex;gap:4px;"><button class="bg" style="font-size:9.5px;padding:3px 7px;" onclick="dismissRequest('${r.id}')">Dismiss</button><button class="bp" style="font-size:9.5px;padding:3px 7px;" onclick="convertRequest('${r.id}')">Create Task</button></div></div>`;}
 
 // TODAY - includes done tasks and time log entries
@@ -618,7 +642,7 @@ function renderTasks(){
     <div class="filters" style="margin-bottom:10px;">
       ${cats.map(c=>`<div class="fchip ${taskCatFilter===c?'active':''}" onclick="taskCatFilter='${c}';renderTasks();">${catLabel(c)}</div>`).join('')}
     </div>
-    <div id="task-list">${filtered.length===0?'<div class="empty"><i class="fas fa-list-check"></i><h3 style="margin-top:7px;font-size:13px;">No tasks here</h3></div>':filtered.map(t=>taskCard(t)).join('')}</div>`;
+    <div id="task-list" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">${filtered.length===0?'<div class="empty" style="grid-column:1/-1;"><i class="fas fa-list-check"></i><h3 style="margin-top:7px;font-size:13px;">No tasks here</h3></div>':filtered.map(t=>taskCardGrid(t)).join('')}</div>`;
 }
 
 function filterTasksFull(tasks,status,cat){
@@ -709,6 +733,37 @@ function taskCard(t){
     </div>
   </div>`;
 }
+function taskCardGrid(t){
+  const isOverdue=t.due_date&&new Date(t.due_date)<new Date()&&t.status!=='done';
+  const isExp=expandedTask===t.id;
+  const isDone=t.status==='done'||t.status==='cancelled';
+  const pCol={critical:'#DC2626',high:'#D97706',medium:'#6C5DD3',low:'#9CA3AF'}[t.priority]||'#9CA3AF';
+  const sCol={todo:'#9CA3AF',in_progress:'#D97706',blocked:'#DC2626',done:'#16A34A'}[t.status]||'#9CA3AF';
+  return`<div onclick="toggleTask('${t.id}')" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:10px;padding:12px 13px;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 2px 12px rgba(0,0,0,.1)':'0 1px 3px rgba(0,0,0,.04)'};${isDone?'opacity:.6;':''}" onmouseover="this.style.boxShadow='0 3px 14px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='${isExp?'0 2px 12px rgba(0,0,0,.1)':'0 1px 3px rgba(0,0,0,.04)'}'">
+    <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${pCol};border-radius:10px 0 0 10px;"></div>
+    <div style="padding-left:6px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:7px;${isDone?'text-decoration:line-through;color:var(--muted);':''}">${isDone?'<i class="fas fa-check-circle" style="color:#16A34A;margin-right:4px;font-size:9px;"></i>':''}${t.title.length>80?t.title.substring(0,80)+'…':t.title}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">
+        <span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:${sCol}18;color:${sCol};border:1px solid ${sCol}30;">${statusLabel(t.status)}</span>
+        <span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#F3F4F6;color:#6B7280;">${catLabel(t.category)}</span>
+        ${t.source&&t.source!=='manual'?`<span style="font-size:9px;padding:2px 6px;border-radius:10px;background:#EEF2FF;color:#6C5DD3;">${t.source.toUpperCase()}</span>`:''}
+      </div>
+      <div style="font-size:9.5px;color:var(--muted);line-height:1.4;">${t.notes?t.notes.substring(0,90)+'…':''}</div>
+      ${isExp?`<div style="margin-top:10px;border-top:1px solid #F3F4F6;padding-top:10px;">${taskCardExpanded(t)}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function taskCardExpanded(t){
+  const stages=allStages.filter(s=>s.task_id===t.id).sort((a,b)=>(a.stage_order||0)-(b.stage_order||0));
+  const updates=allUpdates.filter(u=>u.task_id===t.id).sort((a,b)=>new Date(b.update_date)-new Date(a.update_date));
+  return`<div style="font-size:10px;color:var(--text);">
+    ${t.notes?`<div style="margin-bottom:8px;color:var(--muted);font-size:9.5px;">${t.notes}</div>`:''}
+    ${stages.length?`<div style="font-weight:700;font-size:9.5px;margin-bottom:5px;color:var(--text);">Stages</div>${stages.map(s=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span onclick="event.stopPropagation();toggleStage('${s.id}','${t.id}')" style="cursor:pointer;width:13px;height:13px;border-radius:3px;border:1.5px solid ${s.status==='done'?'#16A34A':'#D1D5DB'};background:${s.status==='done'?'#16A34A':'#fff'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${s.status==='done'?'<i class="fas fa-check" style="color:#fff;font-size:7px;"></i>':''}</span><span style="font-size:9.5px;${s.status==='done'?'text-decoration:line-through;color:var(--muted);':''}">${s.stage_name}</span></div>`).join('')}`:''}
+    ${updates.length?`<div style="font-weight:700;font-size:9.5px;margin-top:8px;margin-bottom:5px;color:var(--text);">Recent activity</div>${updates.slice(0,3).map(u=>`<div style="font-size:9px;color:var(--muted);margin-bottom:3px;padding:4px 6px;background:#F9FAFB;border-radius:5px;"><span style="font-weight:600;color:var(--text);">${fmtDate(u.update_date)}</span> — ${u.summary}</div>`).join('')}`:''}
+  </div>`;
+}
+
 
 function toggleTask(id){expandedTask=expandedTask===id?null:id;renderTasks();}
 
@@ -1022,10 +1077,10 @@ async function renderFocusQueue(){
         <div id="pool-drop-zone" class="fq-col"
           ondragover="event.preventDefault();this.classList.add('active-drop')"
           ondragleave="this.classList.remove('active-drop')"
-          ondrop="dropToPool(event)">
+          ondrop="dropToPool(event)" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;min-height:120px;">
           ${poolTasks.length===0
-            ?`<div class="pool-empty"><i class="fas fa-check-circle" style="color:#16A34A;"></i>Pool is empty</div>`
-            :poolTasks.map(t=>poolCard(t)).join('')}
+            ?`<div class="pool-empty" style="grid-column:1/-1;"><i class="fas fa-check-circle" style="color:#16A34A;"></i>Pool is empty</div>`
+            :poolTasks.map(t=>poolCardGrid(t)).join('')}
         </div>
       </div>
     </div>`;
@@ -1117,6 +1172,28 @@ function poolCard(t){
     </div>
   </div>`;
 }
+function poolCardGrid(t){
+  const pCol={critical:'#DC2626',high:'#D97706',medium:'#6C5DD3',low:'#9CA3AF'}[t.priority]||'#9CA3AF';
+  const sCol={todo:'#9CA3AF',in_progress:'#D97706',blocked:'#DC2626'}[t.status]||'#9CA3AF';
+  return`<div draggable="true" ondragstart="dragStart(event,'${t.id}')"
+    style="background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 12px;cursor:grab;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s;box-shadow:0 1px 3px rgba(0,0,0,.04);"
+    onmouseover="this.style.borderColor='${pCol}';this.style.boxShadow='0 2px 10px rgba(0,0,0,.09)'"
+    onmouseout="this.style.borderColor='#E5E7EB';this.style.boxShadow='0 1px 3px rgba(0,0,0,.04)'">
+    <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${pCol};border-radius:10px 0 0 10px;"></div>
+    <div style="padding-left:6px;">
+      <div style="font-size:10.5px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:6px;">${t.title.length>70?t.title.substring(0,70)+'…':t.title}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px;">
+        <span style="font-size:8.5px;font-weight:700;padding:2px 6px;border-radius:8px;background:${sCol}18;color:${sCol};border:1px solid ${sCol}30;">${statusLabel(t.status)}</span>
+        <span style="font-size:8.5px;padding:2px 6px;border-radius:8px;background:#F3F4F6;color:#6B7280;">${catLabel(t.category)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:8.5px;color:var(--muted);">${t.estimated_hours?t.estimated_hours+'h est':''}</span>
+        <button onclick="event.stopPropagation();addToFocus('${t.id}')" style="font-size:8px;padding:3px 8px;background:#6C5DD3;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:700;">+ Focus</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 
 // DRAG AND DROP
 let draggedId=null;
