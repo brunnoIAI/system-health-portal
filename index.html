@@ -1,4 +1,4 @@
-<!-- build:1786622585 -->
+<!-- build:1786638579 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -582,7 +582,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 13 Aug 2026, 16:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 13 Aug 2026, 16:25 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -617,6 +617,186 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+    {
+      id: "CC-SCAN-20260813-4PM",
+      title: "4pm EOD Command Centre Scan - 13 Aug 2026",
+      priority: "p3",
+      status: "resolved",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "OPS",
+      responsible: "Brunno",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "EOD Command Centre full scan completed at 16:25 UTC. Sources: Teams DMs/groups, Slack (8 channels), Outlook inbox/sent, calendar.",
+      howItHappens: "Scheduled 4pm sweep.",
+      occurrences: [{n:1, when:"2026-08-13 16:25 UTC", what:"EOD scan completed. 3 Teams chats active, 7 Slack alerts today, 10 inbox emails, 3 sent, 5 calendar events."}],
+      comments: []
+    },
+    {
+      id: "ARK-H-POLICY-001",
+      title: "Ark-H code of business conduct review - action required",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "OPS",
+      responsible: "Brunno",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno was on a call with Ark-H client at 13:35 UTC. Client sent their code of business conduct policy for review and sign-off. Piers asked for a card in the system. Brunno needs to review and confirm acceptance.",
+      howItHappens: "Client onboarding/compliance step. Piers group chat active 13:35-16:18 UTC. Brunno reviewed infosec doc on the call. Policy review pending.",
+      occurrences: [{n:1, when:"2026-08-13 13:35 UTC", what:"Ark-H call. Code of business conduct policy sent for review. Piers: wants a card in system. Brunno to review and respond."}],
+      comments: []
+    },
+    {
+      id: "GAVIN-ONBOARD-DAY3-001",
+      title: "Gavin Fernandes - Day 3 onboarding: added to Implement AI Teams",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "OPS",
+      responsible: "Brunno",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Gavin Fernandes added to Implement AI Teams at 13:55 UTC. LG BDM Brief forwarded to Shahan at 13:40 UTC. Certn background check report ready (CASE_UK_B657DWZS). Onboarding progressing.",
+      howItHappens: "Day 3 of Gavin onboarding. Brunno sent Teams invite. LG BDM Brief fwd to Shahan for context.",
+      occurrences: [{n:1, when:"2026-08-13 13:55 UTC", what:"Gavin added to Implement AI Teams. LG BDM Brief fwd to Shahan. Certn report ready."}],
+      comments: []
+    },
+    {
+      id: "HOLIDAY-TRACKING-001",
+      title: "Techanzy Muslim/Pakistan holiday calendar - request raised",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "OPS",
+      responsible: "Brunno",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno posted in BrainStorming group at 09:06 UTC suggesting Techanzy should provide a full-year Muslim and Pakistan holiday calendar so the team is not notified 1-2 days before. Shahzeb had provided something similar previously.",
+      howItHappens: "Recurring issue: late holiday notices from Techanzy team. Brunno raised in BrainStorming group chat.",
+      occurrences: [{n:1, when:"2026-08-13 09:06 UTC", what:"Brunno raised in BrainStorming group: request Techanzy full-year holiday calendar."}],
+      comments: []
+    },
+    {
+      id: "PARTHIV-AGENT-ASSIGN-001",
+      title: "Pending client agents to assign to Parthiv (new hire)",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "OPS",
+      responsible: "Abayomi",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Abayomi posted in Solutions HQ Teams group at 10:15 UTC asking Kamil, Mishai, Nabela, and Nikhil if they have pending client agents that could be assigned to Parthiv. Kamil flagged KeyPlus alarm relay agent (scoping with Lucia). Mishai flagged Ezyclean. Nabela flagged Questgates (currently with Tayyub).",
+      howItHappens: "New hire Parthiv needs client assignments. Solutions team identifying candidates.",
+      occurrences: [{n:1, when:"2026-08-13 10:15 UTC", what:"Abayomi requested pending agents for Parthiv. KeyPlus (Kamil/Lucia), Ezyclean (Mishai), Questgates (Nabela/Tayyub) flagged."}],
+      comments: []
+    },
+    {
+      id: "AGENT-FORMS-LOGIN-001",
+      title: "Agent Forms portal login failing - SOP credentials not working",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: ["silent"],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Meezab",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: true,
+      whatItDoes: "A solutions engineer (U0BN1CY4JJ1) posted in #solutions-hq at 14:22 UTC: unable to log in to the Agent Forms portal using credentials listed in the SOP when trying to create a Customer Preview Form for a Recruitment Agent. Tagged Meezab for help.",
+      howItHappens: "SOP credentials for agent-forms portal appear incorrect or outdated. Silent failure - no error surfaced previously.",
+      occurrences: [{n:1, when:"2026-08-13 14:22 UTC", what:"SE unable to log in to Agent Forms portal with SOP credentials. Tagged Meezab in #solutions-hq."}],
+      comments: []
+    },
+    {
+      id: "LEMLIST-KEEPER-001",
+      title: "Lemlist password missing from Keeper",
+      priority: "p2",
+      status: "working",
+      tab: "integrations",
+      tags: ["silent"],
+      mondayId: "",
+      system: "INTG",
+      responsible: "Meezab",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: true,
+      whatItDoes: "Usman posted in #solutions-hq at 11:24 UTC: trying to log into Lemlist but password is not in Keeper. Asked Meezab to share it. Related to ongoing Lemlist staging connection issues (LEMLIST-STAGING-001).",
+      howItHappens: "Lemlist credentials not stored in Keeper password manager. Silent credential gap.",
+      occurrences: [{n:1, when:"2026-08-13 11:24 UTC", what:"Usman: Lemlist password not in Keeper. Asked Meezab in #solutions-hq."}],
+      comments: []
+    },
+    {
+      id: "OPENAI-DEGRADE-4PM-001",
+      title: "OpenAI provider degraded - WARNING fired 15:57 UTC",
+      priority: "p2",
+      status: "working",
+      tab: "voice",
+      tags: [],
+      mondayId: "",
+      system: "VAPI",
+      responsible: "Habib",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "OpenAI provider degraded WARNING fired at ~15:57 UTC in #aios-alerts. New cycle on top of existing multi-provider incident day (VAPI-OUTAGE-019, SENDGRID-DEGRADE-003, ANTHROPIC-DEGRADE-003 all firing earlier today).",
+      howItHappens: "OpenAI external provider degradation. Self-resolving pattern historically.",
+      occurrences: [{n:1, when:"2026-08-13 15:57 UTC", what:"OpenAI WARNING fired in #aios-alerts. Status: open at EOD scan."}],
+      comments: []
+    },
+    {
+      id: "ANTHROPIC-DEGRADE-4PM-001",
+      title: "Anthropic provider degraded - WARNING fired 15:25 UTC",
+      priority: "p2",
+      status: "working",
+      tab: "voice",
+      tags: [],
+      mondayId: "",
+      system: "VAPI",
+      responsible: "Habib",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Anthropic provider degraded WARNING fired at ~15:25 UTC in #aios-alerts. Part of the multi-provider incident pattern today alongside VAPI-OUTAGE-019 and SENDGRID-DEGRADE-003.",
+      howItHappens: "Anthropic external provider degradation. Part of ongoing multi-provider incident.",
+      occurrences: [{n:1, when:"2026-08-13 15:25 UTC", what:"Anthropic WARNING fired in #aios-alerts. Status: open at EOD scan."}],
+      comments: []
+    },
     {
       id: "MEEZAB-LEAVE-001",
       title: "Meezab on leave today - Shahan covering",
@@ -3199,7 +3379,7 @@ const ISSUES = [
 ];
 
 const GOD_MODE_CONFIGS = {
-  all:{title:"All Issues — System Health Overview",subtitle:"11 Aug 2026 | Portal v3 | 9am scan complete. 7 new items: GAVIN-ONBOARD-002, CRM-DELETE-001, CRM-FIGURES-001, SOL-ENG-MEETING-001, AIOS-ENG-MEETING-001, AGENT-FORMS-PASS-001, ISO-TRAINING-INVITE-001",stats:[{cls:"red",icon:"fa-fire",val:"4",label:"P1 Critical Open",sub:"COST, ESCALATION, OPS-SILENT, HIGH-VOLUME"},{cls:"amber",icon:"fa-exclamation",val:"13",label:"P2 Significant Open",sub:"Active issues"},{cls:"grey",icon:"fa-info-circle",val:"1",label:"P3 Low Open",sub:"Monitor"},{cls:"green",icon:"fa-check-circle",val:"35+",label:"Resolved",sub:"Since May 2026"},{cls:"brand",icon:"fa-robot",val:"280+",label:"Alerts Self-Resolved",sub:"Provider alerts since May"},{cls:"blue",icon:"fa-database",val:"LIVE",label:"Supabase + HR",sub:"Real-time sync active"}],statusItems:[{dot:"red",label:"HIGH-VOLUME-CAMPAIGN-001 — All agents unavailable during 5,000-call campaign (Ticket #293, open)"},{dot:"red",label:"ESCALATION-001 — Day 68+, zero engineer response, #system-health-hq silent since Jun 4"},{dot:"amber",label:"CREDIT-ANOMALY-001 — Reflect Digital 4.1M credits flagged as unrealistic (NEW Jul 9)"},{dot:"amber",label:"EMMA-VOICE-001 — Emma voice no longer available on sales agent (Ticket #294)"},{dot:"amber",label:"COST-ERR-001 occ=125+ — 15 Anthropic + 15 Twilio Jul 3-9"},{dot:"green",label:"POSITIVE: Task stop mechanism deployed to staging (Abayomi Jul 9)"},{dot:"green",label:"POSITIVE: New frontend+backend build live (Abayomi Jul 4)"},{dot:"green",label:"POSITIVE: Dhia termination + ISO27001 audit completed (Jul 4)"}]},
+  all:{title:"All Issues — System Health Overview",subtitle:"13 Aug 2026 | Portal v3 | 9am scan complete. 7 new items: GAVIN-ONBOARD-002, CRM-DELETE-001, CRM-FIGURES-001, SOL-ENG-MEETING-001, AIOS-ENG-MEETING-001, AGENT-FORMS-PASS-001, ISO-TRAINING-INVITE-001",stats:[{cls:"red",icon:"fa-fire",val:"4",label:"P1 Critical Open",sub:"COST, ESCALATION, OPS-SILENT, HIGH-VOLUME"},{cls:"amber",icon:"fa-exclamation",val:"13",label:"P2 Significant Open",sub:"Active issues"},{cls:"grey",icon:"fa-info-circle",val:"1",label:"P3 Low Open",sub:"Monitor"},{cls:"green",icon:"fa-check-circle",val:"35+",label:"Resolved",sub:"Since May 2026"},{cls:"brand",icon:"fa-robot",val:"280+",label:"Alerts Self-Resolved",sub:"Provider alerts since May"},{cls:"blue",icon:"fa-database",val:"LIVE",label:"Supabase + HR",sub:"Real-time sync active"}],statusItems:[{dot:"red",label:"HIGH-VOLUME-CAMPAIGN-001 — All agents unavailable during 5,000-call campaign (Ticket #293, open)"},{dot:"red",label:"ESCALATION-001 — Day 68+, zero engineer response, #system-health-hq silent since Jun 4"},{dot:"amber",label:"CREDIT-ANOMALY-001 — Reflect Digital 4.1M credits flagged as unrealistic (NEW Jul 9)"},{dot:"amber",label:"EMMA-VOICE-001 — Emma voice no longer available on sales agent (Ticket #294)"},{dot:"amber",label:"COST-ERR-001 occ=125+ — 15 Anthropic + 15 Twilio Jul 3-9"},{dot:"green",label:"POSITIVE: Task stop mechanism deployed to staging (Abayomi Jul 9)"},{dot:"green",label:"POSITIVE: New frontend+backend build live (Abayomi Jul 4)"},{dot:"green",label:"POSITIVE: Dhia termination + ISO27001 audit completed (Jul 4)"}]},
   voice:{title:"Voice — VAPI & ElevenLabs",subtitle:"Emma voice broken (Ticket #294). Support agent switched to UK accent Jul 6. High-volume campaign caused all agents unavailable (Ticket #293).",stats:[{cls:"red",icon:"fa-exclamation",val:"2",label:"Open Voice Issues",sub:"EMMA-VOICE, HIGH-VOLUME"},{cls:"green",icon:"fa-check-circle",val:"1",label:"Resolved",sub:"VAPI-VOICE-001"},{cls:"amber",icon:"fa-phone",val:"50",label:"VAPI Lines",sub:"May be insufficient for 5,000-call campaigns"},{cls:"green",icon:"fa-microphone",val:"UK",label:"Support Agent Voice",sub:"Switched to UK accent Jul 6"}],statusItems:[{dot:"red",label:"HIGH-VOLUME-CAMPAIGN-001 — All agents unavailable during 5,000-call campaign"},{dot:"red",label:"EMMA-VOICE-001 — Emma voice no longer available (Ticket #294)"},{dot:"green",label:"Support agent voice switched to UK accent Jul 6 (Abayomi)"},{dot:"green",label:"VAPI-VOICE-001 resolved — ElevenLabs voice ID fixed Jun 3"}]},
   database:{title:"Database & Infrastructure",subtitle:"Supabase PITR not enabled on IAI-Charis (1.7M req/month). Portal Supabase connected and live.",stats:[{cls:"red",icon:"fa-database",val:"1",label:"Critical DB Issue",sub:"SUPABASE-PITR-001 — no backup"},{cls:"amber",icon:"fa-chart-line",val:"70+",label:"Grafana Stalls",sub:"No data Jul 3-9"},{cls:"green",icon:"fa-check",val:"1",label:"Webhook Fixed",sub:"Grafana-to-Slack (Habib Jun 21)"},{cls:"green",icon:"fa-database",val:"LIVE",label:"Portal Supabase",sub:"system-health-portal connected"}],statusItems:[{dot:"red",label:"SUPABASE-PITR-001 — IAI-Charis 1.7M req/month with NO PITR (data loss risk)"},{dot:"amber",label:"OPS-SILENT-001 occ=70+ — No Grafana data Jul 3-9"},{dot:"green",label:"Portal Supabase connected — HR + system health data syncing in real time"}]},
   integrations:{title:"Integrations — Make, Airtable, Disconnect",subtitle:"Make.com GB No-Show error Jul 3. Airtable C4 Logistics still failing. Integration disconnect bug on staging.",stats:[{cls:"red",icon:"fa-plug",val:"3",label:"Open Integration Issues",sub:"MAKE, AIRTABLE, INTG-DISCONNECT"},{cls:"amber",icon:"fa-exclamation",val:"12+",label:"Make Auto-Purchases",sub:"n8n migration directive"},{cls:"amber",icon:"fa-robot",val:"5+",label:"Airtable Failures",sub:"C4 Logistics"},{cls:"amber",icon:"fa-unlink",val:"1",label:"Disconnect Bug",sub:"Staging still affected"}],statusItems:[{dot:"amber",label:"MAKE-SCENARIO-001 — GB No-Show Prevention error Jul 3"},{dot:"amber",label:"AIRTABLE-AUTO-001 — C4 Logistics client automation down"},{dot:"amber",label:"INTG-DISCONNECT-001 — staging disconnect bug still active"},{dot:"amber",label:"MAKE-CRED-001 — 12+ auto-purchases, n8n migration directive active"}]},
