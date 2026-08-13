@@ -582,7 +582,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 13 Aug 2026, 12:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 13 Aug 2026, 14:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -2931,6 +2931,51 @@ const ISSUES = [
       comments: []
     }
 
+
+  {
+    id: "LEMLIST-STAGING-001",
+    title: "Lemlist Integration Cannot Connect on Staging",
+    priority: "p2",
+    status: "open",
+    tab: "integrations",
+    tags: [],
+    mondayId: null,
+    system: "INTG",
+    responsible: "U0790KJ70FR",
+    dateFirst: "13 Aug 2026",
+    dateLast: "13 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Aalok (U06CBJGQ353) reported at ~13:43 UTC that connecting Lemlist on staging returns 'cannot connect to this service'. Raised in #aios-dev.",
+    howItHappens: "Lemlist OAuth or API integration failing on staging environment. Separate from any production issue.",
+    relatedIds: ["LEMLIST-CONN-001"],
+    context: "13 Aug 2026 13:43 UTC — Aalok tagged U0790KJ70FR in #aios-dev.",
+    occurrences: [{ n: 1, when: "13 Aug 2026 13:43 UTC", what: "Aalok reported Lemlist cannot connect on staging" }],
+    comments: []
+  },
+  {
+    id: "LEMLIST-KEEPER-001",
+    title: "Lemlist Password Missing from Keeper",
+    priority: "p3",
+    status: "open",
+    tab: "security",
+    tags: [],
+    mondayId: null,
+    system: "CRED",
+    responsible: "U083CKBCF7Y",
+    dateFirst: "13 Aug 2026",
+    dateLast: "13 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "U09C1VD3WSZ (Abdullah) cannot find the Lemlist password in Keeper. Reported in #solutions-hq at ~13:44 UTC asking Meezab to share it.",
+    howItHappens: "Password either not stored in Keeper or stored under a different entry name.",
+    relatedIds: ["LEMLIST-STAGING-001", "LEMLIST-CONN-001"],
+    context: "13 Aug 2026 13:44 UTC — #solutions-hq",
+    occurrences: [{ n: 1, when: "13 Aug 2026 13:44 UTC", what: "Abdullah asked Meezab for Lemlist password, not in Keeper" }],
+    comments: []
+  },
 ];
 
 const GOD_MODE_CONFIGS = {
