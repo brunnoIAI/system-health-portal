@@ -583,7 +583,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 12 Aug 2026, 16:25 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 13 Aug 2026, 09:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -618,6 +618,116 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+    {
+      id: "SENDGRID-DEGRADE-003",
+      title: "SendGrid CRITICAL+WARNING - STILL FIRING 9h+",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "SENDGRID",
+      responsible: "Habib",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "SendGrid external provider CRITICAL outage fired ~00:10 UTC Aug 13, followed by WARNING. STILL FIRING at 08:46 UTC (9h+). Email delivery may be impacted.",
+      howItHappens: "Grafana alert provider-degraded-sendgrid and provider-outage-sendgrid both fired. Seen in #aios-alerts at ts=1786522237 (CRITICAL) and ts=1786608798 (WARNING still active).",
+      relatedIds: "SENDGRID-DEGRADE-001, SENDGRID-DEGRADE-002",
+      context: "Third SendGrid degradation cycle. Previous cycles resolved Aug 12. This new cycle started ~00:10 UTC Aug 13 and persists into the 9am sweep.",
+      occurrences: [{"n": 1, "when": "2026-08-13 00:10 UTC", "what": "CRITICAL + WARNING fired, still active at 08:46 UTC (9h+)"}],
+      comments: []
+    },
+    {
+      id: "VAPI-OUTAGE-019",
+      title: "VAPI CRITICAL+WARNING fired ~00:39 UTC Aug 13",
+      priority: "p2",
+      status: "working",
+      tab: "voice",
+      tags: [],
+      mondayId: "",
+      system: "VAPI",
+      responsible: "Habib",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "VAPI provider CRITICAL outage and degraded alerts fired at ~00:39 UTC Aug 13. 4 alert events seen (2x WARNING + 2x CRITICAL). Resolution status unconfirmed from this sweep.",
+      howItHappens: "provider-degraded-vapi and provider-outage-vapi both fired in #aios-alerts. Timestamps: 1786539391, 1786539395, 1786539511, 1786539519.",
+      relatedIds: "VAPI-OUTAGE-018, TWILIO-DEGRADE-001",
+      context: "New VAPI outage cycle on Aug 13 at ~00:39 UTC. Previous VAPI+Twilio CRITICAL pair was STILL FIRING from Aug 12 at 12:56 UTC (17h+). This may be the same cycle or a new one.",
+      occurrences: [{"n": 1, "when": "2026-08-13 00:39 UTC", "what": "CRITICAL + WARNING fired (4 alert events). Resolution unconfirmed."}],
+      comments: []
+    },
+    {
+      id: "BILLING-CRASH-001",
+      title: "Platform Billing Page Crash - Zendesk #354",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Abdullah",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Platform billing page crashes for users. Zendesk Ticket #354 created by client 'Menu', updated by Abdullah Nadeem. Status: Pending.",
+      howItHappens: "User reported billing page crash on AIOS platform. Ticket created and immediately updated by Abdullah Nadeem.",
+      relatedIds: "EXPORT-BUG-004",
+      context: "Seen in #aios-support at 08:44 UTC Aug 13. Ticket #354 Priority: Normal.",
+      occurrences: [{"n": 1, "when": "2026-08-13 08:44 UTC", "what": "Zendesk #354 created - Platform Billing Page Crash, requester: Menu"}],
+      comments: []
+    },
+    {
+      id: "MAIL-BOUNCE-001",
+      title: "Mail delivery failures - Zendesk #355 #356",
+      priority: "p3",
+      status: "working",
+      tab: "integrations",
+      tags: [],
+      mondayId: "",
+      system: "EMAIL",
+      responsible: "Abdullah",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Email delivery failures creating Zendesk tickets. Ticket #355 is Undeliverable Delivery Status Notification Failure. Ticket #356 is Mail Delivery Failure to menu@menu.com. Both Low priority.",
+      howItHappens: "Mail Delivery Subsystem auto-created tickets in Zendesk. Abdullah Nadeem updated both to Pending.",
+      relatedIds: "SENDGRID-DEGRADE-003",
+      context: "Likely linked to SendGrid outage (SENDGRID-DEGRADE-003). Tickets #355 and #356 seen in #aios-support at 08:42-08:44 UTC.",
+      occurrences: [{"n": 1, "when": "2026-08-13 08:42 UTC", "what": "Tickets #355 and #356 created for mail delivery failures"}],
+      comments: []
+    },
+    {
+      id: "TRIGGER-ROUTING-001",
+      title: "Trigger Outlook routing - payload/routing question",
+      priority: "p3",
+      status: "working",
+      tab: "integrations",
+      tags: [],
+      mondayId: "",
+      system: "INTEGRATIONS",
+      responsible: "Meezab",
+      dateFirst: "2026-08-13",
+      dateLast: "2026-08-13",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "SE engineer (U08PN6PQ2HW) set up Outlook trigger to catch inbound/outbound emails but only has 2 routing options available. Asking Meezab (U09M2DWBQ5D) for guidance on routing and payload handling.",
+      howItHappens: "Seen in #aios-dev at 08:49 UTC Aug 13. Trigger setup for Outlook email catching with limited routing options.",
+      relatedIds: "SCHED-CALL-BUG-001",
+      context: "Solutions engineer question about trigger routing configuration. May indicate a product gap in trigger routing options.",
+      occurrences: [{"n": 1, "when": "2026-08-13 08:49 UTC", "what": "U08PN6PQ2HW asked Meezab about Outlook trigger routing options"}],
+      comments: []
+    },
 
         {
           id: 'ADVANTOS-CALL-001',
