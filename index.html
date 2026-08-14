@@ -440,7 +440,22 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-          <div class="login-logo">
+          <div class="log-entry">
+            <span class="log-time">12 Aug 2026 - 10:00 UK</span>
+            <span class="log-source">Command Centre Full Scan</span>
+            <span class="log-body">
+              10am sweep. Calendar: SA compliance training 11:00-11:30, Finance/billing meeting with Andrew Butterworth 13:00-13:30, Lunch 12:00-13:00, POD A CANCELLED.
+              Inbox: 3 emails - Ramandeep Kaur employment verification x2 (RESOLVED - document confirmed genuine), Andrew Butterworth billing meeting confirmation.
+              Sent: 4 emails - Vishal verification replies x2, Nexora forward to Howard Lea, meeting acceptance.
+              Slack #aios-alerts: SendGrid CRITICAL + WARNING fired 08:10-08:12 UTC (SENDGRID-OUTAGE-002 NEW).
+              Slack #aios-dev: 4 messages - export email bug (EXPORT-BUG-003 NEW), trigger config question, Aalok requesting Claude Sonnet 5 release.
+              Slack #solutions-hq: New Solutions Engineer (U0BP1U09FMM) joined and announced by Meezab.
+              #aios, #aios-security, #aios-support, #system-health-hq, #aios-bot: SILENT.
+              Teams: 47 chats, meeting chats active (compliance training, weekly review, Nexora, SA compliance).
+              7 new portal items logged. Monday board updates pending (write access check required).
+              TIME LOG: 12:00 UK sweep done. Standard day in progress. Meezab on leave, Shahan covering. POD A cancelled. Lunch 12:00-13:00. ISO training x2: 14:00 SE (Meezab) + 15:00 AIOS engineers (Meezab). IAI<>Nexora review 14:30 (Brunno, Shahan, Howard Lea). GLM fix confirmed live in prod (Faisal, 07:13 UTC). SendGrid WARNING still firing from Aug 12. VAPI outage ongoing. Zendesk tickets #354 (Billing Crash), #355/#356 (Mail Delivery) all pending. DocuSign Alishba termination checklist arrived - action required. Certn report for Gavin Fernandes ready for review. Outlook trigger routing issue raised in #aios-dev. Standard hours: 07:00-12:00 = 5h so far.</span>
+          </div>
+    <div class="login-logo">
       <img src="data:image/png;base64,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" alt="ImplementAI" style="height:36px;margin-bottom:14px;">
       <h2>System Health Portal</h2>
       <p>Sign in with your @implementai.io account</p>
@@ -537,12 +552,6 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <i class="fas fa-users"></i> HR <span class="nav-badge" style="background:rgba(22,163,74,0.15);color:#16A34A;">HR</span>
         </button>
       </div>
-      <div class="sidebar-section">
-        <div class="sidebar-section-label">Operations</div>
-        <button class="nav-item" onclick="switchTab('agents',this)" data-tab="agents">
-          <i class="fas fa-robot"></i> Agents &amp; Clients <span class="nav-badge" style="background:rgba(124,58,237,0.2);color:#7C3AED;" id="badge-agents">15</span>
-        </button>
-      </div>
       <div class="sidebar-section workload">
         <div class="sidebar-section-label">Team Workload</div>
         <div id="workload-list"></div>
@@ -601,7 +610,6 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
         <div id="tab-person" class="tab-panel" style="display:none;"></div>
         <div id="tab-settings" class="tab-panel" style="display:none;"></div>
         <div id="tab-hr" class="tab-panel" style="display:none;"></div>
-        <div id="tab-agents" class="tab-panel" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -2409,7 +2417,7 @@ const ISSUES = [
   {id:"AALOK-TEAM-CMD-001",title:"R&D — Team Command Agent Architecture (Aalok, #aios-dev)",priority:"p3",status:"open",tab:"Platform",tags:[],mondayId:"",system:"AIOS",responsible:"Shahzeb",dateFirst:"2026-08-06",dateLast:"2026-08-06",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Aalok asked in #aios-dev whether a team command agent could treat other agents as sub-agents. R&D question with 4 replies.",howItHappens:"Slack #aios-dev message from Aalok (U06CBJGQ353) at 09:23 UTC Aug 6. Thread has 4 replies from U0790KJ70FR and Aalok.",relatedIds:[],context:"Product R&D direction. Not a bug. Requires engineering input on hierarchical agent architecture.",occurrences:[{n:1,when:"2026-08-06 09:23 UTC",what:"Aalok posted team command agent concept in #aios-dev. 4 replies."}],comments:[]},
   {id:"CC-SCAN-20260806-12PM",title:"Command Centre Scan — 12:00 UK Aug 6 2026",priority:"p3",status:"resolved",tab:"Resolved",tags:[],mondayId:"",system:"OPS",responsible:"Brunno",dateFirst:"2026-08-06",dateLast:"2026-08-06",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Full Command Centre scan at 12:00 UK. Checked Teams DMs, Slack 8 channels, Outlook inbox+sent, calendar.",howItHappens:"Automated scan triggered at 12:00 UK. All sources checked simultaneously.",relatedIds:["CC-SCAN-20260806"],context:"12pm sweep. 4 new items found: VAPI-OUTAGE-017 (resolved), VISHAL-RELIEF-002, ISO-AMTIVO-001, AALOK-TEAM-CMD-001. GITHUB-PORTAL-001 occ++ (3 more failures). CAMPAIGN-SCHEDULER-BUG-001 active. DEV-LOGIN-001 active. All providers QUIET since 11:18 UTC. IAI-Nexora meeting at 14:30. Monday write still blocked Day 11.",occurrences:[{n:1,when:"2026-08-06 12:00 UK",what:"12pm sweep complete. 4 new items. VAPI cycle 10:38-11:18 UTC resolved. All providers quiet at 12:00 UK."}],comments:[],dateResolved:"2026-08-06",rootCause:"Scheduled scan.",fixApplied:"N/A",resolvedBy:"Brunno"},
   {id:"GPT-VERSION-001",title:"Platform showing outdated GPT versions (4.1 instead of v5)",priority:"p2",status:"working",tab:"platform",tags:[],mondayId:null,system:"PLATFORM",responsible:"Shahzeb",dateFirst:"2026-08-06",dateLast:"2026-08-06",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Platform UI showing GPT 4.1 instead of v5 models to users.",howItHappens:"U095NGUJV2R flagged in #aios-dev at 11:55 UTC Aug 6. Shahzeb tagged. P2 Bug.",relatedIds:[],context:"Reported in #aios-dev 11:55 UTC Aug 6 2026. Shahzeb tagged to investigate.",occurrences:[{n:1,when:"2026-08-06",what:"First reported in #aios-dev 11:55 UTC"}],comments:[]},
-  {id:"ISO-AMTIVO-001",title:"ISO 27001 Amtivo quote follow-up - Chris Barrett - REPLY REQUIRED",priority:"p2",status:"working",tab:"platform",tags:["escalated"],mondayId:null,system:"EMAIL",responsible:"Brunno",dateFirst:"2026-08-06",dateLast:"2026-08-06",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Chris Barrett from Amtivo chasing ISO 27001 quote - email unread, reply needed.",howItHappens:"Email received 09:46 UTC Aug 6 in brunno@ inbox. Unread. Reply required.",relatedIds:[],context:"Chris Barrett at Amtivo chasing ISO 27001 quote. Received 09:46 UTC Aug 6. Brunno must reply.",occurrences:[{n:1,when:"2026-08-06",what:"Email received 09:46 UTC, unread, reply required"}],comments:[]},
+  {id:"ISO-AMTIVO-001",title:"ISO 27001 Amtivo quote follow-up - Chris Barrett - REPLY REQUIRED",priority:"p2",status:"working",tab:"platform",tags:["escalated"],mondayId:null,system:"EMAIL",responsible:"Brunno",dateFirst:"2026-08-06",dateLast:"2026-08-06",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Chris Barrett from Amtivo chasing ISO 27001 quote - email unread, reply needed.",howItHappens:"Email received 09:46 UTC Aug 6 in brunno@ inbox. Unread. Reply required.",relatedIds:[],context:"Chris Barrett at Amtivo chasing ISO 27001 quote. Received 09:46 UTC Aug 6. Brunno must reply.",occurrences:[{n:1,when:"2026-08-06",what:"Email received 09:46 UTC, unread, reply required"}],comments:[]}
 
     {
       id: "VAPI-OUTAGE-017", title: "VAPI + Twilio outage - Aug 6 10:38-11:18 UTC", priority: "p2", status: "resolved",
@@ -2873,7 +2881,7 @@ const ISSUES = [
         { n: 1, when: "2026-08-12 08:20 UTC", what: "Aalok posted in #aios-dev requesting Sonnet 5 release" }
       ],
       comments: []
-    },
+    }
 
         {
           id: "SENDGRID-OUTAGE-002",
@@ -3195,7 +3203,7 @@ const ISSUES = [
             comments: []
         },
 
-
+,
 
     {
       id: 'ANTHROPIC-DEGRADE-003',
@@ -3278,7 +3286,7 @@ const ISSUES = [
         { n: 2, when: '2026-08-12 09:41 UTC', what: 'Brunno confirms document genuine' }
       ],
       comments: []
-    },
+    }
 
 
   {
@@ -3636,7 +3644,7 @@ const ISSUES = [
       occurrences: [{ n: 1, when: "2026-08-14 09:59 UTC", what: "Brunno posted HPC escalation in #aios tagging Shahzeb and Faisal" }],
       comments: []
     },
-
+,
     {
         id: "SENDGRID-DEGRADE-004",
         title: "SendGrid provider degraded - WARNING firing since 08:14 UTC",
@@ -3938,44 +3946,31 @@ function handleLoginStep(){
   errEl.style.display="none";if(lockEl)lockEl.style.display="none";
   if(!pendingEmail){
     if(!USERS[email]){errEl.textContent="Email not recognised. Only @implementai.io accounts can access this portal.";errEl.style.display="block";return;}
-    pendingEmail=email;
-    const auth=getAuth();
-    const lck=auth["lock_"+email];
-    if(lck&&lck.until>Date.now()){if(lockEl){lockEl.textContent="Too many failed attempts. Try again in 30 minutes.";lockEl.style.display="block";}pendingEmail=null;return;}
-    const hash=auth["pw_"+email];
-    if(hash){
-      // Password already cached locally — show password field immediately
+    const btn=document.getElementById("login-btn");
+    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Checking...';
+    const sbC=window.supabase?window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co','sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox'):null;
+    if(!sbC){
+      // No Supabase — fall back to localStorage
+      const auth=getAuth(),hash=auth["pw_"+email];
+      btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
+      if(!hash){pendingEmail=email;document.getElementById("first-login-modal").style.display="flex";return;}
+      pendingEmail=email;document.getElementById("login-email").disabled=true;
+      document.getElementById("pw-field").style.display="block";document.getElementById("login-pw").focus();return;
+    }
+    sbC.from("portal_auth").select("pw_hash").eq("email",email).maybeSingle().then(({data,error})=>{
+      btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
+      if(data&&data.pw_hash){
+        // Sync to localStorage for offline fallback
+        const a=getAuth();a["pw_"+email]=data.pw_hash;saveAuth(a);
+      }
+      const auth=getAuth(),hash=auth["pw_"+email];
+      pendingEmail=email;
+      if(!hash){document.getElementById("first-login-modal").style.display="flex";return;}
       document.getElementById("login-email").disabled=true;
       document.getElementById("pw-field").style.display="block";
       document.getElementById("login-pw").focus();
       document.getElementById("login-btn").innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
-    } else {
-      // No local cache — fetch hash from Supabase via plain fetch (no SDK dependency)
-      const btn=document.getElementById("login-btn");
-      btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Checking...';
-      const url='https://zijhsdhjxohicuoxwytk.supabase.co/rest/v1/portal_auth?select=pw_hash&email=eq.'+encodeURIComponent(email);
-      fetch(url,{headers:{"apikey":"sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox","Authorization":"Bearer sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox"}})
-        .then(r=>r.json())
-        .then(rows=>{
-          btn.disabled=false;
-          if(rows&&rows[0]&&rows[0].pw_hash){
-            const a=getAuth();a["pw_"+email]=rows[0].pw_hash;saveAuth(a);
-            document.getElementById("login-email").disabled=true;
-            document.getElementById("pw-field").style.display="block";
-            document.getElementById("login-pw").focus();
-            btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
-          } else {
-            // No password set yet — show first-login modal
-            btn.innerHTML='<i class="fas fa-arrow-right"></i> Continue';
-            document.getElementById("first-login-modal").style.display="flex";
-          }
-        })
-        .catch(()=>{
-          btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-right"></i> Continue';
-          errEl.textContent="Network error. Please check your connection and try again.";errEl.style.display="block";
-          pendingEmail=null;
-        });
-    }
+    });
     return;
   }
   const pw=document.getElementById("login-pw").value;
@@ -3992,10 +3987,12 @@ function handleLoginStep(){
     }
     delete auth["att_"+pendingEmail];delete auth["lock_"+pendingEmail];
     auth["lastLogin_"+pendingEmail]=new Date().toISOString();saveAuth(auth);
+    // Update Supabase last_login
+    const sbC=window.supabase?window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co','sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox'):null;
+    if(sbC)sbC.from("portal_auth").update({last_login:new Date().toISOString(),failed_attempts:0}).eq("email",pendingEmail);
     (window.completeLogin||completeLogin)(pendingEmail);
   });
 }
-
 function setFirstPassword(){
   const pw1=document.getElementById("new-pw1").value;
   const pw2=document.getElementById("new-pw2").value;
@@ -4178,9 +4175,118 @@ function updateSidebarBadges() {
 }
 
 function completeLogin(email){
-  const u=USERS[email];
-  if(!u)return;
-  currentUser={...u,email};pendingEmail=null;
+  const u=USERS[email
+    {
+      id: "SENDGRID-DEGRADE-003",
+      title: "SendGrid Provider Degraded - WARNING Firing",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "SENDGRID",
+      responsible: "Habib",
+      dateFirst: "13 Aug 2026",
+      dateLast: "13 Aug 2026",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "SendGrid external provider degraded alert firing in #aios-alerts since early morning 13 Aug.",
+      howItHappens: "Grafana provider-degraded-sendgrid alert triggered. Visible in #aios-alerts channel.",
+      relatedIds: [],
+      context: "Alert seen at ~08:46 UTC 13 Aug. SendGrid WARNING active at 10am sweep.",
+      occurrences: [{n: 1, when: "13 Aug 2026 08:46 UTC", what: "SendGrid WARNING fired in #aios-alerts"}],
+      comments: []
+    },
+    {
+      id: "BILLING-CRASH-001",
+      title: "Platform Billing Page Crash - Zendesk #354",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "IMPLAI",
+      responsible: "Abdullah",
+      dateFirst: "13 Aug 2026",
+      dateLast: "13 Aug 2026",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Platform billing page crashing for client. Zendesk ticket #354 created by Menu client, assigned to Abdullah Nadeem.",
+      howItHappens: "Client (Menu) reports billing page crash. Ticket logged in Zendesk, status Pending.",
+      relatedIds: [],
+      context: "Ticket #354 created and updated by Abdullah Nadeem. Seen in #aios-support bot notifications 13 Aug.",
+      occurrences: [{n: 1, when: "13 Aug 2026", what: "Zendesk #354 Billing Page Crash created"}],
+      comments: []
+    },
+    {
+      id: "MAIL-BOUNCE-001",
+      title: "Mail Delivery Failures - Zendesk #355/#356",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "EMAIL",
+      responsible: "Abdullah",
+      dateFirst: "13 Aug 2026",
+      dateLast: "13 Aug 2026",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Two Zendesk tickets created for mail delivery failures / undeliverable messages. Likely linked to SendGrid degradation.",
+      howItHappens: "Mail Delivery Subsystem raised tickets #355 and #356. Both Pending, updated by Abdullah Nadeem.",
+      relatedIds: ["SENDGRID-DEGRADE-003"],
+      context: "Tickets #355 and #356 both show Undeliverable/Delivery Status Notification Failure. Possibly related to SendGrid degradation.",
+      occurrences: [{n: 1, when: "13 Aug 2026", what: "Zendesk #355 and #356 mail delivery failures"}],
+      comments: []
+    },
+    {
+      id: "TRIGGER-ROUTING-001",
+      title: "Outlook Trigger Routing Options - SE Engineer Query",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "INTG",
+      responsible: "Meezab",
+      dateFirst: "13 Aug 2026",
+      dateLast: "13 Aug 2026",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "SE engineer (U08PN6PQ2HW, likely Tayyub or Usman) set up Outlook trigger for inbound/outbound emails but only 2 routing options available. Needs guidance.",
+      howItHappens: "Posted in #aios-dev. Setup trigger for Outlook to catch inbound/outbound emails, only 2 routing options shown in screenshot. Flagged to Meezab.",
+      relatedIds: [],
+      context: "Posted in #aios-dev 13 Aug ~09:09 UTC. Awaiting response from Meezab.",
+      occurrences: [{n: 1, when: "13 Aug 2026 09:09 UTC", what: "SE engineer queried Outlook trigger routing options in #aios-dev"}],
+      comments: []
+    },
+    {
+      id: "ALISHBA-DOCUSIGN-001",
+      title: "DocuSign Action Required - Alishba Termination Checklist",
+      priority: "p2",
+      status: "working",
+      tab: "security",
+      tags: [],
+      mondayId: "",
+      system: "HR",
+      responsible: "Brunno",
+      dateFirst: "13 Aug 2026",
+      dateLast: "13 Aug 2026",
+      daysOpen: 1,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "DocuSign sent Brunno a termination checklist for Alishba to review and sign. Action required today.",
+      howItHappens: "DocuSign email received in brunno@ inbox at 08:28 UTC 13 Aug. Implement AI sent document via hello@implementai.io.",
+      relatedIds: [],
+      context: "Email from dse@eumail.docusign.net at 08:28 UTC. Subject: Complete with Docusign: Alishba termination checklist.docx",
+      occurrences: [{n: 1, when: "13 Aug 2026 08:28 UTC", what: "DocuSign Alishba termination checklist received in inbox"}],
+      comments: []
+    },
+  ];currentUser={...u,email};pendingEmail=null;
   document.getElementById("login-screen").style.display="none";
   document.getElementById("app").style.display="block";
   refreshSidebarUser();
@@ -4496,7 +4602,7 @@ function handleNotifClick(notifId,issueId){markNotifRead(notifId);closeNotifDrop
 function formatRelTime(ts){const d=Date.now()-ts;if(d<60000)return"just now";if(d<3600000)return Math.floor(d/60000)+"m ago";if(d<86400000)return Math.floor(d/3600000)+"h ago";return Math.floor(d/86400000)+"d ago";}
 function renderWorkload(){const list=document.getElementById("workload-list");if(!list)return;const assignments=getStore().assignments||{};const counts={};Object.values(assignments).forEach(email=>{if(email)counts[email]=(counts[email]||0)+1;});const people=Object.entries(USERS).map(([email,u])=>({email,...u,count:counts[email]||0}));people.sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name));list.innerHTML=people.map(p=>{const pic=getAvatarDataUri(p.email);const avHtml=pic?'<div class="wp-avatar"><img src="'+pic+'"></div>':'<div class="wp-avatar" style="background:'+(p.color||"#6C5DD3")+'">'+p.initials+'</div>';return'<div class="workload-person" onclick="viewPersonItems(\''+p.email+'\',this)">'+avHtml+'<span class="wp-name">'+p.name+'</span><span class="wp-count'+(p.count>0?" has-items":"")+'">'+p.count+'</span></div>';}).join("");}
 function updateMyItemsBadge(){if(!currentUser)return;const a=getStore().assignments||{};const c=Object.values(a).filter(e=>e===currentUser.email).length;const b=document.getElementById("badge-myitems");if(b)b.textContent=c;}
-function switchTab(tab,btn){window.scrollTo(0,0);currentTab=tab;document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));if(btn&&btn.classList)btn.classList.add("active");document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");const panel=document.getElementById("tab-"+tab);if(panel)panel.style.display="block";const names={all:"All Issues",myitems:"My Items",voice:"Voice",database:"Database",integrations:"Integrations",platform:"Platform",security:"Security",tasks:"Tasks",resolved:"Resolved",raw:"Raw Log",person:"Team Member",settings:"Settings",hr:"HR",agents:"Agents & Clients"};document.getElementById("topbar-section").textContent=names[tab]||tab;if(tab==="settings"){renderSettings();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="myitems"){renderMyItems();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="person"||tab==="hr"){}else if(tab==="agents"){renderAgentsTab();document.getElementById("god-mode-area").innerHTML="";}else{renderGodMode(tab);renderTabContent(tab);}}
+function switchTab(tab,btn){window.scrollTo(0,0);currentTab=tab;document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));if(btn&&btn.classList)btn.classList.add("active");document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");const panel=document.getElementById("tab-"+tab);if(panel)panel.style.display="block";const names={all:"All Issues",myitems:"My Items",voice:"Voice",database:"Database",integrations:"Integrations",platform:"Platform",security:"Security",tasks:"Tasks",resolved:"Resolved",raw:"Raw Log",person:"Team Member",settings:"Settings",hr:"HR"};document.getElementById("topbar-section").textContent=names[tab]||tab;if(tab==="settings"){renderSettings();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="myitems"){renderMyItems();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="person"||tab==="hr"){}else{renderGodMode(tab);renderTabContent(tab);}}
 function switchToHR(){
   currentTab="hr";
   window.scrollTo(0,0);
@@ -5312,7 +5418,7 @@ async function loadRemoteData() {
         {id:"AALOK-VANTA-COMPLIANCE-001",title:"Aalok: ISO/SOC2 badge clarification on Vanta trust portal",priority:"p3",status:"working",tab:"platform",tags:[],mondayId:"",system:"VANTA",responsible:"Brunno",dateFirst:"11 Aug 2026",dateLast:"11 Aug 2026",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Aalok asked Brunno via Teams DM about Vanta trust portal: why ISO shows but not SOC 2, and what the badges mean for sales conversations. Brunno shared the trust portal URL and added framework descriptions.",howItHappens:"Aalok reviewing Vanta trust portal for sales use. Wants to understand compliance badge meaning.",relatedIds:["AALOK-CODING-BAN-001"],context:"Aalok: how come it says ISO on the side but not SOC 2? Brunno: I have added with a description of the current state for each framework.",occurrences:[{n:1,when:"11 Aug 2026 09:17-09:47 UTC",what:"Aalok DM to Brunno, Brunno updated Vanta trust portal"}],comments:[]},
         {id:"GAVIN-ONBOARD-DAY2-001",title:"Gavin Fernandes Day 2 onboarding - Vanta done, Certn confirmed",priority:"p3",status:"working",tab:"platform",tags:[],mondayId:"",system:"IMPLAI",responsible:"Brunno",dateFirst:"11 Aug 2026",dateLast:"11 Aug 2026",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Gavin Fernandes completed Vanta training on Day 2. Asked Brunno via Teams DM whether to use personal or work email for Certn. Brunno confirmed Certn invite was sent to his Gmail. Gavin confirmed receipt.",howItHappens:"Day 2 of Gavin onboarding. Brunno managing ISO/security compliance tasks.",relatedIds:["GAVIN-ONBOARD-001"],context:"Gavin: I have finished vanta trainings. When signing in to Certn do I use personal or work email? Brunno: it was sent to your gmail. Gavin: Yes.",occurrences:[{n:1,when:"11 Aug 2026 09:10-10:00 UTC",what:"Gavin completed Vanta training, Certn email confirmed"}],comments:[]},
         {id:"LUCIA-VIRTUAL-UK-001",title:"Lucia: Virtual UK phone number for agent testing - compliance query answered",priority:"p3",status:"working",tab:"platform",tags:[],mondayId:"",system:"IMPLAI",responsible:"Brunno",dateFirst:"11 Aug 2026",dateLast:"11 Aug 2026",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Lucia Barreiros asked Brunno via Teams DM at 09:55 UTC whether there are compliance restrictions on creating a virtual UK phone number for testing agents. Brunno replied advising call.com app and to ask the SA team.",howItHappens:"New team member needs a virtual UK number for agent testing.",relatedIds:[],context:"Lucia: I need to create a virtual UK phone number for testing agents, are there any compliance restrictions? Brunno: I was using call.com app but ask SA team what they currently use.",occurrences:[{n:1,when:"11 Aug 2026 09:55 UTC",what:"Lucia DM to Brunno, resolved with guidance"}],comments:[]},
-        {id:"WEEKLY-REVIEW-DELIVERY-001",title:"Calendar: Weekly Review - Delivery Team at 3:30pm UK today",priority:"p3",status:"open",tab:"platform",tags:[],mondayId:"",system:"IMPLAI",responsible:"Nikhil",dateFirst:"11 Aug 2026",dateLast:"11 Aug 2026",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Weekly Review - Delivery Team meeting scheduled for 15:30-17:00 UK today (Tue 11 Aug). Organiser: Nikhil Mehrishi. Microsoft Teams meeting. POD A Daily Huddle cancelled (Kamil organiser). Lunch 12:00-13:00.",howItHappens:"Recurring weekly meeting. Nikhil is organiser.",relatedIds:[],context:"Calendar confirmed. Also: accepted ISO Audit training invites for Solution Engineers and AIOS Engineers (both sent to Meezab).",occurrences:[{n:1,when:"11 Aug 2026 15:30 UK",what:"Weekly Review Delivery Team - Teams meeting, Nikhil organiser"}],comments:[]},
+        {id:"WEEKLY-REVIEW-DELIVERY-001",title:"Calendar: Weekly Review - Delivery Team at 3:30pm UK today",priority:"p3",status:"open",tab:"platform",tags:[],mondayId:"",system:"IMPLAI",responsible:"Nikhil",dateFirst:"11 Aug 2026",dateLast:"11 Aug 2026",daysOpen:0,escalatedAalok:false,silentFailure:false,whatItDoes:"Weekly Review - Delivery Team meeting scheduled for 15:30-17:00 UK today (Tue 11 Aug). Organiser: Nikhil Mehrishi. Microsoft Teams meeting. POD A Daily Huddle cancelled (Kamil organiser). Lunch 12:00-13:00.",howItHappens:"Recurring weekly meeting. Nikhil is organiser.",relatedIds:[],context:"Calendar confirmed. Also: accepted ISO Audit training invites for Solution Engineers and AIOS Engineers (both sent to Meezab).",occurrences:[{n:1,when:"11 Aug 2026 15:30 UK",what:"Weekly Review Delivery Team - Teams meeting, Nikhil organiser"}],comments:[]}
     {
       id: "SALES-REP-ACCOUNT-001",
       title: "New sales rep account request — AIOS access needed",
@@ -5335,7 +5441,7 @@ async function loadRemoteData() {
       occurrences: [{ n: 1, when: "2026-08-11", what: "Request posted in #aios by U0AFLT6TH0E" }],
       comments: []
     },
-  
+  ,
   {
     id: "GOOD-BROTHER-001",
     title: "Good Brother - Cannot Access Command Agent",
@@ -5617,385 +5723,6 @@ window.addEventListener('load', function() {
     .subscribe();
   console.log('HR real-time sync active');sb.from('hr_reviews').select('*').order('review_date',{ascending:false}).then(({data})=>{if(data&&data.length>0){const s=JSON.parse(localStorage.getItem('iai_hr_v3')||'{"people":[],"exiting":[],"reviews":[]}');s.reviews=data;localStorage.setItem('iai_hr_v3',JSON.stringify(s));}});
 });
-
-
-const CLIENTS_DATA = [
-  {
-    "client": "Options",
-    "agent_name": "SMS Agent",
-    "agent_type": "SMS",
-    "use_case": "Outbound SMS messaging",
-    "priority": "Critical",
-    "status": "Blocked",
-    "channel_id": "C098ZTSC9AM",
-    "engineer": "",
-    "aug13_worked": "Outbound Voice agent monitoring active",
-    "aug13_issues": "SMS Agent waiting for client script",
-    "aug14_worked": "Outbound Voice monitoring continued",
-    "aug14_issues": "SMS Agent still blocked \u2014 script not delivered",
-    "blockers": "Client script not delivered",
-    "notes": "SMS agent update: changing from direct Airtable update to dedicated task with trigger"
-  },
-  {
-    "client": "Charis",
-    "agent_name": "Emma Voice Agent",
-    "agent_type": "Voice / Command",
-    "use_case": "Customer engagement voice agent + CSV reporting",
-    "priority": "Critical",
-    "status": "Running",
-    "channel_id": "C0ALCAMTZGF",
-    "engineer": "Shahan (U08QAT21KR7)",
-    "aug13_worked": "CSV export update complete \u2014 5 new mismatch columns added (Portal First/Last Name, Email, Phone, Address)",
-    "aug13_issues": "Seat limit issue \u2014 awaiting response from platform",
-    "aug14_worked": "",
-    "aug14_issues": "Seat limit still unresolved",
-    "blockers": "Platform seat limit",
-    "notes": "Emma agent script being monitored"
-  },
-  {
-    "client": "Ark-H",
-    "agent_name": "Alex Voice Agent",
-    "agent_type": "Voice",
-    "use_case": "Outbound voice calls with post-call data task",
-    "priority": "Critical",
-    "status": "Running",
-    "channel_id": "C098ZTSC9AM",
-    "engineer": "U0B8J5V4RNC",
-    "aug13_worked": "Build script done; post-call task done; CodeCell data fetching done; reconciliation logic rebuilt \u2014 all numbers now tie out exactly",
-    "aug13_issues": "",
-    "aug14_worked": "",
-    "aug14_issues": "",
-    "blockers": "",
-    "notes": "Code of business conduct review also in progress with client (Piers group)"
-  },
-  {
-    "client": "Complete Childcare",
-    "agent_name": "Voice Support Agent + Oracle Analyst",
-    "agent_type": "Voice / Analyst",
-    "use_case": "Nursery booking, safeguarding escalation, call analysis",
-    "priority": "P1 (Test Env for Analyst)",
-    "status": "Blocked",
-    "channel_id": "C098ZTSC9AM",
-    "engineer": "U0AGU3MUHB9 / U0BN1CY4JJ1",
-    "aug13_worked": "Oracle Analyst: Rebuilt all 5 Tier 1 extraction targets to Onkar spec; cracked output-format problem",
-    "aug13_issues": "Voice agent: KB retrieval failure (platform-wide issue) \u2014 nursery recommendation and show-round booking blocked",
-    "aug14_worked": "",
-    "aug14_issues": "KB retrieval still being resolved; escalation triage task agent configuration in progress",
-    "blockers": "Platform-wide KB retrieval failure affecting voice tools",
-    "notes": "Escalation triage task agent reads safeguarding_escalation, send_escalation, complaint_escalation, human_requested flags"
-  },
-  {
-    "client": "Almo Pro AV (Nexora/LG)",
-    "agent_name": "LG BDM Signage Agent",
-    "agent_type": "Support / Chat",
-    "use_case": "Product layer and pricing support for LG BDM signage",
-    "priority": "P1",
-    "status": "Running",
-    "channel_id": "C0BGM7Z96NM",
-    "engineer": "U0B7F9WQ9D0",
-    "aug13_worked": "Client call held; live demo walked through; feedback collected on product layer and pricing; widget built and deployed to preview, fully functional",
-    "aug13_issues": "",
-    "aug14_worked": "",
-    "aug14_issues": "",
-    "blockers": "",
-    "notes": "Widget live, KB pulling correctly (specs, pricing, bid prices, EOL notices, replacement models)"
-  },
-  {
-    "client": "Implement AI (Internal)",
-    "agent_name": "WhatsApp / Outlook / Teams Command Agent",
-    "agent_type": "Command",
-    "use_case": "Internal operations command agent via WhatsApp and Outlook",
-    "priority": "P2",
-    "status": "Blocked",
-    "channel_id": "C098ZTSC9AM",
-    "engineer": "Meezab (U083CKBCF7Y)",
-    "aug13_worked": "Teams Command Agent live",
-    "aug13_issues": "WhatsApp token expired \u2014 blocking WhatsApp Command Agent and Outlook Command Agent via WhatsApp",
-    "aug14_worked": "",
-    "aug14_issues": "WhatsApp token still expired",
-    "blockers": "WhatsApp token expired",
-    "notes": ""
-  },
-  {
-    "client": "Hales Group",
-    "agent_name": "Monitoring Agent",
-    "agent_type": "Task / Scheduled",
-    "use_case": "Weekend monitoring runs",
-    "priority": "Critical",
-    "status": "Running",
-    "channel_id": "C098ZTSC9AM",
-    "engineer": "U08PN6PQ2HW",
-    "aug13_worked": "Agent live, monitoring runs on weekends only",
-    "aug13_issues": "",
-    "aug14_worked": "",
-    "aug14_issues": "",
-    "blockers": "",
-    "notes": ""
-  },
-  {
-    "client": "Kitchen Makeovers",
-    "agent_name": "Voice Agent",
-    "agent_type": "Voice",
-    "use_case": "Outbound calls with dropped call handling",
-    "priority": "Critical",
-    "status": "In Development",
-    "channel_id": "C098ZTSC9AM",
-    "engineer": "U08PN6PQ2HW",
-    "aug13_worked": "",
-    "aug13_issues": "Moving all scripts to custom apps features; building solution for dropped calls (callback if call drops mid-conversation)",
-    "aug14_worked": "",
-    "aug14_issues": "",
-    "blockers": "Scripts migration in progress",
-    "notes": ""
-  },
-  {
-    "client": "QDP (Quality Dental Practice)",
-    "agent_name": "Call Analyst",
-    "agent_type": "Analyst",
-    "use_case": "Daily call quality analysis from 8x8 recordings",
-    "priority": "Critical",
-    "status": "Not Running (fixed Aug 14)",
-    "channel_id": "C08E2PKDRAR",
-    "engineer": "Shahan (U08QAT21KR7)",
-    "aug13_worked": "",
-    "aug13_issues": "Call analysis stopped \u2014 nothing ran 11-13 Aug. Client raised it three times. 3 days of no analysis.",
-    "aug14_worked": "Root cause found: ZIP files from 8x8 corrupted (download cut off mid-transfer). Fix deployed 11:07. Calls upload in progress. Agent confirmed running.",
-    "aug14_issues": "3 days of lost analysis \u2014 client (Shane) escalated twice",
-    "blockers": "",
-    "notes": "8x8 download corruption \u2014 connection dropped before full file came through. Alert needed so team catches it before client does."
-  },
-  {
-    "client": "Advantos",
-    "agent_name": "Email Analyst (United FM / Advantos Services / JDS)",
-    "agent_type": "Analyst",
-    "use_case": "Near-real-time email analysis via triggers",
-    "priority": "Critical",
-    "status": "Below Volume",
-    "channel_id": "C08E738UQ4S",
-    "engineer": "U08PN6PQ2HW",
-    "aug13_worked": "All email analysts live",
-    "aug13_issues": "Trigger issue: only receiving 'message created' payload instead of actual email content \u2014 dev team checking, triggers removed temporarily",
-    "aug14_worked": "",
-    "aug14_issues": "Triggers still not working (two separate faults). Call failed with 'twilio-reported-customer-misdialed' on live agent.",
-    "blockers": "Outlook trigger payload missing email content; Twilio call failure",
-    "notes": ""
-  },
-  {
-    "client": "Virtuzone",
-    "agent_name": "Call Agent + Task Agent",
-    "agent_type": "Voice / Task",
-    "use_case": "Outbound calls logged to Airtable; claim processing to Qube",
-    "priority": "Critical",
-    "status": "Not Running",
-    "channel_id": "C0ALB669925",
-    "engineer": "U09C1VD3WSZ / U0BN1CY4JJ1",
-    "aug13_worked": "CallGear/Vapi integration instructions prepared (first Vapi integration case)",
-    "aug13_issues": "Calls not logged to Airtable since 5 August (calls made up to 11 Aug not recorded)",
-    "aug14_worked": "",
-    "aug14_issues": "Tasks failed: billing error 'not enough credits for Smart features' (credits were out 11 Aug, topped up). QG claim processed in Airtable but pending creation on Qube (urgent). SIP connection test being arranged.",
-    "blockers": "Credits exhausted 11 Aug; Airtable logging gap since 5 Aug; Qube pending",
-    "notes": "VAPI webhook not fixed \u2014 confirmed by morning test call with no data pushed"
-  },
-  {
-    "client": "Easy Storage",
-    "agent_name": "Unknown agent",
-    "agent_type": "Unknown",
-    "use_case": "Account management / CRM",
-    "priority": "P2",
-    "status": "Running",
-    "channel_id": "C0B3N8JRD9R",
-    "engineer": "Meezab (U09C2DLQ75Y)",
-    "aug13_worked": "",
-    "aug13_issues": "Password reset and account creation requests for users",
-    "aug14_worked": "",
-    "aug14_issues": "",
-    "blockers": "",
-    "notes": "Admin requests only \u2014 no agent issue flagged"
-  },
-  {
-    "client": "Recruitment Agent Client",
-    "agent_name": "Recruitment Agent",
-    "agent_type": "Support / Form",
-    "use_case": "Customer preview form for recruitment screening",
-    "priority": "P2",
-    "status": "Blocked",
-    "channel_id": "C098ZTSC9AM",
-    "engineer": "U0BN1CY4JJ1",
-    "aug13_worked": "Customer preview form link setup done; form live and shared with stakeholders",
-    "aug13_issues": "'Error processing your request' thrown on form submission \u2014 escalated to platform/dev team",
-    "aug14_worked": "",
-    "aug14_issues": "Form submit error still being investigated",
-    "blockers": "Form submission error \u2014 platform issue",
-    "notes": ""
-  },
-  {
-    "client": "Prescription / Irish Client",
-    "agent_name": "Prescription Call Agent",
-    "agent_type": "Voice",
-    "use_case": "Prescription call handling with Irish phone number",
-    "priority": "P2",
-    "status": "In Development",
-    "channel_id": "C08F5RG9ECT",
-    "engineer": "Meezab (U083CKBCF7Y)",
-    "aug13_worked": "",
-    "aug13_issues": "Irish phone number requested; form needs Irish country code as default",
-    "aug14_worked": "",
-    "aug14_issues": "",
-    "blockers": "Irish number not yet provisioned",
-    "notes": ""
-  },
-  {
-    "client": "Goodbrother",
-    "agent_name": "Sales Intelligence Agent",
-    "agent_type": "Sales",
-    "use_case": "Sales intelligence monitoring",
-    "priority": "P1",
-    "status": "Running",
-    "channel_id": "C098ZTSC9AM",
-    "engineer": "Shahan (U08QAT21KR7)",
-    "aug13_worked": "Integration health checking running daily at 8AM BST; Sales Intelligence agent monitoring active",
-    "aug13_issues": "",
-    "aug14_worked": "",
-    "aug14_issues": "",
-    "blockers": "",
-    "notes": ""
-  }
-];
-
-
-function renderAgentsTab() {
-  const panel = document.getElementById('tab-agents');
-  if (!panel) return;
-
-  const today = '2026-08-14';
-  const yesterday = '2026-08-13';
-
-  // Summary counts
-  const running = CLIENTS_DATA.filter(c => c.status === 'Running').length;
-  const notRunning = CLIENTS_DATA.filter(c => c.status === 'Not Running' || c.status.startsWith('Not Running')).length;
-  const blocked = CLIENTS_DATA.filter(c => c.status === 'Blocked').length;
-  const belowVol = CLIENTS_DATA.filter(c => c.status === 'Below Volume').length;
-  const inDev = CLIENTS_DATA.filter(c => c.status === 'In Development').length;
-  const total = CLIENTS_DATA.length;
-
-  const statusColor = {
-    'Running': '#16A34A',
-    'Below Volume': '#D97706',
-    'Not Running': '#DC2626',
-    'Blocked': '#7C3AED',
-    'In Development': '#2563EB'
-  };
-
-  const statusBg = {
-    'Running': 'rgba(22,163,74,0.1)',
-    'Below Volume': 'rgba(217,119,6,0.1)',
-    'Not Running': 'rgba(220,38,38,0.1)',
-    'Blocked': 'rgba(124,58,237,0.1)',
-    'In Development': 'rgba(37,99,235,0.1)'
-  };
-
-  const priorityColor = { 'P1': '#DC2626', 'Critical': '#DC2626', 'P2': '#D97706', 'P3': '#6B7280' };
-
-  function getStatusColor(s) {
-    for (const k of Object.keys(statusColor)) { if (s.startsWith(k)) return statusColor[k]; }
-    return '#6B7280';
-  }
-  function getStatusBg(s) {
-    for (const k of Object.keys(statusBg)) { if (s.startsWith(k)) return statusBg[k]; }
-    return 'rgba(107,114,128,0.1)';
-  }
-  function getPriorityColor(p) {
-    return priorityColor[p] || '#6B7280';
-  }
-
-  let html = `
-    <div style="margin-bottom:20px;">
-      <h2 style="font-size:18px;font-weight:800;color:#111827;margin:0 0 4px;">Agents & Clients</h2>
-      <p style="font-size:13px;color:#6B7280;margin:0;">Operational status from Slack channels — last 2 days (${yesterday} to ${today})</p>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;">
-      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#16A34A;">${running}</div>
-        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">Running</div>
-      </div>
-      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#DC2626;">${notRunning}</div>
-        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">Not Running</div>
-      </div>
-      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#7C3AED;">${blocked}</div>
-        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">Blocked</div>
-      </div>
-      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#D97706;">${belowVol}</div>
-        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">Below Volume</div>
-      </div>
-      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#2563EB;">${inDev}</div>
-        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">In Development</div>
-      </div>
-    </div>
-
-    <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#92400E;">
-      <strong>Operational Continuity Report — ${today}</strong> &nbsp;|&nbsp;
-      ${total} agents monitored &nbsp;|&nbsp;
-      ${notRunning + blocked} need attention &nbsp;|&nbsp;
-      Source: Slack client channels (last 48h)
-    </div>
-  `;
-
-  // Group by status priority: Not Running first, then Blocked, Below Volume, Running, In Development
-  const order = ['Not Running', 'Blocked', 'Below Volume', 'Running', 'In Development'];
-  const sorted = [...CLIENTS_DATA].sort((a, b) => {
-    const ai = order.findIndex(o => a.status.startsWith(o));
-    const bi = order.findIndex(o => b.status.startsWith(o));
-    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-  });
-
-  for (const c of sorted) {
-    const sc = getStatusColor(c.status);
-    const sb = getStatusBg(c.status);
-    const pc = getPriorityColor(c.priority);
-    const hasIssue = c.aug13_issues || c.aug14_issues || c.blockers;
-    const hasWorked = c.aug13_worked || c.aug14_worked;
-
-    html += `
-      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;border-left:4px solid ${sc};padding:16px 20px;margin-bottom:12px;">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;">
-          <div>
-            <div style="font-size:15px;font-weight:800;color:#111827;">${c.client}</div>
-            <div style="font-size:12px;color:#6B7280;margin-top:2px;">${c.agent_name} &nbsp;|&nbsp; ${c.agent_type} &nbsp;|&nbsp; ${c.use_case}</div>
-          </div>
-          <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
-            <span style="background:${sb};color:${sc};font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;">${c.status}</span>
-            <span style="background:${pc}20;color:${pc};font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;">${c.priority}</span>
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;">
-          <div>
-            <div style="font-weight:700;color:#374151;margin-bottom:4px;">Aug 13 — ${yesterday}</div>
-            ${c.aug13_worked ? `<div style="color:#16A34A;margin-bottom:3px;"><span style="font-weight:600;">Worked:</span> ${c.aug13_worked}</div>` : ''}
-            ${c.aug13_issues ? `<div style="color:#DC2626;"><span style="font-weight:600;">Issues:</span> ${c.aug13_issues}</div>` : (!c.aug13_worked ? '<div style="color:#9CA3AF;font-style:italic;">No activity reported</div>' : '')}
-          </div>
-          <div>
-            <div style="font-weight:700;color:#374151;margin-bottom:4px;">Aug 14 — ${today}</div>
-            ${c.aug14_worked ? `<div style="color:#16A34A;margin-bottom:3px;"><span style="font-weight:600;">Worked:</span> ${c.aug14_worked}</div>` : ''}
-            ${c.aug14_issues ? `<div style="color:#DC2626;"><span style="font-weight:600;">Issues:</span> ${c.aug14_issues}</div>` : (!c.aug14_worked ? '<div style="color:#9CA3AF;font-style:italic;">No activity reported</div>' : '')}
-          </div>
-        </div>
-
-        ${c.blockers ? `<div style="margin-top:10px;padding:8px 12px;background:#FEF2F2;border-radius:6px;font-size:12px;color:#DC2626;"><span style="font-weight:700;">Blocker:</span> ${c.blockers}</div>` : ''}
-        ${c.engineer ? `<div style="margin-top:6px;font-size:11px;color:#9CA3AF;">Owner: ${c.engineer}</div>` : ''}
-        ${c.notes ? `<div style="margin-top:4px;font-size:11px;color:#9CA3AF;font-style:italic;">${c.notes}</div>` : ''}
-      </div>
-    `;
-  }
-
-  panel.innerHTML = html;
-}
-
 
 </script>
 
