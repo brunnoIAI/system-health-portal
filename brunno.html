@@ -76,13 +76,6 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 .fchip.active{border-color:var(--brand);color:var(--brand);background:var(--brand-light);}
 
 .tc{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
-/* Grid card class - no list styling, no margin, no padding conflicts */
-.tcg{background:#fff;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;overflow:visible;}
-.tcg:hover{border-color:var(--brand);box-shadow:0 3px 12px rgba(108,93,211,.12);}
-.tcg.exp{border-color:var(--brand);box-shadow:0 4px 16px rgba(0,0,0,.12);}
-.tcg.done-card{opacity:.7;}
-.tcg .tbody{display:none;margin-top:0;padding-top:0;border-top:1px solid var(--border);}
-.tcg.exp .tbody{display:block;}
 .tc:hover{border-color:var(--brand);box-shadow:0 2px 8px rgba(108,93,211,.1);}
 .tc.exp{border-color:var(--brand);}
 .tc.done-card{opacity:.75;border-style:dashed;}
@@ -237,7 +230,6 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 .update-input-area{background:#F9FAFB;border:1.5px solid #C4B5FD;border-radius:7px;padding:8px;margin-top:6px;}
 
 
-/* Grid uses .tcg class - no overrides needed */
 @media(max-width:1200px){
   #task-list{grid-template-columns:repeat(3,1fr)!important;}
 }
@@ -673,7 +665,7 @@ function taskCard(t){
   const isOverdue=t.due_date&&new Date(t.due_date)<new Date()&&t.status!=='done';
   const isExp=expandedTask===t.id;
   const isDone=t.status==='done'||t.status==='cancelled';
-  return`<div class="tcg ${isExp?'exp':''} ${isDone?'done-card':''}" id="tc-${t.id}" onclick="toggleTask('${t.id}')">
+  return`<div class="tc ${isExp?'exp':''} ${isDone?'done-card':''}" id="tc-${t.id}" onclick="toggleTask('${t.id}')">
     <div class="ttop">
       <div class="tbar ${t.priority}"></div>
       <div class="tmain">
@@ -747,123 +739,51 @@ function taskCardGrid(t){
   const isDone=t.status==='done'||t.status==='cancelled';
   const pCol={critical:'#DC2626',high:'#D97706',medium:'#6C5DD3',low:'#9CA3AF'}[t.priority]||'#9CA3AF';
   const sCol={todo:'#9CA3AF',in_progress:'#D97706',blocked:'#DC2626',done:'#16A34A'}[t.status]||'#9CA3AF';
-  const taskSessions=allSessions.filter(s=>s.task_id===t.id);
-  const totalMins=taskSessions.reduce((s,sess)=>s+(sess.duration_minutes||0),0);
-  const taskLogs=allTimeLogs.filter(l=>l.task_id===t.id);
-  const loggedHrs=taskLogs.reduce((s,l)=>s+parseFloat(l.hours||0),0);
-  const loggedMins=Math.round(loggedHrs*60);
-  const combinedMins=Math.max(totalMins,loggedMins);
-  const updates=allTaskUpdates.filter(u=>u.task_id===t.id);
-  const stages=allStages.filter(s=>s.task_id===t.id).sort((a,b)=>(a.stage_order||0)-(b.stage_order||0));
-  const icons={email_received:'fa-envelope',email_sent:'fa-paper-plane',teams_message:'fa-users',slack_message:'fa-hashtag',action_taken:'fa-bolt',note:'fa-note-sticky'};
-
-  return`<div id="tc-${t.id}" class="tcg ${isExp?'exp':''} ${isDone?'done-card':''}" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:12px;cursor:pointer;position:relative;overflow:visible;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 4px 16px rgba(0,0,0,.12)':'0 1px 4px rgba(0,0,0,.05)'};${isDone?'opacity:.7;':''}" onclick="toggleTask('${t.id}')">
-
-    <!-- TOP: always visible -->
-    <div style="padding:14px 15px 12px 19px;">
-      <div style="position:absolute;top:0;left:0;width:5px;height:100%;background:${pCol};border-radius:12px 0 0 12px;"></div>
-
-      <!-- Title row -->
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:9px;">
-        <div style="font-size:13px;font-weight:700;color:${isDone?'var(--muted)':'var(--text)'};line-height:1.45;${isDone?'text-decoration:line-through;':''}">
-          ${isDone?'<i class="fas fa-check-circle" style="color:#16A34A;margin-right:5px;font-size:11px;"></i>':''}${t.title}
-        </div>
-        ${t.estimated_hours?`<div style="flex-shrink:0;text-align:right;"><div style="font-size:11px;font-weight:700;color:var(--brand);">${t.estimated_hours}h</div><div style="font-size:8.5px;color:var(--muted);">est</div></div>`:''}
+  return`<div onclick="toggleTask('${t.id}')" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:10px;padding:12px 13px;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 2px 12px rgba(0,0,0,.1)':'0 1px 3px rgba(0,0,0,.04)'};${isDone?'opacity:.6;':''}" onmouseover="this.style.boxShadow='0 3px 14px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='${isExp?'0 2px 12px rgba(0,0,0,.1)':'0 1px 3px rgba(0,0,0,.04)'}'">
+    <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${pCol};border-radius:10px 0 0 10px;"></div>
+    <div style="padding-left:6px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:7px;${isDone?'text-decoration:line-through;color:var(--muted);':''}">${isDone?'<i class="fas fa-check-circle" style="color:#16A34A;margin-right:4px;font-size:9px;"></i>':''}${t.title.length>80?t.title.substring(0,80)+'…':t.title}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">
+        <span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:${sCol}18;color:${sCol};border:1px solid ${sCol}30;">${statusLabel(t.status)}</span>
+        <span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#F3F4F6;color:#6B7280;">${catLabel(t.category)}</span>
+        ${t.source&&t.source!=='manual'?`<span style="font-size:9px;padding:2px 6px;border-radius:10px;background:#EEF2FF;color:#6C5DD3;">${t.source.toUpperCase()}</span>`:''}
       </div>
-
-      <!-- Chips row -->
-      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:9px;">
-        <span style="font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:10px;background:${sCol}18;color:${sCol};border:1px solid ${sCol}30;">${statusLabel(t.status)}</span>
-        <span style="font-size:9.5px;padding:2px 8px;border-radius:10px;background:#F3F4F6;color:#6B7280;">${catLabel(t.category)}</span>
-        ${t.source&&t.source!=='manual'?`<span style="font-size:9.5px;padding:2px 7px;border-radius:10px;background:#EEF2FF;color:#6C5DD3;">${t.source.toUpperCase()}</span>`:''}
-        ${isOverdue?`<span style="font-size:9.5px;padding:2px 7px;border-radius:10px;background:#FEE2E2;color:#DC2626;font-weight:700;">Overdue</span>`:''}
-        ${combinedMins>0?`<span style="font-size:9.5px;color:var(--brand);font-weight:700;background:var(--brand-light);padding:2px 7px;border-radius:7px;"><i class="fas fa-clock" style="margin-right:2px;font-size:8px;"></i>${fmtMins2(combinedMins)}</span>`:''}
-      </div>
-
-      <!-- Notes preview (collapsed) -->
-      ${!isExp&&(t.description||t.notes)?`<div style="font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:4px;">${(t.description||t.notes).substring(0,120)}${(t.description||t.notes).length>120?'…':''}</div>`:''}
-
-      <!-- Expand hint -->
-      <div style="font-size:9px;color:var(--muted);margin-top:4px;">${isExp?'▲ click to collapse':'▼ click to expand'} ${updates.length?`· ${updates.length} update${updates.length>1?'s':''}`:''} ${stages.length?`· ${stages.length} stage${stages.length>1?'s':''}`:''}</div>
-    </div>
-
-    <!-- EXPANDED BODY: full controls, identical to original taskCard -->
-    <div class="tbody" onclick="event.stopPropagation()">
-      ${t.description||t.notes?`<div class="tnotes">${t.description||t.notes}</div>`:''}
-
-      <!-- Status / category / due / hours editor -->
-      <div class="editrow" onclick="event.stopPropagation()">
-        <label>Status:</label>
-        <select onchange="updateTaskStatus('${t.id}',this.value)">
-          <option value="">Change...</option>
-          <option value="todo">To Do</option>
-          <option value="in_progress">In Progress</option>
-          <option value="blocked">Blocked</option>
-          <option value="done">Done</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
-        <label>Cat:</label>
-        <select onchange="updateTaskField('${t.id}','category',this.value)">
-          ${['compliance','system_health','hr','training','chasing','admin','ad_hoc'].map(c=>`<option value="${c}" ${t.category===c?'selected':''}>${catLabel(c)}</option>`).join('')}
-        </select>
-        <label>Due:</label>
-        <input type="date" value="${t.due_date||''}" onchange="updateTaskField('${t.id}','due_date',this.value||null)" onclick="event.stopPropagation()">
-        <label>Est h:</label>
-        <input type="number" value="${t.estimated_hours||''}" step="0.25" min="0" style="width:55px;" onchange="updateTaskField('${t.id}','estimated_hours',parseFloat(this.value)||null)" onclick="event.stopPropagation()">
-      </div>
-
-      <!-- Action buttons -->
-      <div class="tactions" onclick="event.stopPropagation()">
-        <button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="openLogTime('${t.id}')"><i class="fas fa-clock"></i> Log Time</button>
-        <button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="showAddUpdate('${t.id}');event.stopPropagation();"><i class="fas fa-plus"></i> Update</button>
-        <button class="bg" style="font-size:9.5px;padding:3px 8px;color:#DC2626;border-color:#FCA5A5;" onclick="deleteTask('${t.id}')"><i class="fas fa-trash"></i></button>
-      </div>
-
-      <!-- Stages -->
-      ${stages.length?`<div style="padding:8px 14px 4px;border-top:1px solid #F3F4F6;">
-        <div style="font-size:9.5px;font-weight:700;color:var(--text);margin-bottom:6px;"><i class="fas fa-list-check" style="margin-right:4px;color:var(--brand);"></i>Stages</div>
-        ${stages.map(s=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-          <span onclick="event.stopPropagation();toggleStage('${s.id}','${t.id}')" style="cursor:pointer;width:14px;height:14px;border-radius:3px;border:1.5px solid ${s.status==='done'?'#16A34A':'#D1D5DB'};background:${s.status==='done'?'#16A34A':'#fff'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            ${s.status==='done'?'<i class="fas fa-check" style="color:#fff;font-size:7px;"></i>':''}
-          </span>
-          <span style="font-size:9.5px;${s.status==='done'?'text-decoration:line-through;color:var(--muted);':''}">${s.stage_name}</span>
-        </div>`).join('')}
-      </div>`:''}
-
-      <!-- Activity log - always in DOM so update button always works -->
-      <div class="task-activity" onclick="event.stopPropagation()">
-        ${updates.length?`<div class="activity-title"><span><i class="fas fa-clock-rotate-left" style="margin-right:4px;"></i>Activity Log (${updates.length})</span></div>
-        ${updates.slice(0,5).map(u=>`<div class="activity-item">
-          <div class="activity-icon ${u.update_type}"><i class="fas ${icons[u.update_type]||'fa-circle'}"></i></div>
-          <div class="activity-body">
-            <div class="activity-summary">${u.summary}</div>
-            ${u.detail?`<div class="activity-detail">${u.detail.substring(0,150)}${u.detail.length>150?'...':''}</div>`:''}
-            <div class="activity-meta">${u.from_person||''} · ${fmtDate(u.update_date)}</div>
-          </div>
-        </div>`).join('')}
-        ${updates.length>5?`<div style="font-size:9.5px;color:var(--muted);padding:3px 0;">+${updates.length-5} more updates</div>`:''}`:''}
-        <div id="update-input-${t.id}" style="display:none;" class="update-input-area" onclick="event.stopPropagation()">
-          <div style="font-size:9.5px;font-weight:600;color:#6C5DD3;margin-bottom:5px;">Add update</div>
-          <select id="utype-${t.id}" style="border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:10px;font-family:var(--font);margin-bottom:5px;width:100%;">
-            <option value="action_taken">Action taken</option>
-            <option value="email_sent">Email sent</option>
-            <option value="email_received">Email received</option>
-            <option value="teams_message">Teams message</option>
-            <option value="slack_message">Slack message</option>
-            <option value="note">Note</option>
-          </select>
-          <input type="text" id="usummary-${t.id}" placeholder="Brief summary..." style="width:100%;border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:10px;font-family:var(--font);margin-bottom:4px;">
-          <textarea id="udetail-${t.id}" placeholder="More detail (optional)..." style="width:100%;border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:10px;font-family:var(--font);min-height:45px;resize:vertical;margin-bottom:5px;"></textarea>
-          <div style="display:flex;gap:5px;">
-            <button onclick="saveTaskUpdate('${t.id}');event.stopPropagation();" style="background:var(--brand);border:none;border-radius:5px;padding:4px 10px;font-size:9.5px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);">Save</button>
-            <button onclick="document.getElementById('update-input-${t.id}').style.display='none';event.stopPropagation();" style="background:none;border:1px solid var(--border);border-radius:5px;padding:4px 8px;font-size:9.5px;color:var(--muted);cursor:pointer;font-family:var(--font);">Cancel</button>
-          </div>
-        </div>
-      </div>
-    </di
+      <div style="font-size:9.5px;color:var(--muted);line-height:1.4;">${t.notes?t.notes.substring(0,90)+'…':''}</div>
+      ${isExp?`<div style="margin-top:10px;border-top:1px solid #F3F4F6;padding-top:10px;">${taskCardExpanded(t)}</div>`:''}
     </div>
   </div>`;
 }
+
+function taskCardExpanded(t){
+  const stages=allStages.filter(s=>s.task_id===t.id).sort((a,b)=>(a.stage_order||0)-(b.stage_order||0));
+  const updates=allTaskUpdates.filter(u=>u.task_id===t.id).sort((a,b)=>new Date(b.update_date)-new Date(a.update_date));
+  const icons={email_received:'fa-envelope',email_sent:'fa-paper-plane',teams_message:'fa-users',slack_message:'fa-hashtag',action_taken:'fa-bolt',note:'fa-note-sticky'};
+  return`<div style="font-size:10px;color:var(--text);" onclick="event.stopPropagation()">
+    ${t.notes?`<div style="margin-bottom:8px;color:var(--muted);font-size:9.5px;">${t.notes}</div>`:''}
+    ${stages.length?`<div style="font-weight:700;font-size:9.5px;margin-bottom:5px;color:var(--text);">Stages</div>${stages.map(s=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span onclick="event.stopPropagation();toggleStage('${s.id}','${t.id}')" style="cursor:pointer;width:13px;height:13px;border-radius:3px;border:1.5px solid ${s.status==='done'?'#16A34A':'#D1D5DB'};background:${s.status==='done'?'#16A34A':'#fff'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${s.status==='done'?'<i class="fas fa-check" style="color:#fff;font-size:7px;"></i>':''}</span><span style="font-size:9.5px;${s.status==='done'?'text-decoration:line-through;color:var(--muted);':''}">${s.stage_name}</span></div>`).join('')}`:''}
+    <div class="editrow" onclick="event.stopPropagation()" style="margin-top:8px;">
+      <label>Status:</label><select onchange="updateTaskStatus('${t.id}',this.value)"><option value="">Change...</option><option value="todo">To Do</option><option value="in_progress">In Progress</option><option value="blocked">Blocked</option><option value="done">Done</option><option value="cancelled">Cancelled</option></select>
+      <label>Cat:</label><select onchange="updateTaskField('${t.id}','category',this.value)">${['compliance','system_health','hr','training','chasing','admin','ad_hoc'].map(c=>`<option value="${c}" ${t.category===c?'selected':''}>${catLabel(c)}</option>`).join('')}</select>
+      <label>Est h:</label><input type="number" value="${t.estimated_hours||''}" step="0.25" min="0" style="width:50px;" onchange="updateTaskField('${t.id}','estimated_hours',parseFloat(this.value)||null)" onclick="event.stopPropagation()">
+    </div>
+    <div class="tactions" onclick="event.stopPropagation()" style="margin-top:6px;">
+      <button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="openLogTime('${t.id}')"><i class="fas fa-clock"></i> Log Time</button>
+      <button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="showAddUpdate('${t.id}');event.stopPropagation();"><i class="fas fa-plus"></i> Update</button>
+      <button class="bg" style="font-size:9.5px;padding:3px 8px;color:#DC2626;border-color:#FCA5A5;" onclick="deleteTask('${t.id}')"><i class="fas fa-trash"></i></button>
+    </div>
+    ${updates.length?`<div style="font-weight:700;font-size:9.5px;margin-top:8px;margin-bottom:5px;color:var(--text);">Recent activity</div>${updates.slice(0,3).map(u=>`<div style="font-size:9px;color:var(--muted);margin-bottom:3px;padding:4px 6px;background:#F9FAFB;border-radius:5px;"><i class="fas ${icons[u.update_type]||'fa-circle'}" style="margin-right:3px;"></i><span style="font-weight:600;color:var(--text);">${fmtDate(u.update_date)}</span> — ${u.summary}</div>`).join('')}`:''}
+    <div id="update-input-${t.id}" style="display:none;margin-top:8px;" onclick="event.stopPropagation()">
+      <select id="utype-${t.id}" style="border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:10px;font-family:var(--font);margin-bottom:5px;width:100%;"><option value="action_taken">Action taken</option><option value="email_sent">Email sent</option><option value="email_received">Email received</option><option value="teams_message">Teams message</option><option value="slack_message">Slack message</option><option value="note">Note</option></select>
+      <input type="text" id="usummary-${t.id}" placeholder="Brief summary..." style="width:100%;border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:10px;font-family:var(--font);margin-bottom:4px;">
+      <textarea id="udetail-${t.id}" placeholder="More detail (optional)..." style="width:100%;border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-size:10px;font-family:var(--font);min-height:40px;resize:vertical;margin-bottom:5px;"></textarea>
+      <div style="display:flex;gap:5px;">
+        <button onclick="saveTaskUpdate('${t.id}');event.stopPropagation();" style="background:var(--brand);border:none;border-radius:5px;padding:4px 10px;font-size:9.5px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);">Save</button>
+        <button onclick="document.getElementById('update-input-${t.id}').style.display='none';event.stopPropagation();" style="background:none;border:1px solid var(--border);border-radius:5px;padding:4px 8px;font-size:9.5px;color:var(--muted);cursor:pointer;font-family:var(--font);">Cancel</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 
 
 function toggleTask(id){expandedTask=expandedTask===id?null:id;renderTasks();}
@@ -1277,7 +1197,7 @@ function poolCardGrid(t){
   const pCol={critical:'#DC2626',high:'#D97706',medium:'#6C5DD3',low:'#9CA3AF'}[t.priority]||'#9CA3AF';
   const sCol={todo:'#9CA3AF',in_progress:'#D97706',blocked:'#DC2626'}[t.status]||'#9CA3AF';
   return`<div draggable="true" ondragstart="dragStart(event,'${t.id}')"
-    style="background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 12px;cursor:grab;position:relative;overflow:visible;transition:box-shadow .15s,border-color .15s;box-shadow:0 1px 3px rgba(0,0,0,.04);"
+    style="background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 12px;cursor:grab;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s;box-shadow:0 1px 3px rgba(0,0,0,.04);"
     onmouseover="this.style.borderColor='${pCol}';this.style.boxShadow='0 2px 10px rgba(0,0,0,.09)'"
     onmouseout="this.style.borderColor='#E5E7EB';this.style.boxShadow='0 1px 3px rgba(0,0,0,.04)'">
     <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${pCol};border-radius:10px 0 0 10px;"></div>
