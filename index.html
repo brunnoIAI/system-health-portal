@@ -582,7 +582,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 13 Aug 2026, 16:25 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 2026-08-14 09:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -3374,6 +3374,52 @@ const ISSUES = [
       relatedIds: ["BDR-OFFER-REPLY-001"],
       context: "4pm scan 13 Aug 2026",
       occurrences: [{n: 1, when: "2026-08-13 13:55 UTC", what: "Gavin added to Teams. LG BDM Brief forwarded to Shahan."}],
+      comments: []
+    },
+
+    // === NEW ITEMS FOUND 14 AUG 2026 (9am sweep) ===
+    {
+      id: "GAVIN-DRAFT-001", title: "AIOS error on Gavin account - cannot create drafts or save changes",
+      priority: "p2", status: "open", tab: "platform", tags: ["silent"],
+      mondayId: "", system: "PLATFORM", responsible: "Faisal",
+      dateFirst: "2026-08-14", dateLast: "2026-08-14", daysOpen: 0,
+      escalatedAalok: false, silentFailure: true,
+      whatItDoes: "On gavin@ Command account, AIOS is now showing an error. Cannot create drafts or save changes.",
+      howItHappens: "Aalok reported in #aios-dev at 08:16 UTC: 'on gavin@ command acct - AIOS - its now saying error' and 'its not working to create drafts'. 4 replies in thread.",
+      relatedIds: [], occurrences: [{n:1, when:"2026-08-14 08:16 UTC", what:"Aalok reported in #aios-dev, tagged Faisal"}],
+      comments: []
+    },
+    {
+      id: "DOWNLOAD-LINK-001", title: "Command file download opens new tab instead of downloading",
+      priority: "p3", status: "open", tab: "platform", tags: [],
+      mondayId: "", system: "PLATFORM", responsible: "U0790KJ70FR",
+      dateFirst: "2026-08-14", dateLast: "2026-08-14", daysOpen: 0,
+      escalatedAalok: false, silentFailure: false,
+      whatItDoes: "When Command provides a file link, clicking it opens a new browser tab instead of triggering a download.",
+      howItHappens: "User U0AFLT6TH0E reported in #aios-dev at 08:47 UTC: 'I asked command to give me a file. when i click the link, a new tab opens. Is that supposed to happen? Shouldnt it go straight to my downloads?' 1 reply.",
+      relatedIds: [], occurrences: [{n:1, when:"2026-08-14 08:47 UTC", what:"User reported in #aios-dev"}],
+      comments: []
+    },
+    {
+      id: "ARK-H-POLICY-003", title: "Ark-H 3rd policy document sent to Piers for signature",
+      priority: "p3", status: "open", tab: "platform", tags: [],
+      mondayId: "", system: "IMPLAI", responsible: "Brunno",
+      dateFirst: "2026-08-14", dateLast: "2026-08-14", daysOpen: 0,
+      escalatedAalok: false, silentFailure: false,
+      whatItDoes: "A 3rd Ark-H document requires Piers Linney signature. Brunno messaged Piers via Teams DM at 08:58 UTC to review and sign ASAP.",
+      howItHappens: "Teams DM from Brunno to Piers at 08:58 UTC: 'Hi Piers, I have sent another document from Ark-h to sign. There was a 3rd one. Please review and sign ASAP'",
+      relatedIds: ["ARK-H-POLICY-001"], occurrences: [{n:1, when:"2026-08-14 08:58 UTC", what:"Brunno messaged Piers via Teams DM"}],
+      comments: []
+    },
+    {
+      id: "MSFT-REDIRECT-002", title: "O365 alert: forwarding/redirect rule creation",
+      priority: "p2", status: "open", tab: "security", tags: ["silent"],
+      mondayId: "", system: "SEC-ALERT", responsible: "Shahzeb",
+      dateFirst: "2026-08-14", dateLast: "2026-08-14", daysOpen: 0,
+      escalatedAalok: false, silentFailure: true,
+      whatItDoes: "Microsoft 365 security alert: a forwarding or redirect rule was created on an account at 08:30 UTC today.",
+      howItHappens: "Email from Office365Alerts@microsoft.com to brunno@ at 08:26 UTC: 'Creation of forwarding/redirect rule - Severity: Informational - Time: 8/14/2026 8:30:00 AM UTC'. Needs investigation to confirm if sanctioned.",
+      relatedIds: ["MSFT-REDIRECT-001"], occurrences: [{n:1, when:"2026-08-14 08:26 UTC", what:"Alert email received in brunno@ inbox"}],
       comments: []
     },
 ];
