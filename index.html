@@ -582,7 +582,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 2026-08-14 09:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 14 Aug 2026, 10:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -3420,6 +3420,51 @@ const ISSUES = [
       whatItDoes: "Microsoft 365 security alert: a forwarding or redirect rule was created on an account at 08:30 UTC today.",
       howItHappens: "Email from Office365Alerts@microsoft.com to brunno@ at 08:26 UTC: 'Creation of forwarding/redirect rule - Severity: Informational - Time: 8/14/2026 8:30:00 AM UTC'. Needs investigation to confirm if sanctioned.",
       relatedIds: ["MSFT-REDIRECT-001"], occurrences: [{n:1, when:"2026-08-14 08:26 UTC", what:"Alert email received in brunno@ inbox"}],
+      comments: []
+    },
+
+    {
+      id: "VIRTUZONE-CALL-001",
+      title: "Virtuzone call not logged in Airtable - Silent Failure",
+      priority: "p2",
+      status: "working",
+      tab: "integrations",
+      tags: ["silent"],
+      mondayId: "",
+      system: "Airtable / VAPI",
+      responsible: "Shahzeb",
+      dateFirst: "2026-08-14",
+      dateLast: "2026-08-14",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: true,
+      whatItDoes: "Virtuzone call from this week was not logged in Airtable. Silent failure - call happened but no Airtable record created.",
+      howItHappens: "Nabela flagged in Solutions HQ Teams at 09:00 UTC Aug 14. Escalated to Shahzeb via Virtuzone Slack channel. Aalok asked Nabela to add Onkar + Parthiv to resolve today.",
+      relatedIds: [],
+      context: "Nabela Ryani (Teams Solutions HQ, 09:00 UTC): 'for visibility, Virtuzone call this week was not logged on the airtable. I have escalate it to shahzeb on virtuzone slack channel.' Aalok (09:26 UTC): 'Nabela Ryani why not add Onkar + Parthiv to channel and ask their help to resolve it today'",
+      occurrences: [{ n: 1, when: "2026-08-14 09:00 UTC", what: "Nabela flagged in Solutions HQ Teams, escalated to Shahzeb" }],
+      comments: []
+    },
+    {
+      id: "AGENT-MALFUNCTION-001",
+      title: "Multiple agents malfunctioning - HPC escalation by Brunno",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: ["escalated"],
+      mondayId: "",
+      system: "AIOS Platform",
+      responsible: "Shahzeb / Faisal",
+      dateFirst: "2026-08-14",
+      dateLast: "2026-08-14",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Multiple AIOS agents flagged as malfunctioning this week. Customer Solutions surfaced the issues. Questgates mentioned specifically. Agents not completing tasks or pushing data correctly.",
+      howItHappens: "Brunno posted HPC escalation in #aios at 09:59 UTC tagging Shahzeb and Faisal with list of malfunctioning agents. Related to ongoing VAPI outage and Anthropic degradation.",
+      relatedIds: ["ANTHROPIC-DEGRADE-003", "VAPI-OUTAGE-019"],
+      context: "Brunno (#aios 09:59 UTC): ':rotating_light: HPC - Hi guys, @Shahzeb @Faisal - Multiple agents flagged as malfunctioning this week - need eyes on this. Customer Solutions has surfaced the following issues: Questgates [and others].' Also: U095NGUJV2R (09:55 UTC): 'this isn't solved on Vapi side yet? Today morning test call is again in progress and no data is pushed even though the call happened. There is no transcript, no duration'",
+      occurrences: [{ n: 1, when: "2026-08-14 09:59 UTC", what: "Brunno posted HPC escalation in #aios tagging Shahzeb and Faisal" }],
       comments: []
     },
 ];
