@@ -790,37 +790,47 @@ function handleLoginStep(){
   errEl.style.display="none";if(lockEl)lockEl.style.display="none";
   if(!pendingEmail){
     if(!USERS[email]){errEl.textContent="Email not recognised. Only @implementai.io accounts can access this portal.";errEl.style.display="block";return;}
-    const btn=document.getElementById("login-btn");
-    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Checking...';
-    const sbC=window.supabase?window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co','sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox'):null;
-    if(!sbC){
-      // No Supabase — fall back to localStorage
-      const auth=getAuth(),hash=auth["pw_"+email];
-      btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
-      if(!hash){pendingEmail=email;document.getElementById("first-login-modal").style.display="flex";return;}
-      pendingEmail=email;document.getElementById("login-email").disabled=true;
-      document.getElementById("pw-field").style.display="block";document.getElementById("login-pw").focus();return;
-    }
-    sbC.from("portal_auth").select("pw_hash").eq("email",email).maybeSingle().then(({data,error})=>{
-      btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
-      if(data&&data.pw_hash){
-        // Sync to localStorage for offline fallback
-        const a=getAuth();a["pw_"+email]=data.pw_hash;saveAuth(a);
-      }
-      const auth=getAuth(),hash=auth["pw_"+email];
-      pendingEmail=email;
-      if(!hash){document.getElementById("first-login-modal").style.display="flex";return;}
+    pendingEmail=email;
+    const auth=getAuth();
+    const lck=auth["lock_"+email];
+    if(lck&&lck.until>Date.now()){if(lockEl){lockEl.textContent="Too many failed attempts. Try again in 30 minutes.";lockEl.style.display="block";}pendingEmail=null;return;}
+    const cached=auth["pw_"+email];
+    if(cached){
       document.getElementById("login-email").disabled=true;
       document.getElementById("pw-field").style.display="block";
       document.getElementById("login-pw").focus();
       document.getElementById("login-btn").innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
+      return;
+    }
+    const btn=document.getElementById("login-btn");
+    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Checking...';
+    fetch("https://zijhsdhjxohicuoxwytk.supabase.co/rest/v1/portal_auth?select=pw_hash&email=eq."+encodeURIComponent(email),
+      {headers:{"apikey":"sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox","Authorization":"Bearer sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox"}})
+    .then(r=>r.json())
+    .then(rows=>{
+      btn.disabled=false;
+      if(rows&&rows[0]&&rows[0].pw_hash){
+        const a=getAuth();a["pw_"+email]=rows[0].pw_hash;saveAuth(a);
+        document.getElementById("login-email").disabled=true;
+        document.getElementById("pw-field").style.display="block";
+        document.getElementById("login-pw").focus();
+        btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';
+      }else{
+        btn.innerHTML='<i class="fas fa-arrow-right"></i> Continue';
+        document.getElementById("first-login-modal").style.display="flex";
+      }
+    })
+    .catch(()=>{
+      btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-right"></i> Continue';
+      errEl.textContent="Network error. Please check your connection and try again.";errEl.style.display="block";
+      pendingEmail=null;
     });
     return;
   }
   const pw=document.getElementById("login-pw").value;
   if(!pw){errEl.textContent="Please enter your password.";errEl.style.display="block";return;}
   const btn=document.getElementById("login-btn");btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Signing in...';
-  sha256(pendingEmail+":"+pw).then(async hash=>{
+  sha256(pendingEmail+":"+pw).then(hash=>{
     const auth=getAuth(),stored=auth["pw_"+pendingEmail];
     if(!stored){btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';errEl.textContent="No password set. Please refresh and try again.";errEl.style.display="block";return;}
     if(hash!==stored){
@@ -831,12 +841,10 @@ function handleLoginStep(){
     }
     delete auth["att_"+pendingEmail];delete auth["lock_"+pendingEmail];
     auth["lastLogin_"+pendingEmail]=new Date().toISOString();saveAuth(auth);
-    // Update Supabase last_login
-    const sbC=window.supabase?window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co','sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox'):null;
-    if(sbC)sbC.from("portal_auth").update({last_login:new Date().toISOString(),failed_attempts:0}).eq("email",pendingEmail);
-    (window.completeLogin||completeLogin)(pendingEmail);
+    completeLogin(pendingEmail);
   });
 }
+
 function setFirstPassword(){
   const pw1=document.getElementById("new-pw1").value;
   const pw2=document.getElementById("new-pw2").value;
