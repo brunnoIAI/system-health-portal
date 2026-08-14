@@ -552,6 +552,12 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <i class="fas fa-users"></i> HR <span class="nav-badge" style="background:rgba(22,163,74,0.15);color:#16A34A;">HR</span>
         </button>
       </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Operations</div>
+        <button class="nav-item" onclick="switchTab('agents',this)" data-tab="agents">
+          <i class="fas fa-robot"></i> Agents &amp; Clients <span class="nav-badge" style="background:rgba(124,58,237,0.2);color:#7C3AED;" id="badge-agents">15</span>
+        </button>
+      </div>
       <div class="sidebar-section workload">
         <div class="sidebar-section-label">Team Workload</div>
         <div id="workload-list"></div>
@@ -610,6 +616,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
         <div id="tab-person" class="tab-panel" style="display:none;"></div>
         <div id="tab-settings" class="tab-panel" style="display:none;"></div>
         <div id="tab-hr" class="tab-panel" style="display:none;"></div>
+        <div id="tab-agents" class="tab-panel" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -4602,7 +4609,7 @@ function handleNotifClick(notifId,issueId){markNotifRead(notifId);closeNotifDrop
 function formatRelTime(ts){const d=Date.now()-ts;if(d<60000)return"just now";if(d<3600000)return Math.floor(d/60000)+"m ago";if(d<86400000)return Math.floor(d/3600000)+"h ago";return Math.floor(d/86400000)+"d ago";}
 function renderWorkload(){const list=document.getElementById("workload-list");if(!list)return;const assignments=getStore().assignments||{};const counts={};Object.values(assignments).forEach(email=>{if(email)counts[email]=(counts[email]||0)+1;});const people=Object.entries(USERS).map(([email,u])=>({email,...u,count:counts[email]||0}));people.sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name));list.innerHTML=people.map(p=>{const pic=getAvatarDataUri(p.email);const avHtml=pic?'<div class="wp-avatar"><img src="'+pic+'"></div>':'<div class="wp-avatar" style="background:'+(p.color||"#6C5DD3")+'">'+p.initials+'</div>';return'<div class="workload-person" onclick="viewPersonItems(\''+p.email+'\',this)">'+avHtml+'<span class="wp-name">'+p.name+'</span><span class="wp-count'+(p.count>0?" has-items":"")+'">'+p.count+'</span></div>';}).join("");}
 function updateMyItemsBadge(){if(!currentUser)return;const a=getStore().assignments||{};const c=Object.values(a).filter(e=>e===currentUser.email).length;const b=document.getElementById("badge-myitems");if(b)b.textContent=c;}
-function switchTab(tab,btn){window.scrollTo(0,0);currentTab=tab;document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));if(btn&&btn.classList)btn.classList.add("active");document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");const panel=document.getElementById("tab-"+tab);if(panel)panel.style.display="block";const names={all:"All Issues",myitems:"My Items",voice:"Voice",database:"Database",integrations:"Integrations",platform:"Platform",security:"Security",tasks:"Tasks",resolved:"Resolved",raw:"Raw Log",person:"Team Member",settings:"Settings",hr:"HR"};document.getElementById("topbar-section").textContent=names[tab]||tab;if(tab==="settings"){renderSettings();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="myitems"){renderMyItems();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="person"||tab==="hr"){}else{renderGodMode(tab);renderTabContent(tab);}}
+function switchTab(tab,btn){window.scrollTo(0,0);currentTab=tab;document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));if(btn&&btn.classList)btn.classList.add("active");document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");const panel=document.getElementById("tab-"+tab);if(panel)panel.style.display="block";const names={all:"All Issues",myitems:"My Items",voice:"Voice",database:"Database",integrations:"Integrations",platform:"Platform",security:"Security",tasks:"Tasks",resolved:"Resolved",raw:"Raw Log",person:"Team Member",settings:"Settings",hr:"HR",agents:"Agents & Clients"};document.getElementById("topbar-section").textContent=names[tab]||tab;if(tab==="settings"){renderSettings();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="myitems"){renderMyItems();document.getElementById("god-mode-area").innerHTML="";}else if(tab==="person"||tab==="hr"){}else if(tab==="agents"){renderAgentsTab();document.getElementById("god-mode-area").innerHTML="";}else{renderGodMode(tab);renderTabContent(tab);}}
 function switchToHR(){
   currentTab="hr";
   window.scrollTo(0,0);
@@ -5723,6 +5730,385 @@ window.addEventListener('load', function() {
     .subscribe();
   console.log('HR real-time sync active');sb.from('hr_reviews').select('*').order('review_date',{ascending:false}).then(({data})=>{if(data&&data.length>0){const s=JSON.parse(localStorage.getItem('iai_hr_v3')||'{"people":[],"exiting":[],"reviews":[]}');s.reviews=data;localStorage.setItem('iai_hr_v3',JSON.stringify(s));}});
 });
+
+
+const CLIENTS_DATA = [
+  {
+    "client": "Options",
+    "agent_name": "SMS Agent",
+    "agent_type": "SMS",
+    "use_case": "Outbound SMS messaging",
+    "priority": "Critical",
+    "status": "Blocked",
+    "channel_id": "C098ZTSC9AM",
+    "engineer": "",
+    "aug13_worked": "Outbound Voice agent monitoring active",
+    "aug13_issues": "SMS Agent waiting for client script",
+    "aug14_worked": "Outbound Voice monitoring continued",
+    "aug14_issues": "SMS Agent still blocked \u2014 script not delivered",
+    "blockers": "Client script not delivered",
+    "notes": "SMS agent update: changing from direct Airtable update to dedicated task with trigger"
+  },
+  {
+    "client": "Charis",
+    "agent_name": "Emma Voice Agent",
+    "agent_type": "Voice / Command",
+    "use_case": "Customer engagement voice agent + CSV reporting",
+    "priority": "Critical",
+    "status": "Running",
+    "channel_id": "C0ALCAMTZGF",
+    "engineer": "Shahan (U08QAT21KR7)",
+    "aug13_worked": "CSV export update complete \u2014 5 new mismatch columns added (Portal First/Last Name, Email, Phone, Address)",
+    "aug13_issues": "Seat limit issue \u2014 awaiting response from platform",
+    "aug14_worked": "",
+    "aug14_issues": "Seat limit still unresolved",
+    "blockers": "Platform seat limit",
+    "notes": "Emma agent script being monitored"
+  },
+  {
+    "client": "Ark-H",
+    "agent_name": "Alex Voice Agent",
+    "agent_type": "Voice",
+    "use_case": "Outbound voice calls with post-call data task",
+    "priority": "Critical",
+    "status": "Running",
+    "channel_id": "C098ZTSC9AM",
+    "engineer": "U0B8J5V4RNC",
+    "aug13_worked": "Build script done; post-call task done; CodeCell data fetching done; reconciliation logic rebuilt \u2014 all numbers now tie out exactly",
+    "aug13_issues": "",
+    "aug14_worked": "",
+    "aug14_issues": "",
+    "blockers": "",
+    "notes": "Code of business conduct review also in progress with client (Piers group)"
+  },
+  {
+    "client": "Complete Childcare",
+    "agent_name": "Voice Support Agent + Oracle Analyst",
+    "agent_type": "Voice / Analyst",
+    "use_case": "Nursery booking, safeguarding escalation, call analysis",
+    "priority": "P1 (Test Env for Analyst)",
+    "status": "Blocked",
+    "channel_id": "C098ZTSC9AM",
+    "engineer": "U0AGU3MUHB9 / U0BN1CY4JJ1",
+    "aug13_worked": "Oracle Analyst: Rebuilt all 5 Tier 1 extraction targets to Onkar spec; cracked output-format problem",
+    "aug13_issues": "Voice agent: KB retrieval failure (platform-wide issue) \u2014 nursery recommendation and show-round booking blocked",
+    "aug14_worked": "",
+    "aug14_issues": "KB retrieval still being resolved; escalation triage task agent configuration in progress",
+    "blockers": "Platform-wide KB retrieval failure affecting voice tools",
+    "notes": "Escalation triage task agent reads safeguarding_escalation, send_escalation, complaint_escalation, human_requested flags"
+  },
+  {
+    "client": "Almo Pro AV (Nexora/LG)",
+    "agent_name": "LG BDM Signage Agent",
+    "agent_type": "Support / Chat",
+    "use_case": "Product layer and pricing support for LG BDM signage",
+    "priority": "P1",
+    "status": "Running",
+    "channel_id": "C0BGM7Z96NM",
+    "engineer": "U0B7F9WQ9D0",
+    "aug13_worked": "Client call held; live demo walked through; feedback collected on product layer and pricing; widget built and deployed to preview, fully functional",
+    "aug13_issues": "",
+    "aug14_worked": "",
+    "aug14_issues": "",
+    "blockers": "",
+    "notes": "Widget live, KB pulling correctly (specs, pricing, bid prices, EOL notices, replacement models)"
+  },
+  {
+    "client": "Implement AI (Internal)",
+    "agent_name": "WhatsApp / Outlook / Teams Command Agent",
+    "agent_type": "Command",
+    "use_case": "Internal operations command agent via WhatsApp and Outlook",
+    "priority": "P2",
+    "status": "Blocked",
+    "channel_id": "C098ZTSC9AM",
+    "engineer": "Meezab (U083CKBCF7Y)",
+    "aug13_worked": "Teams Command Agent live",
+    "aug13_issues": "WhatsApp token expired \u2014 blocking WhatsApp Command Agent and Outlook Command Agent via WhatsApp",
+    "aug14_worked": "",
+    "aug14_issues": "WhatsApp token still expired",
+    "blockers": "WhatsApp token expired",
+    "notes": ""
+  },
+  {
+    "client": "Hales Group",
+    "agent_name": "Monitoring Agent",
+    "agent_type": "Task / Scheduled",
+    "use_case": "Weekend monitoring runs",
+    "priority": "Critical",
+    "status": "Running",
+    "channel_id": "C098ZTSC9AM",
+    "engineer": "U08PN6PQ2HW",
+    "aug13_worked": "Agent live, monitoring runs on weekends only",
+    "aug13_issues": "",
+    "aug14_worked": "",
+    "aug14_issues": "",
+    "blockers": "",
+    "notes": ""
+  },
+  {
+    "client": "Kitchen Makeovers",
+    "agent_name": "Voice Agent",
+    "agent_type": "Voice",
+    "use_case": "Outbound calls with dropped call handling",
+    "priority": "Critical",
+    "status": "In Development",
+    "channel_id": "C098ZTSC9AM",
+    "engineer": "U08PN6PQ2HW",
+    "aug13_worked": "",
+    "aug13_issues": "Moving all scripts to custom apps features; building solution for dropped calls (callback if call drops mid-conversation)",
+    "aug14_worked": "",
+    "aug14_issues": "",
+    "blockers": "Scripts migration in progress",
+    "notes": ""
+  },
+  {
+    "client": "QDP (Quality Dental Practice)",
+    "agent_name": "Call Analyst",
+    "agent_type": "Analyst",
+    "use_case": "Daily call quality analysis from 8x8 recordings",
+    "priority": "Critical",
+    "status": "Not Running (fixed Aug 14)",
+    "channel_id": "C08E2PKDRAR",
+    "engineer": "Shahan (U08QAT21KR7)",
+    "aug13_worked": "",
+    "aug13_issues": "Call analysis stopped \u2014 nothing ran 11-13 Aug. Client raised it three times. 3 days of no analysis.",
+    "aug14_worked": "Root cause found: ZIP files from 8x8 corrupted (download cut off mid-transfer). Fix deployed 11:07. Calls upload in progress. Agent confirmed running.",
+    "aug14_issues": "3 days of lost analysis \u2014 client (Shane) escalated twice",
+    "blockers": "",
+    "notes": "8x8 download corruption \u2014 connection dropped before full file came through. Alert needed so team catches it before client does."
+  },
+  {
+    "client": "Advantos",
+    "agent_name": "Email Analyst (United FM / Advantos Services / JDS)",
+    "agent_type": "Analyst",
+    "use_case": "Near-real-time email analysis via triggers",
+    "priority": "Critical",
+    "status": "Below Volume",
+    "channel_id": "C08E738UQ4S",
+    "engineer": "U08PN6PQ2HW",
+    "aug13_worked": "All email analysts live",
+    "aug13_issues": "Trigger issue: only receiving 'message created' payload instead of actual email content \u2014 dev team checking, triggers removed temporarily",
+    "aug14_worked": "",
+    "aug14_issues": "Triggers still not working (two separate faults). Call failed with 'twilio-reported-customer-misdialed' on live agent.",
+    "blockers": "Outlook trigger payload missing email content; Twilio call failure",
+    "notes": ""
+  },
+  {
+    "client": "Virtuzone",
+    "agent_name": "Call Agent + Task Agent",
+    "agent_type": "Voice / Task",
+    "use_case": "Outbound calls logged to Airtable; claim processing to Qube",
+    "priority": "Critical",
+    "status": "Not Running",
+    "channel_id": "C0ALB669925",
+    "engineer": "U09C1VD3WSZ / U0BN1CY4JJ1",
+    "aug13_worked": "CallGear/Vapi integration instructions prepared (first Vapi integration case)",
+    "aug13_issues": "Calls not logged to Airtable since 5 August (calls made up to 11 Aug not recorded)",
+    "aug14_worked": "",
+    "aug14_issues": "Tasks failed: billing error 'not enough credits for Smart features' (credits were out 11 Aug, topped up). QG claim processed in Airtable but pending creation on Qube (urgent). SIP connection test being arranged.",
+    "blockers": "Credits exhausted 11 Aug; Airtable logging gap since 5 Aug; Qube pending",
+    "notes": "VAPI webhook not fixed \u2014 confirmed by morning test call with no data pushed"
+  },
+  {
+    "client": "Easy Storage",
+    "agent_name": "Unknown agent",
+    "agent_type": "Unknown",
+    "use_case": "Account management / CRM",
+    "priority": "P2",
+    "status": "Running",
+    "channel_id": "C0B3N8JRD9R",
+    "engineer": "Meezab (U09C2DLQ75Y)",
+    "aug13_worked": "",
+    "aug13_issues": "Password reset and account creation requests for users",
+    "aug14_worked": "",
+    "aug14_issues": "",
+    "blockers": "",
+    "notes": "Admin requests only \u2014 no agent issue flagged"
+  },
+  {
+    "client": "Recruitment Agent Client",
+    "agent_name": "Recruitment Agent",
+    "agent_type": "Support / Form",
+    "use_case": "Customer preview form for recruitment screening",
+    "priority": "P2",
+    "status": "Blocked",
+    "channel_id": "C098ZTSC9AM",
+    "engineer": "U0BN1CY4JJ1",
+    "aug13_worked": "Customer preview form link setup done; form live and shared with stakeholders",
+    "aug13_issues": "'Error processing your request' thrown on form submission \u2014 escalated to platform/dev team",
+    "aug14_worked": "",
+    "aug14_issues": "Form submit error still being investigated",
+    "blockers": "Form submission error \u2014 platform issue",
+    "notes": ""
+  },
+  {
+    "client": "Prescription / Irish Client",
+    "agent_name": "Prescription Call Agent",
+    "agent_type": "Voice",
+    "use_case": "Prescription call handling with Irish phone number",
+    "priority": "P2",
+    "status": "In Development",
+    "channel_id": "C08F5RG9ECT",
+    "engineer": "Meezab (U083CKBCF7Y)",
+    "aug13_worked": "",
+    "aug13_issues": "Irish phone number requested; form needs Irish country code as default",
+    "aug14_worked": "",
+    "aug14_issues": "",
+    "blockers": "Irish number not yet provisioned",
+    "notes": ""
+  },
+  {
+    "client": "Goodbrother",
+    "agent_name": "Sales Intelligence Agent",
+    "agent_type": "Sales",
+    "use_case": "Sales intelligence monitoring",
+    "priority": "P1",
+    "status": "Running",
+    "channel_id": "C098ZTSC9AM",
+    "engineer": "Shahan (U08QAT21KR7)",
+    "aug13_worked": "Integration health checking running daily at 8AM BST; Sales Intelligence agent monitoring active",
+    "aug13_issues": "",
+    "aug14_worked": "",
+    "aug14_issues": "",
+    "blockers": "",
+    "notes": ""
+  }
+];
+
+
+function renderAgentsTab() {
+  const panel = document.getElementById('tab-agents');
+  if (!panel) return;
+
+  const today = '2026-08-14';
+  const yesterday = '2026-08-13';
+
+  // Summary counts
+  const running = CLIENTS_DATA.filter(c => c.status === 'Running').length;
+  const notRunning = CLIENTS_DATA.filter(c => c.status === 'Not Running' || c.status.startsWith('Not Running')).length;
+  const blocked = CLIENTS_DATA.filter(c => c.status === 'Blocked').length;
+  const belowVol = CLIENTS_DATA.filter(c => c.status === 'Below Volume').length;
+  const inDev = CLIENTS_DATA.filter(c => c.status === 'In Development').length;
+  const total = CLIENTS_DATA.length;
+
+  const statusColor = {
+    'Running': '#16A34A',
+    'Below Volume': '#D97706',
+    'Not Running': '#DC2626',
+    'Blocked': '#7C3AED',
+    'In Development': '#2563EB'
+  };
+
+  const statusBg = {
+    'Running': 'rgba(22,163,74,0.1)',
+    'Below Volume': 'rgba(217,119,6,0.1)',
+    'Not Running': 'rgba(220,38,38,0.1)',
+    'Blocked': 'rgba(124,58,237,0.1)',
+    'In Development': 'rgba(37,99,235,0.1)'
+  };
+
+  const priorityColor = { 'P1': '#DC2626', 'Critical': '#DC2626', 'P2': '#D97706', 'P3': '#6B7280' };
+
+  function getStatusColor(s) {
+    for (const k of Object.keys(statusColor)) { if (s.startsWith(k)) return statusColor[k]; }
+    return '#6B7280';
+  }
+  function getStatusBg(s) {
+    for (const k of Object.keys(statusBg)) { if (s.startsWith(k)) return statusBg[k]; }
+    return 'rgba(107,114,128,0.1)';
+  }
+  function getPriorityColor(p) {
+    return priorityColor[p] || '#6B7280';
+  }
+
+  let html = `
+    <div style="margin-bottom:20px;">
+      <h2 style="font-size:18px;font-weight:800;color:#111827;margin:0 0 4px;">Agents & Clients</h2>
+      <p style="font-size:13px;color:#6B7280;margin:0;">Operational status from Slack channels — last 2 days (${yesterday} to ${today})</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;">
+      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
+        <div style="font-size:28px;font-weight:800;color:#16A34A;">${running}</div>
+        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">Running</div>
+      </div>
+      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
+        <div style="font-size:28px;font-weight:800;color:#DC2626;">${notRunning}</div>
+        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">Not Running</div>
+      </div>
+      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
+        <div style="font-size:28px;font-weight:800;color:#7C3AED;">${blocked}</div>
+        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">Blocked</div>
+      </div>
+      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
+        <div style="font-size:28px;font-weight:800;color:#D97706;">${belowVol}</div>
+        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">Below Volume</div>
+      </div>
+      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;padding:16px;text-align:center;">
+        <div style="font-size:28px;font-weight:800;color:#2563EB;">${inDev}</div>
+        <div style="font-size:12px;color:#6B7280;font-weight:600;margin-top:2px;">In Development</div>
+      </div>
+    </div>
+
+    <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#92400E;">
+      <strong>Operational Continuity Report — ${today}</strong> &nbsp;|&nbsp;
+      ${total} agents monitored &nbsp;|&nbsp;
+      ${notRunning + blocked} need attention &nbsp;|&nbsp;
+      Source: Slack client channels (last 48h)
+    </div>
+  `;
+
+  // Group by status priority: Not Running first, then Blocked, Below Volume, Running, In Development
+  const order = ['Not Running', 'Blocked', 'Below Volume', 'Running', 'In Development'];
+  const sorted = [...CLIENTS_DATA].sort((a, b) => {
+    const ai = order.findIndex(o => a.status.startsWith(o));
+    const bi = order.findIndex(o => b.status.startsWith(o));
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  });
+
+  for (const c of sorted) {
+    const sc = getStatusColor(c.status);
+    const sb = getStatusBg(c.status);
+    const pc = getPriorityColor(c.priority);
+    const hasIssue = c.aug13_issues || c.aug14_issues || c.blockers;
+    const hasWorked = c.aug13_worked || c.aug14_worked;
+
+    html += `
+      <div style="background:#fff;border-radius:10px;border:1px solid #E5E7EB;border-left:4px solid ${sc};padding:16px 20px;margin-bottom:12px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;">
+          <div>
+            <div style="font-size:15px;font-weight:800;color:#111827;">${c.client}</div>
+            <div style="font-size:12px;color:#6B7280;margin-top:2px;">${c.agent_name} &nbsp;|&nbsp; ${c.agent_type} &nbsp;|&nbsp; ${c.use_case}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
+            <span style="background:${sb};color:${sc};font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;">${c.status}</span>
+            <span style="background:${pc}20;color:${pc};font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;">${c.priority}</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;">
+          <div>
+            <div style="font-weight:700;color:#374151;margin-bottom:4px;">Aug 13 — ${yesterday}</div>
+            ${c.aug13_worked ? `<div style="color:#16A34A;margin-bottom:3px;"><span style="font-weight:600;">Worked:</span> ${c.aug13_worked}</div>` : ''}
+            ${c.aug13_issues ? `<div style="color:#DC2626;"><span style="font-weight:600;">Issues:</span> ${c.aug13_issues}</div>` : (!c.aug13_worked ? '<div style="color:#9CA3AF;font-style:italic;">No activity reported</div>' : '')}
+          </div>
+          <div>
+            <div style="font-weight:700;color:#374151;margin-bottom:4px;">Aug 14 — ${today}</div>
+            ${c.aug14_worked ? `<div style="color:#16A34A;margin-bottom:3px;"><span style="font-weight:600;">Worked:</span> ${c.aug14_worked}</div>` : ''}
+            ${c.aug14_issues ? `<div style="color:#DC2626;"><span style="font-weight:600;">Issues:</span> ${c.aug14_issues}</div>` : (!c.aug14_worked ? '<div style="color:#9CA3AF;font-style:italic;">No activity reported</div>' : '')}
+          </div>
+        </div>
+
+        ${c.blockers ? `<div style="margin-top:10px;padding:8px 12px;background:#FEF2F2;border-radius:6px;font-size:12px;color:#DC2626;"><span style="font-weight:700;">Blocker:</span> ${c.blockers}</div>` : ''}
+        ${c.engineer ? `<div style="margin-top:6px;font-size:11px;color:#9CA3AF;">Owner: ${c.engineer}</div>` : ''}
+        ${c.notes ? `<div style="margin-top:4px;font-size:11px;color:#9CA3AF;font-style:italic;">${c.notes}</div>` : ''}
+      </div>
+    `;
+  }
+
+  panel.innerHTML = html;
+}
+
 
 </script>
 
