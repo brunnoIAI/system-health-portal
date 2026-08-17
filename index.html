@@ -573,7 +573,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 17 Aug 2026, 12:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 17 Aug 2026, 16:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -682,7 +682,7 @@ const ISSUES = [
       whatItDoes: "New hire Freya Pilbeam onboarding in progress. Credentials shared by Brunno at 07:29 UTC. Katrina Nguyen installing MDM on her laptop. Abayomi created compliance@outlook.com account. Katrina waiting for computer update as of 08:53 UTC.",
       howItHappens: "Teams group DM: Brunno, Katrina, Abayomi. Freya added to SharePoint, Claude, Slack. MDM install in progress.",
       relatedIds: [],
-      context: "17 Aug 2026 Teams DM updated at 07:29 UTC. Katrina confirmed connected to WiFi, waiting for update at 08:53 UTC. Abayomi shared compliance@outlook.com credentials.",
+      context: "17 Aug 2026 Teams DM updated at 07:29 UTC. Katrina confirmed connected to WiFi, waiting for update at 08:53 UTC. Abayomi shared compliance@outlook.com credentials. — 2FA pending (Keeper invite not yet accepted as of 4pm 17 Aug)",
       occurrences: [
         { n: 1, when: "17 Aug 2026 07:29 UTC", what: "Brunno shared Freya creds, asked Katrina to install MDM" },
         { n: 2, when: "17 Aug 2026 07:31-07:33 UTC", what: "Katrina confirmed, Abayomi shared creds" },
@@ -708,7 +708,7 @@ const ISSUES = [
       whatItDoes: "Karen Laycock from ProjectX queried portal/invoice issues. Brunno replied at 07:42 UTC confirming he will check today and revert.",
       howItHappens: "Email thread: Re: Implement AI - Portal/Invoice issues. Brunno sent reply at 07:42 UTC.",
       relatedIds: ["PROJECTX-PORTAL-002"],
-      context: "17 Aug 2026. Sent email at 07:42 UTC to Karen Laycock. Reply: I will check this today and revert. Action still pending - Brunno needs to follow up on portal/invoice.",
+      context: "17 Aug 2026. Sent email at 07:42 UTC to Karen Laycock. Reply: I will check this today and revert. Action still pending - Brunno needs to follow up on portal/invoice. — Brunno granted accounts@ access to Claude API 14:14 UTC 17 Aug. Sent 3 emails to Karen Laycock with platform.claude.com/settings link.",
       occurrences: [
         { n: 1, when: "17 Aug 2026 07:42 UTC", what: "Brunno replied to Karen Laycock - will check today" }
       ],
@@ -828,7 +828,7 @@ const ISSUES = [
         system: "Grafana",
         responsible: "U09C2DLQ75Y",
         dateFirst: "2026-08-14",
-        dateLast: "2026-08-14",
+        dateLast: "17 Aug 2026",
         daysOpen: 0,
         escalatedAalok: false,
         silentFailure: false,
@@ -3806,6 +3806,28 @@ const ISSUES = [
     occurrences: [{ n: 1, when: "13 Aug 2026 13:44 UTC", what: "Abdullah asked Meezab for Lemlist password, not in Keeper" }],
     comments: []
   },
+  {
+    id: "SHAREPOINT-MIGRATION-001",
+    title: "Agents Platform Client Accounts.xlsx — needs SharePoint migration",
+    priority: "p3",
+    status: "open",
+    tab: "platform",
+    tags: [],
+    mondayId: null,
+    system: "Platform",
+    responsible: "Kamil Murgala",
+    dateFirst: "17 Aug 2026",
+    dateLast: "17 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Sensitive client accounts spreadsheet is not stored in SharePoint — currently in a non-compliant location.",
+    howItHappens: "Katrina Nguyen flagged in Teams DM at 14:57 UTC 17 Aug. Brunno confirmed it should have been moved long ago.",
+    relatedIds: [],
+    context: "Brunno told Katrina to ask Kamil to move it ASAP. No action confirmed yet.",
+    occurrences: [{ n: 1, when: "17 Aug 2026 14:57 UTC", what: "Katrina flagged in Teams DM — Agents Platform Client Accounts.xlsx needs to move to SharePoint" }],
+    comments: []
+  },
     {
       id: "GOOD-BROTHER-001",
       title: "Good Brother - Cannot access Command agent",
@@ -5027,7 +5049,7 @@ function handleAvatarUpload(event){const file=event.target.files[0,
     system: "VAPI",
     responsible: "Habib",
     dateFirst: "2026-08-12",
-    dateLast: "2026-08-12",
+    dateLast: "17 Aug 2026",
     daysOpen: 0,
     escalatedAalok: false,
     silentFailure: false,
