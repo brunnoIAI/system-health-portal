@@ -609,6 +609,81 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+  {
+    id: "FREYA-ONBOARD-001",
+    title: "Freya Laptop Onboarding — 2FA Still Pending",
+    priority: "p3",
+    status: "working",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Katrina Nguyen / Abayomi Baruwa",
+    dateFirst: "17 Aug 2026",
+    dateLast: "17 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Freya laptop onboarding in progress. MDM done, Keeper done. 2FA still pending — Freya cannot complete without phone.",
+    howItHappens: "Katrina running onboarding via Teams DM (Brunno + Katrina + Abayomi). Cannot log into Freya email to register 2FA as it requires phone.",
+    relatedIds: [],
+    context: "Teams chat 09:50-10:35 UTC 17 Aug 2026. Brunno added Freya to Keeper — she needs to follow invite on email.",
+    occurrences: [
+      { n: 1, when: "17 Aug 2026 09:50 UTC", what: "Katrina started onboarding — MDM + Keeper setup" },
+      { n: 2, when: "17 Aug 2026 10:35 UTC", what: "2FA still pending. Brunno added Freya to Keeper via invite." }
+    ],
+    comments: []
+  },
+  {
+    id: "ISO-ALIGN-FOLLOWUP-001",
+    title: "A-Lign ISO 27001 — Final Follow-up UNREAD (Karen Jacob)",
+    priority: "p2",
+    status: "open",
+    tab: "platform",
+    tags: ["escalated"],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Brunno",
+    dateFirst: "17 Aug 2026",
+    dateLast: "17 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Karen Jacob from A-Lign sent final ISO 27001 follow-up email at 10:03 UTC. Marked as last check-in before they close the engagement. UNREAD — action required.",
+    howItHappens: "Email from Karen.Jacob@a-lign.com at 10:03 UTC 17 Aug 2026. Subject: A-Lign, ISO 27001 journey.",
+    relatedIds: [],
+    context: "ACTION REQUIRED. Reply to Karen Jacob before she closes the engagement.",
+    occurrences: [
+      { n: 1, when: "17 Aug 2026 10:03 UTC", what: "Final ISO 27001 follow-up from Karen Jacob — UNREAD" }
+    ],
+    comments: []
+  },
+  {
+    id: "PROJECTX-PORTAL-003",
+    title: "Karen Laycock — Portal/Invoice + Claude API Access",
+    priority: "p2",
+    status: "working",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Brunno",
+    dateFirst: "17 Aug 2026",
+    dateLast: "17 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Karen Laycock (ProjectX) raised portal/invoice issues. Brunno replied 07:42 UTC (will check today), then at 14:14 UTC granted accounts@ Claude API access and sent platform link.",
+    howItHappens: "Email thread: Re: Implement AI - Portal/Invoice issues. 3 replies sent by Brunno today.",
+    relatedIds: [],
+    context: "Claude API access granted to accounts@ at 14:14 UTC. Platform link sent at 14:15 UTC. Awaiting Karen confirmation.",
+    occurrences: [
+      { n: 1, when: "17 Aug 2026 07:42 UTC", what: "Brunno replied: will check today and revert" },
+      { n: 2, when: "17 Aug 2026 14:14 UTC", what: "Granted accounts@ Claude API access" },
+      { n: 3, when: "17 Aug 2026 14:15 UTC", what: "Sent Claude platform link to Karen" }
+    ],
+    comments: []
+  },
 
     {
       id: "COMPOSIO-OUTAGE-007",
