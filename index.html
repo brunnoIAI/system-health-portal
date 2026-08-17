@@ -573,7 +573,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 14 Aug 2026, 16:25 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 17 Aug 2026, 09:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -609,6 +609,214 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+
+    {
+      id: "COMPOSIO-OUTAGE-007",
+      title: "Composio CRITICAL outage cycling",
+      priority: "p1",
+      status: "working",
+      tab: "integrations",
+      tags: ["escalated"],
+      mondayId: null,
+      system: "COMPOSIO",
+      responsible: "Habib",
+      dateFirst: "17 Aug 2026",
+      dateLast: "17 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Composio provider cycling CRITICAL outage and WARNING alerts. Multiple CRITICAL+RESOLVED pairs since ~19:43 UTC. Still CRITICAL FIRING at 19:58 UTC.",
+      howItHappens: "Grafana provider-outage-composio + provider-degraded-composio alerts firing in #aios-alerts. Pattern: CRITICAL fires, resolves within minutes, immediately re-fires.",
+      relatedIds: ["COMPOSIO-OUTAGE-006"],
+      context: "17 Aug 2026 09:00 UK sweep. Composio had 11 alert events today. Last state at 19:58 UTC was CRITICAL FIRING. VAPI also had outage cycles (8 events) but last state was RESOLVED at 19:58 UTC. OpenAI WARNING still FIRING at 19:59 UTC.",
+      occurrences: [
+        { n: 1, when: "17 Aug 2026 19:43 UTC", what: "CRITICAL fired" },
+        { n: 2, when: "17 Aug 2026 19:48 UTC", what: "RESOLVED then re-fired" },
+        { n: 3, when: "17 Aug 2026 19:50 UTC", what: "CRITICAL again" },
+        { n: 4, when: "17 Aug 2026 19:53 UTC", what: "RESOLVED then re-fired" },
+        { n: 5, when: "17 Aug 2026 19:58 UTC", what: "CRITICAL STILL FIRING at scan time" }
+      ],
+      comments: []
+    },
+    {
+      id: "OPENAI-DEGRADE-002",
+      title: "OpenAI WARNING still FIRING",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: null,
+      system: "OPENAI",
+      responsible: "Habib",
+      dateFirst: "17 Aug 2026",
+      dateLast: "17 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "OpenAI provider degraded WARNING alert firing as of 19:59 UTC 17 Aug. 5 alert events today.",
+      howItHappens: "provider-degraded-openai WARNING in #aios-alerts. Multiple cycles during the day, latest still open.",
+      relatedIds: ["OPENAI-DEGRADE-001"],
+      context: "17 Aug 2026 09:00 UK sweep. OpenAI had 5 events today. Most recent at 19:59 UTC is WARNING FIRING. VAPI outage cycles also occurred alongside (now resolved).",
+      occurrences: [
+        { n: 1, when: "17 Aug 2026 19:52 UTC", what: "WARNING fired" },
+        { n: 2, when: "17 Aug 2026 19:58 UTC", what: "RESOLVED" },
+        { n: 3, when: "17 Aug 2026 19:59 UTC", what: "WARNING re-fired - STILL OPEN at scan time" }
+      ],
+      comments: []
+    },
+    {
+      id: "FREYA-ONBOARD-001",
+      title: "Freya Pilbeam onboarding - laptop MDM setup pending",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: null,
+      system: "IMPLAI",
+      responsible: "Brunno",
+      dateFirst: "17 Aug 2026",
+      dateLast: "17 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "New hire Freya Pilbeam onboarding in progress. Credentials shared by Brunno at 07:29 UTC. Katrina Nguyen installing MDM on her laptop. Abayomi created compliance@outlook.com account. Katrina waiting for computer update as of 08:53 UTC.",
+      howItHappens: "Teams group DM: Brunno, Katrina, Abayomi. Freya added to SharePoint, Claude, Slack. MDM install in progress.",
+      relatedIds: [],
+      context: "17 Aug 2026 Teams DM updated at 07:29 UTC. Katrina confirmed connected to WiFi, waiting for update at 08:53 UTC. Abayomi shared compliance@outlook.com credentials.",
+      occurrences: [
+        { n: 1, when: "17 Aug 2026 07:29 UTC", what: "Brunno shared Freya creds, asked Katrina to install MDM" },
+        { n: 2, when: "17 Aug 2026 07:31-07:33 UTC", what: "Katrina confirmed, Abayomi shared creds" },
+        { n: 3, when: "17 Aug 2026 08:53 UTC", what: "Katrina connected to WiFi, waiting for laptop update" }
+      ],
+      comments: []
+    },
+    {
+      id: "PROJECTX-PORTAL-003",
+      title: "Karen Laycock (ProjectX) portal/invoice - Brunno replied",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: null,
+      system: "IMPLAI",
+      responsible: "Brunno",
+      dateFirst: "17 Aug 2026",
+      dateLast: "17 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Karen Laycock from ProjectX queried portal/invoice issues. Brunno replied at 07:42 UTC confirming he will check today and revert.",
+      howItHappens: "Email thread: Re: Implement AI - Portal/Invoice issues. Brunno sent reply at 07:42 UTC.",
+      relatedIds: ["PROJECTX-PORTAL-002"],
+      context: "17 Aug 2026. Sent email at 07:42 UTC to Karen Laycock. Reply: I will check this today and revert. Action still pending - Brunno needs to follow up on portal/invoice.",
+      occurrences: [
+        { n: 1, when: "17 Aug 2026 07:42 UTC", what: "Brunno replied to Karen Laycock - will check today" }
+      ],
+      comments: []
+    },
+    {
+      id: "AIOS-UI-ANALYST-001",
+      title: "Analyst agent Teams page text update pending",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: null,
+      system: "IMPLAI",
+      responsible: "Shahzeb",
+      dateFirst: "17 Aug 2026",
+      dateLast: "17 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Shahzeb asked U0790KJ70FR to update analyst agent text on Teams page and update tasks team to show 600+ connections. Aalok and Shahzeb aligning on copy in #aios-dev.",
+      howItHappens: "#aios-dev discussion 07:58-14:00 UTC. Aalok and Shahzeb debating analyst agent copy (Variation 2 chosen). Shahzeb asked for Teams page text update and 600+ connections label.",
+      relatedIds: [],
+      context: "17 Aug 2026 #aios-dev. Active discussion on analyst agent UI copy. Variation 2 agreed. Shahzeb tasked U0790KJ70FR to update text. Also: new analyst agent testing session with U09AW3GHYBU at 13:57-14:00 UTC.",
+      occurrences: [
+        { n: 1, when: "17 Aug 2026 09:17 UTC", what: "Shahzeb requested Teams page text update + 600+ connections label" },
+        { n: 2, when: "17 Aug 2026 10:48 UTC", what: "Aalok confirmed Variation 2 is what he wanted" },
+        { n: 3, when: "17 Aug 2026 14:00 UTC", what: "Analyst agent live on account - testing session started" }
+      ],
+      comments: []
+    },
+    {
+      id: "BILLING-DOCUSIGN-001",
+      title: "Billing setup blocked on DocuSign + QuickBooks invoice",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: ["escalated"],
+      mondayId: null,
+      system: "IMPLAI",
+      responsible: "Shahzeb",
+      dateFirst: "17 Aug 2026",
+      dateLast: "17 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: true,
+      silentFailure: false,
+      whatItDoes: "In-platform billing active development but initial order form blocked on DocuSign and QuickBooks invoice creation pending. Piers asked when billing will be ready to close prospects and set up MRR.",
+      howItHappens: "#aios channel 15:28-15:37 UTC. Shahzeb: blocked on DocuSign + QuickBooks invoice creation pending. Target: within next 2 weeks. Piers escalating.",
+      relatedIds: [],
+      context: "17 Aug 2026 #aios. Piers (U06J4TVNZ1U) asked at 15:28 UTC when billing ready. Shahzeb replied at 15:37 UTC: blocked on DocuSign and QuickBooks, 2 weeks target. In-platform billing in active development.",
+      occurrences: [
+        { n: 1, when: "17 Aug 2026 15:28 UTC", what: "Piers asked when billing ready to close prospects / set MRR" },
+        { n: 2, when: "17 Aug 2026 15:37 UTC", what: "Shahzeb: blocked on DocuSign + QuickBooks, target 2 weeks" }
+      ],
+      comments: []
+    },
+    {
+      id: "INTG-EXPIRY-002",
+      title: "Multiple integration connection expiries - Zoom, Outlook, Gmail x5",
+      priority: "p2",
+      status: "working",
+      tab: "integrations",
+      tags: ["silent"],
+      mondayId: null,
+      system: "INTG",
+      responsible: "Meezab",
+      dateFirst: "17 Aug 2026",
+      dateLast: "17 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: true,
+      whatItDoes: "Multiple integration connections expired today. Zoom expired at 10:09 UTC, Outlook at 17:30 UTC, Gmail x5 at 16:15-16:45 UTC. Client automations using these integrations may be silently failing.",
+      howItHappens: "#aios-bot alerts. Multiple expiry notifications across the day.",
+      relatedIds: ["INTG-EXPIRY-001"],
+      context: "17 Aug 2026 #aios-bot. Zoom expired 10:09 UTC. Gmail x5 expired 16:15-16:45 UTC. Outlook expired 17:30 UTC. Total 7 expired connections today. Action required: reconnect affected integrations.",
+      occurrences: [
+        { n: 1, when: "17 Aug 2026 10:09 UTC", what: "Zoom connection expired" },
+        { n: 2, when: "17 Aug 2026 16:15 UTC", what: "Gmail x5 connections expired" },
+        { n: 3, when: "17 Aug 2026 17:30 UTC", what: "Outlook connection expired" }
+      ],
+      comments: []
+    },
+    {
+      id: "MANCHESTER-AGENT-001",
+      title: "Manchester Event agent - URGENT draft specs shared",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: ["escalated"],
+      mondayId: null,
+      system: "IMPLAI",
+      responsible: "Brunno",
+      dateFirst: "17 Aug 2026",
+      dateLast: "17 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: true,
+      silentFailure: false,
+      whatItDoes: "Brunno posted URGENT in #solutions-hq at 16:26 UTC tagging Brunno and U095NGUJV2R to check a new agent request. Draft specs for Manchester Event agent shared.",
+      howItHappens: "#solutions-hq 16:26 UTC. Shahzeb updated specs on Implement AI Agents board (In Progress). Brunno flagged as URGENT with Aalok FYI.",
+      relatedIds: [],
+      context: "17 Aug 2026 #solutions-hq. At 16:21 UTC status hit In Progress. At 16:23 UTC specs updated. At 16:26 UTC Brunno posted URGENT tag to check agent request with Aalok FYI.",
+      occurrences: [
+        { n: 1, when: "17 Aug 2026 16:21 UTC", what: "Agent status set to In Progress" },
+        { n: 2, when: "17 Aug 2026 16:23 UTC", what: "Specs updated on board" },
+        { n: 3, when: "17 Aug 2026 16:26 UTC", what: "Brunno posted URGENT - review agent request" }
+      ],
+      comments: []
+    },
   {
         id: "GRAFANA-TASK-VIS-001",
         title: "Grafana - Task Runs Missing Success/Fail Visibility",
