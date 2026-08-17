@@ -573,7 +573,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 17 Aug 2026, 16:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 17 Aug 2026, 16:25 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -609,6 +609,84 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+  {
+    id: "ANTHROPIC-CREDITS-001",
+    title: "Anthropic Credits Exhausted — Resolved by Shahzeb",
+    priority: "p1",
+    status: "resolved",
+    tab: "platform",
+    tags: ["escalated"],
+    mondayId: "",
+    system: "COST",
+    responsible: "Shahzeb Butt",
+    dateFirst: "17 Aug 2026",
+    dateLast: "17 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: true,
+    silentFailure: false,
+    whatItDoes: "Anthropic API credits exhausted at ~13:58 UTC. <!channel> alert fired in #aios. All Claude-powered agents stopped responding.",
+    howItHappens: "Auto-reload not triggered in time. Shahzeb purchased $500 credits and re-enabled auto-reload at ~14:07 UTC. Resolved in ~9 minutes.",
+    relatedIds: ["COST-ERR-001"],
+    context: "P1 incident 17 Aug 2026. Shahzeb actioned. Resolved same day.",
+    dateResolved: "17 Aug 2026",
+    rootCause: "Anthropic credit balance depleted with auto-reload disabled.",
+    fixApplied: "Shahzeb purchased $500 credits and re-enabled auto-reload.",
+    resolvedBy: "Shahzeb Butt",
+    occurrences: [
+      { n: 1, when: "17 Aug 2026 13:58 UTC", what: "Credits exhausted, <!channel> alert in #aios" },
+      { n: 2, when: "17 Aug 2026 14:07 UTC", what: "Shahzeb purchased $500 + re-enabled auto-reload. Resolved in 9 min." }
+    ],
+    comments: []
+  },
+  {
+    id: "CLIENT-PRIORITY-CHANGE-001",
+    title: "Client Priority Reclassification — Nikhil Flagging",
+    priority: "p3",
+    status: "working",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Nikhil Mehrishi",
+    dateFirst: "17 Aug 2026",
+    dateLast: "17 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Nikhil posted in BrainStorming Group at 15:50 UTC proposing a client priority reclassification. Abayomi responded at 16:12 UTC asking for the plan and new classification.",
+    howItHappens: "Operational discussion. No action yet defined. Brunno needs to follow up.",
+    relatedIds: [],
+    context: "Teams BrainStorming Group 17 Aug 2026. Needs follow-up to understand impact on ops.",
+    occurrences: [
+      { n: 1, when: "17 Aug 2026 15:50 UTC", what: "Nikhil flagged client priority change in BrainStorming Group" },
+      { n: 2, when: "17 Aug 2026 16:12 UTC", what: "Abayomi asked for plan/new classification" }
+    ],
+    comments: []
+  },
+  {
+    id: "GITHUB-OUTAGE-CLIENT-001",
+    title: "GitHub Outage Affecting Client Agents — Still Open",
+    priority: "p2",
+    status: "working",
+    tab: "platform",
+    tags: ["silent"],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Tayyub Ahmad",
+    dateFirst: "17 Aug 2026",
+    dateLast: "17 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: true,
+    whatItDoes: "GitHub outage still affecting client agents at 4pm scan. QDP resolved (Tayyub). Ark-H resolved. Only GitHub remains open.",
+    howItHappens: "GitHub outage cascading to client-facing agent functionality.",
+    relatedIds: ["AGENT-MALFUNCTION-003"],
+    context: "Confirmed by Mishai DM 17 Aug 2026 16:04 UTC.",
+    occurrences: [
+      { n: 1, when: "17 Aug 2026 16:04 UTC", what: "Mishai confirmed: QDP resolved (Tayyub), Ark-H resolved, GitHub outage still open" }
+    ],
+    comments: []
+  },
   {
     id: "FREYA-ONBOARD-001",
     title: "Freya Laptop Onboarding — 2FA Still Pending",
@@ -4813,6 +4891,20 @@ const ISSUES = [
       comments: []
     },
 ];
+const TIME_LOG = [
+  { date: "03 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "Seeded - no overtime data." },
+  { date: "04 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "Seeded - no overtime data." },
+  { date: "05 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "Grafana sweeps x3, Slack/Teams/Email x3." },
+  { date: "06 Aug 2026", standardHours: 8.0, overtimeHours: 0.4, totalHours: 8.4, notes: "PROD-DOWN-006, MEM0-VAPI-001, Lana demo success." },
+  { date: "07 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "VAPI-OUTAGE-017 x2, CHATGPT-CANCEL-001, Nexora review." },
+  { date: "08 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "ARSH-COMPROMISE-001, HEYGEN-LOW-001." },
+  { date: "11 Aug 2026", standardHours: 4.5, overtimeHours: 0, totalHours: 4.5, notes: "Partial day. Export bug, agent forms locked, Vanta." },
+  { date: "12 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "VAPI-OUTAGE-018, SENDGRID-DEGRADE-003, KEEPER-PASSWORD-002." },
+  { date: "13 Aug 2026", standardHours: 4.5, overtimeHours: 0, totalHours: 4.5, notes: "ISO training x2, Nexora review, Amtivo follow-up." },
+  { date: "14 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "ANTHROPIC-DEGRADE-003, VAPI-OUTAGE-019, Ark-H policy, ABKN Weekly." },
+  { date: "17 Aug 2026", standardHours: 8.0, overtimeHours: 0.5, totalHours: 8.5, notes: "Freya onboarding, Keeper, ISO follow-ups, Karen Laycock x3, LG Chat Agent, Anthropic credits P1 resolved, Nikhil client priority, Mishai QDP/Ark-H, 8x Twilio recharges, 3x Grafana sweeps." }
+];
+
 
 const GOD_MODE_CONFIGS = {
   all:{title:"All Issues — System Health Overview",subtitle:"13 Aug 2026 | Portal v3 | 9am scan complete. 7 new items: GAVIN-ONBOARD-002, CRM-DELETE-001, CRM-FIGURES-001, SOL-ENG-MEETING-001, AIOS-ENG-MEETING-001, AGENT-FORMS-PASS-001, ISO-TRAINING-INVITE-001",stats:[{cls:"red",icon:"fa-fire",val:"4",label:"P1 Critical Open",sub:"COST, ESCALATION, OPS-SILENT, HIGH-VOLUME"},{cls:"amber",icon:"fa-exclamation",val:"13",label:"P2 Significant Open",sub:"Active issues"},{cls:"grey",icon:"fa-info-circle",val:"1",label:"P3 Low Open",sub:"Monitor"},{cls:"green",icon:"fa-check-circle",val:"35+",label:"Resolved",sub:"Since May 2026"},{cls:"brand",icon:"fa-robot",val:"280+",label:"Alerts Self-Resolved",sub:"Provider alerts since May"},{cls:"blue",icon:"fa-database",val:"LIVE",label:"Supabase + HR",sub:"Real-time sync active"}],statusItems:[{dot:"red",label:"HIGH-VOLUME-CAMPAIGN-001 — All agents unavailable during 5,000-call campaign (Ticket #293, open)"},{dot:"red",label:"ESCALATION-001 — Day 68+, zero engineer response, #system-health-hq silent since Jun 4"},{dot:"amber",label:"CREDIT-ANOMALY-001 — Reflect Digital 4.1M credits flagged as unrealistic (NEW Jul 9)"},{dot:"amber",label:"EMMA-VOICE-001 — Emma voice no longer available on sales agent (Ticket #294)"},{dot:"amber",label:"COST-ERR-001 occ=125+ — 15 Anthropic + 15 Twilio Jul 3-9"},{dot:"green",label:"POSITIVE: Task stop mechanism deployed to staging (Abayomi Jul 9)"},{dot:"green",label:"POSITIVE: New frontend+backend build live (Abayomi Jul 4)"},{dot:"green",label:"POSITIVE: Dhia termination + ISO27001 audit completed (Jul 4)"}]},
