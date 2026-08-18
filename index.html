@@ -573,7 +573,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 18 Aug 2026, 12:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 18 Aug 2026, 14:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -5398,6 +5398,125 @@ const TIME_LOG = [
   { date: "13 Aug 2026", standardHours: 4.5, overtimeHours: 0, totalHours: 4.5, notes: "ISO training x2, Nexora review, Amtivo follow-up." },
   { date: "14 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "ANTHROPIC-DEGRADE-003, VAPI-OUTAGE-019, Ark-H policy, ABKN Weekly." },
   { date: "17 Aug 2026", standardHours: 8.0, overtimeHours: 0.5, totalHours: 8.5, notes: "Freya onboarding, Keeper, ISO follow-ups, Karen Laycock x3, LG Chat Agent, Anthropic credits P1 resolved, Nikhil client priority, Mishai QDP/Ark-H, 8x Twilio recharges, 3x Grafana sweeps." }
+,
+
+  {
+    id: "BRUNNO-ISO-GUIDE-001",
+    title: "Brunno shared ISO 27001 prep guide in Teams ahead of tomorrow's audit",
+    priority: "p3", status: "open", tab: "Platform", system: "IMPLAI",
+    responsible: "Brunno Tavarez", dateFirst: "18 Aug 2026", dateLast: "18 Aug 2026", daysOpen: 0,
+    escalatedAalok: false, silentFailure: false,
+    whatItDoes: "Brunno posted an ISO 27001 prep guide to the BI-WEEKLY TEAM UPDATE Teams channel at 12:54 UTC with questions that may be asked during tomorrow's audit meeting.",
+    howItHappens: "Teams message to BI-WEEKLY group chat at 12:54 UTC. Audit with James Burton (Prescient Security) is tomorrow.",
+    relatedIds: ["ISO-JAMES-BURTON-REPLY-002"],
+    context: "James Burton confirmed Brunno can attend ISO audit alone. Brunno prepared a guide for the team.",
+    occurrences: [{n:1, when:"18 Aug 2026 12:54 UTC", what:"Guide posted to BI-WEEKLY TEAM UPDATE Teams chat"}],
+    comments: []
+  },
+  {
+    id: "KAREN-LAYCOCK-FIREFLIES-002",
+    title: "Karen Laycock (ProjectX) asking about Fireflies, Cekura and VAPI API access",
+    priority: "p2", status: "open", tab: "Integrations", system: "INTG",
+    responsible: "Brunno Tavarez", dateFirst: "18 Aug 2026", dateLast: "18 Aug 2026", daysOpen: 0,
+    escalatedAalok: false, silentFailure: false,
+    whatItDoes: "Karen Laycock confirmed portal access and invoice visibility. Now asking if Brunno can help with Fireflies, Cekura or VAPI API. Her team is helping Piers and Aalok manage everything.",
+    howItHappens: "Email thread RE: Implement AI - Portal/Invoice issues. Two emails today: 10:24 UTC and 13:31 UTC.",
+    relatedIds: ["KAREN-LAYCOCK-FIREFLIES-001", "PROJECTX-PORTAL-003"],
+    context: "Karen.Laycock@projectxholdings.co.uk. Confirmed portal access 10:24 UTC. Followed up 13:31 UTC asking about Fireflies/Cekura/VAPI. Brunno replied 12:09 UTC asking if they manage team payments.",
+    occurrences: [{n:1, when:"18 Aug 2026 10:24 UTC", what:"Confirmed portal access, asked about Fireflies/Cekura/VAPI"},{n:2, when:"18 Aug 2026 13:31 UTC", what:"Follow-up email - team managing Piers/Aalok accounts"}],
+    comments: []
+  },
+  {
+    id: "COMPLETE-CHILDCARE-COMMAND-UI-002",
+    title: "Complete Childcare Command UI: private/team agents not visible, staging file link 404",
+    priority: "p2", status: "open", tab: "Platform", system: "IMPLAI",
+    responsible: "Faisal", dateFirst: "18 Aug 2026", dateLast: "18 Aug 2026", daysOpen: 0,
+    escalatedAalok: true, silentFailure: false,
+    whatItDoes: "Complete Childcare client cannot see private/team agents in Command UI. File link on staging returns 404. Aalok wants resolved today.",
+    howItHappens: "Slack #aios-dev: SE flagged 09:51 UTC. Aalok confirmed and escalated. Faisal and engineers tagged.",
+    relatedIds: ["COMPLETE-CHILDCARE-QUICKSTART-001", "AALOK-COMMAND-UI-001"],
+    context: "Client at risk - said Monday they will wind up parting company. Command UI bugs blocking demo/handover.",
+    occurrences: [{n:1, when:"18 Aug 2026 09:51 UTC", what:"SE flagged in #aios-dev - private/team agents not visible, file link 404"},{n:2, when:"18 Aug 2026 12:00 UTC", what:"Aalok confirmed and escalated in #aios-dev"}],
+    comments: []
+  },
+  {
+    id: "FREYA-ONBOARD-TEAMS-001",
+    title: "Freya Pilbeam Day 1: Teams added, Vanta link sent, login details still needed",
+    priority: "p3", status: "open", tab: "Platform", system: "IMPLAI",
+    responsible: "Brunno Tavarez", dateFirst: "18 Aug 2026", dateLast: "18 Aug 2026", daysOpen: 0,
+    escalatedAalok: false, silentFailure: false,
+    whatItDoes: "Freya started today. Lucia confirmed arrival at 07:43 UTC. Brunno added her to Teams and sent Vanta onboarding link. Freya emailed asking for account login info and steps.",
+    howItHappens: "Teams DM chain (Lucia/Brunno/Freya) 07:43-08:16 UTC. Freya email to brunno@ 07:54 UTC.",
+    relatedIds: ["FREYA-VANTA-ONBOARD-001"],
+    context: "Freya arrived at office. Brunno sent Vanta link and training portal URL. 2FA still pending.",
+    occurrences: [{n:1, when:"18 Aug 2026 07:43 UTC", what:"Lucia confirmed Freya arrived at office"},{n:2, when:"18 Aug 2026 07:54 UTC", what:"Freya emailed asking for account login info"},{n:3, when:"18 Aug 2026 08:07-08:16 UTC", what:"Brunno sent Vanta + training links via Teams DM"}],
+    comments: []
+  },
+  {
+    id: "GAVIN-REFERENCE-002",
+    title: "Gavin second reference (Kanan Tandi) confirmed - go ahead given",
+    priority: "p3", status: "open", tab: "Platform", system: "IMPLAI",
+    responsible: "Brunno Tavarez", dateFirst: "18 Aug 2026", dateLast: "18 Aug 2026", daysOpen: 0,
+    escalatedAalok: false, silentFailure: false,
+    whatItDoes: "Brunno chased Gavin at 08:49 UTC about second reference. Gavin replied with Kanan Tandi's contact info and said to go ahead.",
+    howItHappens: "Teams DM between Brunno and Gavin Fernandes 08:49-09:03 UTC.",
+    relatedIds: ["GAVIN-REFERENCE-001"],
+    context: "Kanan Tandi: Behavioral Intelligence Specialist, +91 9769598282, Kanan@bodyspeaksbetter.com. Gavin said go ahead at 09:03 UTC.",
+    occurrences: [{n:1, when:"18 Aug 2026 08:49 UTC", what:"Brunno chased Gavin about second reference"},{n:2, when:"18 Aug 2026 09:02-09:03 UTC", what:"Gavin shared Kanan Tandi details and confirmed go ahead"}],
+    comments: []
+  },
+  {
+    id: "NABELA-GOODBROTHER-002",
+    title: "Good Brother Sophie agent still unresolved - Nabela flagged again at 2pm sweep",
+    priority: "p2", status: "open", tab: "Platform", system: "IMPLAI",
+    responsible: "Tayyub Ahmad", dateFirst: "18 Aug 2026", dateLast: "18 Aug 2026", daysOpen: 0,
+    escalatedAalok: false, silentFailure: true,
+    whatItDoes: "Nabela confirmed at 08:51 UTC that Good Brother Sophie agent issue is still not resolved. Flagged to Tayyub last week. One item still outstanding.",
+    howItHappens: "Teams DM Nabela to Brunno at 08:51 UTC.",
+    relatedIds: ["NABELA-GOODBROTHER-001"],
+    context: "Nabela: One item, Sophie for Good Brother still not resolved. Flagged to Tayyub last week. Virtuzone was resolved via negative credits fix.",
+    occurrences: [{n:1, when:"18 Aug 2026 08:51 UTC", what:"Nabela confirmed Sophie/Good Brother still unresolved, flagged to Tayyub"}],
+    comments: []
+  },
+  {
+    id: "PIERS-NEO-PROSPECT-002",
+    title: "Piers asked Aalok to update Neo agent to analyse prospects",
+    priority: "p2", status: "open", tab: "Platform", system: "IMPLAI",
+    responsible: "Aalok Shukla", dateFirst: "18 Aug 2026", dateLast: "18 Aug 2026", daysOpen: 0,
+    escalatedAalok: true, silentFailure: false,
+    whatItDoes: "Piers sent a Teams message at 10:42 UTC directly asking Aalok to update the Neo agent to analyse prospects.",
+    howItHappens: "Teams message from Piers Linney in Sales and Solutions Team chat at 10:42 UTC.",
+    relatedIds: ["PIERS-NEO-PROSPECT-001"],
+    context: "Piers: Dr Aalok Shukla - Can you update Neo to analyse prospects? Direct request from Executive Chairman.",
+    occurrences: [{n:1, when:"18 Aug 2026 10:42 UTC", what:"Piers Teams message asking Aalok to update Neo to analyse prospects"}],
+    comments: []
+  },
+  {
+    id: "KATRINA-TEAMS-ADMIN-002",
+    title: "Katrina asked to add Gavin/Lucia/Freya to Everyone channel - explained she is owner",
+    priority: "p3", status: "open", tab: "Platform", system: "IMPLAI",
+    responsible: "Katrina Nguyen", dateFirst: "18 Aug 2026", dateLast: "18 Aug 2026", daysOpen: 0,
+    escalatedAalok: false, silentFailure: false,
+    whatItDoes: "Katrina DM at 10:07 UTC asking to add Gavin, Lucia and Freya to Everyone channel. Brunno explained she is already a Teams owner and public channels auto-add on team membership.",
+    howItHappens: "Teams DM Katrina to Brunno 10:07-10:22 UTC.",
+    relatedIds: ["KATRINA-TEAMS-ADMIN-001"],
+    context: "Brunno replied 10:17-10:18 UTC. Katrina acknowledged 10:22 UTC.",
+    occurrences: [{n:1, when:"18 Aug 2026 10:07 UTC", what:"Katrina asked to add Gavin/Lucia/Freya to Everyone channel"},{n:2, when:"18 Aug 2026 10:22 UTC", what:"Katrina acknowledged Brunno explanation"}],
+    comments: []
+  },
+  {
+    id: "SENDGRID-DEGRADE-2PM-CONFIRM",
+    title: "SendGrid WARNING still firing - confirmed 2pm sweep 18 Aug",
+    priority: "p2", status: "open", tab: "Platform", system: "IMPLAI",
+    responsible: "Habib Qayoom", dateFirst: "18 Aug 2026", dateLast: "18 Aug 2026", daysOpen: 0,
+    escalatedAalok: false, silentFailure: false,
+    whatItDoes: "SendGrid provider degraded WARNING confirmed still firing in #aios-alerts at 2pm sweep. No resolution seen. 1d 6h+ firing.",
+    howItHappens: "Slack #aios-alerts: provider-degraded-sendgrid WARNING alert confirmed at 2pm sweep.",
+    relatedIds: ["SENDGRID-DEGRADE-001"],
+    context: "SENDGRID-DEGRADE-001 persistent. Alert: Provider degraded: sendgrid, Service: external-provider. Still firing as of 2pm 18 Aug.",
+    occurrences: [{n:1, when:"18 Aug 2026 14:00 UTC", what:"Confirmed still firing in #aios-alerts at 2pm sweep"}],
+    comments: []
+  }
 ];
 
 
