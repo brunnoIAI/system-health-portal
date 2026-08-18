@@ -573,7 +573,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 18 Aug 2026, 09:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 18 Aug 2026, 10:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -609,6 +609,102 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+  {
+    id: "AALOK-COMMAND-UI-001",
+    title: "Command UI Bug — Private/Team Agents Not Visible (Complete Childcare)",
+    priority: "p2",
+    status: "open",
+    tab: "platform",
+    tags: ["escalated"],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Faisal",
+    dateFirst: "18 Aug 2026",
+    dateLast: "18 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: true,
+    silentFailure: false,
+    whatItDoes: "Complete Childcare client reported confusion during a call with Aalok — private and team agents could not be seen in Command UI. Aalok wants this resolved today so production looks smooth. Additionally, the generated file on staging is still inaccessible.",
+    howItHappens: "Aalok posted in #aios-dev at 09:51 UTC 18 Aug tagging Faisal (U0790KJ70FR) and U09C1VD3WSZ. Also posted a ShortLink_NotFound 404 error from the Command file link. Client wants to move quickly.",
+    relatedIds: ["AALOK-AIOS-DEV-BUGS-001", "COMMAND-FILE-LINK-BUG"],
+    context: "Aalok: 'can these be resolved today pls so production looks as smooth as possible. Also still having issue - i cannot access the file generated on staging.' ShortLink 404 error code 4601.",
+    occurrences: [
+      { n: 1, when: "18 Aug 2026 09:51 UTC", what: "Aalok flagged in #aios-dev — Complete Childcare client confused by missing private/team agents in Command UI + file link 404" }
+    ],
+    comments: []
+  },
+  {
+    id: "AALOK-CODECELL-PRIORITY-001",
+    title: "CodeCell Priority Request — Task Agent Post-Call Tasks (Not N8N)",
+    priority: "p3",
+    status: "open",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Meezab Fatima",
+    dateFirst: "18 Aug 2026",
+    dateLast: "18 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Aalok is requesting CodeCell prioritise Task Agent post-call task replication over N8N, to avoid failures. He wants a parallel CodeCell duplicate of task agent to run alongside and verify without disturbing the current system.",
+    howItHappens: "Aalok posted in #aios at 09:42 UTC 18 Aug, tagging Meezab, Shahan, and U08PN6PQ2HW. Rationale: programmatic replication reduces LLM dependency and avoids task agent failures.",
+    relatedIds: ["AALOK-AIOS-DEV-BUGS-001"],
+    context: "Aalok: 'for CODECELL - can the priority be TASK AGENT post call tasks etc to be transferred Not N8N where we dont have failures... a duplication of any task agent can be created on CodeCell please so we can run it in parallel and verify it's working without disturbing the current system.'",
+    occurrences: [
+      { n: 1, when: "18 Aug 2026 09:42 UTC", what: "Aalok posted CodeCell priority request in #aios" }
+    ],
+    comments: []
+  },
+  {
+    id: "AALOK-AGENT-FILTERS-001",
+    title: "Agent Filters and Grouping Request — Client View + Status Definitions",
+    priority: "p3",
+    status: "open",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Meezab Fatima",
+    dateFirst: "18 Aug 2026",
+    dateLast: "18 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Aalok requesting that the agents list view supports filters and grouping by client (e.g. all Questgates agents together). Also requesting definitions for INACTIVE and other status labels so the team can harmonise.",
+    howItHappens: "Aalok posted in #aios at 10:10 UTC 18 Aug tagging Meezab (U083CKBCF7Y) and Shahzeb (U0739BR37FH).",
+    relatedIds: [],
+    context: "Aalok: 'pls can filters and grouping be done - so all the clients show all agents together - eg Questgates all agents etc in one go - also what does INACTIVE etc and statuses mean? - I would like the definitions pls so we can harmonise'",
+    occurrences: [
+      { n: 1, when: "18 Aug 2026 10:10 UTC", what: "Aalok posted filter/grouping request in #aios, tagging Meezab and Shahzeb" }
+    ],
+    comments: []
+  },
+  {
+    id: "ISO-JAMES-BURTON-REPLY-001",
+    title: "ISO 27001 — James Burton Confirms Brunno Can Answer Audit Questions Alone",
+    priority: "p3",
+    status: "open",
+    tab: "security",
+    tags: [],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Brunno Tavarez",
+    dateFirst: "18 Aug 2026",
+    dateLast: "18 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "James Burton (Prescient Security) replied to Brunno's ISO 27001 audit and pen testing email. He confirmed that if Brunno is confident answering questions, no one else needs to be present for the audit.",
+    howItHappens: "Email received at 06:53 UTC 18 Aug from james.burton@prescient-security.com. Reply to ongoing ISO 27001 pre-audit thread.",
+    relatedIds: ["ISO-ALIGN-FOLLOWUP-001"],
+    context: "James: 'If you are happy that you can answer any questions that may come up then no they won't need to be.' Action: Brunno to confirm readiness and schedule audit date.",
+    occurrences: [
+      { n: 1, when: "18 Aug 2026 06:53 UTC", what: "James Burton email — Brunno can attend ISO audit alone if confident" }
+    ],
+    comments: []
+  },
   {
     id: "FREYA-VANTA-001",
     title: "Freya Pilbeam — Vanta Setup and Account Login Needed",
@@ -5014,9 +5110,9 @@ const ISSUES = [
 const TIME_LOG = [
   {
     date: "18 Aug 2026",
-    standard: 0.5,
+    standard: 1.5,
     overtime: 0,
-    notes: "9am Command Centre sweep — Slack, Teams DMs, inbox, calendar. 5 new items logged. Portal updated."
+    notes: "9am + 10am Command Centre sweeps — Slack, Teams DMs, inbox, calendar. 9 new items logged across both sweeps. Portal updated x2."
   },
   { date: "03 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "Seeded - no overtime data." },
   { date: "04 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "Seeded - no overtime data." },
