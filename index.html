@@ -573,7 +573,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 17 Aug 2026, 16:25 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 18 Aug 2026, 09:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -609,6 +609,126 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+  {
+    id: "FREYA-VANTA-001",
+    title: "Freya Pilbeam — Vanta Setup and Account Login Needed",
+    priority: "p3",
+    status: "open",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Brunno Tavarez",
+    dateFirst: "18 Aug 2026",
+    dateLast: "18 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Freya emailed asking for her AIOS account login information and Vanta onboarding steps. Sent Vanta onboarding link and training portal link via Teams DM.",
+    howItHappens: "New hire onboarding — Freya joined recently. Brunno sent Vanta link (app.eu.vanta.com) and training portal link (system.implementai.net/training.html) at 08:07-08:16 UTC.",
+    relatedIds: ["FREYA-ONBOARD-001"],
+    context: "Freya emailed brunno@ at 07:54 UTC. Brunno replied via Teams DM with Vanta onboarding URL and training portal. Action required: confirm Freya completes Vanta onboarding and 2FA setup.",
+    occurrences: [
+      { n: 1, when: "18 Aug 2026 07:54 UTC", what: "Email from Freya asking for account login and Vanta setup steps" }
+    ],
+    comments: []
+  },
+  {
+    id: "GOOD-BROTHER-SOPHIE-001",
+    title: "Good Brother — Sophie Agent Still Unresolved",
+    priority: "p2",
+    status: "open",
+    tab: "voice",
+    tags: ["escalated"],
+    mondayId: "",
+    system: "VAPI",
+    responsible: "Tayyub Ahmad",
+    dateFirst: "18 Aug 2026",
+    dateLast: "18 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: true,
+    whatItDoes: "Sophie agent for Good Brother client is still not resolved. Nabela flagged to Tayyub last week. Engineers have not confirmed a fix.",
+    howItHappens: "Nabela DM to Brunno at 08:51-08:58 UTC 18 Aug: Sophie for Good Brother still not resolved, flagged to Tayyub. Other items (Virtuzone, Questgates) were resolved — Virtuzone was caused by negative credits during campaign, engineer reran tasks.",
+    relatedIds: ["GOOD-BROTHER-EXPORT-001"],
+    context: "Virtuzone fix confirmed (negative credits during campaign, engineer reran everything). Questgates also working. Sophie for Good Brother remains open. Tayyub is assigned.",
+    occurrences: [
+      { n: 1, when: "18 Aug 2026 08:51 UTC", what: "Nabela confirms Sophie agent still unresolved, flagged to Tayyub last week, no update" }
+    ],
+    comments: []
+  },
+  {
+    id: "CLIENT-PRIORITY-RECLASS-001",
+    title: "Client Priority Reclassification — Nikhil Proposing New Logic",
+    priority: "p3",
+    status: "open",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Nikhil Mehrishi",
+    dateFirst: "17 Aug 2026",
+    dateLast: "18 Aug 2026",
+    daysOpen: 1,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Nikhil proposed changing client priority classification logic in BrainStorming Group. Current logic no longer valid — new approach tied to billing and potential expansion. Nikhil asked Abayomi to brainstorm tomorrow.",
+    howItHappens: "BrainStorming Group Teams message 16:30 UTC 17 Aug: Nikhil flagging client priority change, Abayomi asked for plan/new classification. Nikhil: lets connect tomorrow.",
+    relatedIds: ["CLIENT-PRIORITY-CHANGE-001"],
+    context: "Nikhil says the old priority logic is no longer valid. New classification should be billing/expansion based. Meeting to be arranged. Related to Abayomi's QA and Engineering Ops role.",
+    occurrences: [
+      { n: 1, when: "17 Aug 2026 16:30 UTC", what: "Nikhil posts in BrainStorming Group proposing client priority reclassification" }
+    ],
+    comments: []
+  },
+  {
+    id: "AALOK-CODECELL-PRIORITY-001",
+    title: "Aalok — CODECELL Priority Should Be Task Agent Post-Call Tasks",
+    priority: "p2",
+    status: "open",
+    tab: "tasks",
+    tags: [],
+    mondayId: "",
+    system: "TASK",
+    responsible: "Shahzeb Butt",
+    dateFirst: "18 Aug 2026",
+    dateLast: "18 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: true,
+    silentFailure: false,
+    whatItDoes: "Aalok posted in #aios requesting CODECELL priority be shifted to Task Agent post-call tasks (not N8N). Goal: programmatically replicate task agent activities, reduce task agent use where no LLM is needed, avoid duplication issues.",
+    howItHappens: "#aios message at ~08:03 UTC 18 Aug from Aalok (U06CBJGQ353). Also requested filters and grouping for Command UI so all agents for a client (e.g. Questgates) show together, and definitions of INACTIVE and other statuses.",
+    relatedIds: ["AALOK-AIOS-DEV-BUGS-001"],
+    context: "Two separate requests from Aalok: (1) CODECELL priority to Task Agent post-call tasks to avoid N8N failures and reduce LLM dependency. (2) Command UI: filters and grouping by client, status definitions. Tagged Meezab and Shahzeb.",
+    occurrences: [
+      { n: 1, when: "18 Aug 2026 08:03 UTC", what: "Aalok posts CODECELL priority request and Command UI filter/grouping request in #aios" }
+    ],
+    comments: []
+  },
+  {
+    id: "COMMAND-UI-PRIVATE-TEAM-001",
+    title: "Command UI — Private/Team Agent Visibility Broken for Complete Childcare",
+    priority: "p2",
+    status: "open",
+    tab: "platform",
+    tags: ["escalated"],
+    mondayId: "",
+    system: "IMPLAI",
+    responsible: "Faisal",
+    dateFirst: "18 Aug 2026",
+    dateLast: "18 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Complete Childcare client reported on a call that private/team agent changes in Command are not visible. Client confused and wants to move quickly. Aalok flagged in #aios-dev at ~08:05 UTC.",
+    howItHappens: "#aios-dev messages 08:05-08:14 UTC 18 Aug. Aalok tagged U0790KJ70FR (Faisal) and U09C1VD3WSZ. Short link error also reported (404 ShortLink_NotFound). Client is Complete Childcare — sensitive (Nicola Hodgson IBM UK Chair husband).",
+    relatedIds: ["CLIENT-IAI-EMAIL-001"],
+    context: "Urgent — client-facing. Complete Childcare confused about Command UI changes. Private vs team agent distinction not visible. Short link 404 error also showing. Aalok wants fix urgently. Faisal and U09C1VD3WSZ tagged.",
+    occurrences: [
+      { n: 1, when: "18 Aug 2026 08:05 UTC", what: "Aalok flags Complete Childcare client confusion about Command UI private/team agent visibility" }
+    ],
+    comments: []
+  },
   {
     id: "ANTHROPIC-CREDITS-001",
     title: "Anthropic Credits Exhausted — Resolved by Shahzeb",
@@ -4892,6 +5012,12 @@ const ISSUES = [
     },
 ];
 const TIME_LOG = [
+  {
+    date: "18 Aug 2026",
+    standard: 0.5,
+    overtime: 0,
+    notes: "9am Command Centre sweep — Slack, Teams DMs, inbox, calendar. 5 new items logged. Portal updated."
+  },
   { date: "03 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "Seeded - no overtime data." },
   { date: "04 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "Seeded - no overtime data." },
   { date: "05 Aug 2026", standardHours: 8.0, overtimeHours: 0, totalHours: 8.0, notes: "Grafana sweeps x3, Slack/Teams/Email x3." },
