@@ -573,7 +573,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 18 Aug 2026, 4pm UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 18 Aug 2026, 4:25pm UK (EOD)</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -609,6 +609,118 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+    {
+      id: "CORE-MCP-AIOS-MEETING-001",
+      title: "Internal - Core MCP x AIOS custom integration meeting active",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "TEAMS",
+      responsible: "Shahzeb",
+      dateFirst: "18 Aug 2026",
+      dateLast: "18 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Teams meeting chat for Core MCP x AIOS custom integration was active 16:02-16:15 UTC. Kamil Murgala also emailed Brunno about this topic at 16:02 UTC.",
+      howItHappens: "Shahzeb posted detailed MCP notes in #aios-dev: Chat in AIOS design (13:50 UTC), AIOS MCP notes (14:07 UTC), AIOS MCP prioritised over templating (15:48 UTC), MCP external support planned (15:50 UTC). Fronted fixes update from Mahdi at 15:58 UTC.",
+      relatedIds: ["SHAHZEB-MCP-PLANNING-AUG18"],
+      context: "EOD scan 18 Aug 2026 4:25pm UTC",
+      occurrences: [{n: 1, when: "18 Aug 2026 16:02 UTC", what: "Teams meeting chat active, Kamil email received"}],
+      comments: []
+    },
+    {
+      id: "SHAHZEB-MCP-PLANNING-AUG18",
+      title: "Shahzeb posted major AIOS MCP and Chat-in-AIOS engineering specs",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "SLACK",
+      responsible: "Shahzeb",
+      dateFirst: "18 Aug 2026",
+      dateLast: "18 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Shahzeb posted detailed engineering specs in #aios-dev covering Chat in AIOS design, AIOS MCP (all CRUD functions), MCP to be prioritised over templating, and MCP external support (Claude desktop etc).",
+      howItHappens: "13:50 UTC Chat in AIOS notes. 14:07 UTC AIOS MCP notes. 15:47 UTC tagged Faisal + U0790KJ70FR on specs. 15:48 UTC MCP over templating priority. 15:50 UTC MCP external support planned. 15:58 UTC Mahdi posted frontend fixes update.",
+      relatedIds: ["CORE-MCP-AIOS-MEETING-001"],
+      context: "EOD scan 18 Aug 2026",
+      occurrences: [{n: 1, when: "18 Aug 2026 13:50-15:58 UTC", what: "Multiple engineering spec posts in #aios-dev"}],
+      comments: []
+    },
+    {
+      id: "DILLON-SLACK-ADD-001",
+      title: "ACTION: Add Dillon to Slack workspace",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "SLACK",
+      responsible: "Brunno",
+      dateFirst: "18 Aug 2026",
+      dateLast: "18 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Shahzeb asked in #solutions-hq at 16:18 UTC to add Dillon to Slack for easier coordination. Brunno replied 'sure'.",
+      howItHappens: "Shahzeb: 'Can we add Dillon to Slack for easier coordination? @Brunno'. Brunno: 'sure'. Action pending.",
+      relatedIds: [],
+      context: "EOD scan 18 Aug 2026",
+      occurrences: [{n: 1, when: "18 Aug 2026 16:18 UTC", what: "Shahzeb requested, Brunno confirmed"}],
+      comments: []
+    },
+    {
+      id: "WHATSAPP-NUMBER-RECONNECT-001",
+      title: "WhatsApp number reconnected and tested successfully",
+      priority: "p3",
+      status: "resolved",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "SLACK",
+      responsible: "SE Team",
+      dateFirst: "18 Aug 2026",
+      dateLast: "18 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "WhatsApp number was reconnected and tested. WhatsApp message successfully sent.",
+      howItHappens: "SE engineer posted in #solutions-hq at 13:56 UTC: 'The number is connected and online again. I have tested it, WhatsApp message successfully sent.'",
+      relatedIds: [],
+      context: "EOD scan 18 Aug 2026",
+      occurrences: [{n: 1, when: "18 Aug 2026 13:56 UTC", what: "Reconnected and verified"}],
+      comments: []
+    },
+    {
+      id: "FREYA-TRAINING-PUSH-001",
+      title: "ACTION: Push code to mark Freya training portal as complete",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "TEAMS",
+      responsible: "Brunno",
+      dateFirst: "18 Aug 2026",
+      dateLast: "18 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Freya completed training videos and quizzes but portal still shows incomplete. Brunno confirmed a code push is needed to update the status.",
+      howItHappens: "Freya DM at 15:30 UTC: 'I completed the training videos and quizzes but the section is still showing as incomplete'. Brunno replied 15:38 UTC: 'that is normal, I have to push the updates with a code'. Freya: 'ah got it, thanks!' at 16:13 UTC.",
+      relatedIds: ["FREYA-TRAINING-STATUS-001"],
+      context: "EOD scan 18 Aug 2026",
+      occurrences: [{n: 1, when: "18 Aug 2026 15:30-16:13 UTC", what: "Training completed, code push pending"}],
+      comments: []
+    },
+
+
     {
       id: "BRUNNO-ISO-GUIDE-001",
       title: "Brunno shared ISO 27001 prep guide in BI-WEEKLY Teams chat",
@@ -5685,10 +5797,7 @@ const TIME_LOG = [
       date: "2026-08-18",
       standard: 8.0,
       overtime: 0.5,
-      notes: "BI-WEEKLY company update 09:30-10:30. Freya Pilbeam onboarding (Teams DMs, Vanta setup, training portal issue 15:30). Karen Laycock x3 emails (portal access, Fireflies/Cekura/VAPI API, invoice routing to accounts@). Brunno salary invoice sent 14:47 UTC. James Burton ISO 27001 reply - can attend solo. Insight Assurance Molly Canning follow-up ACTION REQUIRED. Piers asked Aalok re Neo agent (Teams). Complete Childcare Command UI still broken (Aalok escalating #aios-dev 15:11). SendGrid WARNING still firing 1d 12h+. Aalok #aios agent filters + CodeCell priority requests. Weekly Review 14:30-16:00. 4pm Command Centre sweep completed."
-    },
-    {
-      date: "18 Aug 2026",
+      notes: "BI-WEEKLY company update 09:30-10:30. Freya Pilbeam onboarding (Teams DMs, Vanta setup, training portal issue 15:30 - code push pending). Karen Laycock x3 emails resolved (portal access + invoice arrangement confirmed CLOSED). Molly Canning Insight Assurance follow-up PENDING reply. James Burton ISO 27001 Stage 1 confirmed solo. Brunno salary invoice sent to accounts@. Shahzeb major MCP/Chat-in-AIOS engineering specs in #aios-dev. Dillon Slack add pending. WhatsApp number reconnected. Weekly Review 14:30-16:00 attended. Core MCP x AIOS meeting active 16:00+.",
       standard: 8.0,
       overtime: 0.5,
       total: 8.5,
@@ -5858,8 +5967,7 @@ const TIME_LOG = [
       id: "KAREN-LAYCOCK-API-ACCESS-001",
       title: "Karen Laycock (ProjectX) - Requesting Fireflies, Cekura and VAPI API access/info",
       priority: "p2",
-      status: "working",
-      tab: "Integrations",
+      status: "resolved"     tab: "Integrations",
       tags: ["action-required"],
       mondayId: "",
       system: "INTG",
