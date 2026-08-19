@@ -573,7 +573,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 18 Aug 2026, 4:25pm UK (EOD)</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 19 Aug 2026, 2:00pm UK (12pm)</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -8206,7 +8206,225 @@ function renderAgentsTab() {
   `;
 
   // Group by status priority: Not Running first, then Blocked, Below Volume, Running, In Development
-  const order = ['Not Running', 'Blocked', 'Below Volume', 'Running', 'In Development'];
+  const order = ['Not Running', 'Blocked', 'Below Volume', 'Running', 'In Development',
+
+    {
+      id: "ANTHROPIC-DEGRADE-003",
+      title: "Anthropic Minor + Celery Major Outage",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "ANTHROPIC",
+      responsible: "Habib",
+      dateFirst: "19 Aug 2026",
+      dateLast: "19 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Celery MAJOR outage fired and recovered same day. Anthropic Minor degradation (Claude Opus 5 + Haiku 4.5 affected). Both self-resolved per #aios-alerts.",
+      howItHappens: "Automated alerts from Grafana/Instatus pipeline in #aios-alerts. Celery: MAJOROUTAGE -> OPERATIONAL. Anthropic: UNDERMAINTENANCE -> OPERATIONAL. Both recovered without engineer intervention.",
+      relatedIds: ["SENDGRID-DEGRADE-001", "ANTHROPIC-DEGRADE-002"],
+      context: "19 Aug 2026 12pm sweep. Celery major outage + recovery pair seen in #aios-alerts. Anthropic minor degradation (Claude Opus 5 + Haiku 4.5). Both self-resolved by time of sweep.",
+      occurrences: [
+        { n: 1, when: "19 Aug 2026 ~09:00 UTC", what: "Celery MAJOR outage fired, then recovered. Anthropic Minor (Claude Opus 5 + Haiku 4.5) fired, then recovered. Both self-resolved." }
+      ],
+      comments: []
+    },
+    {
+      id: "DILLON-AIOS-ACCESS-001",
+      title: "AIOS Access Request for Dillon (U0BQRQ009C4)",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Meezab",
+      dateFirst: "19 Aug 2026",
+      dateLast: "19 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "U0AJU83SAJG posted in #aios requesting AIOS access for Dillon (U0BQRQ009C4), tagging Meezab. Dillon was added to Slack on Aug 18 (invited by Aalok).",
+      howItHappens: "Request posted in #aios channel. Meezab tagged. No confirmation of action yet.",
+      relatedIds: ["DILLON-SLACK-ADD-001"],
+      context: "19 Aug 2026 12pm sweep. Message: 'can we have access to aios for Dillon?' - tagging Meezab. Dillon already added to Slack Aug 18.",
+      occurrences: [
+        { n: 1, when: "19 Aug 2026 ~09:00 UTC", what: "U0AJU83SAJG requested AIOS access for Dillon in #aios, tagged Meezab." }
+      ],
+      comments: []
+    },
+    {
+      id: "AIOS-DATA-TABLES-UI-001",
+      title: "AIOS Data Tables UI Feedback - Meezab",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Shahzeb",
+      dateFirst: "19 Aug 2026",
+      dateLast: "19 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Meezab (U083CKBCF7Y) posted detailed UI feedback for AIOS Data Tables in #aios-dev. Key issues: Add Column button placement (end of all columns, hard to find for 10+ column tables), and other UX suggestions.",
+      howItHappens: "Posted in #aios-dev as product feedback. Engineering team to review and prioritise.",
+      relatedIds: [],
+      context: "19 Aug 2026 12pm sweep. Meezab posted structured feedback with numbered points on Data Tables UI.",
+      occurrences: [
+        { n: 1, when: "19 Aug 2026 ~08:00 UTC", what: "Meezab posted Data Tables UI feedback in #aios-dev. Add Column button placement and other UX items flagged." }
+      ],
+      comments: []
+    },
+    {
+      id: "ISO-AUDIT-STAGE1-AUG19",
+      title: "ISO 27001:2022 Stage 1 Audit - IN PROGRESS",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Brunno",
+      dateFirst: "19 Aug 2026",
+      dateLast: "19 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "ISO 27001:2022 Initial Certification Audit Stage 1 is actively running today 13:00-15:00 UTC. Auditor Snehal Chandrakant Thakare is in the Teams meeting chat. Piers, Shahzeb, Brunno all providing role/title info. AI notetaker joined.",
+      howItHappens: "Scheduled audit. Teams meeting chat active with multiple team members confirming roles. Auditor posted scope statement.",
+      relatedIds: ["JAMES-BURTON-ISO-003"],
+      context: "19 Aug 2026. Calendar event 13:00-15:00 UTC. Teams chat active: Piers (Policy Owner/Executive Chairman), Shahzeb (CTO), Brunno (Systems Health Lead/ICP Coordinator), Aalok (CEO/ISMS sponsor). Auditor Snehal posted scope.",
+      occurrences: [
+        { n: 1, when: "19 Aug 2026 13:00 UTC", what: "ISO 27001 Stage 1 audit started. Teams chat active. Auditor Snehal Chandrakant Thakare joined. Piers, Shahzeb, Brunno confirmed roles. AI notetaker joined at 13:01 UTC." }
+      ],
+      comments: []
+    },
+    {
+      id: "FREYA-ENCRYPTION-001",
+      title: "Freya Pilbeam - Laptop Encryption Issue (Resolved)",
+      priority: "p3",
+      status: "resolved",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Brunno",
+      dateFirst: "19 Aug 2026",
+      dateLast: "19 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Freya Pilbeam (day 2) reported laptop encryption had not started. Brunno guided her via Teams DM. Freya confirmed resolved at 08:09 UTC.",
+      howItHappens: "Teams DM between Brunno and Freya. Freya restarted device, encryption started successfully.",
+      relatedIds: ["FREYA-ONBOARD-TEAMS-001", "FREYA-TRAINING-PUSH-001"],
+      context: "19 Aug 2026 07:52-08:09 UTC. Freya said encryption still not started at 07:59, Brunno told her to click update info, Freya confirmed 'looks like it should be ok now!' at 08:09.",
+      occurrences: [
+        { n: 1, when: "19 Aug 2026 07:52 UTC", what: "Freya reported encryption not started. Brunno guided. Resolved 08:09 UTC." }
+      ],
+      comments: []
+    },
+    {
+      id: "SYED-ACCOUNT-EXTRACT-001",
+      title: "Syed Account - Last Day to Extract Data",
+      priority: "p2",
+      status: "open",
+      tab: "platform",
+      tags: ["escalated"],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Brunno",
+      dateFirst: "19 Aug 2026",
+      dateLast: "19 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno flagged in BrainStorming Group Teams chat that today (19 Aug) is the last day to hold and extract from Syed Tabrez's account. Nikhil confirmed all is good.",
+      howItHappens: "Offboarding process. Brunno posted 09:37 UTC. Nikhil replied 'all is good' at 09:39 UTC.",
+      relatedIds: [],
+      context: "19 Aug 2026 09:37 UTC BrainStorming Group Teams chat. Brunno: 'today is the last day we can hold Syed's account. All that needs to be extracted needs to be done today.' Nikhil: 'i think all is good. !'",
+      occurrences: [
+        { n: 1, when: "19 Aug 2026 09:37 UTC", what: "Brunno flagged last day for Syed account extraction. Nikhil confirmed all extracted." }
+      ],
+      comments: []
+    },
+    {
+      id: "KAMIL-EMAIL-SHARED-001",
+      title: "Kamil Email - Converting to Shared Mailbox",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Brunno",
+      dateFirst: "19 Aug 2026",
+      dateLast: "19 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno confirmed in a group Teams DM that Kamil's email will be converted to a shared mailbox. Team has 30 days to extract anything needed. No rush.",
+      howItHappens: "Teams group DM. Brunno posted 09:38 UTC: 'For Kamil's email, no rush, I will turn it into a shared mailbox and we will have 30 days to extract all we need. But I will do it after his last day.'",
+      relatedIds: [],
+      context: "19 Aug 2026 09:38 UTC. Group Teams DM. Kamil offboarding in progress.",
+      occurrences: [
+        { n: 1, when: "19 Aug 2026 09:38 UTC", what: "Brunno confirmed Kamil email -> shared mailbox after his last day. 30 days to extract." }
+      ],
+      comments: []
+    },
+    {
+      id: "SHAHAN-NEXORA-FIREFLIES-001",
+      title: "Shahan Requesting Fireflies Access for Nexora Meetings",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Brunno",
+      dateFirst: "19 Aug 2026",
+      dateLast: "19 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Shahan (U0B7F9WQ9D0) posted in #solutions-hq requesting Fireflies access to review meeting transcripts and recordings for Nexora projects. Brunno replied he can only share his own meetings, not others - each SA must share their own. Brunno shared his two Nexora meetings.",
+      howItHappens: "Shahan posted in #solutions-hq. Brunno replied twice explaining Fireflies admin access limitation and shared his own meetings.",
+      relatedIds: [],
+      context: "19 Aug 2026. #solutions-hq. Shahan needs Fireflies access. Brunno: no admin access, each SA shares their own. Brunno shared his 2 Nexora meetings.",
+      occurrences: [
+        { n: 1, when: "19 Aug 2026", what: "Shahan requested Fireflies access in #solutions-hq. Brunno explained limitation and shared his own Nexora meetings." }
+      ],
+      comments: []
+    },
+    {
+      id: "KAREN-LAYCOCK-PORTAL-AUG19",
+      title: "Karen Laycock - Portal/Invoice Follow-up",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "PLATFORM",
+      responsible: "Brunno",
+      dateFirst: "19 Aug 2026",
+      dateLast: "19 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Karen Laycock emailed again at 10:35 UTC re portal/invoice issues (continuation of KAREN-LAYCOCK-API-ACCESS-001 thread). Brunno replied at 10:36 UTC.",
+      howItHappens: "Email thread. Karen Laycock (ProjectX Holdings) continuing portal/invoice query. Brunno replied same day.",
+      relatedIds: ["KAREN-LAYCOCK-API-ACCESS-001", "PROJECTX-PORTAL-003"],
+      context: "19 Aug 2026. Karen Laycock email at 10:35 UTC. Brunno replied 10:36 UTC. Ongoing thread from Aug 18.",
+      occurrences: [
+        { n: 1, when: "19 Aug 2026 10:35 UTC", what: "Karen Laycock emailed re portal/invoice. Brunno replied 10:36 UTC." }
+      ],
+      comments: []
+    }
+  ];
   const sorted = [...CLIENTS_DATA].sort((a, b) => {
     const ai = order.findIndex(o => a.status.startsWith(o));
     const bi = order.findIndex(o => b.status.startsWith(o));
