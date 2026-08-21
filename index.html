@@ -1,4 +1,4 @@
-<!-- build:1786724844 -->
+<!-- build:1787328000 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6311,13 +6311,191 @@ const ISSUES = [
         occurrences: [{"n": 1, "when": "2026-08-21 11:32 UTC", "what": "Celery DEGRADEDPERFORMANCE alert"}, {"n": 2, "when": "2026-08-21 11:34 UTC", "what": "Celery OPERATIONAL recovery - 14 workers online"}],
         comments: [],
     },
-];
+    
+    {
+      id: "CANCELLATION-SOP-AUG21",
+      title: "Aalok assigned Brunno ownership of Contract Cancellation SOP v1.3",
+      priority: "p2",
+      status: "open",
+      tab: "tasks",
+      tags: [],
+      mondayId: null,
+      system: "TEAMS",
+      responsible: "Brunno Tavarez",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Aalok assigned Brunno ownership of Contract Cancellation SOP v1.3 via the Cancellation Recovery Teams group chat at 13:16 UTC. Scope covers Kitchen Makeovers and Reflect Digital accounts. Brunno acknowledged and proposed creating a shared finance@ mailbox.",
+      howItHappens: "Teams group chat message from Aalok at 13:16 UTC. Brunno replied 'sure' at 13:19 UTC. Aalok chased at 14:03 UTC and again at 14:39 UTC asking Brunno to check drafts and send emails today. Drafts were reviewed, revised with Aalok, Nikhil and Piers input, and sent by ~16:00 UTC.",
+      relatedIds: [],
+      context: "Cancellation Recovery group chat. Kitchen Makeovers (Will, 2 instalments paid, 10 outstanding). Reflect Digital (Becky/Chantel). Shared mailbox finance@ created by Brunno with Nikhil, Aalok, Piers as members.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T13:16Z", what: "Aalok assigned SOP to Brunno in Teams group chat" },
+        { n: 2, when: "2026-08-21T14:39Z", what: "Aalok chased Brunno to check drafts and send today" }
+      ],
+      comments: []
+    },
+    {
+      id: "FREYA-PHISHING-AUG21",
+      title: "SECURITY: Spoofed Aalok email sent to Freya Pilbeam from ger.swi@mail.ru",
+      priority: "p2",
+      status: "open",
+      tab: "security",
+      tags: ["escalated"],
+      mondayId: null,
+      system: "EMAIL",
+      responsible: "Brunno Tavarez",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "A spoofed email impersonating Aalok Shukla was sent from ger.swi@mail.ru to Freya Pilbeam at her hotmail+implementai address at 10:59 UTC. Freya forwarded it to Brunno at 13:58 UTC. Same executive impersonation pattern as PHISH-EXEC-001.",
+      howItHappens: "Inbox email from Freya Pilbeam forwarding the phishing message. Subject: 'Fw: Freya'. Original sender: ger.swi@mail.ru posing as Aalok Yashwant Shukla. ACTION REQUIRED: Warn Freya not to engage, advise on phishing protocols, flag to Shahzeb.",
+      relatedIds: ["PHISH-EXEC-001"],
+      context: "Freya is a new team member (Day 1 was 18 Aug 2026). This is a targeted social engineering attempt on a new hire.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T10:59Z", what: "Phishing email sent to Freya from ger.swi@mail.ru impersonating Aalok" },
+        { n: 2, when: "2026-08-21T13:58Z", what: "Freya forwarded to Brunno" }
+      ],
+      comments: []
+    },
+    {
+      id: "AALOK-LIVE-CHAT-CLIENTS-AUG21",
+      title: "Aalok requesting live chat widget ticket for Orbital and Almo Exertis",
+      priority: "p2",
+      status: "open",
+      tab: "tasks",
+      tags: [],
+      mondayId: null,
+      system: "SLACK",
+      responsible: "Faisal",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Aalok posted in #aios-dev at 12:51 UTC requesting a ticket ASAP for a robust AIOS-connected live chat widget for Orbital (hopefully live) and Almo Exertis. Tagged Faisal and Brunno as FYI.",
+      howItHappens: "Two messages in #aios-dev from U06CBJGQ353 (Aalok): 12:51 UTC describing the two clients needing live chat, and 13:07 UTC saying 'this needs a ticket asap'. Brunno tagged as FYI.",
+      relatedIds: [],
+      context: "Orbital and Almo Exertis are the two clients. Almo needs a robust AIOS connected widget. Preview shared by Aalok.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T12:51Z", what: "Aalok posted live chat request in #aios-dev tagging Faisal and Brunno FYI" }
+      ],
+      comments: []
+    },
+    {
+      id: "CELERY-DEGRADE-AUG21-UPDATE",
+      title: "Celery minor outage x2 today - both self-recovered (14 workers online)",
+      priority: "p3",
+      status: "resolved",
+      tab: "platform",
+      tags: [],
+      mondayId: null,
+      system: "SLACK",
+      responsible: "Habib Qayoom",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Two Celery minor outage alert pairs fired today in #aios-alerts. First: ~11:26 UTC degraded, recovered ~11:31 UTC. Second: ~15:53 UTC degraded, recovered ~16:00 UTC. Both self-resolved. 14 workers online confirmed.",
+      howItHappens: "Four #aios-alerts bot messages: two DEGRADEDPERFORMANCE warnings and two OPERATIONAL recoveries. Cause: no data point in query window (scrape/ingestion gap), treating as inconclusive.",
+      relatedIds: [],
+      context: "Not a confirmed outage. Monitoring gap rather than actual worker failure. 14 workers online is healthy (8+ required).",
+      occurrences: [
+        { n: 1, when: "2026-08-21T11:26Z", what: "Celery minor outage alert, self-recovered ~11:31 UTC" },
+        { n: 2, when: "2026-08-21T15:53Z", what: "Celery minor outage alert, self-recovered ~16:00 UTC" }
+      ],
+      comments: []
+    },
+    {
+      id: "NIKHIL-SOD-EOD-DIRECTIVE-AUG21-UPDATE",
+      title: "Nikhil @everyone Teams mention confirming SOD/EOD directive effective today",
+      priority: "p3",
+      status: "open",
+      tab: "tasks",
+      tags: [],
+      mondayId: null,
+      system: "TEAMS",
+      responsible: "Nikhil Mehrishi",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Nikhil sent an @everyone mention in Teams at 11:30 UTC confirming the SOD/EOD directive: SEs must post Start-of-Day and End-of-Day updates directly in client Slack channels, not in #ai-soln-daily-updates. Effective immediately.",
+      howItHappens: "Inbox email notification from Teams at 11:30 UTC. Preview: 'Everyone, quick update: Starting today, SEs will post their Start-of-Day (SOD) and End-of-Day (EOD) updates directly...'",
+      relatedIds: ["NIKHIL-SOD-EOD-DIRECTIVE-AUG21"],
+      context: "Continuation of the SOD/EOD directive from earlier today. This is the @everyone confirmation blast.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T11:30Z", what: "Nikhil @everyone Teams mention confirming SOD/EOD directive" }
+      ],
+      comments: []
+    },
+    {
+      id: "LG-CHAT-AGENT-REPLY-AUG21",
+      title: "Brunno replied to Howard Lea re LG Chat Agent widget size increase",
+      priority: "p3",
+      status: "resolved",
+      tab: "tasks",
+      tags: [],
+      mondayId: null,
+      system: "EMAIL",
+      responsible: "Brunno Tavarez",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Brunno sent a reply to Howard Lea (Nexora) at 12:02 UTC confirming the LG Chat Agent widget size has been increased as requested. Includes a link to the updated widget.",
+      howItHappens: "Sent email at 12:02 UTC. Subject: 'Re: LG Chat Agent'. Preview: 'Hi Howard, We have increased the widget size as per your request. Let me know how you feel about it.'",
+      relatedIds: ["NEXORA-LG-AGENT-001"],
+      context: "Positive client update. Widget size increase completed and confirmed to client.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T12:02Z", what: "Brunno replied to Howard Lea confirming widget size increase" }
+      ],
+      comments: []
+    },
+    {
+      id: "TWILIO-DEGRADE-AUG21-4PM",
+      title: "7x Twilio auto-recharges today (08:23-15:18 UTC) - occ++ on TWILIO-DEGRADE-001",
+      priority: "p3",
+      status: "open",
+      tab: "platform",
+      tags: [],
+      mondayId: null,
+      system: "EMAIL",
+      responsible: "Habib Qayoom",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "7 Twilio auto-recharge notifications received in inbox today between 08:23 and 15:18 UTC. Twilio account AC3cb95497d50599503326df3d1a7aac53 (hello@implementai.io) repeatedly hitting balance threshold and auto-recharging. occ++ on TWILIO-DEGRADE-001.",
+      howItHappens: "Inbox emails from noreply@twilio.com at 08:23, 08:44, 09:07, 09:59, 11:17, 12:15, 15:18 UTC. All are auto-recharge notifications for the same Twilio account.",
+      relatedIds: ["TWILIO-DEGRADE-001"],
+      context: "Persistent high call volume draining Twilio balance multiple times per day. Pattern consistent with previous weeks.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T08:23Z", what: "Twilio recharge 1" },
+        { n: 2, when: "2026-08-21T08:44Z", what: "Twilio recharge 2" },
+        { n: 3, when: "2026-08-21T09:07Z", what: "Twilio recharge 3" },
+        { n: 4, when: "2026-08-21T09:59Z", what: "Twilio recharge 4" },
+        { n: 5, when: "2026-08-21T11:17Z", what: "Twilio recharge 5" },
+        { n: 6, when: "2026-08-21T12:15Z", what: "Twilio recharge 6" },
+        { n: 7, when: "2026-08-21T15:18Z", what: "Twilio recharge 7" }
+      ],
+      comments: []
+    }
+  ];
 const TIME_LOG = [
     {
       date: "2026-08-21",
       standard: 8.0,
       overtime: 0.5,
-      notes: "4pm Command Centre full scan. Mina mailbox termination meeting 11:00-11:30. ISO Stage 2 remediation briefing to Abayomi. Celery minor outage self-resolved. Nikhil SOD/EOD directive. 7x Twilio recharges. Aalok assigned Cancellation SOP to Brunno (Teams 13:16). Freya phishing email flagged (spoofed Aalok). Howard Lea LG Chat Agent reply sent 12:02. Aalok live chat ticket request for Orbital and Almo Exertis."
+      notes: "4pm Command Centre full scan. Mina mailbox termination meeting 11:00-11:30 COMPLETED. ISO Stage 2 remediation briefing to Abayomi. Celery minor outage x2 self-resolved. CANCELLATION-SOP-AUG21: Aalok assigned Brunno Contract Cancellation SOP ownership - Kitchen Makeovers + Reflect Digital. finance@ shared mailbox created. Drafts sent by EOD. FREYA-PHISHING-AUG21: Spoofed Aalok email from ger.swi@mail.ru to Freya - ACTION REQUIRED. AALOK-LIVE-CHAT-CLIENTS-AUG21: Ticket needed for Orbital + Almo Exertis live chat. TWILIO-DEGRADE-AUG21: 7x recharges today. LG Chat Agent widget reply to Howard Lea 12:02 UTC. Nikhil SOD/EOD directive @everyone confirmed. 7 NEW ITEMS LOGGED."
     },
     {
       date: "2026-08-18",
