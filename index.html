@@ -574,7 +574,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 19 Aug 2026, 4pm UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 21 Aug 2026, 12pm UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -5983,6 +5983,12 @@ const ISSUES = [
 ];
 const TIME_LOG = [
     {
+      date: "2026-08-21",
+      standard: 4.0,
+      overtime: 0.0,
+      notes: "12pm Command Centre scan. Mina mailbox termination meeting 11:00-11:30. ISO Stage 2 remediation briefing to Abayomi. Celery minor outage self-resolved. Nikhil SOD/EOD directive. 5x Twilio recharges."
+    },
+    {
       date: "2026-08-18",
       standard: 8.0,
       overtime: 0.5,
@@ -8706,4 +8712,161 @@ function renderAgentsTab() {
 </div>
 
 </body>
-</html>
+</html
+    {
+      id: "CELERY-DEGRADE-AUG21",
+      title: "Celery minor outage then recovered - 21 Aug",
+      priority: "p3",
+      status: "resolved",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "CELERY",
+      responsible: "Habib",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      dateResolved: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Celery degraded (no data point in scrape window) then self-recovered. Workers online: 14.",
+      howItHappens: "aios-alerts: warning fired ~11:34 UTC, recovery confirmed ~11:37 UTC. Likely scrape/ingestion gap, not confirmed down.",
+      relatedIds: ["ANTHROPIC-DEGRADE-003"],
+      context: "Seen in #aios-alerts. Self-resolved within minutes.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T11:34 UTC", what: "DEGRADEDPERFORMANCE alert fired" },
+        { n: 2, when: "2026-08-21T11:37 UTC", what: "OPERATIONAL recovery confirmed, 14 workers online" }
+      ],
+      comments: [],
+      rootCause: "Scrape/ingestion gap - inconclusive, treated as self-resolved",
+      fixApplied: "Self-resolved",
+      resolvedBy: "System"
+    },
+    {
+      id: "MINA-MAILBOX-TERMINATION-AUG21",
+      title: "Mina Rizk shared mailbox discontinuation meeting - 21 Aug",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "IMPLAI",
+      responsible: "Brunno",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Meeting held at 11:00-11:30 UTC with Aalok, Katrina, Piers, HR to ensure all data extracted from Mina's account before termination.",
+      howItHappens: "Calendar event + Teams group chat. Brunno posted in group: 30-day window ends tomorrow - asking if mailbox can now be terminated.",
+      relatedIds: ["SYED-ACCOUNT-EXTRACT-001"],
+      context: "Brunno asked in group chat at 11:56 UTC: 'Hi Guys, are we done with Mina's mailbox? can it be terminated? the 30 days will be tomorrow'. Awaiting confirmation from team.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T11:00 UTC", what: "Meeting held - Mina Rizk shared mailbox discontinuation" },
+        { n: 2, when: "2026-08-21T11:56 UTC", what: "Brunno asked group if mailbox can now be terminated (30-day window ends tomorrow)" }
+      ],
+      comments: []
+    },
+    {
+      id: "ABAYOMI-ISO-REMEDIATION-AUG21",
+      title: "ISO Stage 2 prep: Abayomi audit checklist remediation required",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: ["escalated"],
+      mondayId: "",
+      system: "IMPLAI",
+      responsible: "Abayomi",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "ISO 27001:2022 Stage 1 audit found a minor non-conformity: no audit checklist covering all clauses and controls was available (Clause 9.2.2). Abayomi must produce this before Stage 2 on 2 Oct 2026.",
+      howItHappens: "Brunno DM'd Abayomi at 11:50 UTC with Stage 1 transcript and details. Abayomi confirmed he still has his internal audit report and will generate the checklist from it. Piers to be contacted for additional evidence.",
+      relatedIds: ["ISO-STAGE1-PASSED-AUG19"],
+      context: "Stage 2 audit is 2 Oct 2026. Minor non-conformity: ISO/IEC 27001:2022 Clause 9.2.2 - audit checklist not available. Abayomi will create a spreadsheet of all controls checked plus evidence for non-conformities found. Deadline: before 2 Oct.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T11:50 UTC", what: "Brunno briefed Abayomi on remediation needed - shared transcript (minute 50)" },
+        { n: 2, when: "2026-08-21T11:55 UTC", what: "Abayomi confirmed will produce checklist from his report; will request Piers for additional evidence" }
+      ],
+      comments: []
+    },
+    {
+      id: "NIKHIL-SOD-EOD-DIRECTIVE-AUG21",
+      title: "Nikhil directive: SEs to post SOD/EOD in client Slack channels from today",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "IMPLAI",
+      responsible: "Nikhil",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Nikhil announced that SEs must now post Start-of-Day and End-of-Day updates directly in respective client Slack channels instead of #ai-soln-daily-updates. Effective immediately.",
+      howItHappens: "Teams group message at 10:30 UTC, also notified via email mention at 11:30 UTC. Process change for all Solutions Engineers.",
+      relatedIds: [],
+      context: "Message: 'Starting today, SEs will post their SOD and EOD updates directly in the respective client Slack channels, instead of #ai-soln-daily-updates. This should help drive better visibility, ownership...'",
+      occurrences: [
+        { n: 1, when: "2026-08-21T10:30 UTC", what: "Nikhil posted directive in Teams group chat" },
+        { n: 2, when: "2026-08-21T11:30 UTC", what: "Nikhil @mentioned everyone in Teams chat - email notification received" }
+      ],
+      comments: []
+    },
+    {
+      id: "TWILIO-DEGRADE-AUG21",
+      title: "Twilio auto-recharge x5 today - 21 Aug",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "TWILIO",
+      responsible: "Brunno",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Twilio account auto-recharged 5 times today (08:23, 08:44, 09:07, 09:59, 11:17 UTC) indicating high outbound call volume or balance dropping repeatedly.",
+      howItHappens: "5x recharge emails to brunno@ from noreply@twilio.com. Account: AC3cb95497d50599503326df3d1a7aac53. TWILIO-DEGRADE-001 ongoing.",
+      relatedIds: ["TWILIO-DEGRADE-001"],
+      context: "Pattern consistent with previous days. occ++ on TWILIO-DEGRADE-001.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T08:23 UTC", what: "Twilio recharge #1" },
+        { n: 2, when: "2026-08-21T08:44 UTC", what: "Twilio recharge #2" },
+        { n: 3, when: "2026-08-21T09:07 UTC", what: "Twilio recharge #3" },
+        { n: 4, when: "2026-08-21T09:59 UTC", what: "Twilio recharge #4" },
+        { n: 5, when: "2026-08-21T11:17 UTC", what: "Twilio recharge #5" }
+      ],
+      comments: []
+    },
+    {
+      id: "AALOK-METADATA-QUERY-AUG21",
+      title: "Aalok asking about metadata availability in AIOS (#aios-dev)",
+      priority: "p3",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "IMPLAI",
+      responsible: "Faisal",
+      dateFirst: "2026-08-21",
+      dateLast: "2026-08-21",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Aalok asked Faisal (U0790KJ70FR) in #aios-dev whether certain metadata is available to pull through. No response confirmed yet.",
+      howItHappens: "#aios-dev message at 07:35 UTC. Awaiting Faisal reply.",
+      relatedIds: [],
+      context: "Aalok: '<@U0790KJ70FR> is this meta data available to pull through?' - context/screenshot not captured. Faisal tagged.",
+      occurrences: [
+        { n: 1, when: "2026-08-21T07:35 UTC", what: "Aalok tagged Faisal asking about metadata availability in #aios-dev" }
+      ],
+      comments: []
+    },
+  >
