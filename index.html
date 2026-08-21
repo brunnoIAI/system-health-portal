@@ -6491,6 +6491,7 @@ const ISSUES = [
     }
   ];
 const TIME_LOG = [
+  { date: "21 Aug 2026", standard: 8.0, overtime: 0.5, total: 8.5, note: "EOD 4pm scan - Cancellation Recovery letters, SOC2 audit reply needed, Mina mailbox meeting, phishing alert handled" },
     {
       date: "2026-08-21",
       standard: 8.0,
@@ -7451,6 +7452,82 @@ function handleAvatarUpload(event){const file=event.target.files[0,
     occurrences: [{n:1, when:"2026-08-12 ~14:22 UTC", what:"Advantos calls show In Progress after termination, no transcript push"}],
     comments: []
   }
+
+
+    {
+      id: "CANCELLATION-RECOVERY-ACTIVE-AUG21",
+      title: "Cancellation Recovery - Kitchen Makeovers SOP drafting active",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: [],
+      mondayId: "",
+      system: "TEAMS",
+      responsible: "Brunno",
+      dateFirst: "21 Aug 2026",
+      dateLast: "21 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: true,
+      silentFailure: false,
+      whatItDoes: "Cancellation Recovery group chat active all afternoon. Brunno drafted cancellation fee letters for Kitchen Makeovers (12-month contract, 10 instalments outstanding, fee £15,000 + VAT). Piers, Aalok, Nikhil, Brunno all active. Aalok to get Piers input on final figures. Next step: confirm reply date (28 Aug?) and send formal letter.",
+      howItHappens: "Teams group chat 19:aa00d68964a248c8b47ed2d946cfa2ac@thread.v2 - 25+ messages 15:23-16:00 UTC. Brunno drafted 2 versions of the letter. Nikhil clarified 10 instalments outstanding. Piers flagged pricing model change needed.",
+      relatedIds: ["CANCELLATION-SOP-AUG21"],
+      context: "Brunno owns SOP v1.3 per Aalok assignment 13:16 UTC. Cancellation letter for Kitchen Makeovers in progress. Reflect Digital also in scope per Aalok email 14:00 UTC.",
+      occurrences: [
+        { n: 1, when: "21 Aug 2026 15:23 UTC", what: "Cancellation Recovery group chat activated, Brunno begins drafting letters" },
+        { n: 2, when: "21 Aug 2026 16:00 UTC", what: "Brunno asks about reply deadline (28 Aug?), Aalok to get Piers input" }
+      ],
+      comments: []
+    },
+    {
+      id: "SOC2-AUDIT-CHECKIN-AUG21",
+      title: "SOC2 Audit Check-In - Becca Olson (Advantage Partners) UNREAD",
+      priority: "p2",
+      status: "open",
+      tab: "security",
+      tags: ["escalated"],
+      mondayId: "",
+      system: "EMAIL",
+      responsible: "Brunno",
+      dateFirst: "21 Aug 2026",
+      dateLast: "21 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: false,
+      whatItDoes: "Becca Olson from Advantage Partners sent SOC2 audit check-in email at 15:55 UTC. UNREAD. ACTION REQUIRED - reply needed.",
+      howItHappens: "hello@implementai.io inbox. From: becca@advantage-partners.com. Subject: Implement AI SOC 2 Audit Check In.",
+      relatedIds: [],
+      context: "SOC2 audit ongoing. Becca is the auditor contact at Advantage Partners.",
+      occurrences: [
+        { n: 1, when: "21 Aug 2026 15:55 UTC", what: "Email received, unread, reply needed" }
+      ],
+      comments: []
+    },
+    {
+      id: "OUTLOOK-EXPIRY-AUG21",
+      title: "Outlook connection expired (aios-bot alert)",
+      priority: "p3",
+      status: "open",
+      tab: "integrations",
+      tags: [],
+      mondayId: "",
+      system: "INTG",
+      responsible: "Shahzeb",
+      dateFirst: "21 Aug 2026",
+      dateLast: "21 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: true,
+      whatItDoes: "aios-bot posted Outlook connection expired alert today. Integration needs reconnecting.",
+      howItHappens: "#aios-bot channel, bot message ts 1787328241.",
+      relatedIds: ["INTG-EXPIRY-001"],
+      context: "Recurring Outlook expiry pattern. occ++.",
+      occurrences: [
+        { n: 1, when: "21 Aug 2026", what: "Outlook connection expired - aios-bot alert" }
+      ],
+      comments: []
+    },
+
 
 ];if(!file)return;if(file.size>2*1024*1024){alert("File too large. Maximum size is 2MB.");return;}const reader=new FileReader();reader.onload=function(e){const dataUri=e.target.result;const s=getStore();if(!s.avatars)s.avatars={};s.avatars[currentUser.email]=dataUri;saveStore(s);const preview=document.getElementById("avatar-preview");if(preview){preview.innerHTML='<img src="'+dataUri+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';}refreshSidebarUser();renderWorkload();setTimeout(()=>renderSettingsSection(),100);};reader.readAsDataURL(file);}
 function removeAvatar(){const s=getStore();if(s.avatars)delete s.avatars[currentUser.email];saveStore(s);refreshSidebarUser();renderWorkload();renderSettingsSection();}
