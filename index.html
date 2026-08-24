@@ -574,7 +574,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 21 Aug 2026, 4pm UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 24 Aug 2026, 9am UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -3839,7 +3839,7 @@ const ISSUES = [
   {id:"ARSH-COMPROMISE-001",title:"Arsh Laptop Compromised — RESOLVED: Claude Refund Approved 23 Jul",priority:"p1",status:"resolved",tab:"resolved",occ:1,dateFirst:"8 Jul 2026",dateLast:"11 Jul 2026",whatItDoes:"Arsh laptop compromised. Claude account hacked. High usage drawn via Claude Code. Brunno removed Arsh from Claude, sent fresh invite. Aalok asking if this explains high LLM costs. Anthropic support contacted for refund. Shahzeb awaiting response.",responsible:"Brunno / Shahzeb",escalated:true},
   {id:"ANTHROPIC-DEGRADE-002",title:"Anthropic Provider Degraded — 110+ Cycles (self-resolving)",priority:"p2",status:"working",tab:"platform",occ:84,dateFirst:"6 Jun 2026",dateLast:"17 Jul 2026",whatItDoes:"Anthropic provider degraded repeatedly. 75 total cycles. All self-resolved. Last resolved 15:32 UTC 13 Jul. Status: Done for now. 110+ total cycles. All self-resolved within 1-2 hours. Pattern ongoing since June.",responsible:"Engineering",escalated:false},
   {id:"OPENAI-DEGRADE-001",title:"OpenAI Provider Degraded — Recurring Cycles (occ=55+)",priority:"p2",status:"working",tab:"platform",occ:86,dateFirst:"26 May 2026",dateLast:"20 Jul 2026",whatItDoes:"OpenAI WARNING cycles recurring. Extended firing periods. All self-resolved. Pattern ongoing.",responsible:"Engineering",escalated:false},
-  {id:"TWILIO-DEGRADE-001",title:"Twilio Auto-Recharge — 270+ Occurrences",priority:"p2",status:"stuck",tab:"platform",occ:285,dateFirst:"2 Jun 2026",dateLast:"20 Jul 2026",whatItDoes:"Twilio auto-recharge at 270+ total occurrences. 75% uptime ongoing. Balance hits threshold every 45-60 min.",responsible:"Meezab",escalated:false},
+  {id:"TWILIO-DEGRADE-001",title:"Twilio Auto-Recharge — 270+ Occurrences",priority:"p2",status:"stuck",tab:"platform",occ:285,dateFirst:"2 Jun 2026",dateLast:"24 Aug 2026",whatItDoes:"Twilio auto-recharge at 270+ total occurrences. 75% uptime ongoing. Balance hits threshold every 45-60 min.",responsible:"Meezab",escalated:false},
   {id:"MAKE-CRED-001",title:"Make.com Credits — n8n Migration Directive (occ=12+)",priority:"p2",status:"stuck",tab:"integrations",occ:12,dateFirst:"28 May 2026",dateLast:"14 Jul 2026",whatItDoes:"Make.com credits keep exhausting. 12+ auto-purchases. n8n migration directive active but not yet complete.",responsible:"Shahzeb / Team",escalated:false},
   {id:"INTG-DISCONNECT-001",title:"Integration Disconnect Bug — Cannot Remove Outlook/Gmail/Drive",priority:"p2",status:"working",tab:"integrations",occ:3,dateFirst:"17 Jun 2026",dateLast:"14 Jul 2026",whatItDoes:"Cannot disconnect Outlook, Gmail, or Google Drive from a sales agent on customer preview account. Error: failed to disconnect. Reported by Aalok.",responsible:"Faisal",escalated:false},
   {id:"AIRTABLE-AUTO-001",title:"Airtable Automation Failing — C4 Logistics",priority:"p2",status:"working",tab:"integrations",occ:5,dateFirst:"26 Jun 2026",dateLast:"14 Jul 2026",whatItDoes:"Send to AIOS v1.1 automation failing in C4 Logistics. Client-facing impact.",responsible:"Engineering",escalated:false},
@@ -6871,7 +6871,62 @@ const TIME_LOG = [
       occurrences: [{"n": 1, "when": "2026-08-18 14:47 UTC", "what": "Salary invoice sent to accounts@implementai.io"}],
       comments: []
     }
-  ];
+    ,{
+    id: "ANTHROPIC-DEGRADE-AUG24",
+    title: "Anthropic minor outage - elevated errors, self-resolved",
+    priority: "p2",
+    status: "resolved",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "ANTHROPIC",
+    responsible: "Habib",
+    dateFirst: "24 Aug 2026",
+    dateLast: "24 Aug 2026",
+    dateResolved: "24 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Anthropic provider experienced elevated errors across claude.ai, Claude API, Claude Code and Claude Cowork from ~08:07 UTC. Marked as minor outage under maintenance.",
+    howItHappens: "External Anthropic infrastructure issue. Alert fired in #aios-alerts at 08:07 UTC, recovery confirmed at 11:33 UTC. Self-resolved in ~3h 26min.",
+    relatedIds: "ANTHROPIC-DEGRADE-002",
+    context: "Detected via #aios-alerts Slack channel. No engineer action required. All services operational by 11:33 UTC. Source: 24 Aug 2026 9am Command Centre scan.",
+    rootCause: "Anthropic upstream infrastructure - elevated errors on multiple models. Investigating message from Anthropic.",
+    fixApplied: "Self-resolved by Anthropic. No action taken internally.",
+    resolvedBy: "Anthropic (external)",
+    occurrences: [{n: 1, when: "24 Aug 2026 08:07 UTC", what: "Minor outage fired in #aios-alerts - claude.ai, API, Claude Code affected"}, {n: 2, when: "24 Aug 2026 11:33 UTC", what: "Recovered - OPERATIONAL"}],
+    comments: []
+  }
+  ,{
+    id: "SLACK-SCHEDULED-RUN-QUERY-AUG24",
+    title: "User asking how to update a scheduled run in Command (#aios)",
+    priority: "p3",
+    status: "open",
+    tab: "platform",
+    tags: [],
+    mondayId: "",
+    system: "AIOS",
+    responsible: "Shahzeb",
+    dateFirst: "24 Aug 2026",
+    dateLast: "24 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "A user posted in #aios asking U0790KJ70FR how to update a scheduled run configuration in Command (cron job, recurring). Shared a full config table showing status Active, schedule type Cron, last run 21 Aug 2026 09:00 AM.",
+    howItHappens: "User question in #aios at ~10:21 UTC 24 Aug. No engineer reply seen yet.",
+    relatedIds: "AIOS-TRIGGER-001",
+    context: "Detected via #aios Slack channel scan. Needs engineer response from U0790KJ70FR or Shahzeb. Source: 24 Aug 2026 9am Command Centre scan.",
+    occurrences: [{n: 1, when: "24 Aug 2026 10:21 UTC", what: "User asked in #aios how to update scheduled run - no reply yet"}],
+    comments: []
+  }
+
+  ,{
+    date: "24 Aug 2026",
+    standard: 8.0,
+    overtime: 0,
+    notes: "Command Centre full scan 9am - Anthropic minor outage detected and resolved, 2x Twilio recharges, Slack user query on scheduled runs, no Teams DMs today, GitHub 2FA reminder outstanding."
+  }
+];
 
 
 const GOD_MODE_CONFIGS = {
