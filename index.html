@@ -574,7 +574,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Thu 27 Aug 2026, 12:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Thu 27 Aug 2026, 14:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -610,6 +610,76 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 
 <script>
 const ISSUES = [
+  {
+    id: "DOCUSIGN-KAMIL-001",
+    title: "DocuSign: Kamil termination checklist - ACTION REQUIRED",
+    priority: "p2",
+    status: "open",
+    tab: "tasks",
+    tags: [],
+    mondayId: "",
+    system: "HR",
+    responsible: "Brunno",
+    dateFirst: "2026-08-27",
+    dateLast: "2026-08-27",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Implement AI sent Brunno a DocuSign for Kamil Murgala termination checklist.docx. Received 13:56 UTC 27 Aug 2026. Unread. Requires review and signature.",
+    howItHappens: "DocuSign email from dse@eumail.docusign.net at 13:56 UTC. Kamil termination process.",
+    relatedIds: [],
+    context: "Kamil termination. Document needs Brunno action before EOD.",
+    occurrences: [{ n: 1, when: "2026-08-27 13:56 UTC", what: "DocuSign received, unread, action required" }],
+    comments: []
+  },
+  {
+    id: "BPO-HOSTING-001",
+    title: "SE request: host bpo.implementai.io on Azure",
+    priority: "p3",
+    status: "open",
+    tab: "tasks",
+    tags: [],
+    mondayId: "",
+    system: "Platform",
+    responsible: "Habib",
+    dateFirst: "2026-08-27",
+    dateLast: "2026-08-27",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "U09C1VD3WSZ posted in #aios-dev requesting bpo-website-one.vercel.app be hosted under bpo.implementai.io on Azure. Tagged Meezab and U0790KJ70FR.",
+    howItHappens: "Slack #aios-dev 10:03 UTC 27 Aug 2026.",
+    relatedIds: ["AIOS-DEV-AZURE-001"],
+    context: "Related to ongoing Azure hosting question. No reply yet.",
+    occurrences: [{ n: 1, when: "2026-08-27 10:03 UTC", what: "SE requested bpo.implementai.io Azure hosting in #aios-dev" }],
+    comments: []
+  },
+  {
+    id: "CANCELLATION-LETTER-SENT-001",
+    title: "Cancellation fee letter sent to Kitchen Makeovers",
+    priority: "p3",
+    status: "working",
+    tab: "tasks",
+    tags: [],
+    mondayId: "",
+    system: "Operations",
+    responsible: "Brunno",
+    dateFirst: "2026-08-27",
+    dateLast: "2026-08-27",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Brunno drafted and sent cancellation fee letter to Kitchen Makeovers (Will) via Teams Cancellation Recovery group. Sets out 12-month committed term from 9 Jan 2026. Aalok and Nikhil reviewed and approved.",
+    howItHappens: "Teams Cancellation Recovery group. Brunno sent 09:26 UTC, Aalok approved 09:31 UTC, Nikhil confirmed 10:18 UTC.",
+    relatedIds: ["CANCELLATION-RECOVERY-ACTIVE-AUG21"],
+    context: "Awaiting client response. Reply deadline not confirmed.",
+    occurrences: [
+      { n: 1, when: "2026-08-27 09:26 UTC", what: "Letter sent to Will (Kitchen Makeovers)" },
+      { n: 2, when: "2026-08-27 09:31 UTC", what: "Aalok approved: agree, then send" },
+      { n: 3, when: "2026-08-27 10:18 UTC", what: "Nikhil confirmed: yes looks good" }
+    ],
+    comments: []
+  },
 
         {
           id: "CANCELLATION-SOP-AUG21",
@@ -6494,10 +6564,10 @@ const ISSUES = [
 const TIME_LOG = [
     {
       date: "2026-08-27",
-      standard: 4.0,
+      standard: 6.0,
       overtime: 0,
-      total: 4.0,
-      notes: "10am + 12pm Command Centre scans. Lunch 12:00-13:00. IAI <> Nexora review 14:30-15:00 upcoming. NEW: AIOS-CREDIT-003 (P1 customer preview 0 credits), AIOS-CREDITS-VIS-001 (P2 credit vis removed), GEMINI-API-PAUSE-001 (P2 Gemini paused), WISPR-INVOICE-001 (P3), AIOS-DEV-GITHUB-001 (P3), AIOS-DEV-AZURE-001 (P3), DATA-TABLES-FEEDBACK-001 (P3 Meezab testing feedback). TWILIO-DEGRADE-001 occ++ x2. 7 items logged. Afternoon in progress."
+      total: 6.0,
+      notes: "10am + 12pm + 2pm Command Centre scans. Lunch 12:00-13:00. IAI <> Nexora review 14:30-15:00 (active). NEW: AIOS-CREDIT-003 (P1), AIOS-CREDITS-VIS-001 (P2), GEMINI-API-PAUSE-001 (P2), WISPR-INVOICE-001 (P3), AIOS-DEV-GITHUB-001 (P3), AIOS-DEV-AZURE-001 (P3), DATA-TABLES-FEEDBACK-001 (P3), DOCUSIGN-KAMIL-001 (P2 action required), BPO-HOSTING-001 (P3), CANCELLATION-LETTER-SENT-001 (P3 sent and approved). TWILIO-DEGRADE-001 occ++ x3. Cancellation Recovery letter approved by Aalok+Nikhil. Nexora meeting in progress. 10 items logged today."
     },
   { date: "21 Aug 2026", standard: 8.0, overtime: 0.5, total: 8.5, note: "EOD 4pm scan - Cancellation Recovery letters, SOC2 audit reply needed, Mina mailbox meeting, phishing alert handled" },
     {
