@@ -574,7 +574,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Thu 27 Aug 2026, 10:08 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Thu 27 Aug 2026, 12:00 UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -3912,7 +3912,8 @@ const ISSUES = [
       howItHappens: "Meeting was created without accounting for Nexora contact's timezone (EST vs UK time). Howard flagged via email at 15:44 UTC. Brunno corrected and resent invite at 15:48 UTC.",
       relatedIds: [],
       context: "Nexora client relationship. Shahan also accepted the invite. Meeting rescheduled successfully.",
-      occurrences: [{ n: 1, when: "2026-08-05 15:44 UTC", what: "Howard Lea flagged meeting time was 4am EST. Brunno adjusted and resent." }],
+      occurrences: [{ n: 1, when: "2026-08-05 15:44 UTC", what: "Howard Lea flagged meeting time was 4am EST. Brunno adjusted and resent." },
+        { n: "occ++", when: "27 Aug 2026 10:46 UTC", what: "Twilio recharge (12pm sweep confirmation)" }],
       comments: [],
       rootCause: "Timezone not checked when creating cross-timezone meeting invite.",
       fixApplied: "Meeting time adjusted and new invite sent. Howard confirmed.",
@@ -6491,6 +6492,13 @@ const ISSUES = [
     }
   ];
 const TIME_LOG = [
+    {
+      date: "2026-08-27",
+      standard: 4.0,
+      overtime: 0,
+      total: 4.0,
+      notes: "10am + 12pm Command Centre scans. Lunch 12:00-13:00. IAI <> Nexora review 14:30-15:00 upcoming. NEW: AIOS-CREDIT-003 (P1 customer preview 0 credits), AIOS-CREDITS-VIS-001 (P2 credit vis removed), GEMINI-API-PAUSE-001 (P2 Gemini paused), WISPR-INVOICE-001 (P3), AIOS-DEV-GITHUB-001 (P3), AIOS-DEV-AZURE-001 (P3), DATA-TABLES-FEEDBACK-001 (P3 Meezab testing feedback). TWILIO-DEGRADE-001 occ++ x2. 7 items logged. Afternoon in progress."
+    },
   { date: "21 Aug 2026", standard: 8.0, overtime: 0.5, total: 8.5, note: "EOD 4pm scan - Cancellation Recovery letters, SOC2 audit reply needed, Mina mailbox meeting, phishing alert handled" },
     {
       date: "2026-08-21",
@@ -9414,7 +9422,32 @@ function renderAgentsTab() {
       ],
       comments: []
     }
-  ];
+  
+  {
+    id: "DATA-TABLES-FEEDBACK-001",
+    title: "Data Tables - SE testing feedback: 6 improvement areas flagged",
+    priority: "p3",
+    status: "working",
+    tab: "Platform",
+    tags: [],
+    mondayId: "",
+    system: "AIOS",
+    responsible: "Shahzeb / Faisal",
+    dateFirst: "27 Aug 2026",
+    dateLast: "27 Aug 2026",
+    daysOpen: 0,
+    escalatedAalok: false,
+    silentFailure: false,
+    whatItDoes: "Data Tables feature has 6 UX/functional gaps identified by Meezab in #aios-dev testing: default access mode wrong, insert failures return no reason, no duplicate/primary key checks, Analyst agent cannot use persona prompt for actions, no Copy Schema button, no list of available actions.",
+    howItHappens: "Meezab (SE Lead) posted comprehensive Data Tables testing feedback at 10:30 UTC in #aios-dev, tagged Aalok, Shahzeb, Onkar, and Faisal. Feature works but 6 areas need improvement for SE usability.",
+    relatedIds: [],
+    context: "Data Tables feature is live. Meezab confirmed overall it works and did not break. Feedback is for SE workflow improvements before wider rollout.",
+    occurrences: [
+      { n: 1, when: "27 Aug 2026 10:30 UTC", what: "Meezab posted full Data Tables testing feedback in #aios-dev, 6 improvement areas, tagged Aalok/Shahzeb/Onkar/Faisal" }
+    ],
+    comments: []
+  },
+];
   const sorted = [...CLIENTS_DATA].sort((a, b) => {
     const ai = order.findIndex(o => a.status.startsWith(o));
     const bi = order.findIndex(o => b.status.startsWith(o));
