@@ -574,7 +574,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
           <button onclick="exportPortal()" style="background:rgba(108,93,211,0.1);border:1px solid rgba(108,93,211,0.25);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;color:#6C5DD3;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;margin-right:8px;" title="Export all issues to CSV">
   <i class="fas fa-download"></i> Export
 </button>
-<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: Thu 27 Aug 2026, 14:00 UK</span></div>
+<div class="sweep-indicator"><div class="sweep-dot"></div><span>Last sweep: 27 Aug 2026, 3:01pm UK</span></div>
           <div class="notif-wrapper">
             <button class="notif-btn" onclick="toggleNotifDropdown()" title="Notifications">
               <i class="fas fa-bell"></i>
@@ -7137,7 +7137,32 @@ const TIME_LOG = [
       comments: []
     },
 
-];
+,
+    {
+      id: "BRUNNO-CREDIT-SPIKE-001",
+      title: "Brunno Command Credits Spiking Unexpectedly",
+      priority: "p2",
+      status: "working",
+      tab: "platform",
+      tags: ["silent"],
+      mondayId: null,
+      system: "PLATFORM",
+      responsible: "Ubaid",
+      dateFirst: "27 Aug 2026",
+      dateLast: "27 Aug 2026",
+      daysOpen: 0,
+      escalatedAalok: false,
+      silentFailure: true,
+      whatItDoes: "Brunno's Command account is consuming credits at an abnormal rate. A quick test showed a significant spike. This was previously reported to Ubaid but the issue persists.",
+      howItHappens: "Brunno posted in #aios at 15:06 UTC Aug 27 flagging that credit consumption on his Command account has skyrocketed. He ran a test and confirmed the spike. The issue was reported to Ubaid previously with no resolution confirmed.",
+      relatedIds: ["AIOS-CREDIT-003", "AIOS-CREDITS-VIS-001"],
+      context: "Brunno flagged: 'I have reported it to Ubaid before but I still seeing the same issue. I have noticed that my command credits have skyrocket in terms of consumption. I just did a test.' Posted #aios 15:06 UTC 27 Aug 2026.",
+      occurrences: [
+        { n: 1, when: "27 Aug 2026 15:06 UTC", what: "Brunno flagged credit spike in #aios, tagged Faisal and U0790KJ70FR" }
+      ],
+      comments: []
+    }
+  ];
 
 
 const GOD_MODE_CONFIGS = {
