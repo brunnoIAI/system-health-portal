@@ -1406,16 +1406,54 @@ function formatMins(mins){
 
 
 // ===================== EARNINGS =====================
+let earningsMonthOffset = 0; // 0 = current month, -1 = previous month, etc.
+
+function getEarningsMonthDate(offset) {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth() + offset, 1);
+}
+
+function getMonthName(offset) {
+  const d = getEarningsMonthDate(offset);
+  return d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+}
+
+function getMonthBounds(offset) {
+  const d = getEarningsMonthDate(offset);
+  const start = new Date(d.getFullYear(), d.getMonth(), 1);
+  const end = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  return {
+    startStr: start.toISOString().split('T')[0],
+    endStr: end.toISOString().split('T')[0],
+    start, end
+  };
+}
+
+
 const HOURLY_GBP = 18.75;
 const STANDARD_HOURS = 8;
 const EUR_RATE = 1.17; // approximate - update periodically
 
 async function renderEarnings(){
-  // Join earnings with work_hours to get login/logout times
-  const {data:rows} = await SB.from('brunno_earnings').select('*').order('work_date',{ascending:false}).limit(60);
-  const {data:whRows} = await SB.from('brunno_work_hours').select('*').order('work_date',{ascending:false}).limit(60);
-  const earnings = rows || [];
-  const whMap = {};(whRows||[]).forEach(w=>{whMap[w.work_date]=w;});
+  // Fetch ALL earnings and work_hours
+  const {data:allRows} = await SB.from('brunno_earnings').select('*').order('work_date',{ascending:false}).limit(200);
+  const {data:allWhRows} = await SB.from('brunno_work_hours').select('*').order('work_date',{ascending:false}).limit(200);
+  const allEarnings = allRows || [];
+  const allWhMap = {};(allWhRows||[]).forEach(w=>{allWhMap[w.work_date]=w;});
+
+  // Filter by selected month
+  const bounds = getMonthBounds(earningsMonthOffset);
+  const earnings = allEarnings.filter(r => r.work_date >= bounds.startStr && r.work_date <= bounds.endStr);
+  const whMap = {};
+  Object.keys(allWhMap).forEach(d => {
+    if (d >= bounds.startStr && d <= bounds.endStr) whMap[d] = allWhMap[d];
+  });
+
+  // Also get all-time totals (for all months summary)
+  const allTotalGBP = allEarnings.reduce((s,r) => s + parseFloat(r.gross_gbp || 0), 0);
+  const allTotalEUR = allEarnings.reduce((s,r) => s + parseFloat(r.gross_eur || 0), 0);
+  const allTotalHrs = allEarnings.reduce((s,r) => s + parseFloat(r.actual_hours || 0), 0);
+  const allTotalOT = allEarnings.reduce((s,r) => s + parseFloat(r.overtime_hours || 0), 0);
 
   // For today with no logout: calculate live clock hours
   // Earnings are ALWAYS clock-based: (logout OR now) - login - lunch_duration
@@ -1448,25 +1486,51 @@ async function renderEarnings(){
     todayEarningsRow.gross_eur=(liveHrs*18.75*1.17).toFixed(2);
   }
 
-  // Totals
+  // Totals for selected month
   const totalActual = earnings.reduce((s,r)=>s+parseFloat(r.actual_hours||0),0);
   const totalOT = earnings.reduce((s,r)=>s+parseFloat(r.overtime_hours||0),0);
   const totalStd = earnings.reduce((s,r)=>s+parseFloat(r.standard_hours||0),0);
   const totalGBP = earnings.reduce((s,r)=>s+parseFloat(r.gross_gbp||0),0);
   const totalEUR = earnings.reduce((s,r)=>s+parseFloat(r.gross_eur||0),0);
 
-  // This week
+  // This week (only if viewing current month)
   const weekStart = new Date(); weekStart.setDate(weekStart.getDate()-weekStart.getDay()+1);
   const weekStr = weekStart.toISOString().split('T')[0];
-  const weekRows = earnings.filter(r=>r.work_date>=weekStr);
+  const weekRows = allEarnings.filter(r=>r.work_date>=weekStr);
   const weekGBP = weekRows.reduce((s,r)=>s+parseFloat(r.gross_gbp||0),0);
   const weekHrs = weekRows.reduce((s,r)=>s+parseFloat(r.actual_hours||0),0);
 
-  // Today
-  const todayRow = earnings.find(r=>r.work_date===TODAY);
-  const todayGBP = todayRow ? parseFloat(todayRow.gross_gbp||0) : 0;
-  const todayHrs = todayRow ? parseFloat(todayRow.actual_hours||0) : 0;
-  const todayOT = todayRow ? parseFloat(todayRow.overtime_hours||0) : 0;
+  // Today (only if viewing current month)
+  const isCurrentMonth = earningsMonthOffset === 0;
+  const todayRow = allEarnings.find(r=>r.work_date===TODAY);
+  const todayGBP = (isCurrentMonth && todayRow) ? parseFloat(todayRow.gross_gbp||0) : 0;
+  const todayHrs = (isCurrentMonth && todayRow) ? parseFloat(todayRow.actual_hours||0) : 0;
+  const todayOT = (isCurrentMonth && todayRow) ? parseFloat(todayRow.overtime_hours||0) : 0;
+
+  // Build month tabs - show current + previous months that have data
+  const monthsWithData = new Set();
+  allEarnings.forEach(r => {
+    if (r.work_date) {
+      const m = r.work_date.substring(0, 7); // YYYY-MM
+      monthsWithData.add(m);
+    }
+  });
+  // Always include current month
+  const nowDate = new Date();
+  const currentYM = nowDate.toISOString().substring(0, 7);
+  monthsWithData.add(currentYM);
+
+  // Build tabs: current month + any previous months with data
+  let monthTabsHTML = '';
+  const sortedMonths = Array.from(monthsWithData).sort().reverse();
+  // Find the offset for each month relative to current
+  sortedMonths.forEach(ym => {
+    const [y, m] = ym.split('-').map(Number);
+    const offset = (y - nowDate.getFullYear()) * 12 + (m - 1 - nowDate.getMonth());
+    const name = new Date(y, m - 1, 1).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+    const isActive = offset === earningsMonthOffset;
+    monthTabsHTML += `<button onclick="switchEarningsMonth(${offset})" style="padding:5px 14px;border-radius:6px;font-size:11px;font-weight:${isActive?'700':'500'};border:1.5px solid ${isActive?'#6C5DD3':'var(--border)'};background:${isActive?'#F5F3FF':'#fff'};color:${isActive?'#6C5DD3':'var(--text)'};cursor:pointer;font-family:var(--font);">${name}</button>`;
+  });
 
   document.getElementById('main-content').innerHTML=`
     <!-- CONTRACT BANNER -->
@@ -1484,28 +1548,38 @@ async function renderEarnings(){
       </div>
     </div>
 
+    <!-- MONTH TABS -->
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+      ${monthTabsHTML}
+    </div>
+
+    <!-- MONTH HEADER -->
+    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;padding:8px 14px;background:#F5F3FF;border-radius:8px;border:1px solid #C4B5FD;">
+      <i class="fas fa-calendar" style="color:#6C5DD3;margin-right:6px;"></i>${getMonthName(earningsMonthOffset)} - ${earnings.length} day${earnings.length!==1?'s':''} logged
+    </div>
+
     <!-- SUMMARY CARDS -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px;">
       <div style="background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;">
-        <div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Today</div>
-        <div style="font-size:20px;font-weight:800;color:var(--text);">£${todayGBP.toFixed(2)}</div>
-        <div style="font-size:10px;color:var(--muted);">${fmtHrs(todayHrs)} worked${todayOT>0?' · <span style="color:#D97706;font-weight:600;">OT '+fmtHrs(todayOT)+'</span>':''}</div>
-        <div style="font-size:10px;color:#6C5DD3;margin-top:1px;">€${(todayGBP*EUR_RATE).toFixed(2)}</div>
+        <div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">${isCurrentMonth ? 'Today' : 'This Week'}</div>
+        <div style="font-size:20px;font-weight:800;color:var(--text);">£${(isCurrentMonth ? todayGBP : weekGBP).toFixed(2)}</div>
+        <div style="font-size:10px;color:var(--muted);">${isCurrentMonth ? fmtHrs(todayHrs) + ' worked' : fmtHrs(weekHrs) + ' this week'}</div>
+        <div style="font-size:10px;color:#6C5DD3;margin-top:1px;">€${((isCurrentMonth ? todayGBP : weekGBP)*EUR_RATE).toFixed(2)}</div>
       </div>
       <div style="background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;">
-        <div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">This Week</div>
-        <div style="font-size:20px;font-weight:800;color:var(--text);">£${weekGBP.toFixed(2)}</div>
-        <div style="font-size:10px;color:var(--muted);">${fmtHrs(weekHrs)} across ${weekRows.length} day${weekRows.length!==1?'s':''}</div>
-        <div style="font-size:10px;color:#6C5DD3;margin-top:1px;">€${(weekGBP*EUR_RATE).toFixed(2)}</div>
+        <div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">${isCurrentMonth ? 'This Week' : 'All Time'}</div>
+        <div style="font-size:20px;font-weight:800;color:var(--text);">£${(isCurrentMonth ? weekGBP : allTotalGBP).toFixed(2)}</div>
+        <div style="font-size:10px;color:var(--muted);">${isCurrentMonth ? fmtHrs(weekHrs) + ' across ' + weekRows.length + ' day' + (weekRows.length!==1?'s':'') : fmtHrs(allTotalHrs) + ' all time'}</div>
+        <div style="font-size:10px;color:#6C5DD3;margin-top:1px;">€${((isCurrentMonth ? weekGBP : allTotalEUR)*EUR_RATE).toFixed(2)}</div>
       </div>
       <div style="background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;">
-        <div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Total Hours</div>
+        <div style="font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">${isCurrentMonth ? 'This Month' : getMonthName(earningsMonthOffset).split(' ')[0]}</div>
         <div style="font-size:20px;font-weight:800;color:var(--text);">${fmtHrs(totalActual)}</div>
-        <div style="font-size:10px;color:var(--muted);">${earnings.length} days logged</div>
+        <div style="font-size:10px;color:var(--muted);">${earnings.length} day${earnings.length!==1?'s':''} in ${getMonthName(earningsMonthOffset)}</div>
         ${totalOT>0?`<div style="font-size:10px;color:#D97706;font-weight:600;margin-top:1px;">OT: ${fmtHrs(totalOT)}</div>`:''}
       </div>
       <div style="background:#fff;border:1.5px solid #C4B5FD;border-radius:9px;padding:12px 14px;background:#F5F3FF;">
-        <div style="font-size:9.5px;font-weight:600;color:#6C5DD3;text-transform:uppercase;margin-bottom:3px;">Total Earned</div>
+        <div style="font-size:9.5px;font-weight:600;color:#6C5DD3;text-transform:uppercase;margin-bottom:3px;">${isCurrentMonth ? 'Total Earned' : 'Month Total'}</div>
         <div style="font-size:20px;font-weight:800;color:#4C1D95;">£${totalGBP.toFixed(2)}</div>
         <div style="font-size:10px;color:#6C5DD3;margin-top:1px;">€${totalEUR.toFixed(2)}</div>
       </div>
@@ -1514,7 +1588,7 @@ async function renderEarnings(){
     <!-- DAILY BREAKDOWN TABLE -->
     <div style="background:#fff;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;">
       <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-        <div style="font-size:12.5px;font-weight:700;color:var(--text);"><i class="fas fa-table" style="color:var(--brand);margin-right:6px;"></i>Daily Breakdown</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--text);"><i class="fas fa-table" style="color:var(--brand);margin-right:6px;"></i>${getMonthName(earningsMonthOffset)} - Daily Breakdown</div>
         <button class="bp" style="font-size:9.5px;padding:4px 10px;" onclick="addEarningsDay()"><i class="fas fa-plus"></i> Add Day</button>
       </div>
       <table style="width:100%;border-collapse:collapse;">
@@ -1570,7 +1644,7 @@ async function renderEarnings(){
         </tbody>
         <tfoot>
           <tr style="background:#F5F3FF;border-top:2px solid #DDD6FE;">
-            <td style="padding:10px 14px;font-size:11px;font-weight:700;color:#4C1D95;">TOTAL (${earnings.length} days)</td>
+            <td style="padding:10px 14px;font-size:11px;font-weight:700;color:#4C1D95;">TOTAL - ${getMonthName(earningsMonthOffset)} (${earnings.length} day${earnings.length!==1?'s':''})</td>
             <td colspan="2" style="padding:10px 14px;text-align:center;font-size:10px;color:var(--muted);">${earnings.length} days</td>
             <td style="padding:10px 14px;text-align:center;font-size:11.5px;font-weight:800;color:#4C1D95;">${fmtHrs(totalActual)}</td>
             <td style="padding:10px 14px;text-align:center;font-size:11.5px;font-weight:700;color:#D97706;">${totalOT>0?fmtHrs(totalOT):'-'}</td>
@@ -1582,6 +1656,11 @@ async function renderEarnings(){
       </table>
     </div>
     <div style="font-size:10px;color:var(--muted);margin-top:8px;text-align:right;">EUR conversion fixed at ×1.17 (conservative baseline).</div>`;
+}
+
+function switchEarningsMonth(offset) {
+  earningsMonthOffset = offset;
+  renderEarnings();
 }
 
 async function addEarningsDay(){
