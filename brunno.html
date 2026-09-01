@@ -544,8 +544,12 @@ function renderToday(){
 
   // Build timeline from actual time log entries - sorted by notes/time
   const todayLogs=allTimeLogs.filter(l=>l.log_date===TODAY);
-  // Done tasks completed today
-  const doneTodayTasks=allTasks.filter(t=>t.status==='done'&&t.completed_at&&t.completed_at.startsWith(TODAY));
+  // Done tasks today (created today OR completed today)
+  const doneTodayTasks=allTasks.filter(t=>{
+    const created=(t.created_at||'').substring(0,10)===TODAY;
+    const completed=(t.completed_at||'').startsWith(TODAY);
+    return (created||completed) && t.status==='done';
+  });
 
   // Calendar events with DYNAMIC status based on current time
   function calStatus(startH,startM,endH,endM){
@@ -556,10 +560,9 @@ function renderToday(){
     return'pending';
   }
   const calEvents=[
-    {t:'09:15-09:45',n:'IAI Parthiv onboarding',s:calStatus(9,15,9,45),o:'You (organiser)'},
-    {t:'10:30-11:00',n:'Catch-up with Nikhil',s:calStatus(10,30,11,0),o:'Nikhil Mehrishi'},
     {t:'12:00-13:00',n:'Lunch',s:calStatus(12,0,13,0),o:''},
-    {t:'15:00-16:00',n:'Vanta Audit Readiness Simulation',s:calStatus(15,0,16,0),o:'Vanta Team'},
+    {t:'14:00-14:30',n:'Compliance training (Freya)',s:calStatus(14,0,14,30),o:'You (organiser)'},
+    {t:'15:30-17:00',n:'Weekly Review - Delivery Team',s:calStatus(15,30,17,0),o:'Nikhil Mehrishi'},
   ];
 
   document.getElementById('main-content').innerHTML=`
@@ -577,24 +580,31 @@ function renderToday(){
     </div>
     <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;">
       <div>
-        <div class="shdr"><div class="stitle"><i class="fas fa-timeline"></i> Timeline (from time log)</div><button class="bp" style="font-size:9.5px;padding:4px 9px;" onclick="openLogTime('')"><i class="fas fa-plus"></i> Log</button></div>
+        <div class="shdr"><div class="stitle"><i class="fas fa-list-check"></i> Today's Tasks</div><button class="bp" style="font-size:9.5px;padding:4px 9px;" onclick="openLogTime('')"><i class="fas fa-plus"></i> Log</button></div>
         <div class="tl">
-          ${todayLogs.length===0
-            ?'<div class="empty" style="padding:20px"><i class="fas fa-clock"></i><p style="margin-top:6px;font-size:11px;">No time logged today yet</p></div>'
-            :todayLogs.map(l=>{
-              // Determine dot type from notes content
-              const n=(l.notes||'').toLowerCase();
-              const dtype=n.includes('meeting')||n.includes('call')||n.includes('onboarding')||n.includes('catch-up')||n.includes('vanta audit')?'meeting'
-                :n.includes('email')?'email'
-                :n.includes('slack')?'slack'
-                :n.includes('teams')?'teams'
-                :'done';
-              return`<div class="tli">
-                <div class="tldot ${dtype}"></div>
-                <div class="tltitle">${l.notes||'Time entry'}</div>
-                <span class="tlhrs">${fmtHrs(l.hours)}</span>
-              </div>`;
-            }).join('')}
+          ${(() => {
+            // Show individual tasks created today, plus any time log entries
+            const todayTasks = allTasks.filter(t => {
+              const created = (t.created_at || '').substring(0, 10);
+              return created === TODAY;
+            });
+            if (todayTasks.length === 0 && todayLogs.length === 0) {
+              return '<div class="empty" style="padding:20px"><i class="fas fa-clock"></i><p style="margin-top:6px;font-size:11px;">No tasks logged today yet</p></div>';
+            }
+            // Show each task as a separate timeline entry
+            let html_out = todayTasks.map(t => {
+              const dtype = (t.source || '').includes('email') ? 'email'
+                : (t.source || '').includes('slack') ? 'slack'
+                : (t.source || '').includes('teams') ? 'teams'
+                : (t.category || '').includes('meeting') || (t.category || '').includes('call') ? 'meeting'
+                : 'done';
+              const statusIcon = t.status === 'done' ? '<i class="fas fa-check-circle" style="color:#16A34A;margin-right:4px;font-size:10px;"></i>'
+                : t.status === 'in_progress' ? '<i class="fas fa-spinner" style="color:#D97706;margin-right:4px;font-size:10px;"></i>'
+                : '<i class="fas fa-circle" style="color:#9CA3AF;margin-right:4px;font-size:8px;"></i>';
+              return '<div class="tli"><div class="tldot ' + dtype + '"></div><div class="tltitle">' + statusIcon + t.title + '</div><span class="chip chip-' + t.status + '" style="font-size:9px;">' + (t.status || 'todo') + '</span></div>';
+            }).join('');
+            return html_out;
+          })()}
         </div>
       </div>
       <div>
