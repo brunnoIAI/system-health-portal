@@ -76,6 +76,13 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 .fchip.active{border-color:var(--brand);color:var(--brand);background:var(--brand-light);}
 
 .tc{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
+/* Grid card class - no list styling conflicts */
+.tcg{background:#fff;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;position:relative;overflow:visible;transition:box-shadow .15s,border-color .15s;}
+.tcg:hover{border-color:var(--brand);box-shadow:0 3px 12px rgba(108,93,211,.12);}
+.tcg.exp{border-color:var(--brand);box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.tcg.done-card{opacity:.7;}
+.tcg .tbody{display:none;margin-top:0;padding-top:9px;border-top:1px solid var(--border);}
+.tcg.exp .tbody{display:block;}
 .tc:hover{border-color:var(--brand);box-shadow:0 2px 8px rgba(108,93,211,.1);}
 .tc.exp{border-color:var(--brand);}
 .tc.done-card{opacity:.75;border-style:dashed;}
@@ -240,6 +247,11 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
 @media(max-width:600px){
   #task-list{grid-template-columns:1fr!important;}
 }
+
+/* Grid responsive */
+@media(max-width:1200px){#task-list{grid-template-columns:repeat(3,1fr)!important;}}
+@media(max-width:900px){#task-list{grid-template-columns:repeat(2,1fr)!important;}#pool-drop-zone{grid-template-columns:1fr!important;}}
+@media(max-width:600px){#task-list{grid-template-columns:1fr!important;}}
 </style>
 </head>
 <body>
@@ -675,7 +687,7 @@ function taskCard(t){
   const isOverdue=t.due_date&&new Date(t.due_date)<new Date()&&t.status!=='done';
   const isExp=expandedTask===t.id;
   const isDone=t.status==='done'||t.status==='cancelled';
-  return`<div class="tc ${isExp?'exp':''} ${isDone?'done-card':''}" id="tc-${t.id}" onclick="toggleTask('${t.id}')">
+  return`<div class="tcg ${isExp?'exp':''} ${isDone?'done-card':''}" id="tc-${t.id}" onclick="toggleTask('${t.id}')">
     <div class="ttop">
       <div class="tbar ${t.priority}"></div>
       <div class="tmain">
