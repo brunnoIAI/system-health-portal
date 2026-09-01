@@ -1420,13 +1420,12 @@ function getMonthName(offset) {
 
 function getMonthBounds(offset) {
   const d = getEarningsMonthDate(offset);
-  const start = new Date(d.getFullYear(), d.getMonth(), 1);
-  const end = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-  return {
-    startStr: start.toISOString().split('T')[0],
-    endStr: end.toISOString().split('T')[0],
-    start, end
-  };
+  const y = d.getFullYear();
+  const m = d.getMonth();
+  const startStr = y + '-' + String(m + 1).padStart(2, '0') + '-01';
+  const lastDay = new Date(y, m + 1, 0).getDate();
+  const endStr = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(lastDay).padStart(2, '0');
+  return { startStr, endStr, start: new Date(y, m, 1), end: new Date(y, m + 1, 0) };
 }
 
 
@@ -1457,8 +1456,8 @@ async function renderEarnings(){
 
   // For today with no logout: calculate live clock hours
   // Earnings are ALWAYS clock-based: (logout OR now) - login - lunch_duration
-  const todayEarningsRow = earnings.find(r=>r.work_date===TODAY);
-  const todayWH = whMap[TODAY]||{};
+  const todayEarningsRow = (earningsMonthOffset === 0) ? earnings.find(r=>r.work_date===TODAY) : null;
+  const todayWH = (earningsMonthOffset === 0) ? (allWhMap[TODAY]||{}) : {};
   if(todayEarningsRow && todayWH.login_time && !todayWH.logout_time){
     // Live calculation: now - login - lunch taken so far
     const now = new Date();
@@ -1549,13 +1548,17 @@ async function renderEarnings(){
     </div>
 
     <!-- MONTH TABS -->
-    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+      <span style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-right:4px;">Month:</span>
       ${monthTabsHTML}
     </div>
 
     <!-- MONTH HEADER -->
-    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;padding:8px 14px;background:#F5F3FF;border-radius:8px;border:1px solid #C4B5FD;">
-      <i class="fas fa-calendar" style="color:#6C5DD3;margin-right:6px;"></i>${getMonthName(earningsMonthOffset)} - ${earnings.length} day${earnings.length!==1?'s':''} logged
+    <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;padding:8px 14px;background:#F5F3FF;border-radius:8px;border:1px solid #C4B5FD;display:flex;align-items:center;gap:8px;">
+      <i class="fas fa-calendar" style="color:#6C5DD3;"></i>
+      <span>${getMonthName(earningsMonthOffset)} - ${earnings.length} day${earnings.length!==1?'s':''} logged</span>
+      ${earningsMonthOffset < 0 ? '<span style="font-size:9px;background:#E5E7EB;color:#6B7280;padding:2px 8px;border-radius:10px;font-weight:600;">ARCHIVED</span>' : ''}
+      ${earningsMonthOffset === 0 ? '<span style="font-size:9px;background:#DCFCE7;color:#16A34A;padding:2px 8px;border-radius:10px;font-weight:600;">CURRENT</span>' : ''}
     </div>
 
     <!-- SUMMARY CARDS -->
@@ -1589,7 +1592,7 @@ async function renderEarnings(){
     <div style="background:#fff;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;">
       <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
         <div style="font-size:12.5px;font-weight:700;color:var(--text);"><i class="fas fa-table" style="color:var(--brand);margin-right:6px;"></i>${getMonthName(earningsMonthOffset)} - Daily Breakdown</div>
-        <button class="bp" style="font-size:9.5px;padding:4px 10px;" onclick="addEarningsDay()"><i class="fas fa-plus"></i> Add Day</button>
+        ${earningsMonthOffset === 0 ? '<button class="bp" style="font-size:9.5px;padding:4px 10px;" onclick="addEarningsDay()"><i class="fas fa-plus"></i> Add Day</button>' : ''}
       </div>
       <table style="width:100%;border-collapse:collapse;">
         <thead>
