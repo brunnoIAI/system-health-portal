@@ -438,7 +438,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 <body>
 
 <!-- LOGIN -->
-<div id="login-screen" style="display:none;">
+<div id="login-screen">
   <div class="login-box">
           <div class="login-logo">
       <img src="data:image/png;base64,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" alt="ImplementAI" style="height:36px;margin-bottom:14px;">
@@ -500,7 +500,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 </div>
 
 <!-- APP -->
-<div id="app" style="display:block;">
+<div id="app">
   <div class="layout">
     <nav class="sidebar">
       <div class="sidebar-logo">
@@ -609,12 +609,6 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
 </div>
 
 <script>
-
-// AUTO-LOGIN BYPASS - remove when login is fixed
-var currentUser = {name:"Brunno",role:"Operational Continuity Lead",initials:"B",perm:"admin",color:"#6C5DD3",email:"brunno@implementai.io"};
-var pendingEmail = null;
-
-
 const ISSUES = [
   {
   id: "AIOS-CREDIT-003",
@@ -871,7 +865,7 @@ const ISSUES = [
     comments: []
   },
 
-        ,{
+        {
           id: "CANCELLATION-SOP-AUG21",
           title: "Contract Cancellation SOP - Brunno assigned ownership by Aalok",
           priority: "p2",
@@ -6422,8 +6416,8 @@ const ISSUES = [
         context: "Recharges at: 08:40, 09:41, 10:22, 10:53, 11:24, 11:54, 12:23, 12:51, 13:22, 13:51, 14:33 UTC",
         occurrences: [{"n": 10, "when": "2026-08-19 08:40-14:33 UTC", "what": "10 Twilio auto-recharges"}],
         comments: [],
-    },
-  {
+    }
+
     {
         id: "CANCELLATION-SOP-AUG21",
         title: "Brunno assigned Contract Cancellation SOP ownership by Aalok",
@@ -7352,7 +7346,6 @@ const TIME_LOG = [
       ],
       comments: []
     }
-  }
   ];
 
 
@@ -7382,7 +7375,7 @@ function getStore(){try{return JSON.parse(localStorage.getItem(STORE_KEY))||{};}
 function saveStore(s){try{localStorage.setItem(STORE_KEY,JSON.stringify(s));}catch(e){}}
 const USERS={"brunno@implementai.io":{name:"Brunno",role:"Operational Continuity Lead",initials:"B",perm:"admin",color:"#6C5DD3"},"shahzeb@implementai.io":{name:"Shahzeb",role:"Head Engineer",initials:"S",perm:"engineer",color:"#0284C7"},"habib@implementai.io":{name:"Habib",role:"AIOS Engineer",initials:"H",perm:"engineer",color:"#16A34A"},"nikhil@implementai.io":{name:"Nikhil",role:"Head of Delivery",initials:"N",perm:"leadership",color:"#D97706"},"aalok@implementai.io":{name:"Aalok",role:"CEO",initials:"A",perm:"leadership",color:"#DC2626"},"meezab@implementai.io":{name:"Meezab",role:"Engineering Lead",initials:"M",perm:"ops",color:"#7C3AED"},"piers@implementai.io":{name:"Piers",role:"Executive Chairman",initials:"P",perm:"leadership",color:"#0F172A"},"kamil@implementai.io":{name:"Kamil",role:"Solutions Lead",initials:"K",perm:"ops",color:"#0891B2"},"abayomi@implementai.io":{name:"Abayomi",role:"Solutions",initials:"AB",perm:"ops",color:"#059669"}};
 function getUserByEmail(e){const u=USERS[e];return u?{...u,email:e}:null;}
-let currentUser=currentUser||null,currentTab="all",notifOpen=false,pendingEmail=null,settingsSection="profile";
+let currentUser=null,currentTab="all",notifOpen=false,pendingEmail=null,settingsSection="profile";
 function getAvatarDataUri(email){return(getStore().avatars||{})[email]||null;}
 function clearLoginState(){
   try{
@@ -8092,8 +8085,100 @@ function renderMyItems(){const panel=document.getElementById("tab-myitems");if(!
 function viewPersonItems(email,clickedEl){const u=getUserByEmail(email);if(!u)return;const assignments=getStore().assignments||{};const personIssues=ISSUES.filter(i=>assignments[i.id]===email&&i.status!=="resolved");document.querySelectorAll(".workload-person").forEach(el=>el.classList.remove("active-person"));if(clickedEl)clickedEl.classList.add("active-person");const panel=document.getElementById("tab-person");document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));document.querySelectorAll(".tab-panel").forEach(p=>p.style.display="none");panel.style.display="block";currentTab="person";document.getElementById("topbar-section").textContent=u.name+"'s Items";const pic=getAvatarDataUri(email);let html='<div style="margin-bottom:14px;"><button onclick="switchTab(\'all\',document.querySelector(\'[data-tab=\\\'all\\\']\'))" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;"><i class="fas fa-arrow-left"></i> Back to All Issues</button></div><div class="person-header">'+(pic?'<div class="person-avatar-lg"><img src="'+pic+'"></div>':'<div class="person-avatar-lg" style="background:'+(u.color||"#6C5DD3")+'">'+u.initials+'</div>')+'<div class="person-info"><h2>'+u.name+"'s Items</h2><p>"+u.role+'</p></div><div class="person-stats"><div class="pstat"><div class="pstat-num">'+personIssues.length+'</div><div class="pstat-lbl">Open</div></div><div class="pstat"><div class="pstat-num">'+personIssues.filter(i=>i.priority==="p1").length+'</div><div class="pstat-lbl">P1</div></div></div></div>';if(!personIssues.length)html+='<div class="my-items-empty"><i class="fas fa-inbox"></i><h3>No items assigned to '+u.name+'</h3></div>';else{personIssues.sort((a,b)=>({p1:0,p2:1,p3:2}[a.priority]||3)-({p1:0,p2:1,p3:2}[b.priority]||3));html+='<div class="issues-list">';personIssues.forEach(i=>{html+=buildCard(i);});html+='</div>';}panel.innerHTML=html;document.getElementById("god-mode-area").innerHTML="";}
 function filterCards(filter,btn){document.querySelectorAll(".filter-pill").forEach(p=>p.classList.remove("active"));btn.classList.add("active");const list=document.getElementById("issues-list-all");if(!list)return;const assignments=getStore().assignments||{};list.querySelectorAll(".issue-card").forEach(card=>{const priority=card.dataset.priority,tags=(card.dataset.tags||"").split(",");const assignedToMe=assignments[card.dataset.id]===currentUser.email;let show=true;if(filter==="p1")show=priority==="p1";else if(filter==="p2")show=priority==="p2";else if(filter==="p3")show=priority==="p3";else if(filter==="escalated")show=tags.includes("escalated");else if(filter==="silent")show=tags.includes("silent");else if(filter==="assigned-me")show=assignedToMe;card.style.display=show?"":"none";});}
 function searchCards(q){const list=document.getElementById("issues-list-all")||document.getElementById("issues-list-"+currentTab);if(!list)return;const query=q.toLowerCase();list.querySelectorAll(".issue-card").forEach(card=>{card.style.display=card.textContent.toLowerCase().includes(query)?"":"none";});}
-function renderRaw(){if(!currentUser||currentUser.perm!=="admin"){document.getElementById("tab-raw").innerHTML='<div class="no-access"><i class="fas fa-lock" style="font-size:24px;color:#9CA3AF;margin-bottom:8px;"></i><p style="color:#9CA3AF;font-size:13px;">Admin access required</p></div>';return;}document.getElementById("tab-raw").innerHTML='<div style="padding:16px;color:#9CA3AF;font-size:13px;">Raw sweep log - loading from Supabase...</div>';try{const sb=window.supabase.createClient("https://zijhsdhjxohicuoxwytk.supabase.co","sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox");sb.from("brunno_time_log").select("*").order("log_date",{ascending:false}).limit(50).then(r=>{if(r.error||!r.data){document.getElementById("tab-raw").innerHTML="<div style='padding:16px;color:#9CA3AF;font-size:13px;'>No data available</div>";return;}let h="";r.data.forEach(e=>{h+="<div class='raw-entry'><div class='raw-entry-hdr'><span class='raw-time'>"+(e.log_date||"")+"</span></div><div class='raw-entry-body'>"+(e.notes||"")+"</div></div>";});document.getElementById("tab-raw").innerHTML=h;});}catch(e){document.getElementById("tab-raw").innerHTML="<div style='padding:16px;color:#9CA3AF;font-size:13px;'>Error loading: "+e.message+"</div>";}}
-}
+function renderRaw(){if(!currentUser||currentUser.perm!=="admin"){document.getElementById("tab-raw").innerHTML='<div class="no-access"><i class="fas fa-lock"></i><h3>Restricted Access</h3><p>Raw Sweep Log is only accessible to the Operational Continuity Lead.</p></div>';return;}document.getElementById("tab-raw").innerHTML='<div class="raw-log-wrap"><div class="raw-log-header"><i class="fas fa-terminal" style="color:#D97706;"></i><h3>Raw Sweep Log</h3><p>Restricted: Operational Continuity Lead only</p></div><div class="raw-entries">
+            <div class="raw-entry">
+              <div class="raw-header">12 Aug 2026 — 16:00 UK — 4pm Command Centre Full Scan</div>
+              <pre>SOURCES: Teams DMs (48 chats, 3 active today), Slack x8 channels, Outlook inbox (5 emails), sent (4 emails), Calendar (4 events).
+
+CALENDAR: SA compliance training 11:00-11:30 COMPLETED. Lunch 12:00-13:00. Finance Invoices (Andrew Butterworth) 13:00-13:30 COMPLETED. POD A CANCELLED (Kamil).
+
+SLACK #aios-alerts (8 alerts today):
+  - SENDGRID-DEGRADE-003: CRITICAL+WARNING ~08:10 UTC, RESOLVED ~14:50 UTC. CONFIRMED DONE.
+  - VAPI-OUTAGE-018: WARNING+CRITICAL ~12:56-12:58 UTC, NO resolution alert seen. STILL OPEN.
+  - ANTHROPIC-DEGRADE-002: NEW cycle WARNING fired ~14:07 UTC, STILL FIRING at sweep time (~1h).
+
+SLACK #aios (2 msgs):
+  - ADVANTOS-CALL-001 NEW (P2): U095NGUJV2R ~14:22 UTC - Advantos calls stuck In Progress after termination, no transcript push. Tagged U0790KJ70FR, 3 replies.
+  - AALOK-MODEL-001 NEW (P3): Aalok ~09:52 UTC - model simplification PDF shared, 3 replies, decision pending.
+
+SLACK #aios-dev (7 msgs):
+  - SCHED-CALL-BUG-001 KNOWN: U0AFLT6TH0E cannot schedule call, says must be in future even though it is. 9 replies, Faisal tagged.
+  - VOICE-UI-001 KNOWN: Voice UI gender filter + sort order, 17 replies.
+  - EXPORT-BUG-004 KNOWN: Task run export email not arriving, 8 replies.
+  - SONNET5-REQUEST-001 KNOWN: Aalok requesting Sonnet 5 release in AIOS.
+  - Aalok asking about voice option in Vapi/AIOS (linked to VOICE-UI-001).
+
+SLACK #solutions-hq (6 msgs):
+  - KEEPER-PASSWORD-002 UPDATE: Meezab rotated Keeper password at ~16:04 UTC and shared with team. PARTIAL RESOLUTION.
+  - New SE member U0BP1U09FMM joined then LEFT channel same day.
+
+SLACK #aios-support (3 msgs):
+  - Ticket #353 (All agents not displaying) - SUPPORT-TASK-027 KNOWN.
+  - Ticket #352 (Task Agent hallucinating) - SUPPORT-TASK-028 KNOWN.
+  - Ticket #349 (Command Agent Email Integration) - updated by System.
+
+INBOX (5 emails):
+  - CERTN-REPORT-001 KNOWN: Gavin Fernandes Certn report ready.
+  - Microsoft passkeys/SMS auth retirement notice (routine).
+  - Ramandeep Kaur employment verify reply x2 (EMPLOYMENT-VERIFY-002 KNOWN).
+  - Andrew Butterworth billing reply (ANDREW-BILLING-001 KNOWN, meeting confirmed 1pm).
+
+SENT (4 emails):
+  - Employment verify x2 to Ramandeep Kaur.
+  - Nexora Barco fw to Shahan.
+  - Finance Invoices accept to Andrew Butterworth.
+
+TEAMS: 3 meeting chats updated today (SA compliance, Finance Invoices, ISO Audit training).
+MONDAY WRITE: BLOCKED (USER_UNAUTHORIZED, Day 12+).
+#aios-security: SILENT. #system-health-hq: SILENT Day 70+. Teams Incidents: SILENT Day 15+.
+
+NEW ITEMS: ADVANTOS-CALL-001 (P2), AALOK-MODEL-001 (P3).
+RESOLVED: SENDGRID-DEGRADE-003 (confirmed resolved ~14:50 UTC).
+UPDATES: KEEPER-PASSWORD-002 partial fix (password rotated, shared with team).
+TIME LOG: 12:00 UK sweep done. Standard day in progress. Meezab on leave, Shahan covering. POD A cancelled. Lunch 12:00-13:00. ISO training x2: 14:00 SE (Meezab) + 15:00 AIOS engineers (Meezab). IAI<>Nexora review 14:30 (Brunno, Shahan, Howard Lea). GLM fix confirmed live in prod (Faisal, 07:13 UTC). SendGrid WARNING still firing from Aug 12. VAPI outage ongoing. Zendesk tickets #354 (Billing Crash), #355/#356 (Mail Delivery) all pending. DocuSign Alishba termination checklist arrived - action required. Certn report for Gavin Fernandes ready for review. Outlook trigger routing issue raised in #aios-dev. Standard hours: 07:00-12:00 = 5h so far.</span><span class="raw-source">Command Centre Full Scan — Slack + Teams + Outlook + Calendar</span></div><div class="raw-body">CALENDAR: POD A Daily Huddle CANCELLED (Kamil). Lunch 12:00-13:00 UK. Weekly Review - Delivery Team 15:30-17:00 UK (Nikhil, 9 attendees) — UPCOMING. SA compliance training invite sent to Nabela, Mishai, Kamil, Lucia (13:21 UTC). ISO Audit training AIOS Engineers: ACCEPTED. ISO Audit training Solution Engineers: ACCEPTED.
+
+TEAMS DMs:
+- Gavin Fernandes DM: Completed Vanta training. Certn login question (personal email). Brunno answered + confirmed remote. POSITIVE.
+- Aalok DM (09:14-10:24 UTC): Trust centre link + badge discussion (ISO/SOC2/EU AI Act). Action: remove mouse-over text, update audit date. VANTA-TRUST-CENTRE-001 CREATED.
+- Onkar DM (12:38 UTC): aalok@ org password shared with new engineer — compliance flag. ONKAR-PASSWORD-COMPLIANCE-001 CREATED.
+- Nabela DM (13:32 UTC): Brunno sent coaching request for missed quiz question. NABELA-COACHING-001 CREATED.
+- Group chat Piers/Aalok/Brunno: Policy book update (anti-bribery, expenses). Action: merge, upload SP, share team. Workstreet invoice check. Aalok asked Brunno to email Andrew re Twilio billing. POLICY-BOOK-UPDATE-001 + TWILIO-ACCESS-001 CREATED.
+
+SLACK:
+- #aios-alerts: OpenAI WARNING fired ~13:11 UTC (OPENAI-DEGRADE-001, occ 104->105, monitoring). Previous cycle resolved 03:21 UTC CONFIRMED.
+- #aios-dev: Aalok asking Fish Audio voices for AIOS (09:24 UTC). GLM issue flagged (09:06 UTC). Export going to email instead of download (09:39 UTC). Ubaid confirmed export fix live (13:35 UTC) — EXPORT-BUG-002 RESOLVED.
+- #solutions-hq: Onkar asking Meezab if agent-forms password changed (05:26 UTC) — AGENT-FORMS-LOCKED-001 KNOWN.
+- #system-health-hq, #aios, #aios-security, #aios-support, #aios-bot: ALL SILENT.
+
+INBOX:
+- Nabela Ryani: Accepted SA compliance training (13:22 UTC, UNREAD)
+- Piers Linney: FW Vanta alert — Access Control Policy (09:02 UTC, READ) — VANTA-ALERT-002 KNOWN
+- Ramandeep Kaur: Employment verification follow-up Vishal Kumar (04:06 UTC, READ) — EMPLOYMENT-VERIFY-002 KNOWN
+- Atlassian: Payment confirmed IN-UK-000-874-163 (02:35 UTC, READ) — POSITIVE
+
+SENT:
+- SA compliance training invite (Nabela, Mishai, Kamil, Lucia) 13:21 UTC
+- Reply to Piers re Vanta alert: Techanzy engineer enrolling today (09:10 UTC)
+- ISO Audit training AIOS Engineers accepted (09:06 UTC)
+- ISO Audit training Solution Engineers accepted (09:06 UTC)
+
+NEW ITEMS: 5 — TWILIO-ACCESS-001, NABELA-COACHING-001, ONKAR-PASSWORD-COMPLIANCE-001, POLICY-BOOK-UPDATE-001, VANTA-TRUST-CENTRE-001
+KNOWN UPDATES: EXPORT-BUG-002 RESOLVED. OPENAI-DEGRADE-001 new cycle (occ 104->105).
+
+TIME LOG (estimated):
+- Gavin onboarding support: 20 min
+- Aalok trust centre DM: 45 min
+- Policy book group chat (Piers): 25 min
+- Onkar password flag: 5 min
+- Nabela coaching DM: 5 min
+- Compliance training invite: 10 min
+- ISO training acceptances x2: 5 min
+- Vanta alert reply to Piers: 10 min
+- Andrew Butterworth billing email (Aalok request): 15 min
+- Weekly Review attendance (Nikhil, 15:30-17:00): 90 min
+- EOD Command Centre scan: 25 min
+- Portal update: 20 min
+TOTAL: ~4h 30min (standard 8h day, 07:00-16:25 excl lunch)</div></div><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">7 Aug 2026, 14:00 UK</span><span class="raw-source">Command Centre Full Scan — Slack + Teams + Outlook + Calendar</span></div><div class="raw-body">CALENDAR: ISO Soc2 catch-up 14:00 UK (Brunno organiser, Aalok accepted). Nexora 17:00 CANCELLED (organiser Syed Tabrez ex-employee). New Nexora review meeting sent 13:40 UTC to Shahan + Howard Lea. POD A Huddle CANCELLED. ABKN Weekly CANCELLED. Lunch 12:00. INBOX: ChatGPT plan will not renew (12:57 UTC) + new sign-in alert (12:55 UTC) + login code (12:54 UTC) — possible unauthorised access. ChatGPT Business renews Aug 14 (09:16 UTC). BDR-OFFER-REPLY-001 Gavin Fernandes replied positively (09:57 UTC). EMPLOYMENT-VERIFY-002 Ramandeep Kaur follow-up on Vishal Kumar (04:05 UTC). SENT: Nexora review invite to Shahan + Howard Lea (13:40 UTC). ISO Soc2 invite to Aalok x2 (07:57 + 10:05 UTC). SLACK #solutions-hq: 14 messages. Shahzeb directive add Date Created to all Airtable client views (13:06 UTC). Shahan walkthrough call request for 8 Aug after 10am (15:31 UTC, confirmed Shahzeb after 10am). Brunno: channels cleanup proposed for next week. #aios-dev: GLM-FAIL-001 KNOWN (Aalok asked Faisal why GLM fails on Command 07:53 UTC). Shahzeb QA doc request (10:51 UTC). New member U096NHA0W5T joined. ALL OTHER CHANNELS SILENT. TEAMS: ISO Soc2 meeting chat active — Aalok 5min late (13:09 UTC). Solutions HQ group: Aalok shared V3 delivery playbook (10:35 UTC). ABKN cancelled — Nikhil asked to reschedule Monday. NEW ITEMS: CHATGPT-CANCEL-001, SOL-HQ-DATE-CREATED-001, NEXORA-CANCEL-001.</div></div><div class="raw-entry"><div class="raw-entry-hdr"><span class="raw-time">9 Jul 2026, 15:00 UK</span><span class="raw-source">Portal v3 — Supabase + HR Connected</span></div><div class="raw-body">Portal v3 updated 9 Jul 2026. HR module now connected to Supabase (hr_people + hr_exiting tables). System health data updated to 9 Jul 2026. GitHub: brunnoIAI/system-health-portal. Hosted: system.implementai.net.</div></div></div></div>';}
 </script>
 <script>
 // ============================================================
@@ -9693,19 +9778,6 @@ function renderAgentsTab() {
 
 
 </script>
-
-<script>
-// Auto-init after login bypass
-document.addEventListener('DOMContentLoaded', function(){
-  if(currentUser){
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('app').style.display='block';
-    if(currentUser.perm==='admin')document.getElementById('raw-nav-item').style.display='flex';
-    try{renderAll();refreshSidebarUser();updateSidebarBadges();showTopbarUser(currentUser);}catch(e){console.log('init error:',e);}
-  }
-});
-</script>
-
 
 <div class="user-profile-modal" id="user-profile-modal" onclick="if(event.target===this)closeUserProfile()">
   <div class="user-profile-box">
