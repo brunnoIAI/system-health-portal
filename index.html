@@ -7382,7 +7382,7 @@ function getStore(){try{return JSON.parse(localStorage.getItem(STORE_KEY))||{};}
 function saveStore(s){try{localStorage.setItem(STORE_KEY,JSON.stringify(s));}catch(e){}}
 const USERS={"brunno@implementai.io":{name:"Brunno",role:"Operational Continuity Lead",initials:"B",perm:"admin",color:"#6C5DD3"},"shahzeb@implementai.io":{name:"Shahzeb",role:"Head Engineer",initials:"S",perm:"engineer",color:"#0284C7"},"habib@implementai.io":{name:"Habib",role:"AIOS Engineer",initials:"H",perm:"engineer",color:"#16A34A"},"nikhil@implementai.io":{name:"Nikhil",role:"Head of Delivery",initials:"N",perm:"leadership",color:"#D97706"},"aalok@implementai.io":{name:"Aalok",role:"CEO",initials:"A",perm:"leadership",color:"#DC2626"},"meezab@implementai.io":{name:"Meezab",role:"Engineering Lead",initials:"M",perm:"ops",color:"#7C3AED"},"piers@implementai.io":{name:"Piers",role:"Executive Chairman",initials:"P",perm:"leadership",color:"#0F172A"},"kamil@implementai.io":{name:"Kamil",role:"Solutions Lead",initials:"K",perm:"ops",color:"#0891B2"},"abayomi@implementai.io":{name:"Abayomi",role:"Solutions",initials:"AB",perm:"ops",color:"#059669"}};
 function getUserByEmail(e){const u=USERS[e];return u?{...u,email:e}:null;}
-let currentUser=null,currentTab="all",notifOpen=false,pendingEmail=null,settingsSection="profile";
+let currentUser=currentUser||null,currentTab="all",notifOpen=false,pendingEmail=null,settingsSection="profile";
 function getAvatarDataUri(email){return(getStore().avatars||{})[email]||null;}
 function clearLoginState(){
   try{
@@ -9692,6 +9692,19 @@ function renderAgentsTab() {
 
 
 </script>
+
+<script>
+// Auto-init after login bypass
+document.addEventListener('DOMContentLoaded', function(){
+  if(currentUser){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    if(currentUser.perm==='admin')document.getElementById('raw-nav-item').style.display='flex';
+    try{renderAll();refreshSidebarUser();updateSidebarBadges();showTopbarUser(currentUser);}catch(e){console.log('init error:',e);}
+  }
+});
+</script>
+
 
 <div class="user-profile-modal" id="user-profile-modal" onclick="if(event.target===this)closeUserProfile()">
   <div class="user-profile-box">
