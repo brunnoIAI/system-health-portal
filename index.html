@@ -4137,7 +4137,6 @@ function handleLoginStep(){
       btn.disabled=false;
       const PW_HASHES={'brunno@implementai.io':'2df6efdcd2af9cd92e39ddda3fac3474ea576d15a3da20df78e999261dc953c5'};
       const rows=[{pw_hash:PW_HASHES[email]||null}];
-      {
           btn.disabled=false;
           if(rows&&rows[0]&&rows[0].pw_hash){
             const a=getAuth();a["pw_"+email]=rows[0].pw_hash;saveAuth(a);
