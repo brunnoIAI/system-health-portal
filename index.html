@@ -9,6 +9,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+#login-screen{display:none!important;}
+#app{display:block!important;}
 :root{--canvas:#F7F9FC;--white:#FFFFFF;--sidebar-bg:#212B3C;--sidebar-active:#1A2231;--sidebar-hover:rgba(255,255,255,0.07);--sidebar-text:#E1E8F5;--sidebar-text-active:#FFFFFF;--sidebar-border:#0F172A;--brand:#6C5DD3;--brand-hover:#5949B8;--brand-light:#E0E7FF;--brand-dim:rgba(108,93,211,0.08);--text-heading:#111827;--text-body:#374151;--text-muted:#9CA3AF;--border:#E5E7EB;--border-input:#D1D5DB;--red:#DC2626;--red-bg:#FFF5F5;--red-light:#FEE2E2;--amber:#D97706;--amber-bg:#FFFBEB;--amber-light:#FEF3C7;--green:#16A34A;--green-bg:#F0FDF4;--green-light:#DCFCE7;--blue:#0284C7;--blue-bg:#E0F2FE;--grey:#6B7280;--grey-bg:#F3F4F6;--shadow-sm:0 1px 3px rgba(0,0,0,0.06);--shadow:0 2px 6px rgba(0,0,0,0.06);--shadow-md:0 4px 12px rgba(0,0,0,0.08);--radius:8px;--radius-lg:12px;--font:'Inter',sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min-height:100vh;overflow-x:hidden;}
@@ -607,6 +609,28 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-body);min
   </div>
 </div>
 
+<script>
+// AUTO LOGIN - no auth required
+var currentUser = {name:"Brunno",role:"Operational Continuity Lead",initials:"B",perm:"admin",color:"#6C5DD3",email:"brunno@implementai.io"};
+var pendingEmail = null;
+var currentTab = "all";
+window.addEventListener('load', function(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  if(currentUser.perm==='admin'){
+    var rawNav = document.getElementById('raw-nav-item');
+    if(rawNav) rawNav.style.display='flex';
+  }
+  try {
+    renderAll();
+    refreshSidebarUser();
+    updateSidebarBadges();
+    showTopbarUser(currentUser);
+  } catch(e) {
+    console.log('init error:', e);
+  }
+});
+</script>
 <script>
 const ISSUES = [
   {
