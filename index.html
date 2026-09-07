@@ -4149,12 +4149,6 @@ function handleLoginStep(){
             btn.innerHTML='<i class="fas fa-arrow-right"></i> Continue';
             document.getElementById("first-login-modal").style.display="flex";
           }
-        })
-        .catch(()=>{
-          btn.disabled=false;btn.innerHTML='<i class="fas fa-arrow-right"></i> Continue';
-          errEl.textContent="Network error. Please check your connection and try again.";errEl.style.display="block";
-          pendingEmail=null;
-        });
     }
     return;
   }
