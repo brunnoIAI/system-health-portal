@@ -393,22 +393,22 @@ function updateBadges(){
   if(nbFocus)nbFocus.textContent=focusCount;
 }
 
-function setView(v){
+async function setView(v){
   view=v;expandedTask=null;
   document.querySelectorAll('.nav').forEach(el=>el.classList.toggle('active',el.getAttribute('onclick')&&el.getAttribute('onclick').includes(`'${v}'`)));
-  renderView(v);window.scrollTo(0,0);
+  await renderView(v);window.scrollTo(0,0);
 }
 
-function renderView(v){
-  const titles={dashboard:'Dashboard',focus:'Focus Queue',today:"Today's Activity",tasks:'All Tasks',requests:'Requests & Comms',history:'Day / Week / Month',timelog:'Time Log',focus:'Focus Log',compliance:'Vanta Controls',audit:'Audit Tracker',earnings:'My Earnings'};
+async function renderView(v){
+  const titles={dashboard:'Dashboard',focusqueue:'Focus Queue',today:"Today's Activity",tasks:'All Tasks',requests:'Requests & Comms',history:'Day / Week / Month',timelog:'Time Log',focus:'Focus Log',compliance:'Vanta Controls',audit:'Audit Tracker',earnings:'My Earnings'};
   document.getElementById('page-title').textContent=titles[v]||v;
   if(v==='dashboard')renderDashboard();
-  else if(v==='focus')renderFocusQueue();
+  else if(v==='focusqueue')renderFocusQueue();
   else if(v==='today')renderToday();
   else if(v==='tasks')renderTasks();
   else if(v==='requests')renderRequests();
   else if(v==='history')renderHistory();
-  else if(v==='timelog')renderTimeLog();
+  else if(v==='timelog')await renderTimeLog();
   else if(v==='focus')renderFocus();
   else if(v==='compliance')renderCompliance();
   else if(v==='audit')renderAudit();
@@ -875,7 +875,11 @@ function renderDayHistory(){
   // Also include done tasks completed on this date
   const doneTasks=allTasks.filter(t=>t.status==='done'&&t.completed_at&&t.completed_at.startsWith(targetDate));
   const totalHrs=logs.reduce((s,l)=>s+parseFloat(l.hours||0),0);
-  const pct=Math.min(Math.round((totalHrs/8)*100),100);
+    // Also count completed task estimates (in minutes, convert to hours)
+    const dayDoneTasks=allTasks.filter(t=>t.status==='done'&&t.completed_at&&t.completed_at.split('T')[0]===date);
+    const dayTaskMins=dayDoneTasks.reduce((s,t)=>s+parseFloat(t.estimated_hours||0),0);
+    const totalHrsWithTasks=totalHrs+(dayTaskMins/60);
+  const pct=Math.min(Math.round((totalHrsWithTasks/8)*100),100);
   const barColor=pct>80?'#D97706':pct>60?'#6C5DD3':'#16A34A';
   const focus=allFocus.find(f=>f.log_date===targetDate);
   const wh=allWorkHours.find(w=>w.work_date===targetDate);
@@ -883,7 +887,7 @@ function renderDayHistory(){
   return`
     ${wh?`<div class="work-hrs-bar" style="margin-bottom:10px;"><i class="fas fa-clock" style="color:var(--brand);"></i><div class="wh-item"><strong>Login:</strong> ${(wh.login_time||'').substring(0,5)}</div><div class="wh-item"><strong>Lunch:</strong> ${(wh.lunch_start||'12:00').substring(0,5)}-${(wh.lunch_end||'13:00').substring(0,5)}</div>${wh.logout_time?`<div class="wh-item" style="color:#16A34A;"><strong>Logout:</strong> ${wh.logout_time.substring(0,5)}</div>`:''}</div>`:''}
     <div class="dc ${isToday?'today':''}">
-      <div class="dhdr"><div><div class="ddate">${isToday?'Today - ':''} ${fmtDate(targetDate)}</div><div class="dpct">${pct}% of workday</div></div><div><div class="dhrs" style="color:${barColor}">${fmtHrs(totalHrs)}</div><div class="dpct">logged</div></div></div>
+      <div class="dhdr"><div><div class="ddate">${isToday?'Today - ':''} ${fmtDate(targetDate)}</div><div class="dpct">${pct}% of workday</div></div><div><div class="dhrs" style="color:${barColor}">${fmtHrs(totalHrsWithTasks)}</div><div class="dpct">logged</div></div></div>
       <div class="dbar"><div class="dbar-fill" style="width:${pct}%;background:${barColor};"></div></div>
       ${logs.length===0&&doneTasks.length===0?`<div class="empty" style="padding:14px"><i class="fas fa-clock"></i><p style="margin-top:5px;font-size:11px;">${isToday?'Log time to see today\'s breakdown':'No time logged for this day'}</p></div>`:''}
       ${logs.map(l=>`<div class="drow"><div class="ddot" style="background:#6C5DD3;"></div><div class="dname">${l.notes||'Time entry'}</div><div class="dhrs2">${fmtHrs(l.hours)}</div></div>`).join('')}
@@ -954,9 +958,9 @@ async function renderTimeLog(){
     <div class="shdr"><div class="stitle"><i class="fas fa-clock"></i> Time Entries + Completed Tasks</div><button class="bp" style="font-size:9.5px;padding:4px 9px;" onclick="openLogTime('')"><i class="fas fa-plus"></i> Log Time</button></div>
     ${Object.keys(byDate).length===0?'<div class="empty"><i class="fas fa-clock"></i><h3 style="margin-top:7px;font-size:13px;">No time logged yet</h3></div>':Object.entries(byDate).map(([date,entries])=>{
       const dt=entries.reduce((s,l)=>s+parseFloat(l.hours||0),0);
-      const ddMins=(dd||[]).reduce((s,t)=>s+parseFloat(t.estimated_hours||0),0);
-      const dtTotal=dt+(ddMins/60);
       const dd=doneByDate[date]||[];
+      const ddMins=dd.reduce((s,t)=>s+parseFloat(t.estimated_hours||0),0);
+      const dtTotal=dt+(ddMins/60);
       return`<div style="margin-bottom:12px;">
         <div style="font-size:10.5px;font-weight:700;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;"><span>${fmtDate(date)}${date===TODAY?' (Today)':''}</span><span style="color:var(--brand);">${fmtHrs(dt)}</span></div>
         ${entries.map(l=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#F9FAFB;border-radius:6px;margin-bottom:3px;font-size:10.5px;"><span style="font-weight:700;color:var(--brand);min-width:32px;">${fmtHrs(l.hours)}</span><span style="flex:1;color:#374151;">${l.notes||'Time entry'}</span></div>`).join('')}
