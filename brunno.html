@@ -970,7 +970,7 @@ async function renderTimeLog(){
 }
 
 // FOCUS
-async async function renderFocus(){
+async function renderFocus(){
   const{data:logs}=await SB.from('brunno_focus_log').select('*').order('log_date',{ascending:false}).limit(30);
   document.getElementById('main-content').innerHTML=`
     <div class="shdr"><div class="stitle"><i class="fas fa-calendar-day"></i> Daily Focus Log</div><button class="bp" style="font-size:9.5px;padding:4px 9px;" onclick="openModal('focus')"><i class="fas fa-plus"></i> Log Today</button></div>
