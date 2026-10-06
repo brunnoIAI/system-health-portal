@@ -876,7 +876,7 @@ function renderDayHistory(){
   const doneTasks=allTasks.filter(t=>t.status==='done'&&t.completed_at&&t.completed_at.startsWith(targetDate));
   const totalHrs=logs.reduce((s,l)=>s+parseFloat(l.hours||0),0);
     // Also count completed task estimates (in minutes, convert to hours)
-    const dayDoneTasks=allTasks.filter(t=>t.status==='done'&&t.completed_at&&t.completed_at.split('T')[0]===date);
+    const histDate=getDateForOff(histOff);const dayDoneTasks=allTasks.filter(t=>t.status==='done'&&t.completed_at&&t.completed_at.split('T')[0]===histDate);
     const dayTaskMins=dayDoneTasks.reduce((s,t)=>s+parseFloat(t.estimated_hours||0),0);
     const totalHrsWithTasks=totalHrs+(dayTaskMins/60);
   const pct=Math.min(Math.round((totalHrsWithTasks/8)*100),100);
