@@ -2,10 +2,342 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Security Portal | Implement AI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Security | ImplementAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--brand:#6C5DD3;--red:#DC2626;--amber:#D97706;--green:#16A34A;--blue:#0284C7;--border:#E5E7EB;--text:#111827;--muted:#9CA3AF;--canvas:#F7F9FC;--font:'Inter',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--canvas);color:#374151;}
+.topbar{background:#212B3C;padding:12px 28px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;}
+.topbar-title{color:#fff;font-size:15px;font-weight:700;}
+.back-portal{margin-left:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:7px 16px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.back-portal:hover{background:rgba(255,255,255,.22);}
+.container{max-width:1000px;margin:0 auto;padding:28px 24px;}
+.sec-tabs{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;align-items:center;}
+.sec-tab{padding:10px 22px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:var(--font);transition:all .15s;display:flex;align-items:center;gap:8px;}
+.sec-tab:hover{border-color:var(--brand);color:var(--brand);}
+.sec-tab.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+.add-btn{margin-left:auto;background:var(--brand);border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:8px;}
+.add-btn:hover{opacity:.9;}
+.loading{text-align:center;padding:80px;color:var(--muted);}
+.loading i{font-size:36px;display:block;margin-bottom:16px;animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:80px 20px;color:var(--muted);}
+.empty i{font-size:48px;display:block;margin-bottom:16px;}
+.empty h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.test-row{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px 22px;display:flex;align-items:center;gap:16px;cursor:pointer;margin-bottom:10px;transition:all .15s;}
+.test-row:hover{border-color:var(--brand);box-shadow:0 4px 12px rgba(0,0,0,.08);transform:translateY(-1px);}
+.test-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;}
+.test-icon.black{background:#1E293B;}
+.test-icon.gray{background:#475569;}
+.test-icon.white{background:#94A3B8;}
+.test-icon.other{background:var(--brand);}
+.tinfo{flex:1;min-width:0;}
+.tname{font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.tmeta{font-size:13px;color:var(--muted);margin-bottom:6px;}
+.ttype{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px;}
+.ttype.black-box{background:#FEE2E2;color:#DC2626;}
+.ttype.gray-box{background:#FEF3C7;color:#D97706;}
+.ttype.white-box{background:#D1FAE5;color:#16A34A;}
+.ttype.other{background:#EDE9FE;color:#6C5DD3;}
+.tmeta2{display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.doc-badge{font-size:11px;font-weight:700;padding:5px 14px;border-radius:100px;white-space:nowrap;}
+.doc-badge.done{background:#D1FAE5;color:#16A34A;}
+.doc-badge.pending{background:#FEF3C7;color:#D97706;}
+.doc-badge.missing{background:#FEE2E2;color:#DC2626;}
+.back-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.back-btn{background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--brand);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;}
+.back-btn:hover{background:var(--canvas);}
+.del-btn{background:none;border:1.5px solid #FEE2E2;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--red);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:7px;}
+.card-hdr{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:20px;}
+.card-hdr-inner{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.card-icon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;flex-shrink:0;}
+.card-name{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.card-sub{font-size:14px;color:var(--muted);}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sfull{grid-column:1/-1;}
+@media(max-width:700px){.sgrid{grid-template-columns:1fr;}.sfull{grid-column:1;}}
+.sbox{background:#fff;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;}
+.shdr{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--canvas);border-bottom:1.5px solid var(--border);}
+.snum{font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px;white-space:nowrap;}
+.stitle{font-size:14px;font-weight:700;color:var(--text);}
+.sbody{padding:16px 18px;}
+.frow{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.flbl{font-size:12px;color:var(--muted);white-space:nowrap;font-weight:500;}
+.finput{flex:1;min-width:120px;border:1px solid #D1D5DB;border-radius:6px;padding:6px 11px;font-size:13px;font-family:var(--font);outline:none;color:var(--text);}
+.finput:focus{border-color:var(--brand);}
+.olink{color:var(--brand);font-size:12px;white-space:nowrap;font-weight:600;text-decoration:none;margin-left:8px;}
+.olink:hover{text-decoration:underline;}
+.combobox{position:relative;flex:1;min-width:120px;}
+.combobox-list{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--brand);border-radius:0 0 6px 6px;z-index:10;max-height:150px;overflow-y:auto;display:none;box-shadow:0 4px 12px rgba(0,0,0,.1);}
+.combobox-list.show{display:block;}
+.combobox-option{padding:8px 11px;cursor:pointer;font-size:13px;color:var(--text);}
+.combobox-option:hover{background:var(--canvas);}
+.combobox-option.add-new{color:var(--brand);font-weight:600;border-top:1px solid var(--border);}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-box{background:#fff;border-radius:12px;padding:40px 36px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.modal-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+.mfield{margin-bottom:16px;}
+.mfield label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;}
+.mfield input,.mfield select,.mfield textarea{width:100%;border:1px solid #D1D5DB;border-radius:8px;padding:10px 14px;font-family:var(--font);font-size:14px;outline:none;}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--brand);}
+.btn-p{background:var(--brand);border:none;border-radius:8px;padding:11px 20px;color:#fff;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;}
+.btn-s{background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px 20px;color:#374151;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
 </head>
-<body style="margin:0;background:#0F172A">
-<script src="https://zijhsdhjxohicuoxwytk.supabase.co/storage/v1/object/public/portal/security-portal.js"></script>
+<body>
+<div class="topbar">
+  <i class="fas fa-shield-halved" style="color:#6C5DD3;font-size:22px;"></i>
+  <span class="topbar-title">Security Module</span>
+  <a href="/" class="back-portal"><i class="fas fa-arrow-left"></i> Back to System Health</a>
+</div>
+<div class="container">
+  <div class="sec-tabs">
+    <button class="sec-tab active"><i class="fas fa-bug"></i> Penetration Tests</button>
+    <button class="add-btn" onclick="openAddModal()"><i class="fas fa-plus"></i> Add Test</button>
+  </div>
+  <div id="modal-bg" class="modal-bg" onclick="if(event.target===this)closeModal()"></div>
+  <div id="lv"></div>
+  <div id="dv" style="display:none"></div>
+</div>
+<script>
+const SB=window.supabase.createClient('https://zijhsdhjxohicuoxwytk.supabase.co','sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox');
+let penTests=[],openId=null;
+let knownTypes=['Black Box','Gray Box','White Box'];
+let knownTesters=[],knownRemediationBy=[],knownRetestBy=[];
+
+window.addEventListener('DOMContentLoaded',loadData);
+
+async function loadData(){
+  showLoading();
+  const{data,error}=await SB.from('brunno_tasks').select('*').eq('category','pen_test').order('created_at',{ascending:true});
+  if(error){penTests=[];renderList();return;}
+  penTests=(data||[]).map(r=>{
+    let n={};try{n=JSON.parse(r.notes||'{}')}catch(e){}
+    return{id:r.id,...n,db_status:r.status};
+  });
+  updateKnown();
+  renderList();
+}
+
+async function saveTest(t){
+  const row={
+    title:t.test_name||'Penetration Test',
+    category:'pen_test',
+    source:t.test_type||'',
+    source_channel:t.tester||'',
+    priority:'medium',
+    status:t.report_url&&t.remediation_url&&t.retest_url?'completed':'in_progress',
+    notes:JSON.stringify(t),
+    tags:['pen_test',(t.test_type||'').toLowerCase().replace(/\s/g,'_')]
+  };
+  if(t.id&&t.id.length>20){
+    const{error}=await SB.from('brunno_tasks').update(row).eq('id',t.id);
+    if(error)alert('Save failed');
+  }else{
+    const{data,error}=await SB.from('brunno_tasks').insert(row).select();
+    if(error)alert('Save failed');
+    else if(data&&data[0])t.id=data[0].id;
+  }
+  updateKnown();
+}
+
+async function deleteTest(id){
+  const{error}=await SB.from('brunno_tasks').delete().eq('id',id);
+  if(error)alert('Delete failed');
+}
+
+function updateKnown(){
+  penTests.forEach(t=>{
+    if(t.test_type&&!knownTypes.includes(t.test_type))knownTypes.push(t.test_type);
+    if(t.tester&&!knownTesters.includes(t.tester))knownTesters.push(t.tester);
+    if(t.remediation_by&&!knownRemediationBy.includes(t.remediation_by))knownRemediationBy.push(t.remediation_by);
+    if(t.retest_by&&!knownRetestBy.includes(t.retest_by))knownRetestBy.push(t.retest_by);
+  });
+}
+
+function showLoading(){
+  document.getElementById('lv').innerHTML='<div class="loading"><i class="fas fa-spinner"></i>Loading penetration tests...</div>';
+}
+
+function renderList(){
+  const lv=document.getElementById('lv');
+  if(penTests.length===0){
+    lv.innerHTML='<div class="empty"><i class="fas fa-shield-halved"></i><h3>No penetration tests yet</h3><p>Click "Add Test" to create your first entry.</p></div>';
+    return;
+  }
+  lv.innerHTML=penTests.map(t=>{
+    const tc=(t.test_type||'').toLowerCase().replace(/\s/g,'-');
+    const ic=tc.includes('black')?'black':tc.includes('gray')?'gray':tc.includes('white')?'white':'other';
+    const dr=t.report_url?'done':'missing';
+    const dm=t.remediation_url?'done':'pending';
+    const dt=t.retest_url?'done':'pending';
+    return '<div class="test-row" onclick="openDetail(\''+t.id+'\')">'+
+      '<div class="test-icon '+ic+'"><i class="fas fa-bug"></i></div>'+
+      '<div class="tinfo"><div class="tname">'+(t.test_name||'Penetration Test')+'</div>'+
+      '<div class="tmeta"><i class="fas fa-calendar"></i> '+(t.test_date||'Date not set')+(t.tester?' &nbsp;|&nbsp; <i class="fas fa-user"></i> '+t.tester:'')+'</div>'+
+      '<span class="ttype '+tc+'">'+(t.test_type||'N/A')+'</span></div>'+
+      '<div class="tmeta2"><span class="doc-badge '+dr+'"><i class="fas fa-file"></i> Report</span>'+
+      '<span class="doc-badge '+dm+'"><i class="fas fa-wrench"></i> Remediation</span>'+
+      '<span class="doc-badge '+dt+'"><i class="fas fa-check-double"></i> Retest</span></div></div>';
+  }).join('');
+}
+
+function openDetail(id){
+  const t=penTests.find(x=>x.id===id);if(!t)return;
+  openId=id;
+  document.getElementById('lv').style.display='none';
+  document.getElementById('dv').style.display='block';
+  renderDetail(t,false);
+}
+
+function renderDetail(t,editing){
+  const tc=(t.test_type||'').toLowerCase().replace(/\s/g,'-');
+  const ic=tc.includes('black')?'black':tc.includes('gray')?'gray':tc.includes('white')?'white':'other';
+  const fields=[
+    {label:'Test Name',key:'test_name',type:'text',icon:'fa-flask'},
+    {label:'Date',key:'test_date',type:'date',icon:'fa-calendar'},
+    {label:'Test Type',key:'test_type',type:'combobox',options:knownTypes,icon:'fa-tag'},
+    {label:'Tester (who made the test)',key:'tester',type:'combobox',options:knownTesters,icon:'fa-user'},
+    {label:'Report Link',key:'report_url',type:'url',icon:'fa-file'},
+    {label:'Remediation Report Link',key:'remediation_url',type:'url',icon:'fa-wrench'},
+    {label:'Retest Link',key:'retest_url',type:'url',icon:'fa-check-double'},
+    {label:'Remediation Applied By',key:'remediation_by',type:'combobox',options:knownRemediationBy,icon:'fa-user-gear'},
+    {label:'Retest By',key:'retest_by',type:'combobox',options:knownRetestBy,icon:'fa-user-check'},
+    {label:'Notes',key:'notes',type:'textarea',icon:'fa-sticky-note'}
+  ];
+  let h='<div class="back-bar"><button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to all tests</button>';
+  if(editing){
+    h+='<button class="btn-p" onclick="saveDetail()"><i class="fas fa-save"></i> Save</button>';
+    h+='<button class="btn-s" style="margin-left:8px" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancel</button></div>';
+  }else{
+    h+='<button class="btn-p" onclick="toggleEdit()"><i class="fas fa-edit"></i> Edit</button>';
+    h+='<button class="del-btn" style="margin-left:8px" onclick="doDelete()"><i class="fas fa-trash"></i> Delete</button></div>';
+  }
+  h+='<div class="card-hdr"><div class="card-hdr-inner"><div class="card-icon '+ic+'"><i class="fas fa-bug"></i></div>';
+  h+='<div><div class="card-name">'+(t.test_name||'Penetration Test')+'</div>';
+  h+='<div class="card-sub">'+(t.test_type||'N/A')+(t.test_date?' &nbsp;|&nbsp; '+t.test_date:'')+'</div></div></div></div>';
+  h+='<div class="sgrid">';
+  fields.forEach(f=>{
+    const val=t[f.key]||'';
+    h+='<div class="sbox"><div class="shdr"><span class="snum" style="background:var(--brand);color:#fff"><i class="fas '+f.icon+'"></i></span><span class="stitle">'+f.label+'</span></div><div class="sbody">';
+    if(editing){
+      if(f.type==='combobox'){
+        h+='<div class="combobox"><input class="finput" id="ed-'+f.key+'" value="'+val+'" oninput="showCombo(\''+f.key+'\',\''+f.options.join(',')+'\')" onfocus="showCombo(\''+f.key+'\',\''+f.options.join(',')+'\')" autocomplete="off"><div class="combobox-list" id="cb-'+f.key+'"></div></div>';
+      }else if(f.type==='textarea'){
+        h+='<textarea class="finput" id="ed-'+f.key+'" rows="3" style="width:100%">'+val+'</textarea>';
+      }else{
+        h+='<input class="finput" type="'+f.type+'" id="ed-'+f.key+'" value="'+val+'">';
+      }
+    }else{
+      if(f.type==='url'&&val){
+        h+='<a class="olink" href="'+val+'" target="_blank"><i class="fas fa-external-link"></i> '+val+'</a>';
+      }else{
+        h+='<span style="font-size:14px;color:'+(val?'var(--text)':'var(--muted)')+'">'+(val||'Not set')+'</span>';
+      }
+    }
+    h+='</div></div>';
+  });
+  h+='</div>';
+  document.getElementById('dv').innerHTML=h;
+}
+
+function goBack(){
+  openId=null;
+  document.getElementById('dv').style.display='none';
+  document.getElementById('lv').style.display='block';
+  renderList();window.scrollTo(0,0);
+}
+function toggleEdit(){renderDetail(penTests.find(t=>t.id===openId),true);}
+function cancelEdit(){renderDetail(penTests.find(t=>t.id===openId),false);}
+async function saveDetail(){
+  const t=penTests.find(x=>x.id===openId);
+  ['test_name','test_date','test_type','tester','report_url','remediation_url','retest_url','remediation_by','retest_by','notes'].forEach(f=>{
+    const el=document.getElementById('ed-'+f);if(el)t[f]=el.value;
+  });
+  await saveTest(t);
+  renderDetail(t,false);renderList();
+}
+async function doDelete(){
+  if(!confirm('Delete this penetration test?'))return;
+  await deleteTest(openId);
+  penTests=penTests.filter(t=>t.id!==openId);
+  goBack();
+}
+function showCombo(key,csv){
+  const input=document.getElementById('ed-'+key);
+  const list=document.getElementById('cb-'+key);
+  if(!input||!list)return;
+  const opts=csv.split(',');
+  const filter=input.value.toLowerCase();
+  const filtered=opts.filter(o=>o.toLowerCase().includes(filter)&&o.toLowerCase()!==filter);
+  let html=filtered.map(o=>'<div class="combobox-option" onclick="pickCombo(\''+key+'\',\''+o+'\')">'+o+'</div>').join('');
+  if(input.value.trim())html+='<div class="combobox-option add-new" onclick="document.getElementById(\'cb-'+key+'\').classList.remove(\'show\')">Use "'+input.value+'" (new)</div>';
+  list.innerHTML=html;list.classList.add('show');
+}
+function pickCombo(key,val){document.getElementById('ed-'+key).value=val;document.getElementById('cb-'+key).classList.remove('show');}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.combobox'))document.querySelectorAll('.combobox-list').forEach(l=>l.classList.remove('show'));
+});
+
+function openAddModal(){
+  const fields=[
+    {label:'Test Name',key:'test_name',type:'text',ph:'Penetration Test',def:'Penetration Test'},
+    {label:'Date',key:'test_date',type:'date',ph:'',def:''},
+    {label:'Test Type',key:'test_type',type:'combobox',options:knownTypes,ph:'Select or type...'},
+    {label:'Tester',key:'tester',type:'combobox',options:knownTesters,ph:'Select or type...'},
+    {label:'Report Link',key:'report_url',type:'url',ph:'https://...'},
+    {label:'Remediation Report Link',key:'remediation_url',type:'url',ph:'https://...'},
+    {label:'Retest Link',key:'retest_url',type:'url',ph:'https://...'},
+    {label:'Remediation Applied By',key:'remediation_by',type:'combobox',options:knownRemediationBy,ph:'Select or type...'},
+    {label:'Retest By',key:'retest_by',type:'combobox',options:knownRetestBy,ph:'Select or type...'},
+    {label:'Notes',key:'notes',type:'textarea',ph:'Additional notes...'}
+  ];
+  let h='<div class="modal-box"><div class="modal-title">Add Penetration Test</div><div class="modal-sub">Enter the details for this security test.</div>';
+  fields.forEach(f=>{
+    h+='<div class="mfield"><label>'+f.label+'</label>';
+    if(f.type==='combobox'){
+      h+='<div class="combobox"><input id="ad-'+f.key+'" placeholder="'+(f.ph||'')+'" style="width:100%;border:1px solid #D1D5DB;border-radius:8px;padding:10px 14px;font-family:var(--font);font-size:14px;outline:none" oninput="showComboAd(\''+f.key+'\',\''+f.options.join(',')+'\')" onfocus="showComboAd(\''+f.key+'\',\''+f.options.join(',')+'\')" autocomplete="off"><div class="combobox-list" id="cb-ad-'+f.key+'"></div></div>';
+    }else if(f.type==='textarea'){
+      h+='<textarea id="ad-'+f.key+'" rows="3" placeholder="'+(f.ph||'')+'" style="width:100%;border:1px solid #D1D5DB;border-radius:8px;padding:10px 14px;font-family:var(--font);font-size:14px;outline:none">'+(f.def||'')+'</textarea>';
+    }else{
+      h+='<input type="'+f.type+'" id="ad-'+f.key+'" placeholder="'+(f.ph||'')+'" value="'+(f.def||'')+'">';
+    }
+    h+='</div>';
+  });
+  h+='<div style="display:flex;gap:10px;margin-top:24px"><button class="btn-p" onclick="saveNew()"><i class="fas fa-plus"></i> Add Test</button><button class="btn-s" onclick="closeModal()">Cancel</button></div></div>';
+  document.getElementById('modal-bg').innerHTML=h;
+  document.getElementById('modal-bg').style.display='flex';
+}
+function showComboAd(key,csv){
+  const input=document.getElementById('ad-'+key);
+  const list=document.getElementById('cb-ad-'+key);
+  if(!input||!list)return;
+  const opts=csv.split(',');
+  const filter=input.value.toLowerCase();
+  const filtered=opts.filter(o=>o.toLowerCase().includes(filter)&&o.toLowerCase()!==filter);
+  let html=filtered.map(o=>'<div class="combobox-option" onclick="pickComboAd(\''+key+'\',\''+o+'\')">'+o+'</div>').join('');
+  if(input.value.trim())html+='<div class="combobox-option add-new" onclick="document.getElementById(\'cb-ad-'+key+'\').classList.remove(\'show\')">Use "'+input.value+'" (new)</div>';
+  list.innerHTML=html;list.classList.add('show');
+}
+function pickComboAd(key,val){document.getElementById('ad-'+key).value=val;document.getElementById('cb-ad-'+key).classList.remove('show');}
+function closeModal(){document.getElementById('modal-bg').style.display='none';}
+async function saveNew(){
+  const t={id:'',test_name:'',test_date:'',test_type:'',tester:'',report_url:'',remediation_url:'',retest_url:'',remediation_by:'',retest_by:'',notes:''};
+  ['test_name','test_date','test_type','tester','report_url','remediation_url','retest_url','remediation_by','retest_by','notes'].forEach(f=>{
+    const el=document.getElementById('ad-'+f);if(el)t[f]=el.value;
+  });
+  if(!t.test_name)t.test_name='Penetration Test';
+  await saveTest(t);
+  penTests.push(t);
+  closeModal();renderList();
+}
+</script>
 </body>
 </html>
