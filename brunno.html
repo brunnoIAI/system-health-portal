@@ -305,7 +305,7 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
   <div class="fg"><label>Title *</label><input type="text" id="at-title" placeholder="What needs to be done?"></div>
   <div class="fg"><label>Notes</label><textarea id="at-desc" placeholder="Context..."></textarea></div>
   <div class="frow"><div class="fg"><label>Category</label><select id="at-cat"><option value="compliance">Compliance</option><option value="system_health">System Health</option><option value="hr">HR</option><option value="training">Training</option><option value="chasing">Chasing</option><option value="admin">Admin</option><option value="ad_hoc">Ad Hoc</option></select></div><div class="fg"><label>Priority</label><select id="at-prio"><option value="critical">Critical</option><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select></div></div>
-  <div class="frow"><div class="fg"><label>Due Date</label><input type="date" id="at-due"></div><div class="fg"><label>Est. Hours</label><input type="number" id="at-hours" placeholder="e.g. 1.5" step="0.25" min="0"></div></div>
+  <div class="frow"><div class="fg"><label>Due Date</label><input type="date" id="at-due"></div><div class="fg"><label>Est. Minutes</label><input type="number" id="at-hours" placeholder="e.g. 30" step="1" min="0"></div></div>
   <div class="frow"><div class="fg"><label>Source</label><select id="at-source"><option value="manual">Manual</option><option value="slack">Slack</option><option value="teams">Teams</option><option value="email">Email</option></select></div><div class="fg"><label>Channel</label><input type="text" id="at-channel" placeholder="e.g. Teams DM"></div></div>
   <div class="mactions"><button class="bg" onclick="closeModal('add-task')">Cancel</button><button class="bp" onclick="saveTask()"><i class="fas fa-check"></i> Save</button></div>
 </div></div>
@@ -326,7 +326,7 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
   <button class="mclose" onclick="closeModal('log-time')"><i class="fas fa-times"></i></button>
   <div class="mtitle"><i class="fas fa-clock" style="color:var(--brand);margin-right:6px;"></i>Log Time</div>
   <input type="hidden" id="lt-task-id">
-  <div class="frow"><div class="fg"><label>Date</label><input type="date" id="lt-date"></div><div class="fg"><label>Hours</label><input type="number" id="lt-hours" placeholder="e.g. 1.5" step="0.25" min="0.25"></div></div>
+  <div class="frow"><div class="fg"><label>Date</label><input type="date" id="lt-date"></div><div class="fg"><label>Minutes</label><input type="number" id="lt-hours" placeholder="e.g. 30" step="1" min="0.25"></div></div>
   <div class="fg"><label>What you worked on</label><input type="text" id="lt-notes" placeholder="Brief description..."></div>
   <div class="mactions"><button class="bg" onclick="closeModal('log-time')">Cancel</button><button class="bp" onclick="saveTimeLog()"><i class="fas fa-check"></i> Save</button></div>
 </div></div>
@@ -418,7 +418,10 @@ function renderView(v){
 // BUSYNESS - activity-based, not hours-based
 function calcBusyness(){
   const todayLogs=allTimeLogs.filter(l=>l.log_date===TODAY);
-  const todayHrs=todayLogs.reduce((s,l)=>s+parseFloat(l.hours||0),0);
+  const todayLogHrs=todayLogs.reduce((s,l)=>s+parseFloat(l.hours||0),0);
+    const todayDoneTasks=allTasks.filter(t=>t.status==='done'&&t.completed_at&&t.completed_at.split('T')[0]===TODAY);
+    const todayTaskMins=todayDoneTasks.reduce((s,t)=>s+parseFloat(t.estimated_hours||0),0);
+    const todayHrs=todayLogHrs+(todayTaskMins/60);
 
   // TODAY score - measures how active you are right now
   const interactions=todayLogs.length; // each logged interaction = activity
@@ -506,7 +509,7 @@ function renderDashboard(){
           <div class="bnum"><div class="bnum-val" style="color:#0284C7">${overallPct}%</div><div class="bnum-lbl">Overall</div></div>
         </div>
       </div>
-      <div style="margin-bottom:4px;"><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Today: ${fmtHrs(todayHrs)} logged of 8h</span><span style="color:${tc};font-weight:700;">${todayPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,200)*0.5}%;background:${tc};"></div></div></div>
+      <div style="margin-bottom:4px;"><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Today: ${fmtHrs(todayHrs)} logged of 8h (${Math.round(todayTaskMins||0)}m from tasks)</span><span style="color:${tc};font-weight:700;">${todayPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(todayPct,200)*0.5}%;background:${tc};"></div></div></div>
       <div><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:2px;"><span>Overall avg: ~${fmtHrs(dailyEst)}/day across ${active.length} active tasks</span><span style="color:#0284C7;font-weight:700;">${overallPct}%</span></div><div class="bar-wrap"><div class="bar" style="width:${Math.min(overallPct,200)*0.5}%;background:#0284C7;"></div></div></div>
       <div class="bchips">${calcBreakdown().map(b=>`<div class="bchip"><strong>${b.hrs}h</strong> ${b.label}</div>`).join('')}<div class="bchip" style="margin-left:auto;"><strong>${totalEst.toFixed(0)}h</strong> est total</div></div>
     </div>
@@ -704,7 +707,7 @@ function taskCard(t){
           ${(()=>{const taskSessions=allSessions.filter(s=>s.task_id===t.id);const totalMins=taskSessions.reduce((s,sess)=>s+(sess.duration_minutes||0),0);const taskLogs=allTimeLogs.filter(l=>l.task_id===t.id);const loggedHrs=taskLogs.reduce((s,l)=>s+parseFloat(l.hours||0),0);const loggedMins=Math.round(loggedHrs*60);const combinedMins=Math.max(totalMins,loggedMins);return combinedMins>0?`<span style="font-size:9.5px;color:var(--brand);font-weight:700;background:var(--brand-light);padding:1px 6px;border-radius:7px;"><i class="fas fa-clock" style="margin-right:2px;font-size:8px;"></i>${fmtMins2(combinedMins)}</span>`:'';})()}
         </div>
       </div>
-      ${t.estimated_hours?`<div style="text-align:right;flex-shrink:0;"><div class="thrs">${t.estimated_hours}h</div><div style="font-size:8.5px;color:var(--muted);">est</div></div>`:''}
+      ${t.estimated_hours?`<div style="text-align:right;flex-shrink:0;"><div class="thrs">${t.estimated_hours}m</div><div style="font-size:8.5px;color:var(--muted);">est</div></div>`:''}
     </div>
     <div class="tbody">
       ${t.description||t.notes?`<div class="tnotes">${t.description||t.notes}</div>`:''}
@@ -712,7 +715,7 @@ function taskCard(t){
         <label>Status:</label><select onchange="updateTaskStatus('${t.id}',this.value)"><option value="">Change...</option><option value="todo">To Do</option><option value="in_progress">In Progress</option><option value="blocked">Blocked</option><option value="done">Done</option><option value="cancelled">Cancelled</option></select>
         <label>Cat:</label><select onchange="updateTaskField('${t.id}','category',this.value)">${['compliance','system_health','hr','training','chasing','admin','ad_hoc'].map(c=>`<option value="${c}" ${t.category===c?'selected':''}>${catLabel(c)}</option>`).join('')}</select>
         <label>Due:</label><input type="date" value="${t.due_date||''}" onchange="updateTaskField('${t.id}','due_date',this.value||null)" onclick="event.stopPropagation()">
-        <label>Est h:</label><input type="number" value="${t.estimated_hours||''}" step="0.25" min="0" style="width:55px;" onchange="updateTaskField('${t.id}','estimated_hours',parseFloat(this.value)||null)" onclick="event.stopPropagation()">
+        <label>Est m:</label><input type="number" value="${t.estimated_hours||''}" step="1" min="0" style="width:55px;" onchange="updateTaskField('${t.id}','estimated_hours',parseFloat(this.value)||null)" onclick="event.stopPropagation()">
       </div>
       <div class="tactions" onclick="event.stopPropagation()">
         <button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="openLogTime('${t.id}')"><i class="fas fa-clock"></i> Log Time</button>
@@ -789,7 +792,7 @@ function taskCardExpanded(t){
     <div class="editrow" onclick="event.stopPropagation()" style="margin-top:8px;">
       <label>Status:</label><select onchange="updateTaskStatus('${t.id}',this.value)"><option value="">Change...</option><option value="todo">To Do</option><option value="in_progress">In Progress</option><option value="blocked">Blocked</option><option value="done">Done</option><option value="cancelled">Cancelled</option></select>
       <label>Cat:</label><select onchange="updateTaskField('${t.id}','category',this.value)">${['compliance','system_health','hr','training','chasing','admin','ad_hoc'].map(c=>`<option value="${c}" ${t.category===c?'selected':''}>${catLabel(c)}</option>`).join('')}</select>
-      <label>Est h:</label><input type="number" value="${t.estimated_hours||''}" step="0.25" min="0" style="width:50px;" onchange="updateTaskField('${t.id}','estimated_hours',parseFloat(this.value)||null)" onclick="event.stopPropagation()">
+      <label>Est m:</label><input type="number" value="${t.estimated_hours||''}" step="1" min="0" style="width:50px;" onchange="updateTaskField('${t.id}','estimated_hours',parseFloat(this.value)||null)" onclick="event.stopPropagation()">
     </div>
     <div class="tactions" onclick="event.stopPropagation()" style="margin-top:6px;">
       <button class="bg" style="font-size:9.5px;padding:3px 8px;" onclick="openLogTime('${t.id}')"><i class="fas fa-clock"></i> Log Time</button>
@@ -884,7 +887,7 @@ function renderDayHistory(){
       <div class="dbar"><div class="dbar-fill" style="width:${pct}%;background:${barColor};"></div></div>
       ${logs.length===0&&doneTasks.length===0?`<div class="empty" style="padding:14px"><i class="fas fa-clock"></i><p style="margin-top:5px;font-size:11px;">${isToday?'Log time to see today\'s breakdown':'No time logged for this day'}</p></div>`:''}
       ${logs.map(l=>`<div class="drow"><div class="ddot" style="background:#6C5DD3;"></div><div class="dname">${l.notes||'Time entry'}</div><div class="dhrs2">${fmtHrs(l.hours)}</div></div>`).join('')}
-      ${doneTasks.map(t=>`<div class="drow"><div class="ddot" style="background:#16A34A;"></div><div class="dname"><i class="fas fa-check" style="color:#16A34A;margin-right:3px;font-size:9px;"></i>${t.title}</div><div class="dhrs2">${t.estimated_hours||'?'}h est</div></div>`).join('')}
+      ${doneTasks.map(t=>`<div class="drow"><div class="ddot" style="background:#16A34A;"></div><div class="dname"><i class="fas fa-check" style="color:#16A34A;margin-right:3px;font-size:9px;"></i>${t.title}</div><div class="dhrs2">${t.estimated_hours||'?'}m est</div></div>`).join('')}
     </div>
     ${focus?`<div class="dc" style="margin-top:8px;"><div class="dhdr"><div class="ddate"><i class="fas fa-sun" style="color:#F59E0B;margin-right:4px;"></i>Focus Log</div><div style="color:#F59E0B;">${'⭐'.repeat(focus.day_rating||3)}</div></div>${focus.summary?`<div style="font-size:12px;margin-bottom:5px;">${focus.summary}</div>`:''}${focus.wins?`<div style="font-size:11px;color:#16A34A;"><i class="fas fa-check-circle" style="margin-right:3px;"></i>${focus.wins}</div>`:''}${focus.blockers?`<div style="font-size:11px;color:#DC2626;margin-top:3px;"><i class="fas fa-triangle-exclamation" style="margin-right:3px;"></i>${focus.blockers}</div>`:''}</div>`:''}
     <div style="margin-top:8px;display:flex;gap:6px;">
@@ -935,8 +938,13 @@ async function renderTimeLog(){
   // Also get done tasks per day
   const doneTasks=allTasks.filter(t=>t.status==='done'&&t.completed_at);
   const doneByDate={};doneTasks.forEach(t=>{const d=t.completed_at.split('T')[0];if(!doneByDate[d])doneByDate[d]=[];doneByDate[d].push(t);});
-  const todayTotal=(byDate[TODAY]||[]).reduce((s,l)=>s+parseFloat(l.hours||0),0);
-  const weekTotal=Object.entries(byDate).filter(([d])=>new Date(d)>=new Date(Date.now()-7*86400000)).flatMap(([,l])=>l).reduce((s,l)=>s+parseFloat(l.hours||0),0);
+  // Count manual time log entries (in hours) + completed task estimates (in minutes, converted to hours)
+  const todayLogHrs=(byDate[TODAY]||[]).reduce((s,l)=>s+parseFloat(l.hours||0),0);
+  const todayTaskMins=(doneByDate[TODAY]||[]).reduce((s,t)=>s+parseFloat(t.estimated_hours||0),0);
+  const todayTotal=todayLogHrs+(todayTaskMins/60);
+  const weekLogHrs=Object.entries(byDate).filter(([d])=>new Date(d)>=new Date(Date.now()-7*86400000)).flatMap(([,l])=>l).reduce((s,l)=>s+parseFloat(l.hours||0),0);
+  const weekTaskMins=Object.entries(doneByDate).filter(([d])=>new Date(d)>=new Date(Date.now()-7*86400000)).flatMap(([,t])=>t).reduce((s,t)=>s+parseFloat(t.estimated_hours||0),0);
+  const weekTotal=weekLogHrs+(weekTaskMins/60);
   document.getElementById('main-content').innerHTML=`
     <div class="stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px;">
       <div class="stat"><div class="slbl">Today</div><div class="sval">${fmtHrs(todayTotal)}</div><div class="ssub">${Math.round((todayTotal/8)*100)}% of workday</div></div>
@@ -946,11 +954,13 @@ async function renderTimeLog(){
     <div class="shdr"><div class="stitle"><i class="fas fa-clock"></i> Time Entries + Completed Tasks</div><button class="bp" style="font-size:9.5px;padding:4px 9px;" onclick="openLogTime('')"><i class="fas fa-plus"></i> Log Time</button></div>
     ${Object.keys(byDate).length===0?'<div class="empty"><i class="fas fa-clock"></i><h3 style="margin-top:7px;font-size:13px;">No time logged yet</h3></div>':Object.entries(byDate).map(([date,entries])=>{
       const dt=entries.reduce((s,l)=>s+parseFloat(l.hours||0),0);
+      const ddMins=(dd||[]).reduce((s,t)=>s+parseFloat(t.estimated_hours||0),0);
+      const dtTotal=dt+(ddMins/60);
       const dd=doneByDate[date]||[];
       return`<div style="margin-bottom:12px;">
         <div style="font-size:10.5px;font-weight:700;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;"><span>${fmtDate(date)}${date===TODAY?' (Today)':''}</span><span style="color:var(--brand);">${fmtHrs(dt)}</span></div>
         ${entries.map(l=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#F9FAFB;border-radius:6px;margin-bottom:3px;font-size:10.5px;"><span style="font-weight:700;color:var(--brand);min-width:32px;">${fmtHrs(l.hours)}</span><span style="flex:1;color:#374151;">${l.notes||'Time entry'}</span></div>`).join('')}
-        ${dd.map(t=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#F0FDF4;border-radius:6px;margin-bottom:3px;font-size:10.5px;border:1px solid #BBF7D0;"><i class="fas fa-check" style="color:#16A34A;width:20px;"></i><span style="flex:1;color:#166534;">${t.title}</span><span style="font-size:9px;color:#16A34A;font-weight:600;">${t.estimated_hours||'?'}h est</span></div>`).join('')}
+        ${dd.map(t=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#F0FDF4;border-radius:6px;margin-bottom:3px;font-size:10.5px;border:1px solid #BBF7D0;"><i class="fas fa-check" style="color:#16A34A;width:20px;"></i><span style="flex:1;color:#166534;">${t.title}</span><span style="font-size:9px;color:#16A34A;font-weight:600;">${t.estimated_hours||'?'}m est</span></div>`).join('')}
       </div>`;
     }).join('')}`;
 }
@@ -1233,7 +1243,7 @@ function poolCardGrid(t){
         <span style="font-size:8.5px;padding:2px 6px;border-radius:8px;background:#F3F4F6;color:#6B7280;">${catLabel(t.category)}</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-size:8.5px;color:var(--muted);">${t.estimated_hours?t.estimated_hours+'h est':''}</span>
+        <span style="font-size:8.5px;color:var(--muted);">${t.estimated_hours?t.estimated_hours+'m est':''}</span>
         <button onclick="event.stopPropagation();addToFocus('${t.id}')" style="font-size:8px;padding:3px 8px;background:#6C5DD3;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:700;">+ Focus</button>
       </div>
     </div>
