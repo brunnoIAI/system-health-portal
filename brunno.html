@@ -261,7 +261,7 @@ body{font-family:var(--font);background:var(--canvas);color:#374151;display:flex
   <div class="ssec">Overview</div>
   <div class="nav active" onclick="setView('dashboard')"><i class="fas fa-gauge-high"></i> Dashboard <span class="nbadge red" id="nb-urgent">0</span></div>
   <div class="nav" onclick="setView('today')"><i class="fas fa-sun"></i> Today <span class="nbadge" id="nb-today">0</span></div>
-  <div class="nav" onclick="setView('focus')"><i class="fas fa-crosshairs"></i> Focus Queue <span class="nbadge" style="background:#16A34A;" id="nb-focus">0</span></div>
+  <div class="nav" onclick="setView('focusqueue')"><i class="fas fa-crosshairs"></i> Focus Queue <span class="nbadge" style="background:#16A34A;" id="nb-focus">0</span></div>
   <div class="nav" onclick="setView('tasks')"><i class="fas fa-list-check"></i> All Tasks <span class="nbadge" id="nb-tasks">0</span></div>
   <div class="ssec">Incoming</div>
   <div class="nav" onclick="setView('requests')"><i class="fas fa-inbox"></i> Requests <span class="nbadge red" id="nb-reqs">0</span></div>
@@ -409,10 +409,10 @@ async function renderView(v){
   else if(v==='requests')renderRequests();
   else if(v==='history')renderHistory();
   else if(v==='timelog')await renderTimeLog();
-  else if(v==='focus')renderFocus();
+  else if(v==='focus')await renderFocus();
   else if(v==='compliance')renderCompliance();
   else if(v==='audit')renderAudit();
-  else if(v==='earnings')renderEarnings();
+  else if(v==='earnings')await renderEarnings();
 }
 
 // BUSYNESS - activity-based, not hours-based
@@ -970,7 +970,7 @@ async function renderTimeLog(){
 }
 
 // FOCUS
-async function renderFocus(){
+async async function renderFocus(){
   const{data:logs}=await SB.from('brunno_focus_log').select('*').order('log_date',{ascending:false}).limit(30);
   document.getElementById('main-content').innerHTML=`
     <div class="shdr"><div class="stitle"><i class="fas fa-calendar-day"></i> Daily Focus Log</div><button class="bp" style="font-size:9.5px;padding:4px 9px;" onclick="openModal('focus')"><i class="fas fa-plus"></i> Log Today</button></div>
@@ -1472,7 +1472,7 @@ const HOURLY_GBP = 18.75;
 const STANDARD_HOURS = 8;
 const EUR_RATE = 1.17; // approximate - update periodically
 
-async function renderEarnings(){
+async async function renderEarnings(){
   // Fetch ALL earnings and work_hours
   const {data:allRows} = await SB.from('brunno_earnings').select('*').order('work_date',{ascending:false}).limit(200);
   const {data:allWhRows} = await SB.from('brunno_work_hours').select('*').order('work_date',{ascending:false}).limit(200);
