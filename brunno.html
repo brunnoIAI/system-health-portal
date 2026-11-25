@@ -649,8 +649,10 @@ function renderToday(){
 let taskStatusFilter='active'; // 'active','todo','in_progress','blocked','done','all'
 let taskCatFilter='all';
 
+let taskGroupFilter='all',taskSortMode='modified';
 function renderTasks(){
-  const filtered=filterTasksFull(allTasks,taskStatusFilter,taskCatFilter);
+  let filtered=filterTasksFull(allTasks,taskStatusFilter,taskCatFilter);
+  if(taskGroupFilter&&taskGroupFilter!=='all'){filtered=filtered.filter(t=>t.group_name===taskGroupFilter);}
   const statusCounts={
     active:allTasks.filter(t=>!['done','cancelled'].includes(t.status)).length,
     todo:allTasks.filter(t=>t.status==='todo').length,
@@ -660,12 +662,22 @@ function renderTasks(){
     all:allTasks.filter(t=>t.status!=='cancelled').length,
   };
   const cats=['all','compliance','system_health','hr','training','chasing','admin','ad_hoc'];
+  const groups=['all',...new Set(allTasks.filter(t=>t.group_name).map(t=>t.group_name))];
+  if(taskSortMode==='modified'){filtered.sort((a,b)=>new Date(b.updated_at||b.created_at)-new Date(a.updated_at||a.created_at));}
+  else if(taskSortMode==='number'){filtered.sort((a,b)=>(a.task_number||9999)-(b.task_number||9999));}
+  else if(taskSortMode==='priority'){const pr={critical:0,high:1,medium:2,low:3};filtered.sort((a,b)=>(pr[a.priority]||9)-(pr[b.priority]||9));}
   document.getElementById('main-content').innerHTML=`
     <div style="display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap;">
       ${[['active','All Open','#6C5DD3'],['todo','To Do','#9CA3AF'],['in_progress','In Progress','#D97706'],['blocked','Blocked','#DC2626'],['done','Done','#16A34A'],['all','All','#374151']].map(([s,label,col])=>`
         <div onclick="taskStatusFilter='${s}';renderTasks();" style="padding:5px 12px;border-radius:16px;font-size:11px;font-weight:700;cursor:pointer;border:2px solid ${taskStatusFilter===s?col:'#E5E7EB'};background:${taskStatusFilter===s?col+'18':'#fff'};color:${taskStatusFilter===s?col:'#9CA3AF'};">
           ${label} <span style="font-size:9px;font-weight:600;opacity:.8;">${statusCounts[s]||0}</span>
         </div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:10px;font-weight:700;color:#B45309;"><i class="fas fa-layer-group" style="margin-right:3px;"></i>Group:</span>
+      ${groups.map(g=>`<div onclick="taskGroupFilter='${g}';renderTasks();" style="padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid ${taskGroupFilter===g?'#B45309':'#E5E7EB'};background:${taskGroupFilter===g?'#FEF3C7':'#fff'};color:${taskGroupFilter===g?'#B45309':'#9CA3AF'};">${g==='all'?'All Groups':g}</div>`).join('')}
+      <span style="font-size:10px;font-weight:700;color:#1E40AF;margin-left:12px;"><i class="fas fa-sort" style="margin-right:3px;"></i>Sort:</span>
+      ${[['modified','Last Modified'],['number','Task Number'],['priority','Priority']].map(([m,label])=>`<div onclick="taskSortMode='${m}';renderTasks();" style="padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid ${taskSortMode===m?'#1E40AF':'#E5E7EB'};background:${taskSortMode===m?'#DBEAFE':'#fff'};color:${taskSortMode===m?'#1E40AF':'#9CA3AF'};">${label}</div>`).join('')}
     </div>
     <div class="filters" style="margin-bottom:10px;">
       ${cats.map(c=>`<div class="fchip ${taskCatFilter===c?'active':''}" onclick="taskCatFilter='${c}';renderTasks();">${catLabel(c)}</div>`).join('')}
@@ -767,17 +779,23 @@ function taskCardGrid(t){
   const isDone=t.status==='done'||t.status==='cancelled';
   const pCol={critical:'#DC2626',high:'#D97706',medium:'#6C5DD3',low:'#9CA3AF'}[t.priority]||'#9CA3AF';
   const sCol={todo:'#9CA3AF',in_progress:'#D97706',blocked:'#DC2626',done:'#16A34A'}[t.status]||'#9CA3AF';
+  const related=t.group_name?allTasks.filter(x=>x.group_name===t.group_name&&x.id!==t.id&&x.status!=='done'&&x.status!=='cancelled'):[];
   return`<div onclick="toggleTask('${t.id}')" style="background:#fff;border:1.5px solid ${isExp?pCol:'#E5E7EB'};border-radius:10px;padding:12px 13px;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,border-color .15s;box-shadow:${isExp?'0 2px 12px rgba(0,0,0,.1)':'0 1px 3px rgba(0,0,0,.04)'};${isDone?'opacity:.6;':''}" onmouseover="this.style.boxShadow='0 3px 14px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='${isExp?'0 2px 12px rgba(0,0,0,.1)':'0 1px 3px rgba(0,0,0,.04)'}'">
+    ${t.task_number?`<div style="position:absolute;top:8px;right:10px;font-size:9px;font-weight:700;color:#9CA3AF;background:#F3F4F6;border-radius:6px;padding:2px 7px;">#${t.task_number}</div>`:''}
     <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${pCol};border-radius:10px 0 0 10px;"></div>
     <div style="padding-left:6px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:7px;${isDone?'text-decoration:line-through;color:var(--muted);':''}">${isDone?'<i class="fas fa-check-circle" style="color:#16A34A;margin-right:4px;font-size:9px;"></i>':''}${t.title.length>80?t.title.substring(0,80)+'…':t.title}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:7px;padding-right:36px;${isDone?'text-decoration:line-through;color:var(--muted);':''}">${isDone?'<i class="fas fa-check-circle" style="color:#16A34A;margin-right:4px;font-size:9px;"></i>':''}${t.title.length>80?t.title.substring(0,80)+'…':t.title}</div>
       <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">
         <span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:${sCol}18;color:${sCol};border:1px solid ${sCol}30;">${statusLabel(t.status)}</span>
+        ${t.group_name?`<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:#FEF3C7;color:#B45309;">${t.group_name}</span>`:''}
+        ${t.department?`<span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#DBEAFE;color:#1E40AF;">${t.department}</span>`:''}
         <span style="font-size:9px;padding:2px 7px;border-radius:10px;background:#F3F4F6;color:#6B7280;">${catLabel(t.category)}</span>
         ${t.source&&t.source!=='manual'?`<span style="font-size:9px;padding:2px 6px;border-radius:10px;background:#EEF2FF;color:#6C5DD3;">${t.source.toUpperCase()}</span>`:''}
       </div>
       <div style="font-size:9.5px;color:var(--muted);line-height:1.4;">${t.notes?t.notes.substring(0,90)+'…':''}</div>
-      ${isExp?`<div style="margin-top:10px;border-top:1px solid #F3F4F6;padding-top:10px;">${taskCardExpanded(t)}</div>`:''}
+      ${isExp?`<div style="margin-top:10px;border-top:1px solid #F3F4F6;padding-top:10px;">${taskCardExpanded(t)}
+        ${related.length?`<div style="margin-top:8px;"><div style="font-size:9px;font-weight:700;color:#B45309;margin-bottom:4px;"><i class="fas fa-link" style="margin-right:3px;"></i>Related tasks in ${t.group_name} (${related.length})</div>${related.slice(0,5).map(r=>`<div style="font-size:9px;color:var(--muted);margin-bottom:3px;padding:3px 6px;background:#FFFBEB;border-radius:5px;">${r.task_number?'#'+r.task_number+' ':''}${r.title.length>70?r.title.substring(0,70)+'…':r.title}</div>`).join('')}</div>`:''}
+      </div>`:''}
     </div>
   </div>`;
 }
