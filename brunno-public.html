@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brunno Tavarez - Status Dashboard | Implement AI</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+body{background:#F8FAFC;color:#1E293B;min-height:100vh;}
+.header{background:linear-gradient(135deg,#1E293B,#312E81);color:#fff;padding:28px 32px;}
+.header h1{font-size:22px;font-weight:800;}
+.header .sub{font-size:12px;opacity:.75;margin-top:4px;}
+.header .live{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border-radius:12px;padding:4px 12px;font-size:10px;font-weight:700;margin-top:10px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#22C55E;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.container{max-width:1200px;margin:0 auto;padding:24px 32px;}
+.dept-section{margin-bottom:28px;}
+.dept-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.dept-header h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;}
+.dept-header .count{background:#E2E8F0;border-radius:10px;padding:2px 10px;font-size:11px;font-weight:700;color:#475569;}
+.dept-header .bar{flex:1;height:2px;background:#E2E8F0;border-radius:2px;}
+.group-block{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid #CBD5E1;}
+.group-title{font-size:13px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.rag{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.rag-green{background:#22C55E;}
+.rag-amber{background:#F59E0B;}
+.rag-red{background:#EF4444;}
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #F1F5F9;font-size:12px;}
+.task-row:last-child{border-bottom:none;}
+.task-num{color:#94A3B8;font-weight:700;font-size:10px;min-width:44px;padding-top:2px;}
+.task-main{flex:1;}
+.task-title{font-weight:600;line-height:1.4;}
+.task-meta{font-size:10px;color:#94A3B8;margin-top:2px;display:flex;gap:10px;flex-wrap:wrap;}
+.status-pill{display:inline-block;padding:2px 9px;border-radius:10px;font-size:9.5px;font-weight:700;}
+.st-todo{background:#F1F5F9;color:#64748B;}
+.st-progress{background:#FEF3C7;color:#B45309;}
+.st-blocked{background:#FEE2E2;color:#DC2626;}
+.st-done{background:#DCFCE7;color:#16A34A;}
+.eta{font-weight:700;}
+.blocker{color:#DC2626;font-weight:600;}
+.comment{color:#64748B;font-style:italic;}
+.updated{font-size:10px;color:#94A3B8;text-align:right;margin-top:16px;}
+.legend{display:flex;gap:16px;margin-bottom:20px;background:#fff;border-radius:10px;padding:10px 16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#475569;}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Brunno Tavarez - Status Dashboard</h1>
+  <div class="sub">Operational Continuity Lead | Implement AI</div>
+  <div class="live"><span class="dot"></span>Live - updates automatically from the task portal</div>
+</div>
+<div class="container">
+  <div class="legend">
+    <div class="legend-item"><span class="rag rag-green"></span>On track</div>
+    <div class="legend-item"><span class="rag rag-amber"></span>In progress / attention</div>
+    <div class="legend-item"><span class="rag rag-red"></span>Blocked / urgent</div>
+  </div>
+  <div id="dashboard">Loading tasks...</div>
+  <div class="updated" id="updated-at"></div>
+</div>
+<script>
+const SB=window.supabase.createClient("https://zijhsdhjxohicuoxwytk.supabase.co","sb_publishable_eyTc-x0RnwsM5Gs8t53zMg_ySQgnTox");
+const DEPT_ORDER=['Compliance','Client','HR','Operations','IT Support'];
+const DEPT_ICONS={'Compliance':'fa-shield-halved','Client':'fa-handshake','HR':'fa-users','Operations':'fa-gears','IT Support':'fa-headset'};
+function statusPill(s){const map={todo:['st-todo','To Do'],in_progress:['st-progress','In Progress'],blocked:['st-blocked','Blocked'],done:['st-done','Done']};const[c,l]=map[s]||['st-todo',s];return `<span class="status-pill ${c}">${l}</span>`;}
+function ragFor(t){if(t.status==='blocked')return 'red';if(t.status==='in_progress')return 'amber';if(t.status==='done')return 'green';if(t.priority==='critical')return 'red';if(t.priority==='high')return 'amber';return 'green';}
+function fmtDate(d){if(!d)return '';return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'});}
+async function load(){
+  const{data,err}=await SB.from('brunno_tasks').select('id,task_number,title,status,priority,group_name,department,eta_date,blocker,public_comment,updated_at,notes').order('updated_at',{ascending:false});
+  if(err){document.getElementById('dashboard').innerHTML='<p style="color:#DC2626;">Error loading: '+err.message+'</p>';return;}
+  const open=data.filter(t=>t.status!=='done'&&t.status!=='cancelled');
+  const groups={};
+  open.forEach(t=>{
+    const dept=t.department||'Operations';
+    const g=t.group_name||'Other';
+    if(!groups[dept])groups[dept]={};
+    if(!groups[dept][g])groups[dept][g]=[];
+    groups[dept][g].push(t);
+  });
+  let html='';
+  DEPT_ORDER.forEach(dept=>{
+    if(!groups[dept])return;
+    const deptTasks=Object.values(groups[dept]).flat();
+    html+=`<div class="dept-section"><div class="dept-header"><i class="fas ${DEPT_ICONS[dept]||'fa-circle'}" style="color:#6C5DD3;"></i><h2>${dept}</h2><span class="count">${deptTasks.length} open</span><div class="bar"></div></div>`;
+    Object.keys(groups[dept]).sort().forEach(g=>{
+      const tasks=groups[dept][g];
+      const hasRed=tasks.some(t=>ragFor(t)==='red');
+      const hasAmber=tasks.some(t=>ragFor(t)==='amber');
+      const rag=hasRed?'red':(hasAmber?'amber':'green');
+      html+=`<div class="group-block" style="border-left-color:${rag==='red'?'#EF4444':rag==='amber'?'#F59E0B':'#22C55E'};">
+        <div class="group-title"><span class="rag rag-${rag}"></span>${g} <span style="font-weight:400;color:#94A3B8;font-size:11px;">(${tasks.length})</span></div>`;
+      tasks.forEach(t=>{
+        html+=`<div class="task-row">
+          <div class="task-num">${t.task_number?'#'+t.task_number:''}</div>
+          <div class="task-main">
+            <div class="task-title">${t.title}</div>
+            <div class="task-meta">${statusPill(t.status)}
+              ${t.eta_date?`<span class="eta">ETA: ${fmtDate(t.eta_date)}</span>`:''}
+              ${t.blocker?`<span class="blocker"><i class="fas fa-triangle-exclamation"></i> ${t.blocker}</span>`:''}
+              ${t.public_comment?`<span class="comment">${t.public_comment}</span>`:''}
+            </div>
+          </div>
+        </div>`;
+      });
+      html+='</div>';
+    });
+    html+='</div>';
+  });
+  document.getElementById('dashboard').innerHTML=html||'<p>No open tasks.</p>';
+  document.getElementById('updated-at').textContent='Last updated: '+new Date().toLocaleString('en-GB');
+}
+load();
+setInterval(load,60000);
+</script>
+</body>
+</html>
