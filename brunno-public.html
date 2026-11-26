@@ -36,6 +36,7 @@ body{background:#F8FAFC;color:#1E293B;}
 .st-todo{color:#64748B;border-color:#CBD5E1;background:#F8FAFC;}
 .st-progress{color:#B45309;border-color:#FCD34D;background:#FFFBEB;}
 .st-blocked{color:#DC2626;border-color:#FCA5A5;background:#FEF2F2;}
+.st-wait{color:#7C3AED;border-color:#C4B5FD;background:#F5F3FF;}
 .field{display:flex;gap:8px;font-size:11px;line-height:1.5;margin-bottom:3px;}
 .field-label{min-width:62px;font-weight:800;font-size:9px;text-transform:uppercase;letter-spacing:.4px;padding-top:2px;text-align:right;}
 .fl-done{color:#16A34A;}
@@ -66,7 +67,7 @@ const SB=window.supabase.createClient("https://zijhsdhjxohicuoxwytk.supabase.co"
 const DEPT_ORDER=['Compliance','Client','HR','Operations','IT Support'];
 const DEPT_ICONS={'Compliance':'fa-shield-halved','Client':'fa-handshake','HR':'fa-users','Operations':'fa-gears','IT Support':'fa-headset'};
 let currentDept='all',allOpen=[];
-function statusTag(s){const m={todo:['st-todo','To Do'],in_progress:['st-progress','In Progress'],blocked:['st-blocked','Blocked'],done:['st-done','Done']};const[c,l]=m[s]||['st-todo',s];return `<span class="status-tag ${c}">${l}</span>`;}
+function statusTag(s,sec){const m={todo:['st-todo','To Do'],in_progress:['st-progress','In Progress'],blocked:['st-blocked','Blocked'],done:['st-done','Done']};const[c,l]=m[s]||['st-todo',s];let out=`<span class="status-tag ${c}">${l}</span>`;if(sec==='waiting')out+=` <span class="status-tag st-wait">Waiting</span>`;return out;}
 function ragFor(t){if(t.status==='blocked')return 'red';if(t.status==='in_progress')return 'amber';if(t.priority==='critical')return 'red';if(t.priority==='high')return 'amber';return 'green';}
 function fmtDate(d){if(!d)return '';return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'});}
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -85,7 +86,7 @@ function render(){
     html+=`<div class="group-card"><div class="group-head"><div class="group-name"><span class="rag rag-${rag}"></span>${esc(g)}</div><span class="group-count">${ts.length} task${ts.length>1?'s':''}</span></div>`;
     ts.forEach(t=>{
       html+=`<div class="task">
-        <div class="task-top"><div class="task-num">${t.task_number?'#'+t.task_number:''}</div><div class="task-title">${esc(t.title)}</div>${statusTag(t.status)}</div>
+        <div class="task-top"><div class="task-num">${t.task_number?'#'+t.task_number:''}</div><div class="task-title">${esc(t.title)}</div>${statusTag(t.status,t.secondary_tag)}</div>
         ${t.done_summary?`<div class="field"><div class="field-label fl-done">Done</div><div class="field-text">${esc(t.done_summary)}</div></div>`:''}
         ${t.remaining_work?`<div class="field"><div class="field-label fl-todo">To Do</div><div class="field-text">${esc(t.remaining_work)}</div></div>`:''}
         ${t.waiting_on?`<div class="field"><div class="field-label fl-wait">Waiting</div><div class="field-text waiting-text">${esc(t.waiting_on)}</div></div>`:''}
